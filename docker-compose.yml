@@ -1,0 +1,91 @@
+version: '3.8'
+
+# ネットワーク定義
+networks:
+  startup-hr-network:
+    driver: bridge
+
+services:
+  # PostgreSQLデータベース（内部通信のみ）
+  postgres:
+    image: postgres:15-alpine
+    container_name: startup-hr-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: startup_hr
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - startup-hr-network
+    # ホストには公開しない（内部通信のみ）
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis（セッション管理用、内部通信のみ）
+  redis:
+    image: redis:7-alpine
+    container_name: startup-hr-redis
+    restart: unless-stopped
+    networks:
+      - startup-hr-network
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # メールサーバー（開発用、Web UIのみ公開）
+  mailhog:
+    image: mailhog/mailhog
+    container_name: startup-hr-mail
+    restart: unless-stopped
+    networks:
+      - startup-hr-network
+    ports:
+      # Web UIのみ公開（SMTP は内部通信のみ）
+      - "${MAILHOG_UI_PORT:-8025}:8025"
+    expose:
+      - "1025" # SMTP
+
+  # Next.jsアプリケーション
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: startup-hr-app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/startup_hr
+      REDIS_URL: redis://redis:6379
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      NEXT_PUBLIC_APP_URL: http://localhost:${PORT:-3000}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "${PORT:-3000}:3000"
+    networks:
+      - startup-hr-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: npm run dev
+
+# 名前付きボリューム
+volumes:
+  postgres_data:
+    name: startup-hr-postgres-data

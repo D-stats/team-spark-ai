@@ -105,12 +105,29 @@ npx supabase status
 # 依存関係のインストール
 npm install
 
-# 開発サーバー起動
+# ポート競合チェック（自動実行されるが手動でも可能）
+npm run check:ports
+
+# 開発サーバー起動（デフォルトポート3000）
 npm run dev
+
+# ポート競合時の代替起動方法
+PORT=3001 npm run dev    # 環境変数で指定
+npm run dev:alt          # 3001番ポートで起動
+npm run dev:custom       # 対話的にポート指定
 
 # 別ターミナルでSupabase Studio起動
 npx supabase status  # URLを確認
 ```
+
+### ポート管理戦略
+開発環境でのポート競合を避けるため、以下の戦略を採用しています：
+
+1. **自動ポートチェック**: `npm run dev`実行時に自動でポート競合を確認
+2. **環境変数サポート**: PORTなどの環境変数で柔軟に設定可能
+3. **Docker Compose活用**: 内部通信のサービスは外部ポートを公開しない
+
+詳細は`docs/PORT_MANAGEMENT.md`を参照してください。
 
 ### コード品質チェック
 ```bash
@@ -194,14 +211,22 @@ npm run build
 
 ### ポート競合エラー
 ```bash
-# ポートを使用しているプロセスを確認
+# 自動ポートチェック
+npm run check:ports
+
+# 手動でポートを使用しているプロセスを確認
 lsof -i :3000
 
 # プロセスを終了
-kill -9 [PID]
+kill -9 $(lsof -ti:3000)
 
-# または別のポートで起動
-PORT=3001 npm run dev
+# 代替ポートで起動
+PORT=3001 npm run dev    # 環境変数で指定
+npm run dev:alt          # 3001番で起動
+npm run dev:custom       # 対話的に指定
+
+# すべての開発サービスを停止
+npm run stop:all
 ```
 
 ### Supabase接続エラー

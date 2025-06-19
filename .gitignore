@@ -8,6 +8,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
+user-story-validation-report.md
 
 # next.js
 /.next/
