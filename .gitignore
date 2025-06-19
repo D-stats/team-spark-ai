@@ -67,3 +67,7 @@ logs/
 # Temporary files
 tmp/
 temp/
+
+# Development
+.dev-server.pid
+dev-server.log
