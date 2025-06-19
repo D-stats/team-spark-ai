@@ -1,0 +1,344 @@
+{
+  "config": {
+    "configFile": "/Users/ken/Developer/d-stats/startup-hr/playwright.config.ts",
+    "rootDir": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e/setup/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/ken/Developer/d-stats/startup-hr/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 15000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.53.1",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "evaluation-basic.spec.ts",
+      "file": "evaluation-basic.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "評価システム基本テスト",
+          "file": "evaluation-basic.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "評価ページにアクセスできる",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4858,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:47.498Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-52cdcbad5e3592f096f5",
+              "file": "evaluation-basic.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "コンピテンシーページにアクセスできる",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4860,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:47.510Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-56ccf531888527232f73",
+              "file": "evaluation-basic.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "ダッシュボードにアクセスできる",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 8097,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nLocator: locator('h1')\nExpected string: \u001b[32m\"ダッシュボード\"\u001b[39m\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nLocator: locator('h1')\nExpected string: \u001b[32m\"ダッシュボード\"\u001b[39m\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n\n    at /Users/ken/Developer/d-stats/startup-hr/tests/e2e/evaluation-basic.spec.ts:36:38",
+                        "location": {
+                          "file": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e/evaluation-basic.spec.ts",
+                          "column": 38,
+                          "line": 36
+                        },
+                        "snippet": "  34 |     \n  35 |     // タイトルが表示されることを確認\n> 36 |     await expect(page.locator('h1')).toContainText('ダッシュボード');\n     |                                      ^\n  37 |   });\n  38 |\n  39 |   test('タブナビゲーションが機能する', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e/evaluation-basic.spec.ts",
+                            "column": 38,
+                            "line": 36
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nLocator: locator('h1')\nExpected string: \u001b[32m\"ダッシュボード\"\u001b[39m\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('h1')\u001b[22m\n\n\n  34 |     \n  35 |     // タイトルが表示されることを確認\n> 36 |     await expect(page.locator('h1')).toContainText('ダッシュボード');\n     |                                      ^\n  37 |   });\n  38 |\n  39 |   test('タブナビゲーションが機能する', async ({ page }) => {\n    at /Users/ken/Developer/d-stats/startup-hr/tests/e2e/evaluation-basic.spec.ts:36:38"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:47.503Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/ken/Developer/d-stats/startup-hr/test-results/evaluation-basic-評価システム基本テスト-ダッシュボードにアクセスできる-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/ken/Developer/d-stats/startup-hr/test-results/evaluation-basic-評価システム基本テスト-ダッシュボードにアクセスできる-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/ken/Developer/d-stats/startup-hr/test-results/evaluation-basic-評価システム基本テスト-ダッシュボードにアクセスできる-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/ken/Developer/d-stats/startup-hr/tests/e2e/evaluation-basic.spec.ts",
+                        "column": 38,
+                        "line": 36
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-e9afb341e982782d69c9",
+              "file": "evaluation-basic.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "タブナビゲーションが機能する",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4844,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:47.519Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-719d80a57ee80a63d97d",
+              "file": "evaluation-basic.spec.ts",
+              "line": 39,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "モック認証テスト",
+          "file": "evaluation-basic.spec.ts",
+          "line": 55,
+          "column": 6,
+          "specs": [
+            {
+              "title": "管理者でログインできる",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 470,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:52.615Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-48ced39c716eab4e5e97",
+              "file": "evaluation-basic.spec.ts",
+              "line": 56,
+              "column": 7
+            },
+            {
+              "title": "メンバーでログインできる",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 15000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 455,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-19T11:56:52.630Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1297f0e0939122ee5aa9-d55c42a43d8b4581e63d",
+              "file": "evaluation-basic.spec.ts",
+              "line": 67,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-06-19T11:56:44.267Z",
+    "duration": 11637.530999999999,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

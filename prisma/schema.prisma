@@ -1,0 +1,497 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 組織モデル
+model Organization {
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  settings        Json             @default("{}")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  users           User[]
+  teams           Team[]
+  slackWorkspaces SlackWorkspace[]
+  surveys         Survey[]
+  objectives      Objective[]
+  evaluationCycles EvaluationCycle[]
+  competencies    Competency[]
+}
+
+// ユーザーモデル
+model User {
+  id               String           @id @default(cuid())
+  organizationId   String
+  email            String           @unique
+  name             String
+  avatarUrl        String?
+  role             Role             @default(MEMBER)
+  slackUserId      String?
+  isActive         Boolean          @default(true)
+  lastActiveAt     DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  
+  organization     Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sentKudos        Kudos[]          @relation("SentKudos")
+  receivedKudos    Kudos[]          @relation("ReceivedKudos")
+  checkIns         CheckIn[]
+  surveyResponses  SurveyResponse[]
+  managedTeams     Team[]           @relation("TeamManager")
+  teamMemberships  TeamMember[]
+  objectives       Objective[]      @relation("ObjectiveOwner")
+  keyResults       KeyResult[]      @relation("KeyResultOwner")
+  okrCheckIns      OkrCheckIn[]
+  
+  // 評価関連
+  evaluationsAsEvaluatee Evaluation[]    @relation("EvaluationEvaluatee")
+  evaluationsAsEvaluator Evaluation[]    @relation("EvaluationEvaluator")
+  evaluationsAsReviewer  Evaluation[]    @relation("EvaluationReviewer")
+  
+  @@index([organizationId])
+  @@index([email])
+  @@index([slackUserId])
+}
+
+// チームモデル
+model Team {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  managerId      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  manager        User?        @relation("TeamManager", fields: [managerId], references: [id])
+  members        TeamMember[]
+  objectives     Objective[]
+  
+  @@index([organizationId])
+}
+
+// チームメンバー中間テーブル
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  joinedAt  DateTime @default(now())
+  
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+// Kudos（ピア評価）モデル
+model Kudos {
+  id          String      @id @default(cuid())
+  senderId    String
+  receiverId  String
+  message     String
+  category    KudosCategory
+  points      Int         @default(1)
+  isPublic    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  
+  sender      User        @relation("SentKudos", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User        @relation("ReceivedKudos", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+}
+
+// チェックインモデル
+model CheckIn {
+  id            String   @id @default(cuid())
+  userId        String
+  achievements  String   // 今週の成果
+  nextWeekGoals String   // 来週の目標
+  moodRating    Int      // 1-5
+  challenges    String?  // 課題・困っていること
+  createdAt     DateTime @default(now())
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// サーベイモデル
+model Survey {
+  id             String           @id @default(cuid())
+  organizationId String
+  title          String
+  description    String?
+  questions      Json             // 質問の配列
+  isActive       Boolean          @default(true)
+  isAnonymous    Boolean          @default(false)
+  frequency      SurveyFrequency?
+  startDate      DateTime
+  endDate        DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  responses      SurveyResponse[]
+  
+  @@index([organizationId])
+  @@index([isActive])
+}
+
+// サーベイ回答モデル
+model SurveyResponse {
+  id          String   @id @default(cuid())
+  surveyId    String
+  userId      String?  // 匿名の場合はnull
+  answers     Json     // 回答データ
+  createdAt   DateTime @default(now())
+  
+  survey      Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  @@index([surveyId])
+  @@index([userId])
+}
+
+// Slackワークスペース連携モデル
+model SlackWorkspace {
+  id                String       @id @default(cuid())
+  organizationId    String
+  teamId            String       @unique // Slack team ID
+  teamName          String
+  botUserId         String
+  botAccessToken    String       // 暗号化して保存
+  appId             String
+  installedAt       DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  @@index([organizationId])
+}
+
+// Enum定義
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+enum KudosCategory {
+  TEAMWORK
+  INNOVATION
+  LEADERSHIP
+  PROBLEM_SOLVING
+  CUSTOMER_FOCUS
+  LEARNING
+  OTHER
+}
+
+enum SurveyFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  ADHOC
+}
+
+// OKR関連モデル
+
+// 目標（Objective）モデル
+model Objective {
+  id              String          @id @default(cuid())
+  organizationId  String
+  title           String
+  description     String?
+  ownerType       ObjectiveOwner  // COMPANY, TEAM, INDIVIDUAL
+  ownerUserId     String?         // User ID (for individual objectives)
+  ownerTeamId     String?         // Team ID (for team objectives)
+  parentId        String?         // 親Objectiveとの関連（アライメント用）
+  cycle           OkrCycle        // ANNUAL, Q1, Q2, Q3, Q4
+  year            Int
+  status          ObjectiveStatus @default(DRAFT)
+  startDate       DateTime
+  endDate         DateTime
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ownerUser       User?           @relation("ObjectiveOwner", fields: [ownerUserId], references: [id])
+  ownerTeam       Team?           @relation(fields: [ownerTeamId], references: [id])
+  parent          Objective?      @relation("ObjectiveAlignment", fields: [parentId], references: [id])
+  children        Objective[]     @relation("ObjectiveAlignment")
+  keyResults      KeyResult[]
+  
+  @@index([organizationId])
+  @@index([ownerUserId])
+  @@index([ownerTeamId])
+  @@index([parentId])
+  @@index([cycle, year])
+}
+
+// 主要成果（Key Result）モデル
+model KeyResult {
+  id              String          @id @default(cuid())
+  objectiveId     String
+  title           String
+  description     String?
+  type            KeyResultType   // METRIC, MILESTONE
+  ownerId         String?
+  
+  // For METRIC type
+  startValue      Float?
+  targetValue     Float?
+  currentValue    Float?
+  unit            String?         // %, 件数, 円, etc.
+  
+  // For MILESTONE type
+  milestoneStatus MilestoneStatus?
+  
+  progress        Float           @default(0) // 0-1 scale
+  confidence      Float?          // 0-1 scale (confidence in achieving)
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  objective       Objective       @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+  owner           User?           @relation("KeyResultOwner", fields: [ownerId], references: [id])
+  checkIns        OkrCheckIn[]
+  
+  @@index([objectiveId])
+  @@index([ownerId])
+}
+
+// OKRチェックインモデル
+model OkrCheckIn {
+  id            String      @id @default(cuid())
+  keyResultId   String
+  userId        String
+  previousValue Float?      // 前回の値（METRICタイプ用）
+  currentValue  Float?      // 現在の値（METRICタイプ用）
+  progress      Float       // 0-1 scale
+  confidence    Float?      // 0-1 scale
+  comment       String?
+  blockers      String?     // 障害・課題
+  createdAt     DateTime    @default(now())
+  
+  keyResult     KeyResult   @relation(fields: [keyResultId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id])
+  
+  @@index([keyResultId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// OKR Enum定義
+enum ObjectiveOwner {
+  COMPANY
+  TEAM
+  INDIVIDUAL
+}
+
+enum OkrCycle {
+  ANNUAL
+  Q1
+  Q2
+  Q3
+  Q4
+}
+
+enum ObjectiveStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum KeyResultType {
+  METRIC
+  MILESTONE
+}
+
+enum MilestoneStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  AT_RISK
+  COMPLETED
+  CANCELLED
+}
+
+// 評価機能関連モデル
+
+// 評価サイクルモデル
+model EvaluationCycle {
+  id              String           @id @default(cuid())
+  organizationId  String
+  name            String           // 例: "2024年上期評価"
+  type            EvaluationCycleType
+  startDate       DateTime
+  endDate         DateTime
+  status          CycleStatus      @default(DRAFT)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  phases          EvaluationPhase[]
+  evaluations     Evaluation[]
+  
+  @@index([organizationId])
+  @@index([status])
+}
+
+// 評価フェーズモデル
+model EvaluationPhase {
+  id            String            @id @default(cuid())
+  cycleId       String
+  type          EvaluationPhaseType
+  name          String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime
+  order         Int
+  isActive      Boolean           @default(true)
+  
+  cycle         EvaluationCycle   @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  
+  @@index([cycleId])
+  @@unique([cycleId, order])
+}
+
+// 評価モデル
+model Evaluation {
+  id              String            @id @default(cuid())
+  cycleId         String
+  evaluateeId     String            // 被評価者
+  evaluatorId     String            // 評価者
+  type            EvaluationType
+  status          EvaluationStatus  @default(DRAFT)
+  
+  // 総合評価
+  overallRating   Int?              // 1-5
+  overallComments String?
+  strengths       String?           // 強み
+  improvements    String?           // 改善点
+  
+  // キャリア開発
+  careerGoals     String?
+  developmentPlan String?
+  
+  // メタデータ
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  sharedAt        DateTime?
+  managerComments String?           // マネージャーからのコメント
+  isVisible       Boolean           @default(false) // 被評価者への公開状態
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  cycle           EvaluationCycle   @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  evaluatee       User              @relation("EvaluationEvaluatee", fields: [evaluateeId], references: [id])
+  evaluator       User              @relation("EvaluationEvaluator", fields: [evaluatorId], references: [id])
+  reviewer        User?             @relation("EvaluationReviewer", fields: [reviewedBy], references: [id])
+  
+  competencyRatings CompetencyRating[]
+  
+  @@index([cycleId])
+  @@index([evaluateeId])
+  @@index([evaluatorId])
+  @@unique([cycleId, evaluateeId, evaluatorId, type])
+}
+
+// コンピテンシー評価モデル
+model CompetencyRating {
+  id              String            @id @default(cuid())
+  evaluationId    String
+  competencyId    String
+  rating          Int               // 1-5
+  evidence        String?           // 具体的な事例・証拠
+  
+  evaluation      Evaluation        @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  competency      Competency        @relation(fields: [competencyId], references: [id])
+  
+  @@index([evaluationId])
+  @@index([competencyId])
+  @@unique([evaluationId, competencyId])
+}
+
+// コンピテンシー定義モデル
+model Competency {
+  id              String            @id @default(cuid())
+  organizationId  String
+  name            String            // 例: "リーダーシップ"
+  description     String
+  category        CompetencyCategory
+  behaviors       String[]          // 期待される行動例
+  order           Int               @default(0)
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  ratings         CompetencyRating[]
+  
+  @@index([organizationId])
+  @@index([category])
+}
+
+// Enum定義
+enum EvaluationCycleType {
+  ANNUAL
+  SEMI_ANNUAL
+  QUARTERLY
+  MONTHLY
+}
+
+enum CycleStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum EvaluationPhaseType {
+  SELF          // 自己評価
+  PEER          // ピア評価
+  MANAGER       // 上司評価
+  SKIP_LEVEL    // スキップレベル評価
+  CALIBRATION   // キャリブレーション
+}
+
+enum EvaluationType {
+  SELF
+  PEER
+  MANAGER
+  SKIP_LEVEL
+  UPWARD        // 部下から上司への評価
+}
+
+enum EvaluationStatus {
+  DRAFT
+  SUBMITTED
+  REVIEWED
+  APPROVED
+  SHARED        // 被評価者と共有済み
+}
+
+enum CompetencyCategory {
+  CORE          // コアコンピテンシー
+  LEADERSHIP    // リーダーシップ
+  TECHNICAL     // 技術スキル
+  FUNCTIONAL    // 職能別スキル
+}
