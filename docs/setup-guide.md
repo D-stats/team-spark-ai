@@ -214,8 +214,14 @@ npx supabase status
 ### 7.2 開発サーバーを起動
 
 ```bash
-# 開発サーバー起動
+# 推奨: 事前チェック付き起動（スキーマ不一致エラーを防ぐ）
+npm run dev:safe
+
+# または通常起動
 npm run dev
+
+# ポート競合時の代替起動
+PORT=3001 npm run dev
 
 # 別のターミナルでSupabase Studioを開く
 npx supabase status
@@ -264,52 +270,23 @@ npx supabase status
 
 ## 9. トラブルシューティング
 
-### 9.1 Dockerが起動しない
+詳細なトラブルシューティングは[SETUP_TROUBLESHOOTING.md](./SETUP_TROUBLESHOOTING.md)を参照してください。
+
+### クイックヘルプ
+
+#### 事前チェック
 
 ```bash
-# Dockerデーモンが起動しているか確認
-docker info
-
-# Docker Desktopを再起動
-# macOS: Docker Desktop.appを再起動
-# Windows: Docker Desktopを再起動
+# 環境の健全性を確認
+npm run pre-flight
 ```
 
-### 9.2 ポート競合
+#### よくある問題
 
-```bash
-# 使用中のポートを確認
-lsof -i :3000    # Next.js
-lsof -i :54321   # Supabase API
-lsof -i :54322   # PostgreSQL
-
-# プロセスを終了
-kill -9 [PID]
-```
-
-### 9.3 Supabaseの接続エラー
-
-```bash
-# Supabaseを停止して再起動
-npx supabase stop
-npx supabase start
-
-# ログを確認
-npx supabase logs
-```
-
-### 9.4 Prismaエラー
-
-```bash
-# Prisma Clientを再生成
-npx prisma generate
-
-# スキーマを強制的に同期（開発環境のみ）
-npx prisma db push
-
-# データベースをリセット（開発環境のみ）
-npx prisma migrate reset
-```
+1. **スキーマ不一致エラー**: `npm run prisma:reset`（開発環境のみ）
+2. **ポート競合**: `PORT=3001 npm run dev`
+3. **Supabase接続エラー**: `npx supabase stop && npx supabase start`
+4. **TypeScriptエラー**: `npm run type-check`で詳細確認
 
 ## 10. 次のステップ
 
@@ -321,31 +298,53 @@ npx prisma migrate reset
 
 ## 付録: よく使うコマンド
 
+### 開発
+
 ```bash
-# 開発サーバー起動
-npm run dev
+npm run dev:safe     # 事前チェック付き起動（推奨）
+npm run dev          # 通常起動
+npm run build        # プロダクションビルド
+npm run pre-flight   # 環境の健全性チェック
+```
 
-# 型チェック
-npm run type-check
+### コード品質
 
-# Lint実行
-npm run lint
+```bash
+npm run type-check   # TypeScript型チェック
+npm run lint         # ESLint実行
+npm run format       # Prettierフォーマット
+npm run validate     # 全チェック実行
+```
 
-# フォーマット
-npm run format
+### テスト
 
-# ビルド
-npm run build
+```bash
+npm test             # E2Eテスト実行
+npm run test:headed  # ブラウザ表示付きテスト
+npm run test:stories # ユーザーストーリーテスト
+```
 
-# Prismaマイグレーション
-npx prisma migrate dev
+### データベース
 
-# Prisma Studio起動
-npx prisma studio
+```bash
+npx prisma migrate dev    # マイグレーション実行
+npx prisma generate       # Prisma Client生成
+npx prisma studio         # Prisma Studio起動
+npm run prisma:reset      # DBリセット（開発環境のみ）
+```
 
-# Supabase状態確認
-npx supabase status
+### Supabase
 
-# Supabase停止
-npx supabase stop
+```bash
+npx supabase status       # 状態確認
+npx supabase start        # 起動
+npx supabase stop         # 停止
+npm run supabase:start    # npm経由で起動
+```
+
+### ユーザーストーリー
+
+```bash
+npm run validate:stories  # ストーリー検証レポート
+npm run report:stories    # テスト実行とレポート生成
 ```

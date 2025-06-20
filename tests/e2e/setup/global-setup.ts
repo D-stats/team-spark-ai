@@ -2,28 +2,16 @@ import { loadTestEnv } from './test-env';
 import { prisma } from '../../../src/lib/prisma';
 import { createDefaultCompetencies } from '../../../src/services/evaluation.service';
 
-interface TestUser {
-  id: string;
-  email: string;
-  name: string;
-  role: 'ADMIN' | 'MANAGER' | 'MEMBER';
-  organizationId: string;
-}
-
-interface TestOrganization {
-  id: string;
-  name: string;
-  slug: string;
-}
+// Removed unused interfaces as they are not needed in this setup file
 
 // テストデータの作成
 export async function setupTestData() {
   console.log('Setting up test data...');
-  
+
   try {
     // 既存のテストデータをクリア
     await clearTestData();
-    
+
     // テスト用組織の作成
     const organization = await prisma.organization.create({
       data: {
@@ -31,7 +19,7 @@ export async function setupTestData() {
         slug: 'test-company',
       },
     });
-    
+
     // テスト用ユーザーの作成
     const users = await Promise.all([
       // 管理者
@@ -78,9 +66,9 @@ export async function setupTestData() {
         },
       }),
     ]);
-    
+
     const [admin, manager, member1, member2, member3] = users;
-    
+
     // テスト用チームの作成
     const team = await prisma.team.create({
       data: {
@@ -90,7 +78,7 @@ export async function setupTestData() {
         managerId: manager.id,
       },
     });
-    
+
     // チームメンバーの追加
     await Promise.all([
       prisma.teamMember.create({
@@ -118,15 +106,15 @@ export async function setupTestData() {
         },
       }),
     ]);
-    
+
     // デフォルトコンピテンシーの作成
     await createDefaultCompetencies(organization.id);
-    
+
     // テスト用評価サイクルの作成
     const now = new Date();
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1); // 今月の1日
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // 今月末
-    
+
     const evaluationCycle = await prisma.evaluationCycle.create({
       data: {
         name: '2024年上期評価',
@@ -173,12 +161,12 @@ export async function setupTestData() {
         },
       },
     });
-    
+
     // 評価の作成（自動生成される評価をシミュレート）
     const competencies = await prisma.competency.findMany({
       where: { organizationId: organization.id },
     });
-    
+
     // 各メンバーの評価を作成
     for (const evaluatee of [member1, member2, member3]) {
       // 自己評価
@@ -189,16 +177,18 @@ export async function setupTestData() {
           evaluatorId: evaluatee.id,
           type: 'SELF',
           overallRating: Math.floor(Math.random() * 2) + 4, // 4-5のランダム
-          overallComments: '今期は新しい技術への取り組みと、チームとの連携を重視して業務に取り組みました。',
+          overallComments:
+            '今期は新しい技術への取り組みと、チームとの連携を重視して業務に取り組みました。',
           strengths: '新技術の習得が早く、チームメンバーとのコミュニケーションが円滑です。',
           improvements: 'プロジェクト管理スキルをさらに向上させたいと思います。',
           careerGoals: 'リードエンジニアとしてチーム全体の技術力向上に貢献したいです。',
-          developmentPlan: '来期はプロジェクト管理研修を受講し、より効率的な開発プロセスを学びたいです。',
+          developmentPlan:
+            '来期はプロジェクト管理研修を受講し、より効率的な開発プロセスを学びたいです。',
           status: 'SUBMITTED',
           submittedAt: new Date(),
         },
       });
-      
+
       // コンピテンシー評価の追加
       for (const competency of competencies.slice(0, 3)) {
         await prisma.competencyRating.create({
@@ -210,7 +200,7 @@ export async function setupTestData() {
           },
         });
       }
-      
+
       // マネージャー評価
       const managerEvaluation = await prisma.evaluation.create({
         data: {
@@ -230,7 +220,7 @@ export async function setupTestData() {
           reviewedBy: admin.id,
         },
       });
-      
+
       // マネージャー評価のコンピテンシー評価
       for (const competency of competencies.slice(0, 3)) {
         await prisma.competencyRating.create({
@@ -243,14 +233,15 @@ export async function setupTestData() {
         });
       }
     }
-    
+
     // サンプルKudosの作成
     await Promise.all([
       prisma.kudos.create({
         data: {
           senderId: manager.id,
           receiverId: member1.id,
-          message: '新機能の実装、お疲れ様でした！品質の高いコードでチーム全体の生産性が向上しました。',
+          message:
+            '新機能の実装、お疲れ様でした！品質の高いコードでチーム全体の生産性が向上しました。',
           category: 'INNOVATION',
           points: 3,
         },
@@ -265,22 +256,50 @@ export async function setupTestData() {
         },
       }),
     ]);
-    
+
+    // デフォルトチェックインテンプレートを作成
+    const checkInTemplate = await prisma.checkInTemplate.create({
+      data: {
+        organizationId: organization.id,
+        name: 'スタンダード週次チェックイン',
+        description: 'テスト用の標準的な週次チェックインテンプレート',
+        frequency: 'WEEKLY',
+        questions: [
+          {
+            id: 'achievements',
+            type: 'textarea',
+            text: '今週達成したことは何ですか？',
+            required: true,
+          },
+          {
+            id: 'next_goals',
+            type: 'textarea',
+            text: '来週の目標を教えてください',
+            required: true,
+          },
+        ],
+        isDefault: true,
+        isActive: true,
+      },
+    });
+
     // サンプルチェックインの作成
     for (const user of [member1, member2, member3]) {
       await prisma.checkIn.create({
         data: {
           userId: user.id,
-          achievements: '新機能の開発を完了し、テストも無事通過しました。',
-          nextWeekGoals: '次のスプリントで予定されているリファクタリングに取り組みます。',
+          templateId: checkInTemplate.id,
+          answers: {
+            achievements: '新機能の開発を完了し、テストも無事通過しました。',
+            next_goals: '次のスプリントで予定されているリファクタリングに取り組みます。',
+          },
           moodRating: Math.floor(Math.random() * 2) + 4, // 4-5のランダム
-          challenges: '一部の技術的な課題で時間がかかりましたが、チームの協力で解決できました。',
         },
       });
     }
-    
+
     console.log('Test data setup completed successfully!');
-    
+
     return {
       organization,
       users: {
@@ -302,7 +321,7 @@ export async function setupTestData() {
 // テストデータのクリア
 export async function clearTestData() {
   console.log('Clearing existing test data...');
-  
+
   try {
     // 外部キー制約を考慮した順序でデータを削除
     await prisma.competencyRating.deleteMany({});
@@ -316,7 +335,7 @@ export async function clearTestData() {
     await prisma.team.deleteMany({});
     await prisma.user.deleteMany({});
     await prisma.organization.deleteMany({});
-    
+
     console.log('Test data cleared successfully!');
   } catch (error) {
     console.error('Error clearing test data:', error);
@@ -327,9 +346,9 @@ export async function clearTestData() {
 // グローバルセットアップ
 export default async function globalSetup() {
   console.log('Running global setup...');
-  
+
   // 環境変数を読み込む
   loadTestEnv();
-  
+
   await setupTestData();
 }

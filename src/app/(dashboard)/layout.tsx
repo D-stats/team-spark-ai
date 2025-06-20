@@ -2,11 +2,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, dbUser } = await requireAuthWithOrganization();
 
   return (

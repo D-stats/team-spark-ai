@@ -15,10 +15,11 @@
 ### ユーザーストーリーの確認
 
 1. **既存ストーリーの確認**
+
    ```bash
    # ストーリー検証レポートを確認
    npm run validate:stories
-   
+
    # 開発者ダッシュボードで確認（開発環境）
    http://localhost:3000/dev
    ```
@@ -30,6 +31,7 @@
 ### 新機能実装時のフロー
 
 1. **ユーザーストーリーの作成または確認**
+
    ```typescript
    // 例: /src/lib/user-stories/stories/feature-stories.ts
    {
@@ -52,14 +54,16 @@
    ```
 
 2. **実装時の記録**
+
    - 実装したコンポーネント、API、テストのパスを `implementedIn` に記録
    - 受け入れ基準に対応するテストIDを記録
 
 3. **テストの作成**
+
    ```typescript
    // ストーリーベースのテストを作成
    import { describeStory, testCriteria } from '../utils/story-test';
-   
+
    describeStory(story, () => {
      testCriteria(story.acceptanceCriteria[0], async ({ page }) => {
        // テスト実装
@@ -76,6 +80,7 @@
 ## 📋 開発前チェックリスト
 
 ### 1. 環境確認
+
 ```bash
 # Node.jsバージョン確認（18.x以上推奨）
 node --version
@@ -90,6 +95,7 @@ lsof -i :54322 # Supabase API
 ```
 
 ### 2. Supabase Local起動
+
 ```bash
 # Supabaseが起動していない場合
 npx supabase start
@@ -101,15 +107,19 @@ npx supabase status
 ## 🛠️ 開発コマンド
 
 ### 開発サーバー起動
+
 ```bash
 # 依存関係のインストール
 npm install
 
-# ポート競合チェック（自動実行されるが手動でも可能）
-npm run check:ports
+# 🚀 推奨: 事前チェック付き起動（スキーマ不一致エラーを防ぐ）
+npm run dev:safe
 
-# 開発サーバー起動（デフォルトポート3000）
+# 通常の起動方法
 npm run dev
+
+# 手動で事前チェックを実行
+npm run pre-flight
 
 # ポート競合時の代替起動方法
 PORT=3001 npm run dev    # 環境変数で指定
@@ -119,6 +129,20 @@ npm run dev:custom       # 対話的にポート指定
 # 別ターミナルでSupabase Studio起動
 npx supabase status  # URLを確認
 ```
+
+### 開発前の事前チェック（pre-flight）
+
+`npm run pre-flight` コマンドは以下をチェックします：
+
+- ✅ Supabaseの起動状態
+- ✅ データベース接続
+- ✅ マイグレーション適用状態
+- ✅ Prisma Client生成状態
+- ✅ 依存関係のインストール
+- ✅ ポート競合
+- ✅ TypeScript型エラー（簡易版）
+
+問題がある場合は、具体的な解決方法を提示します。
 
 ### 開発サーバーの起動確認
 
@@ -134,9 +158,46 @@ npm run health
 
 # 起動確認付きでサーバーを起動
 npm run dev:server  # 自動で起動確認を行います
+
+# 正しいサービスが起動していることを詳細に検証
+npm run verify
 ```
 
+### ヘルスチェックエンドポイント
+
+開発サーバーには `/api/health` エンドポイントが実装されており、以下の情報を提供します：
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-06-19T22:47:16.340Z",
+  "service": "startup-hr-engagement",
+  "version": "0.1.0",
+  "checks": {
+    "server": true,
+    "database": true
+  }
+}
+```
+
+- **service**: 正しいサービスが起動していることを確認
+- **checks.server**: サーバーの稼働状態
+- **checks.database**: データベース接続の状態
+
+### サーバー検証スクリプト
+
+`scripts/verify-server.sh` では以下の5つのチェックを実行：
+
+1. **ポート確認**: 指定ポートが開いているか
+2. **プロセス確認**: Node.jsプロセスが動作しているか
+3. **HTTPヘッダー確認**: Next.jsサーバーとして応答しているか
+4. **ヘルスチェック**: 正しいサービス（startup-hr-engagement）か
+5. **Next.jsルート確認**: Next.js特有のパスが存在するか
+
+3つ以上のチェックが通れば、正しい開発サーバーが起動していると判断します。
+
 ### ポート管理戦略
+
 開発環境でのポート競合を避けるため、以下の戦略を採用しています：
 
 1. **自動ポートチェック**: `npm run dev`実行時に自動でポート競合を確認
@@ -146,6 +207,7 @@ npm run dev:server  # 自動で起動確認を行います
 詳細は`docs/PORT_MANAGEMENT.md`を参照してください。
 
 ### コード品質チェック
+
 ```bash
 # TypeScriptの型チェック
 npm run type-check
@@ -166,18 +228,57 @@ npm run validate:stories
 npm run test:stories
 ```
 
+## 📝 機能開発完了時の必須チェック
+
+### ⚠️ 重要: 機能開発完了後は必ずテスト・品質チェックを実行
+
+新機能の実装や既存機能の変更が完了したら、**必ず以下のチェックを実行してください**：
+
+```bash
+# 1. TypeScript型チェック（必須）
+npm run type-check
+
+# 2. ESLint実行（必須）
+npm run lint
+
+# 3. テスト実行（実装がある場合は必須）
+npm test
+
+# 4. 全体品質チェック（推奨）
+npm run validate
+```
+
+### 機能開発フロー
+
+1. **実装** → 機能やバグ修正を完了
+2. **品質チェック** → 上記コマンドを実行
+3. **修正** → エラーや警告があれば修正
+4. **再チェック** → 全てパスするまで繰り返し
+5. **コミット** → 品質チェック完了後のみコミット
+
+### エラー・警告の対応
+
+- **TypeScriptエラー**: 型定義の修正は必須
+- **ESLintエラー**: コード品質問題の修正は必須
+- **テスト失敗**: 既存機能を壊していないか確認し修正
+- **ESLint警告**: 可能な限り修正（重大でない場合はコミット可能）
+
 ## 📝 コミット前の必須事項
 
 ### 1. コード品質確認
-```bash
-# 必ず実行
-npm run validate
 
-# テストの実行（実装後）
+```bash
+# 必ず実行（機能開発完了時と同じ）
+npm run type-check
+npm run lint
 npm test
+
+# または一括実行
+npm run validate
 ```
 
 ### 2. データベースマイグレーション
+
 ```bash
 # スキーマ変更がある場合
 npx prisma migrate dev --name [migration_name]
@@ -187,16 +288,35 @@ npx prisma generate
 ```
 
 ### 3. 環境変数の確認
+
 - `.env.local`に機密情報が含まれていないか確認
 - 新しい環境変数を追加した場合は`.env.example`も更新
+
+### 4. コミット時の自動チェック（Husky + lint-staged）
+
+このプロジェクトでは、コミット時に自動的にコード品質チェックが実行されます：
+
+```bash
+# コミット時に自動実行される内容
+- ESLint --fix（TypeScript/TSXファイル）
+- Prettier --write（全対象ファイル）
+```
+
+手動でスキップする場合（推奨しません）：
+
+```bash
+git commit --no-verify -m "メッセージ"
+```
 
 ## 🚨 プッシュ前チェックリスト
 
 1. **ローカルでの動作確認**
+
    - `npm run dev`でエラーがないこと
    - 主要機能が正常に動作すること
 
 2. **コード品質**
+
    - `npm run validate`が全てパスすること
    - コンソールにエラーや警告がないこと
 
@@ -207,6 +327,7 @@ npx prisma generate
 ## 🔄 CI/CD確認
 
 ### GitHub Actions確認方法
+
 1. プッシュ後、GitHubリポジトリの「Actions」タブを確認
 2. 以下のワークフローが成功することを確認：
    - `typecheck`: TypeScriptの型チェック
@@ -215,6 +336,7 @@ npx prisma generate
    - `build`: ビルドの成功
 
 ### 失敗時の対処
+
 ```bash
 # ローカルで同じチェックを実行
 npm run typecheck
@@ -226,6 +348,7 @@ npm run build
 ## 🐛 トラブルシューティング
 
 ### ポート競合エラー
+
 ```bash
 # 自動ポートチェック
 npm run check:ports
@@ -246,6 +369,7 @@ npm run stop:all
 ```
 
 ### Supabase接続エラー
+
 ```bash
 # Supabaseの状態確認
 npx supabase status
@@ -256,6 +380,7 @@ npx supabase start
 ```
 
 ### Prismaエラー
+
 ```bash
 # Prisma Clientの再生成
 npx prisma generate
@@ -263,6 +388,64 @@ npx prisma generate
 # データベースリセット（開発環境のみ）
 npx prisma migrate reset
 ```
+
+### スキーマ不一致エラーの防止と対処
+
+**エラー例**: `The column CheckIn.achievements does not exist in the current database`
+
+このようなエラーは、Prismaスキーマとデータベースの実際の構造が一致していない場合に発生します。
+
+#### 🚨 再発防止策
+
+1. **スキーマ変更時の必須手順**
+
+   ```bash
+   # 1. スキーマ変更後、必ずマイグレーションを作成
+   npx prisma migrate dev --name descriptive_migration_name
+
+   # 2. Prisma Clientを再生成
+   npx prisma generate
+
+   # 3. TypeScriptの型チェックでエラーがないか確認
+   npm run type-check
+   ```
+
+2. **開発開始時のチェック**
+
+   ```bash
+   # マイグレーション状態の確認
+   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate status
+
+   # 未適用のマイグレーションがある場合は適用
+   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate deploy
+   ```
+
+3. **スキーマとコードの同期確認**
+
+   ```bash
+   # データベースの実際の構造を確認
+   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma db pull
+
+   # 差分がある場合は、スキーマファイルを確認
+   git diff prisma/schema.prisma
+   ```
+
+4. **コード変更時の注意点**
+
+   - スキーマ変更時は、関連するすべてのコードを検索して更新
+   - 古いフィールドを参照している箇所がないか確認
+
+   ```bash
+   # 削除したフィールド名で検索（例：achievements）
+   grep -r "achievements" src/ --include="*.ts" --include="*.tsx"
+   ```
+
+5. **チーム開発での同期**
+   - プルリクエストでスキーマ変更がある場合は、マイグレーションファイルも含める
+   - READMEやチームチャンネルでマイグレーション実行を周知
+6. **CI/CDでの検証**
+   - ビルド前にマイグレーション状態をチェック
+   - スキーマとコードの整合性テストを追加
 
 ## 📁 プロジェクト構造
 
@@ -300,6 +483,7 @@ npx prisma migrate reset
 ## 📞 サポート
 
 問題が解決しない場合は、以下を確認：
+
 1. `docs/troubleshooting.md`（作成予定）
 2. プロジェクトのissuesを検索
 3. Slack開発チャンネルで質問（設定後）
@@ -309,6 +493,7 @@ npx prisma migrate reset
 ### 新しいエンゲージメント機能を追加する場合
 
 1. **ストーリーファイルの作成**
+
    ```typescript
    // /src/lib/user-stories/stories/engagement-stories.ts
    export const newFeatureStory: UserStory = {
@@ -324,7 +509,7 @@ npx prisma migrate reset
          when: '新規作成ボタンをクリック',
          then: '記録フォームが表示される',
          verified: false,
-       }
+       },
      ],
      priority: StoryPriority.P1,
      status: StoryStatus.READY,
@@ -333,16 +518,18 @@ npx prisma migrate reset
    ```
 
 2. **実装とストーリーの更新**
+
    - コンポーネント作成後、`implementedIn.components` に追加
    - API作成後、`implementedIn.apis` に追加
    - テスト作成後、`implementedIn.tests` に追加
    - 各受け入れ基準のテストが通ったら `verified: true` に更新
 
 3. **検証の実行**
+
    ```bash
    # 実装状況の確認
    npm run validate:stories
-   
+
    # ストーリーベーステストの実行
    npm run test:stories
    ```

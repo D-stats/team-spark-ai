@@ -2,69 +2,94 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    
-    const body = await request.json();
-    const { achievements, challenges, nextWeekGoals, moodRating } = body;
 
-    if (!achievements || !nextWeekGoals || typeof moodRating !== 'number') {
-      return NextResponse.json(
-        { error: '必要な項目が入力されていません' },
-        { status: 400 }
-      );
-    }
+    const searchParams = request.nextUrl.searchParams;
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const offset = parseInt(searchParams.get('offset') || '0');
 
-    if (moodRating < 1 || moodRating > 5) {
-      return NextResponse.json(
-        { error: '気分評価は1-5の範囲で入力してください' },
-        { status: 400 }
-      );
-    }
-
-    // 今週のチェックインが既に存在するかチェック
-    const now = new Date();
-    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-    startOfWeek.setHours(0, 0, 0, 0);
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    const existingCheckIn = await prisma.checkIn.findFirst({
+    const checkIns = await prisma.checkIn.findMany({
       where: {
         userId: dbUser.id,
-        createdAt: {
-          gte: startOfWeek,
-          lte: endOfWeek,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: limit,
+      skip: offset,
+      include: {
+        template: {
+          select: {
+            id: true,
+            name: true,
+            frequency: true,
+            questions: true,
+          },
         },
       },
     });
 
-    if (existingCheckIn) {
-      return NextResponse.json(
-        { error: '今週のチェックインは既に完了しています' },
-        { status: 400 }
-      );
+    return NextResponse.json(checkIns);
+  } catch (error) {
+    console.error('Failed to fetch check-ins:', error);
+    return NextResponse.json({ error: 'チェックインの取得に失敗しました' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { dbUser } = await requireAuthWithOrganization();
+
+    const body = await request.json();
+    const { templateId, answers, moodRating } = body;
+
+    // バリデーション
+    if (!templateId) {
+      return NextResponse.json({ error: 'テンプレートIDが必要です' }, { status: 400 });
+    }
+
+    if (!answers || typeof answers !== 'object') {
+      return NextResponse.json({ error: '回答が正しい形式ではありません' }, { status: 400 });
+    }
+
+    // テンプレートの存在確認
+    const template = await prisma.checkInTemplate.findFirst({
+      where: {
+        id: templateId,
+        organizationId: dbUser.organizationId,
+        isActive: true,
+      },
+    });
+
+    if (!template) {
+      return NextResponse.json({ error: 'テンプレートが見つかりません' }, { status: 404 });
     }
 
     // チェックインを作成
     const checkIn = await prisma.checkIn.create({
       data: {
         userId: dbUser.id,
-        achievements,
-        challenges: challenges || null,
-        nextWeekGoals,
-        moodRating,
+        templateId,
+        answers,
+        moodRating: moodRating || null,
+      },
+      include: {
+        template: {
+          select: {
+            id: true,
+            name: true,
+            frequency: true,
+            questions: true,
+          },
+        },
       },
     });
 
     return NextResponse.json(checkIn, { status: 201 });
   } catch (error) {
     console.error('Error creating check-in:', error);
-    return NextResponse.json(
-      { error: 'チェックインの作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'チェックインの作成に失敗しました' }, { status: 500 });
   }
 }

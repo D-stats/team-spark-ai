@@ -24,10 +24,7 @@ export default async function DashboardPage() {
         { senderId: dbUser.id },
         { receiverId: dbUser.id },
         {
-          AND: [
-            { isPublic: true },
-            { sender: { organizationId: dbUser.organizationId } },
-          ],
+          AND: [{ isPublic: true }, { sender: { organizationId: dbUser.organizationId } }],
         },
       ],
       createdAt: { gte: startOfMonth },
@@ -52,9 +49,8 @@ export default async function DashboardPage() {
     },
   });
 
-  const checkInCompletionRate = organizationUsers > 0 
-    ? Math.round((thisWeekCheckIns / organizationUsers) * 100)
-    : 0;
+  const checkInCompletionRate =
+    organizationUsers > 0 ? Math.round((thisWeekCheckIns / organizationUsers) * 100) : 0;
 
   // 平均気分スコア（簡易エンゲージメントスコア）
   const recentCheckIns = await prisma.checkIn.findMany({
@@ -65,9 +61,13 @@ export default async function DashboardPage() {
     select: { moodRating: true },
   });
 
-  const averageMoodScore = recentCheckIns.length > 0
-    ? (recentCheckIns.reduce((sum, checkin) => sum + checkin.moodRating, 0) / recentCheckIns.length).toFixed(1)
-    : 'N/A';
+  const averageMoodScore =
+    recentCheckIns.length > 0
+      ? (
+          recentCheckIns.reduce((sum, checkin) => sum + (checkin.moodRating || 0), 0) /
+          recentCheckIns.length
+        ).toFixed(1)
+      : 'N/A';
 
   const stats = [
     {
@@ -107,12 +107,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">
-          ようこそ、{dbUser.name}さん
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          チームのエンゲージメント状況を確認しましょう
-        </p>
+        <h1 className="text-3xl font-bold">ようこそ、{dbUser.name}さん</h1>
+        <p className="mt-2 text-muted-foreground">チームのエンゲージメント状況を確認しましょう</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -164,10 +160,7 @@ async function RecentKudos({ userId, organizationId }: { userId: string; organiz
         { senderId: userId },
         { receiverId: userId },
         {
-          AND: [
-            { isPublic: true },
-            { sender: { organizationId } },
-          ],
+          AND: [{ isPublic: true }, { sender: { organizationId } }],
         },
       ],
     },
@@ -218,6 +211,12 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
           email: true,
         },
       },
+      template: {
+        select: {
+          name: true,
+          questions: true,
+        },
+      },
     },
     orderBy: { createdAt: 'desc' },
     take: 3,
@@ -233,35 +232,38 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
 
   return (
     <div className="space-y-3">
-      {recentCheckIns.map((checkIn) => (
-        <div key={checkIn.id} className="p-3 border rounded-lg bg-muted/20">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs">
-                {checkIn.user.name.charAt(0)}
+      {recentCheckIns.map((checkIn) => {
+        // 最初の質問への回答を表示（通常は成果や振り返り）
+        const answers = checkIn.answers as Record<string, any>;
+        const firstAnswer = answers ? Object.values(answers)[0] : null;
+        const displayText = typeof firstAnswer === 'string' ? firstAnswer : '回答なし';
+
+        return (
+          <div key={checkIn.id} className="rounded-lg border bg-muted/20 p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs">
+                  {checkIn.user.name.charAt(0)}
+                </div>
+                <span className="text-sm font-medium">{checkIn.user.name}</span>
               </div>
-              <span className="text-sm font-medium">{checkIn.user.name}</span>
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className={`text-xs ${
+                      star <= (checkIn.moodRating || 0) ? 'text-yellow-400' : 'text-gray-300'
+                    }`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                  key={star}
-                  className={`text-xs ${
-                    star <= checkIn.moodRating
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
-                  }`}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
+            <p className="line-clamp-2 text-xs text-muted-foreground">{displayText}</p>
           </div>
-          <p className="text-xs text-muted-foreground line-clamp-2">
-            {checkIn.achievements}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -50,9 +50,7 @@ export const evaluationStories: UserStory[] = [
         '/src/app/api/evaluations/[id]/route.ts',
         '/src/app/api/evaluations/[id]/submit/route.ts',
       ],
-      tests: [
-        '/tests/e2e/evaluation-basic.spec.ts',
-      ],
+      tests: ['/tests/e2e/evaluation-basic.spec.ts'],
     },
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-15'),
@@ -76,7 +74,7 @@ export const evaluationStories: UserStory[] = [
       },
       {
         id: 'AC-002-2',
-        given: '評価詳細を開いている',
+        given: '評価詳細を開いて内容を確認した',
         when: '承認ボタンをクリックする',
         then: '評価が承認され、通知が送信される',
         verified: true,
@@ -84,7 +82,7 @@ export const evaluationStories: UserStory[] = [
       },
       {
         id: 'AC-002-3',
-        given: '評価詳細を開いている',
+        given: '評価詳細を開いて修正が必要と判断した',
         when: '差し戻しボタンをクリックしてコメントを入力',
         then: '評価が差し戻され、理由が従業員に通知される',
         verified: true,
@@ -95,15 +93,9 @@ export const evaluationStories: UserStory[] = [
     status: StoryStatus.DONE,
     tags: ['評価', 'マネージャー', '承認フロー'],
     implementedIn: {
-      components: [
-        '/src/components/evaluations/evaluation-results.tsx',
-      ],
-      apis: [
-        '/src/app/api/evaluations/[id]/review/route.ts',
-      ],
-      tests: [
-        '/tests/e2e/evaluation-review.spec.ts',
-      ],
+      components: ['/src/components/evaluations/evaluation-results.tsx'],
+      apis: ['/src/app/api/evaluations/[id]/review/route.ts'],
+      tests: ['/tests/e2e/evaluation-review.spec.ts'],
     },
     createdAt: new Date('2024-01-05'),
     updatedAt: new Date('2024-01-18'),
@@ -175,12 +167,8 @@ export const kudosStories: UserStory[] = [
     tags: ['エンゲージメント', 'Slack', 'MVP'],
     implementedIn: {
       components: [],
-      apis: [
-        '/src/app/api/slack/commands/kudos/route.ts',
-      ],
-      tests: [
-        '/tests/integration/slack-kudos.test.ts',
-      ],
+      apis: ['/src/app/api/slack/commands/kudos/route.ts'],
+      tests: ['/tests/integration/slack-kudos.test.ts'],
     },
     createdAt: new Date('2023-12-15'),
     updatedAt: new Date('2023-12-20'),

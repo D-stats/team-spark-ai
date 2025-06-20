@@ -18,14 +18,25 @@ SUPABASE_DB_PORT=${SUPABASE_DB_PORT:-54322}
 SUPABASE_STUDIO_PORT=${SUPABASE_STUDIO_PORT:-54323}
 SUPABASE_INBUCKET_PORT=${SUPABASE_INBUCKET_PORT:-54324}
 
+# チェックモード（環境変数で制御）
+CHECK_SUPABASE=${CHECK_SUPABASE:-false}
+
 # チェック対象のポート配列
-declare -A PORTS=(
-  ["Next.js"]=$NEXT_PORT
-  ["Supabase API"]=$SUPABASE_API_PORT
-  ["Supabase DB"]=$SUPABASE_DB_PORT
-  ["Supabase Studio"]=$SUPABASE_STUDIO_PORT
-  ["Inbucket Mail"]=$SUPABASE_INBUCKET_PORT
-)
+if [ "$CHECK_SUPABASE" = "true" ]; then
+  # Supabaseポートも含めてチェック
+  declare -A PORTS=(
+    ["Next.js"]=$NEXT_PORT
+    ["Supabase API"]=$SUPABASE_API_PORT
+    ["Supabase DB"]=$SUPABASE_DB_PORT
+    ["Supabase Studio"]=$SUPABASE_STUDIO_PORT
+    ["Inbucket Mail"]=$SUPABASE_INBUCKET_PORT
+  )
+else
+  # Next.jsポートのみチェック（通常の開発時）
+  declare -A PORTS=(
+    ["Next.js"]=$NEXT_PORT
+  )
+fi
 
 # ポートチェック関数
 check_port() {
