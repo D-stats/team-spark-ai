@@ -298,53 +298,19 @@ npm run pre-flight
 
 ## 付録: よく使うコマンド
 
-### 開発
+コマンドの完全な一覧は[README.mdのコマンド一覧](../README.md#コマンド一覧)を参照してください。
+
+### 重要なコマンド
 
 ```bash
-npm run dev:safe     # 事前チェック付き起動（推奨）
-npm run dev          # 通常起動
-npm run build        # プロダクションビルド
-npm run pre-flight   # 環境の健全性チェック
-```
+# 開発サーバー起動（事前チェック付き）
+npm run dev:safe
 
-### コード品質
+# スキーマ変更時
+npx prisma migrate dev --name descriptive_name
+npx prisma generate
+npm run type-check
 
-```bash
-npm run type-check   # TypeScript型チェック
-npm run lint         # ESLint実行
-npm run format       # Prettierフォーマット
-npm run validate     # 全チェック実行
-```
-
-### テスト
-
-```bash
-npm test             # E2Eテスト実行
-npm run test:headed  # ブラウザ表示付きテスト
-npm run test:stories # ユーザーストーリーテスト
-```
-
-### データベース
-
-```bash
-npx prisma migrate dev    # マイグレーション実行
-npx prisma generate       # Prisma Client生成
-npx prisma studio         # Prisma Studio起動
-npm run prisma:reset      # DBリセット（開発環境のみ）
-```
-
-### Supabase
-
-```bash
-npx supabase status       # 状態確認
-npx supabase start        # 起動
-npx supabase stop         # 停止
-npm run supabase:start    # npm経由で起動
-```
-
-### ユーザーストーリー
-
-```bash
-npm run validate:stories  # ストーリー検証レポート
-npm run report:stories    # テスト実行とレポート生成
+# 品質チェック
+npm run validate
 ```

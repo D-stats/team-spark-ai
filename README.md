@@ -32,44 +32,20 @@
 - Docker（Supabase Local用）
 - npm v9.0.0以上
 
-### セットアップ
+### クイックスタート
 
-1. **依存関係のインストール**
+```bash
+# 1. 依存関係のインストール
+npm install
 
-   ```bash
-   npm install
-   ```
+# 2. 環境設定（初回のみ）
+cp .env.example .env.local
 
-2. **Supabaseのセットアップ**
+# 3. 開発サーバー起動（事前チェック付き）
+npm run dev:safe
+```
 
-   ```bash
-   npx supabase init
-   npx supabase start
-   ```
-
-3. **環境変数の設定**
-
-   ```bash
-   cp .env.example .env.local
-   # .env.localを編集してSupabaseの認証情報を設定
-   ```
-
-4. **データベースのマイグレーション**
-
-   ```bash
-   npx prisma migrate dev
-   npx prisma generate
-   ```
-
-5. **開発サーバーの起動**
-
-   ```bash
-   # 推奨: 事前チェック付き起動
-   npm run dev:safe
-
-   # または通常起動
-   npm run dev
-   ```
+詳細なセットアップ手順は[セットアップガイド](./docs/setup-guide.md)を参照してください。
 
 ## 開発ガイド
 

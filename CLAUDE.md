@@ -106,6 +106,8 @@ npx supabase status
 
 ## 🛠️ 開発コマンド
 
+全コマンドの一覧はREADME.mdの[コマンド一覧](./README.md#コマンド一覧)を参照してください。
+
 ### 開発サーバー起動
 
 ```bash
@@ -347,105 +349,28 @@ npm run build
 
 ## 🐛 トラブルシューティング
 
-### ポート競合エラー
+詳細なトラブルシューティングガイドは[docs/SETUP_TROUBLESHOOTING.md](./docs/SETUP_TROUBLESHOOTING.md)を参照してください。
 
-```bash
-# 自動ポートチェック
-npm run check:ports
+### よくある問題
 
-# 手動でポートを使用しているプロセスを確認
-lsof -i :3000
+- **ポート競合**: `npm run check:ports`で確認、[PORT_MANAGEMENT.md](./docs/PORT_MANAGEMENT.md)参照
+- **Supabase接続エラー**: `npx supabase status`で状態確認
+- **Prismaエラー**: `npx prisma generate`でClient再生成
+- **スキーマ不一致**: `npm run pre-flight`で事前チェック
 
-# プロセスを終了
-kill -9 $(lsof -ti:3000)
+### スキーマ変更時の注意点
 
-# 代替ポートで起動
-PORT=3001 npm run dev    # 環境変数で指定
-npm run dev:alt          # 3001番で起動
-npm run dev:custom       # 対話的に指定
-
-# すべての開発サービスを停止
-npm run stop:all
-```
-
-### Supabase接続エラー
-
-```bash
-# Supabaseの状態確認
-npx supabase status
-
-# 再起動
-npx supabase stop
-npx supabase start
-```
-
-### Prismaエラー
-
-```bash
-# Prisma Clientの再生成
-npx prisma generate
-
-# データベースリセット（開発環境のみ）
-npx prisma migrate reset
-```
-
-### スキーマ不一致エラーの防止と対処
-
-**エラー例**: `The column CheckIn.achievements does not exist in the current database`
-
-このようなエラーは、Prismaスキーマとデータベースの実際の構造が一致していない場合に発生します。
-
-#### 🚨 再発防止策
-
-1. **スキーマ変更時の必須手順**
+1. **必須手順**
 
    ```bash
-   # 1. スキーマ変更後、必ずマイグレーションを作成
-   npx prisma migrate dev --name descriptive_migration_name
-
-   # 2. Prisma Clientを再生成
+   npx prisma migrate dev --name descriptive_name
    npx prisma generate
-
-   # 3. TypeScriptの型チェックでエラーがないか確認
    npm run type-check
    ```
 
-2. **開発開始時のチェック**
-
-   ```bash
-   # マイグレーション状態の確認
-   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate status
-
-   # 未適用のマイグレーションがある場合は適用
-   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate deploy
-   ```
-
-3. **スキーマとコードの同期確認**
-
-   ```bash
-   # データベースの実際の構造を確認
-   DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma db pull
-
-   # 差分がある場合は、スキーマファイルを確認
-   git diff prisma/schema.prisma
-   ```
-
-4. **コード変更時の注意点**
-
-   - スキーマ変更時は、関連するすべてのコードを検索して更新
-   - 古いフィールドを参照している箇所がないか確認
-
-   ```bash
-   # 削除したフィールド名で検索（例：achievements）
-   grep -r "achievements" src/ --include="*.ts" --include="*.tsx"
-   ```
-
-5. **チーム開発での同期**
-   - プルリクエストでスキーマ変更がある場合は、マイグレーションファイルも含める
-   - READMEやチームチャンネルでマイグレーション実行を周知
-6. **CI/CDでの検証**
-   - ビルド前にマイグレーション状態をチェック
-   - スキーマとコードの整合性テストを追加
+2. **チーム開発での同期**
+   - マイグレーションファイルをPRに含める
+   - READMEで周知
 
 ## 📁 プロジェクト構造
 

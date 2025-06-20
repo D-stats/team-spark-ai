@@ -60,6 +60,7 @@ npx playwright show-report
 テスト実行前に以下のデータが自動生成されます：
 
 #### 組織とユーザー
+
 - **テスト株式会社** (test-company)
 - **管理者太郎** (admin@test.com) - ADMIN 権限
 - **マネージャー花子** (manager@test.com) - MANAGER 権限
@@ -68,18 +69,21 @@ npx playwright show-report
 - **メンバー三郎** (member3@test.com) - MEMBER 権限
 
 #### チーム
+
 - **開発チーム** - マネージャー花子が管理
 - 全メンバーが所属
 
 #### 評価データ
+
 - **2024年上期評価サイクル** (アクティブ)
 - 4つの評価フェーズ：自己評価 → ピア評価 → 上司評価 → キャリブレーション
 - 各メンバーの自己評価と上司評価（サンプル）
 - デフォルトコンピテンシー（コミュニケーション、チームワーク、問題解決等）
 
 #### その他のサンプルデータ
+
 - Kudos（感謝のメッセージ）
-- チェックイン（週報）
+- カスタマイズ可能なチェックイン（テンプレートベース）
 
 ### データのリセット
 
@@ -125,7 +129,7 @@ test.describe('機能名', () => {
 
   test('テストケース名', async ({ page }) => {
     await page.goto('/path');
-    
+
     await expect(page.locator('selector')).toBeVisible();
   });
 });
@@ -138,7 +142,7 @@ test('モバイルビューでの表示', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 });
   await mockAuth(page, 'admin');
   await page.goto('/dashboard');
-  
+
   await expect(page.locator('h1')).toBeVisible();
 });
 ```
@@ -154,7 +158,7 @@ test('API エラーハンドリング', async ({ page }) => {
       body: JSON.stringify({ error: 'サーバーエラー' }),
     });
   });
-  
+
   await page.goto('/page');
   // エラー処理の確認
 });
@@ -165,12 +169,14 @@ test('API エラーハンドリング', async ({ page }) => {
 ### よくある問題
 
 #### 1. ポート競合エラー
+
 ```bash
 # 開発サーバーが別のポートで動いている場合
 PORT=3001 npm run dev
 ```
 
 #### 2. データベース接続エラー
+
 ```bash
 # Supabase が起動していることを確認
 npm run supabase:status
@@ -178,6 +184,7 @@ npm run supabase:start
 ```
 
 #### 3. テストがタイムアウトする
+
 ```bash
 # タイムアウト時間を延長
 npx playwright test --timeout=60000
@@ -186,11 +193,13 @@ npx playwright test --timeout=60000
 ### デバッグ方法
 
 #### 1. ヘッド付きブラウザで実行
+
 ```bash
 npm run test:headed
 ```
 
 #### 2. 特定の行で一時停止
+
 ```typescript
 test('デバッグテスト', async ({ page }) => {
   await page.pause(); // ここで一時停止
@@ -199,6 +208,7 @@ test('デバッグテスト', async ({ page }) => {
 ```
 
 #### 3. スクリーンショットの確認
+
 テスト失敗時のスクリーンショットは `test-results/` フォルダに保存されます。
 
 ## CI/CD での実行

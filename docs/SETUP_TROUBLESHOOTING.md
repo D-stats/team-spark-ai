@@ -10,8 +10,11 @@
 
 ```
 Error: Invalid `prisma.checkIn.findMany()` invocation:
-The column `CheckIn.achievements` does not exist in the current database.
+The column `CheckIn.templateId` does not exist in the current database.
 ```
+
+**注意**: 以前のバージョンでは`achievements`、`challenges`、`nextWeekGoals`などのフィールドがありましたが、
+現在はテンプレートベースのシステムに移行しています。
 
 #### 原因
 

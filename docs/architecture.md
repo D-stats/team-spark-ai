@@ -3,14 +3,17 @@
 ## 1. システム概要
 
 ### 1.1 プロジェクト名
+
 Startup HR Engagement Platform
 
 ### 1.2 目的
+
 スタートアップ企業向けに、従業員エンゲージメントの向上と評価管理を支援するSaaSプラットフォームを提供する。
 
 ### 1.3 主要機能
+
 - ピア評価（Kudos）システム
-- 週次チェックイン
+- カスタマイズ可能なチェックイン（頻度・質問設定可）
 - パルスサーベイ
 - Slack統合
 - リアルタイムダッシュボード
@@ -18,6 +21,7 @@ Startup HR Engagement Platform
 ## 2. 技術スタック
 
 ### 2.1 フロントエンド
+
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript 5.x
 - **Styling**: Tailwind CSS
@@ -27,12 +31,14 @@ Startup HR Engagement Platform
 - **Charts**: Recharts
 
 ### 2.2 バックエンド
+
 - **API**: Next.js API Routes
 - **ORM**: Prisma
 - **Validation**: Zod
 - **Background Jobs**: Vercel Cron Jobs
 
 ### 2.3 インフラストラクチャ
+
 - **Database**: PostgreSQL (Supabase)
 - **Authentication**: Supabase Auth
 - **File Storage**: Supabase Storage
@@ -41,6 +47,7 @@ Startup HR Engagement Platform
 - **Error Tracking**: Sentry
 
 ### 2.4 外部連携
+
 - **Slack**: Slack SDK for Node.js (Bolt)
 - **Email**: Resend
 - **Analytics**: PostHog
@@ -98,7 +105,7 @@ erDiagram
     User ||--o{ SurveyResponse : submits
     Team ||--o{ User : includes
     Survey ||--o{ SurveyResponse : has
-    
+
     Organization {
         uuid id PK
         string name
@@ -106,7 +113,7 @@ erDiagram
         json settings
         timestamp created_at
     }
-    
+
     User {
         uuid id PK
         uuid organization_id FK
@@ -116,7 +123,7 @@ erDiagram
         string slack_user_id
         timestamp created_at
     }
-    
+
     Team {
         uuid id PK
         uuid organization_id FK
@@ -124,7 +131,7 @@ erDiagram
         uuid manager_id FK
         timestamp created_at
     }
-    
+
     Kudos {
         uuid id PK
         uuid sender_id FK
@@ -134,15 +141,28 @@ erDiagram
         integer points
         timestamp created_at
     }
-    
+
     CheckIn {
         uuid id PK
         uuid user_id FK
-        json achievements
-        json goals
-        integer mood_score
-        text notes
+        uuid template_id FK
+        json answers
+        integer mood_rating
         timestamp created_at
+        timestamp updated_at
+    }
+
+    CheckInTemplate {
+        uuid id PK
+        uuid organization_id FK
+        string name
+        text description
+        enum frequency
+        json questions
+        boolean is_active
+        boolean is_default
+        timestamp created_at
+        timestamp updated_at
     }
 ```
 
@@ -156,7 +176,7 @@ model Organization {
   settings  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   users           User[]
   teams           Team[]
   slackWorkspaces SlackWorkspace[]
@@ -171,7 +191,7 @@ model User {
   slackUserId    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
+
   organization    Organization @relation(fields: [organizationId], references: [id])
   sentKudos       Kudos[]      @relation("SentKudos")
   receivedKudos   Kudos[]      @relation("ReceivedKudos")
@@ -365,18 +385,21 @@ main (production)
 ## 13. 技術的決定事項
 
 ### 13.1 なぜNext.js 14？
+
 - App Routerによる優れたDX
 - Server Componentsでパフォーマンス向上
 - Vercelとの統合が容易
 - TypeScriptサポートが優秀
 
 ### 13.2 なぜSupabase？
+
 - オープンソース
 - ローカル開発環境が充実
 - 認証・DB・ストレージが統合
 - Row Level Securityが強力
 
 ### 13.3 なぜPrisma？
+
 - 型安全性
 - マイグレーション管理
 - 優れたDX
