@@ -56,29 +56,29 @@ PORT=3001 npm run dev
 npm run dev:safe
 ```
 
-### 3. Supabase Connection Error
+### 3. PostgreSQL Connection Error
 
 #### Error Example
 
 ```
-Error: Could not connect to Supabase
+Error: Could not connect to PostgreSQL
 ```
 
 #### Solution
 
 ```bash
-# 1. Check Supabase status
-npx supabase status
+# 1. Check Docker status
+docker-compose ps
 
 # 2. If not running
-npx supabase start
+docker-compose up -d postgres
 
 # 3. If restart is needed
-npx supabase stop
-npx supabase start
+docker-compose down
+docker-compose up -d postgres
 
 # 4. Check logs
-npx supabase logs
+docker-compose logs postgres
 ```
 
 ### 4. Prisma Client Generation Error
@@ -131,7 +131,7 @@ npm run build
 npm run pre-flight
 
 # Or check manually
-npx supabase status          # Verify Supabase is running
+docker-compose ps            # Verify PostgreSQL is running
 npm run check:ports          # Check port conflicts
 npx prisma migrate status    # Check migration status
 ```

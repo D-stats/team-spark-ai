@@ -111,7 +111,7 @@ graph LR
 ### Prerequisites
 
 - Node.js v18.0.0 or higher
-- Docker (for Supabase Local)
+- Docker (for PostgreSQL)
 - npm v9.0.0 or higher
 
 ### Quick Start
@@ -175,10 +175,10 @@ npm run prisma:migrate   # Run migrations
 npm run prisma:studio    # Start Prisma Studio
 npm run prisma:reset     # Reset DB (development only)
 
-# Supabase
-npm run supabase:start   # Start Supabase
-npm run supabase:stop    # Stop Supabase
-npm run supabase:status  # Check status
+# Docker/PostgreSQL
+docker-compose up -d     # Start PostgreSQL
+docker-compose down      # Stop PostgreSQL
+docker-compose ps        # Check status
 
 # Utilities
 npm run check:ports  # Check port conflicts

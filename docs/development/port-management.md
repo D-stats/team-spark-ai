@@ -11,14 +11,11 @@
 | Next.js    | 3000             | `PORT`            | フロントエンドアプリケーション |
 | Mailhog UI | 8025             | `MAILHOG_UI_PORT` | メールテスト用Web UI           |
 
-### Supabaseポート（Supabase CLIで管理）
+### PostgreSQLポート（Docker Composeで管理）
 
-| サービス        | デフォルトポート | 説明                 |
-| --------------- | ---------------- | -------------------- |
-| Supabase API    | 54321            | REST API (PostgREST) |
-| PostgreSQL      | 54322            | データベース         |
-| Supabase Studio | 54323            | 管理UI               |
-| Inbucket        | 54324            | メールサーバー       |
+| サービス   | デフォルトポート | 説明         |
+| ---------- | ---------------- | ------------ |
+| PostgreSQL | 5432             | データベース |
 
 ### 内部通信のみ（Docker Compose使用時）
 
@@ -93,16 +90,17 @@ docker-compose up -d
    npm run stop:all
    ```
 
-### Supabaseのポート競合
+### PostgreSQLのポート競合
 
-Supabaseが他のプロジェクトで実行中の場合：
+PostgreSQLが他のプロジェクトで実行中の場合：
 
 ```bash
 # 現在の状態を確認
-npx supabase status
+docker-compose ps
 
 # 停止してから再起動
-npm run supabase:start:clean
+docker-compose down
+docker-compose up -d postgres
 ```
 
 ## 🎯 ベストプラクティス
@@ -118,9 +116,8 @@ PORT=3000
 # Docker Compose用ポート
 MAILHOG_UI_PORT=8025
 
-# Supabase設定（必要に応じて）
-SUPABASE_API_PORT=54321
-SUPABASE_DB_PORT=54322
+# PostgreSQL設定（必要に応じて）
+POSTGRES_PORT=5432
 ```
 
 ### 2. 内部通信の最適化
@@ -145,7 +142,7 @@ services:
 - **4000-4999**: バックエンドAPI
 - **5000-5999**: マイクロサービス
 - **8000-8999**: 開発ツール（デバッガー、管理UI等）
-- **54300-54399**: Supabase関連
+- **5400-5499**: データベース関連
 
 ### 4. CI/CD環境での考慮
 
@@ -170,4 +167,4 @@ GitHub ActionsなどのCI環境では、ランダムポートを使用：
 
 - [Next.js環境変数ドキュメント](https://nextjs.org/docs/basic-features/environment-variables)
 - [Docker Composeネットワーキング](https://docs.docker.com/compose/networking/)
-- [Supabase CLIドキュメント](https://supabase.com/docs/guides/cli)
+- [PostgreSQL Dockerドキュメント](https://hub.docker.com/_/postgres)

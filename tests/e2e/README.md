@@ -178,9 +178,9 @@ PORT=3001 npm run dev
 #### 2. データベース接続エラー
 
 ```bash
-# Supabase が起動していることを確認
-npm run supabase:status
-npm run supabase:start
+# PostgreSQL が起動していることを確認
+docker-compose ps
+docker-compose up -d postgres
 ```
 
 #### 3. テストがタイムアウトする

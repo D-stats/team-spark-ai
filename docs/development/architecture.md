@@ -39,9 +39,9 @@ To provide an AI-powered team communication and engagement platform that enhance
 
 ### 2.3 Infrastructure
 
-- **Database**: PostgreSQL (Supabase)
-- **Authentication**: Supabase Auth
-- **File Storage**: Supabase Storage
+- **Database**: PostgreSQL (Docker for dev, Cloud SQL for production)
+- **Authentication**: JWT-based with refresh tokens
+- **File Storage**: Cloud Storage (Coming Soon)
 - **Hosting**: Vercel
 - **Monitoring**: Vercel Analytics
 - **Error Tracking**: Sentry
@@ -59,7 +59,7 @@ To provide an AI-powered team communication and engagement platform that enhance
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │                 │     │                 │     │                 │
-│   Web Client    │────▶│   Next.js App   │────▶│    Supabase     │
+│   Web Client    │────▶│   Next.js App   │────▶│   PostgreSQL    │
 │  (Browser/PWA)  │     │   (Vercel)      │     │   (Database)    │
 │                 │     │                 │     │                 │
 └─────────────────┘     └────────┬────────┘     └─────────────────┘
@@ -266,7 +266,7 @@ POST   /api/slack/events
 ### 6.1 Authentication & Authorization
 
 - **Authentication Method**: JWT + Refresh Token
-- **Session Management**: Supabase Auth Session
+- **Session Management**: Custom JWT-based sessions
 - **Permission Management**: Role-Based Access Control (RBAC)
   - Admin: Access to all features
   - Manager: View team member data
@@ -307,13 +307,13 @@ POST   /api/slack/events
 ### 8.1 Horizontal Scaling
 
 - **Application**: Vercel Auto-scaling
-- **Database**: Supabase Read Replicas
+- **Database**: PostgreSQL Read Replicas
 - **Cache**: Redis Cluster
 
 ### 8.2 Load Balancing
 
 - **Global CDN**: Vercel Edge Network
-- **Database Load Balancing**: Supabase automatic management
+- **Database Load Balancing**: Cloud SQL automatic management
 - **API Rate Limiting**: Per-user quotas
 
 ## 9. Monitoring & Operations
@@ -323,7 +323,7 @@ POST   /api/slack/events
 - **APM**: Vercel Analytics
 - **Error Tracking**: Sentry
 - **Uptime Monitoring**: Better Stack
-- **Database Monitoring**: Supabase Dashboard
+- **Database Monitoring**: Cloud SQL Insights
 
 ### 9.2 Log Management
 
@@ -337,14 +337,14 @@ POST   /api/slack/events
 ### 10.1 Backup
 
 - **Database**: Daily automatic backup (30-day retention)
-- **File Storage**: Supabase Storage replication
+- **File Storage**: Cloud Storage replication
 - **Configuration**: Git version control
 
 ### 10.2 Recovery Plan
 
 - **RTO**: 4 hours
 - **RPO**: 24 hours
-- **Failover**: Supabase automatic failover
+- **Failover**: Cloud SQL automatic failover
 
 ## 11. Development & Deployment Flow
 
@@ -391,12 +391,12 @@ main (production)
 - Easy integration with Vercel
 - Excellent TypeScript support
 
-### 13.2 Why Supabase?
+### 13.2 Why PostgreSQL with Docker?
 
-- Open source
-- Rich local development environment
-- Integrated auth, DB, and storage
-- Powerful Row Level Security
+- Industry standard database
+- Easy local development with Docker
+- Excellent performance and reliability
+- Wide ecosystem support
 
 ### 13.3 Why Prisma?
 

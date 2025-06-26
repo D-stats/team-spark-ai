@@ -8,7 +8,7 @@ Last Updated: 2025-06-20
 
 - ✅ Next.js 14 (App Router) setup
 - ✅ TypeScript configuration
-- ✅ Supabase authentication system
+- ✅ JWT-based authentication system
 - ✅ Prisma database design
 - ✅ User story-driven development framework
 

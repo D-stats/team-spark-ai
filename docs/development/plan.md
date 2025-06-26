@@ -22,7 +22,7 @@ MVP Completion Target: 4-6 weeks
 - [x] TypeScript configuration
 - [x] ESLint/Prettier configuration
 - [x] Tailwind CSS configuration
-- [x] Supabase local environment setup
+- [x] PostgreSQL Docker environment setup
 - [x] Prisma setup
 - [x] Environment variables setup (.env.local, .env.example)
 
@@ -48,7 +48,7 @@ MVP Completion Target: 4-6 weeks
 
 ### Authentication System
 
-- [x] Supabase Auth configuration
+- [x] JWT-based authentication setup
 - [x] Implement signup page
 - [x] Implement login page
 - [x] Password reset functionality

@@ -264,6 +264,28 @@ feat(TSA-123): Add user authentication feature
 fix(TSA-456): Resolve login timeout issue
 ```
 
+### JIRA Issue Management Best Practices
+
+When creating or managing JIRA issues:
+
+1. **Epic Creation**:
+
+   - TeamSpark AI uses Tasks with "Epic:" prefix (Epic issue type not enabled)
+   - Always link child tasks using the `parent` field
+   - Include clear hierarchy in Epic description
+
+2. **Task Organization**:
+
+   - Create all related tasks together
+   - Link to parent Epic immediately
+   - Use English for all content
+   - Follow naming conventions (action verbs for tasks)
+
+3. **Common Mistakes to Avoid**:
+   - Creating Epics without linking child tasks
+   - Using wrong custom fields for Epic links
+   - Mixing languages in issue descriptions
+
 ## Next Steps
 
 1. **Start with Authentication**: Use `/resolve-jira-issue TSA-41` to implement authentication

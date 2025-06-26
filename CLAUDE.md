@@ -649,6 +649,76 @@ feat(TSA-123): Add user authentication feature
 fix(TSA-456): Resolve login timeout issue
 ```
 
+## 📋 JIRA Issue Management Guidelines
+
+### Creating Epics and Tasks
+
+1. **Check Issue Types Available**:
+
+   - Not all JIRA projects have Epic issue type enabled
+   - In TeamSpark AI project, "Epics" are created as regular Tasks with "Epic:" prefix in title
+   - Use parent-child relationships to organize hierarchy
+
+2. **Creating Epic-like Tasks**:
+
+   ```
+   Title: "Epic: [Epic Name]"
+   Description: Include sections for Overview, Objectives, Feature Categories, Success Criteria
+   ```
+
+3. **Linking Child Tasks to Epic**:
+
+   - Use the `parent` field (modern approach) or `customfield_10008` (Epic Link)
+   - Always verify the correct field by checking existing issue structures
+   - Link tasks immediately when creating related issues
+
+4. **Best Practices**:
+   - Create all related tasks at once and link them immediately
+   - Add a comment to the Epic listing all child tasks
+   - Use consistent naming: "Epic: " prefix for parent, clear action verbs for tasks
+   - Include implementation order in Epic description
+
+### JIRA Field Investigation
+
+When unsure about JIRA fields:
+
+```bash
+# Search for specific field types
+mcp__mcp-atlassian__jira_search_fields --keyword "epic"
+
+# Get all fields for an issue
+mcp__mcp-atlassian__jira_get_issue --issue_key "TSA-XXX" --fields "*all"
+
+# Check issue type structure
+mcp__mcp-atlassian__jira_search --jql "project = TSA" --fields "issuetype,parent"
+```
+
+### Common JIRA Custom Fields
+
+- `customfield_10008`: Epic Link (legacy)
+- `customfield_10009`: Epic Name
+- `parent`: Modern parent-child relationship field
+- `customfield_10100`: Rank (for prioritization)
+
+### Error Prevention
+
+1. **Before Creating Issues**:
+
+   - Check if Epic issue type exists in the project
+   - Verify custom field IDs for the specific JIRA instance
+   - Plan the entire issue hierarchy before creation
+
+2. **When Updating Issues**:
+
+   - Use batch operations when updating multiple related issues
+   - Always add a comment explaining structural changes
+   - Verify updates with a follow-up search query
+
+3. **Language Consistency**:
+   - Use English for all JIRA content in international teams
+   - Keep technical terms consistent across issues
+   - Follow the project's established naming conventions
+
 # important-instruction-reminders
 
 Do what has been asked; nothing more, nothing less.
