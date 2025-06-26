@@ -54,8 +54,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
       setSuccess(true);
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }

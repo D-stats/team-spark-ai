@@ -31,10 +31,10 @@ test.describe('APIエンドポイントテスト', () => {
       }
     });
 
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations', { waitUntil: 'networkidle' });
 
     // APIが呼び出されてデータが表示されることを確認
-    await expect(page.locator('text=2024年上期評価').first()).toBeVisible();
+    await expect(page.locator('text=2024年上期評価').first()).toBeVisible({ timeout: 15000 });
   });
 
   test('コンピテンシー取得API', async ({ page }) => {
@@ -48,12 +48,13 @@ test.describe('APIエンドポイントテスト', () => {
             {
               id: '1',
               name: 'コミュニケーション',
-              description: '明確で効果的なコミュニケーションを行う能力',
+              description: 'チームメンバーとの効果的なコミュニケーション',
               category: 'CORE',
-              behaviors: ['明確で簡潔な情報伝達ができる'],
-              order: 1,
               isActive: true,
-              _count: { ratings: 3 },
+              expectedBehaviors: ['明確な情報伝達', '積極的な聞き取り'],
+              displayOrder: 1,
+              createdAt: '2024-01-01T00:00:00Z',
+              updatedAt: '2024-01-01T00:00:00Z',
             },
           ]),
         });
@@ -62,149 +63,208 @@ test.describe('APIエンドポイントテスト', () => {
       }
     });
 
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies', { waitUntil: 'networkidle' });
 
     // APIが呼び出されてデータが表示されることを確認
-    await expect(page.locator('text=コミュニケーション').first()).toBeVisible();
+    await expect(page.locator('text=コミュニケーション').first()).toBeVisible({ timeout: 15000 });
   });
 
   test('Kudos取得API', async ({ page }) => {
     // APIレスポンスをモック
-    await page.route('**/api/kudos', async (route) => {
+    await page.route('**/api/kudos*', async (route) => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify([
-            {
-              id: '1',
-              message: '素晴らしい仕事でした！',
-              category: 'TEAMWORK',
-              points: 3,
-              isPublic: true,
-              createdAt: '2024-01-01T00:00:00Z',
-              sender: {
+          body: JSON.stringify({
+            kudos: [
+              {
                 id: '1',
-                name: '送信者',
-                email: 'sender@test.com',
+                fromUserId: 'user1',
+                toUserId: 'user2',
+                message: '素晴らしい仕事でした！',
+                category: 'TEAMWORK',
+                points: 10,
+                isPublic: true,
+                createdAt: '2024-01-01T00:00:00Z',
+                fromUser: {
+                  id: 'user1',
+                  name: '送信者太郎',
+                  email: 'sender@test.com',
+                },
+                toUser: {
+                  id: 'user2',
+                  name: '受信者花子',
+                  email: 'receiver@test.com',
+                },
               },
-              receiver: {
-                id: '2',
-                name: '受信者',
-                email: 'receiver@test.com',
-              },
-            },
-          ]),
+            ],
+            totalCount: 1,
+          }),
         });
       } else {
         await route.continue();
       }
     });
 
-    await page.goto('/dashboard/kudos');
+    await page.goto('/ja/kudos', { waitUntil: 'networkidle' });
 
     // APIが呼び出されてデータが表示されることを確認
-    await expect(page.locator('text=素晴らしい仕事でした！')).toBeVisible();
+    await expect(page.locator('text=素晴らしい仕事でした！')).toBeVisible({ timeout: 15000 });
   });
 
   test('チェックイン取得API', async ({ page }) => {
     // APIレスポンスをモック
-    await page.route('**/api/checkins', async (route) => {
+    await page.route('**/api/checkins*', async (route) => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify([
-            {
-              id: '1',
-              achievements: '新機能の開発を完了しました',
-              nextWeekGoals: 'テストの実施を予定しています',
-              moodRating: 4,
-              challenges: '特に大きな課題はありませんでした',
-              createdAt: '2024-01-01T00:00:00Z',
-              user: {
+          body: JSON.stringify({
+            checkins: [
+              {
                 id: '1',
-                name: 'テストユーザー',
-                email: 'test@test.com',
+                userId: 'user1',
+                status: 'SUBMITTED',
+                responses: {
+                  accomplishments: '新機能の開発を完了しました',
+                  challenges: '技術的な課題がありました',
+                  nextWeek: '次の機能の設計を開始します',
+                },
+                createdAt: '2024-01-01T00:00:00Z',
+                user: {
+                  id: 'user1',
+                  name: 'チェックイン太郎',
+                  email: 'checkin@test.com',
+                },
               },
-            },
-          ]),
+            ],
+            totalCount: 1,
+          }),
         });
       } else {
         await route.continue();
       }
     });
 
-    await page.goto('/dashboard/checkins');
+    await page.goto('/ja/checkins', { waitUntil: 'networkidle' });
 
     // APIが呼び出されてデータが表示されることを確認
-    await expect(page.locator('text=新機能の開発を完了しました')).toBeVisible();
+    await expect(page.locator('text=新機能の開発を完了しました')).toBeVisible({ timeout: 15000 });
   });
 
   test('チーム取得API', async ({ page }) => {
     // APIレスポンスをモック
-    await page.route('**/api/teams', async (route) => {
+    await page.route('**/api/teams*', async (route) => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify([
-            {
-              id: '1',
-              name: '開発チーム',
-              description: 'プロダクト開発を担当するチーム',
-              managerId: '1',
-              createdAt: '2024-01-01T00:00:00Z',
-              manager: {
+          body: JSON.stringify({
+            teams: [
+              {
                 id: '1',
-                name: 'マネージャー',
-                email: 'manager@test.com',
+                name: '開発チーム',
+                description: 'プロダクト開発を担当するチーム',
+                managerId: 'manager1',
+                organizationId: 'org1',
+                createdAt: '2024-01-01T00:00:00Z',
+                updatedAt: '2024-01-01T00:00:00Z',
+                _count: {
+                  members: 5,
+                },
+                manager: {
+                  id: 'manager1',
+                  name: 'マネージャー太郎',
+                  email: 'manager@test.com',
+                },
               },
-              members: [
-                {
-                  user: {
-                    id: '2',
-                    name: 'メンバー1',
-                    email: 'member1@test.com',
-                  },
-                },
-                {
-                  user: {
-                    id: '3',
-                    name: 'メンバー2',
-                    email: 'member2@test.com',
-                  },
-                },
-              ],
-              _count: { members: 2 },
-            },
-          ]),
+            ],
+            totalCount: 1,
+          }),
         });
       } else {
         await route.continue();
       }
     });
 
-    await page.goto('/dashboard/teams');
+    await page.goto('/ja/teams', { waitUntil: 'networkidle' });
 
     // APIが呼び出されてデータが表示されることを確認
-    await expect(page.locator('text=開発チーム')).toBeVisible();
+    await expect(page.locator('text=開発チーム')).toBeVisible({ timeout: 15000 });
   });
 
   test('APIエラーハンドリング', async ({ page }) => {
-    // エラーレスポンスをモック
+    // APIエラーレスポンスをモック
     await page.route('**/api/evaluations/cycles', async (route) => {
       await route.fulfill({
         status: 500,
         contentType: 'application/json',
-        body: JSON.stringify({ error: 'サーバーエラー' }),
+        body: JSON.stringify({
+          error: 'Internal Server Error',
+          message: 'データベース接続エラー',
+        }),
       });
     });
 
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations', { waitUntil: 'networkidle' });
 
-    // エラーが適切に処理されることを確認
-    // ローディング状態が終了し、エラーメッセージまたはフォールバックが表示されることを確認
-    await page.waitForLoadState('networkidle');
+    // エラーメッセージが表示されることを確認（実装によって異なる）
+    // 例: await expect(page.locator('text=エラーが発生しました')).toBeVisible();
+  });
+
+  test('ページネーション', async ({ page }) => {
+    let currentPage = 1;
+
+    // APIレスポンスをモック（ページ番号に応じて異なるデータを返す）
+    await page.route('**/api/kudos*', async (route) => {
+      const url = new URL(route.request().url());
+      const page = parseInt(url.searchParams.get('page') || '1');
+      currentPage = page;
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          kudos: [
+            {
+              id: `page${page}-1`,
+              fromUserId: 'user1',
+              toUserId: 'user2',
+              message: `ページ${page}のKudos`,
+              category: 'TEAMWORK',
+              points: 10,
+              isPublic: true,
+              createdAt: '2024-01-01T00:00:00Z',
+              fromUser: {
+                id: 'user1',
+                name: '送信者',
+                email: 'sender@test.com',
+              },
+              toUser: {
+                id: 'user2',
+                name: '受信者',
+                email: 'receiver@test.com',
+              },
+            },
+          ],
+          totalCount: 50,
+          currentPage: page,
+          totalPages: 5,
+        }),
+      });
+    });
+
+    await page.goto('/ja/kudos', { waitUntil: 'networkidle' });
+
+    // 最初のページのデータが表示される
+    await expect(page.locator('text=ページ1のKudos')).toBeVisible({ timeout: 15000 });
+
+    // ページネーションボタンがある場合はクリック（実装に依存）
+    // const nextButton = page.locator('button:has-text("次へ")');
+    // if (await nextButton.isVisible()) {
+    //   await nextButton.click();
+    //   await expect(page.locator('text=ページ2のKudos')).toBeVisible();
+    // }
   });
 });

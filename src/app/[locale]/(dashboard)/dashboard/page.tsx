@@ -4,9 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Heart, CheckSquare, Users, TrendingUp } from 'lucide-react';
 import { KudosFeed } from '@/components/kudos/kudos-feed';
 import { cn } from '@/lib/utils';
+import { getTranslations } from 'next-intl/server';
 
 export default async function DashboardPage() {
   const { dbUser } = await requireAuthWithOrganization();
+  const t = await getTranslations('dashboard');
 
   // Get statistical data
   const now = new Date();
@@ -71,33 +73,36 @@ export default async function DashboardPage() {
 
   const stats = [
     {
-      title: "This Month's Kudos",
+      title: t('stats.monthlyKudos.title'),
       value: thisMonthKudos.toString(),
-      description: 'チーム内で送受信',
+      description: t('stats.monthlyKudos.description'),
       icon: Heart,
       iconColor: 'text-pink-600',
       bgColor: 'bg-pink-100',
     },
     {
-      title: 'チェックイン完了率',
+      title: t('stats.checkinRate.title'),
       value: `${checkInCompletionRate}%`,
-      description: "This Week's Check-ins",
+      description: t('stats.checkinRate.description'),
       icon: CheckSquare,
       iconColor: 'text-blue-600',
       bgColor: 'bg-blue-100',
     },
     {
-      title: 'チームメンバー',
+      title: t('stats.teamMembers.title'),
       value: organizationUsers.toString(),
-      description: 'アクティブメンバー',
+      description: t('stats.teamMembers.description'),
       icon: Users,
       iconColor: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
-      title: 'エンゲージメントスコア',
+      title: t('stats.engagementScore.title'),
       value: averageMoodScore === 'N/A' ? 'N/A' : `${averageMoodScore}/5`,
-      description: recentCheckIns.length > 0 ? '過去30日平均' : '計測開始前',
+      description:
+        recentCheckIns.length > 0
+          ? t('stats.engagementScore.description')
+          : t('stats.engagementScore.notStarted'),
       icon: TrendingUp,
       iconColor: 'text-purple-600',
       bgColor: 'bg-purple-100',
@@ -107,8 +112,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">ようこそ、{dbUser.name}さん</h1>
-        <p className="mt-2 text-muted-foreground">チームのエンゲージメント状況を確認しましょう</p>
+        <h1 className="text-3xl font-bold">{t('welcome', { name: dbUser.name })}</h1>
+        <p className="mt-2 text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -131,8 +136,8 @@ export default async function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>最近のKudos</CardTitle>
-            <CardDescription>チームメンバーからの感謝メッセージ</CardDescription>
+            <CardTitle>{t('recentKudos.title')}</CardTitle>
+            <CardDescription>{t('recentKudos.description')}</CardDescription>
           </CardHeader>
           <CardContent>
             <RecentKudos userId={dbUser.id} organizationId={dbUser.organizationId} />
@@ -141,8 +146,8 @@ export default async function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>最近のチェックイン</CardTitle>
-            <CardDescription>チームの活動状況</CardDescription>
+            <CardTitle>{t('recentCheckins.title')}</CardTitle>
+            <CardDescription>{t('recentCheckins.description')}</CardDescription>
           </CardHeader>
           <CardContent>
             <RecentCheckIns organizationId={dbUser.organizationId} />
@@ -154,6 +159,7 @@ export default async function DashboardPage() {
 }
 
 async function RecentKudos({ userId, organizationId }: { userId: string; organizationId: string }) {
+  const t = await getTranslations('dashboard');
   const recentKudos = await prisma.kudos.findMany({
     where: {
       OR: [
@@ -185,11 +191,7 @@ async function RecentKudos({ userId, organizationId }: { userId: string; organiz
   });
 
   if (recentKudos.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        まだKudosがありません。チームメンバーに感謝を伝えてみましょう！
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{t('recentKudos.empty')}</p>;
   }
 
   return (
@@ -200,6 +202,7 @@ async function RecentKudos({ userId, organizationId }: { userId: string; organiz
 }
 
 async function RecentCheckIns({ organizationId }: { organizationId: string }) {
+  const t = await getTranslations('dashboard');
   const recentCheckIns = await prisma.checkIn.findMany({
     where: {
       user: { organizationId },
@@ -223,11 +226,7 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
   });
 
   if (recentCheckIns.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        まだチェックインがありません。週次チェックインを開始してみましょう！
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{t('recentCheckins.empty')}</p>;
   }
 
   return (
@@ -236,7 +235,8 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
         // Display the answer to the first question (usually achievements or reflections)
         const answers = checkIn.answers as Record<string, unknown>;
         const firstAnswer = answers ? Object.values(answers)[0] : null;
-        const displayText = typeof firstAnswer === 'string' ? firstAnswer : 'No answer';
+        const displayText =
+          typeof firstAnswer === 'string' ? firstAnswer : t('recentCheckins.noResponse');
 
         return (
           <div key={checkIn.id} className="rounded-lg border bg-muted/20 p-3">

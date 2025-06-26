@@ -30,6 +30,7 @@ export class OkrService {
         children: true,
         keyResults: {
           include: {
+            objective: true,
             owner: true,
             checkIns: {
               orderBy: { createdAt: 'desc' },
@@ -58,6 +59,7 @@ export class OkrService {
         children: true,
         keyResults: {
           include: {
+            objective: true,
             owner: true,
             checkIns: {
               orderBy: { createdAt: 'desc' },
@@ -72,7 +74,7 @@ export class OkrService {
   }
 
   static async activateObjective(objectiveId: string): Promise<ObjectiveWithRelations> {
-    return this.updateObjective(objectiveId, { status: ObjectiveStatus.ACTIVE } as any);
+    return this.updateObjective(objectiveId, { status: ObjectiveStatus.ACTIVE });
   }
 
   static async getObjectiveById(objectiveId: string): Promise<ObjectiveWithRelations | null> {
@@ -86,6 +88,7 @@ export class OkrService {
         children: true,
         keyResults: {
           include: {
+            objective: true,
             owner: true,
             checkIns: {
               orderBy: { createdAt: 'desc' },
@@ -124,6 +127,7 @@ export class OkrService {
         children: true,
         keyResults: {
           include: {
+            objective: true,
             owner: true,
             checkIns: {
               orderBy: { createdAt: 'desc' },
@@ -295,14 +299,45 @@ export class OkrService {
   }
 
   // Helper methods
-  private static formatObjectiveWithRelations(objective: any): ObjectiveWithRelations {
+  private static formatObjectiveWithRelations(
+    objective: Prisma.ObjectiveGetPayload<{
+      include: {
+        organization: true;
+        ownerUser: true;
+        ownerTeam: true;
+        parent: true;
+        children: true;
+        keyResults: {
+          include: {
+            objective: true;
+            owner: true;
+            checkIns: {
+              orderBy: { createdAt: 'desc' };
+              take: 1;
+            };
+          };
+        };
+      };
+    }>,
+  ): ObjectiveWithRelations {
     return {
       ...objective,
-      keyResults: objective.keyResults.map((kr: any) => this.formatKeyResultWithProgress(kr)),
+      keyResults: objective.keyResults.map((kr) => this.formatKeyResultWithProgress(kr)),
     };
   }
 
-  private static formatKeyResultWithProgress(keyResult: any): KeyResultWithProgress {
+  private static formatKeyResultWithProgress(
+    keyResult: Prisma.KeyResultGetPayload<{
+      include: {
+        objective: true;
+        owner: true;
+        checkIns: {
+          orderBy: { createdAt: 'desc' };
+          take: 1;
+        };
+      };
+    }>,
+  ): KeyResultWithProgress {
     return {
       ...keyResult,
       latestCheckIn: keyResult.checkIns?.[0] || null,

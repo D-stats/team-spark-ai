@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -12,8 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Plus, Target, TrendingUp, Users, Building2, BarChart3 } from 'lucide-react';
-import { ObjectiveOwner, OkrCycle, ObjectiveStatus, User, Organization } from '@prisma/client';
+import { Plus, Target, Users, Building2 } from 'lucide-react';
+import { ObjectiveOwner, OkrCycle, User, Organization } from '@prisma/client';
 import { ObjectiveWithRelations, OkrAlignment, getCurrentQuarter } from '@/types/okr';
 import { ObjectiveCard } from '@/components/okr/ObjectiveCard';
 import { CreateObjectiveDialog } from '@/components/okr/CreateObjectiveDialog';
@@ -29,7 +29,13 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
 
   const [objectives, setObjectives] = useState<ObjectiveWithRelations[]>([]);
   const [alignment, setAlignment] = useState<OkrAlignment | null>(null);
-  const [summary, setSummary] = useState<any>(null);
+  const [summary, setSummary] = useState<{
+    total: number;
+    onTrack: number;
+    atRisk: number;
+    behind: number;
+    averageProgress: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [selectedView, setSelectedView] = useState<'list' | 'alignment'>('list');
@@ -41,7 +47,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [selectedOwnerType, setSelectedOwnerType] = useState<ObjectiveOwner | 'all'>('all');
 
-  const fetchObjectives = async () => {
+  const fetchObjectives = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         cycle: selectedCycle,
@@ -61,9 +67,9 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
         variant: 'destructive',
       });
     }
-  };
+  }, [selectedCycle, selectedYear, selectedOwnerType, toast]);
 
-  const fetchAlignment = async () => {
+  const fetchAlignment = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         cycle: selectedCycle,
@@ -78,9 +84,9 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
     } catch (error) {
       console.error('Failed to fetch alignment:', error);
     }
-  };
+  }, [selectedCycle, selectedYear]);
 
-  const fetchSummary = async () => {
+  const fetchSummary = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         cycle: selectedCycle,
@@ -95,7 +101,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
     } catch (error) {
       console.error('Failed to fetch summary:', error);
     }
-  };
+  }, [selectedCycle, selectedYear]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -105,10 +111,17 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
     };
 
     loadData();
-  }, [selectedCycle, selectedYear, selectedOwnerType]);
+  }, [
+    selectedCycle,
+    selectedYear,
+    selectedOwnerType,
+    fetchObjectives,
+    fetchAlignment,
+    fetchSummary,
+  ]);
 
-  const canCreateCompanyObjective = user.role === 'ADMIN';
-  const canCreateTeamObjective = user.role === 'ADMIN' || user.role === 'MANAGER';
+  const _canCreateCompanyObjective = user.role === 'ADMIN';
+  const _canCreateTeamObjective = user.role === 'ADMIN' || user.role === 'MANAGER';
 
   if (loading) {
     return (

@@ -523,5 +523,287 @@
       "confirmButton": "Delete",
       "cancelButton": "Cancel"
     }
+  },
+  "evaluations": {
+    "title": "Performance Reviews",
+    "subtitle": "Manage employee evaluations and feedback",
+    "createCycle": "Create Review Cycle",
+    "cycleStatus": {
+      "draft": "Draft",
+      "active": "Active",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "evaluationStatus": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "reviewed": "Reviewed",
+      "approved": "Approved",
+      "shared": "Shared"
+    },
+    "evaluationType": {
+      "self": "Self Review",
+      "peer": "Peer Review",
+      "manager": "Manager Review",
+      "skip_level": "Skip Level",
+      "upward": "Upward Review"
+    },
+    "stats": {
+      "activeCycle": "Active Cycle",
+      "pendingEvaluations": "Pending Reviews",
+      "totalCycles": "Total Cycles",
+      "notStarted": "Not Started",
+      "evaluationsCount": "{count} reviews",
+      "noActiveCycle": "No active cycle",
+      "yourEvaluations": "Your reviews to complete",
+      "completedCycles": "Completed cycles"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "cycles": "Review Cycles",
+      "myEvaluations": "My Reviews"
+    },
+    "phases": {
+      "title": "Review Phase",
+      "inProgress": "In Progress"
+    },
+    "actions": {
+      "start": "Start",
+      "continue": "Continue",
+      "review": "Review",
+      "viewDetails": "View Details",
+      "showMore": "Show More"
+    },
+    "competencies": {
+      "title": "Competencies",
+      "subtitle": "Manage competencies for evaluations",
+      "create": "Create Competency",
+      "edit": "Edit Competency",
+      "initDefault": "Initialize Defaults",
+      "category": {
+        "core": "Core Competencies",
+        "leadership": "Leadership",
+        "technical": "Technical Skills",
+        "functional": "Functional Skills"
+      },
+      "form": {
+        "name": "Competency Name",
+        "namePlaceholder": "e.g., Communication",
+        "category": "Category",
+        "description": "Description",
+        "descriptionPlaceholder": "Detailed description of the competency",
+        "displayOrder": "Display Order",
+        "expectedBehaviors": "Expected Behaviors",
+        "behaviorPlaceholder": "Behavior example {index}",
+        "addBehavior": "Add Behavior",
+        "deleteBehavior": "Delete"
+      },
+      "filter": {
+        "search": "Search competencies...",
+        "allCategories": "All Categories"
+      },
+      "empty": "No competencies",
+      "emptyDescription": "Create competencies to start the evaluation system.",
+      "deleteConfirm": {
+        "title": "Delete Competency?",
+        "message": "Delete \"{name}\". This action cannot be undone.",
+        "warning": "This competency has evaluation data and will be deactivated."
+      },
+      "info": {
+        "expectedBehaviors": "Expected behaviors:",
+        "usedInEvaluations": "Used in {count} evaluations"
+      },
+      "messages": {
+        "loadError": "Failed to load competencies",
+        "initError": "Failed to initialize default competencies",
+        "updateSuccess": "Competency updated",
+        "createSuccess": "Competency created",
+        "saveError": "Failed to save competency",
+        "deleteSuccess": "Competency deleted",
+        "deleteError": "Failed to delete competency"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {name}!",
+    "subtitle": "Check your team's engagement status",
+    "stats": {
+      "monthlyKudos": {
+        "title": "This Month's Kudos",
+        "description": "Sent and received in team"
+      },
+      "checkinRate": {
+        "title": "Check-in Completion Rate",
+        "description": "This week's check-ins"
+      },
+      "teamMembers": {
+        "title": "Team Members",
+        "description": "Active members"
+      },
+      "engagementScore": {
+        "title": "Engagement Score",
+        "description": "30-day average",
+        "notStarted": "Not yet started"
+      }
+    },
+    "recentKudos": {
+      "title": "Recent Kudos",
+      "description": "Appreciation messages from team members",
+      "empty": "No kudos yet. Try appreciating your team members!"
+    },
+    "recentCheckins": {
+      "title": "Recent Check-ins",
+      "description": "Team activity status",
+      "empty": "No check-ins yet. Start your weekly check-in!",
+      "noResponse": "No response"
+    }
+  },
+  "teams": {
+    "manage": {
+      "title": "Team Management",
+      "subtitle": "Manage teams and members in your organization",
+      "empty": {
+        "title": "No teams",
+        "description": "No teams have been created yet.",
+        "managerAction": "Create your first team.",
+        "memberAction": "Please wait for a manager to create teams."
+      },
+      "memberCount": "{count} members",
+      "moreMembers": "+{count} more",
+      "actions": {
+        "edit": "Edit",
+        "details": "Details"
+      }
+    }
+  },
+  "settings": {
+    "personal": {
+      "title": "Personal Settings",
+      "tabs": {
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "security": "Security"
+      }
+    },
+    "slack": {
+      "title": "Slack Integration",
+      "connectionStatus": {
+        "title": "Connection Status",
+        "connected": "Connected",
+        "notConnected": "Not Connected",
+        "workspace": "Workspace"
+      },
+      "userAccount": {
+        "title": "Your Slack Account",
+        "notConnected": "Slack account not connected",
+        "connectDescription": "Connect your Slack account to receive notifications.",
+        "connectButton": "Connect Slack Account",
+        "disconnect": "Disconnect",
+        "reconnect": "Reconnect"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Sign in to your account to access the dashboard",
+      "emailLabel": "Email Address",
+      "submitButton": "Login",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "error": "Failed to login"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Create a new account to start improving team engagement",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email Address",
+      "passwordHelp": "Enter a password with at least 6 characters",
+      "submitButton": "Create Account",
+      "submitting": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Login",
+      "error": "Failed to sign up"
+    },
+    "verifyEmail": {
+      "title": "Check Your Email",
+      "message": "We've sent a confirmation email. Please click the link in the email to complete your account creation.",
+      "note": "If you don't see the email, please check your spam folder.",
+      "backToLogin": "Back to login page"
+    }
+  },
+  "organization": {
+    "manage": {
+      "title": "Organization Management",
+      "tabs": {
+        "overview": "Overview",
+        "setup": "Setup",
+        "billing": "Billing"
+      }
+    }
+  },
+  "setup": {
+    "title": "Initial Setup",
+    "subtitle": "Complete your organization setup",
+    "organizationName": {
+      "label": "Organization Name",
+      "description": "This will be displayed throughout the application"
+    },
+    "complete": "Complete Setup"
+  },
+  "surveys": {
+    "title": "Surveys",
+    "empty": {
+      "title": "No surveys yet",
+      "description": "Surveys will appear here when created."
+    }
+  },
+  "checkins": {
+    "title": "Check-ins",
+    "subtitle": "Record regular reflections with customized templates"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "description": "How we handle your data and protect your privacy",
+    "lastUpdated": "Last updated",
+    "languagePreferences": {
+      "title": "Language Preferences",
+      "description": "We respect your privacy and use a cookie-free approach for language preferences",
+      "howWeStore": "How We Store Your Preference",
+      "localStorage": "Language preference is stored locally in your browser (localStorage)",
+      "noCookies": "We do not use cookies for language preferences",
+      "clientSideOnly": "Preferences are handled entirely on your device",
+      "noServerStorage": "Language preferences are not sent to or stored on our servers",
+      "whatWeStore": "What We Store",
+      "selectedLanguage": "Your selected language code (e.g., 'en' or 'ja')",
+      "selectionDate": "When you made the selection",
+      "selectionMethod": "Whether you selected it manually or accepted a suggestion",
+      "yourControl": "Your Control",
+      "controlDescription": "You can clear your language preference at any time by clearing your browser's local storage. Your language preference will remain on your device until you choose to remove it."
+    },
+    "cookiePolicy": {
+      "title": "Cookie Policy",
+      "description": "Our approach to cookies and tracking",
+      "noCookiesTitle": "Cookie-Free by Design",
+      "noCookiesDescription": "TeamSpark AI does not use cookies for language preferences or tracking. We prioritize your privacy and comply with GDPR and other privacy regulations without requiring cookie consent banners."
+    },
+    "dataCollection": {
+      "title": "Data Collection",
+      "description": "Information we collect to provide our services",
+      "teamData": "Team Data",
+      "teamMessages": "Team communication messages (with your organization's consent)",
+      "engagementMetrics": "Engagement metrics and analytics",
+      "performanceData": "Performance review data",
+      "security": "Security",
+      "securityDescription": "All data is encrypted in transit and at rest. We follow industry best practices for data security and regularly audit our systems."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "If you have any questions about our privacy policy, please contact us",
+      "email": "Email"
+    }
   }
 }

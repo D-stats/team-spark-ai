@@ -8,7 +8,7 @@ test.describe('評価システム', () => {
   });
 
   test('評価ダッシュボードの表示', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // ページタイトルの確認
     await expect(page.locator('h1')).toContainText('評価管理');
@@ -25,7 +25,7 @@ test.describe('評価システム', () => {
   });
 
   test('評価サイクル一覧の表示', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // サイクルタブをクリック
     await page.click('[data-value="cycles"]');
@@ -35,7 +35,7 @@ test.describe('評価システム', () => {
   });
 
   test('私の評価一覧の表示', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // 私の評価タブをクリック
     await page.click('[data-value="my-evaluations"]');
@@ -45,7 +45,7 @@ test.describe('評価システム', () => {
   });
 
   test('評価サイクル作成ボタンの表示', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // 作成ボタンの確認
     await expect(page.locator('button', { hasText: '評価サイクル作成' })).toBeVisible();
@@ -59,7 +59,7 @@ test.describe('コンピテンシー管理', () => {
   });
 
   test('コンピテンシー一覧の表示', async ({ page }) => {
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // ページタイトルの確認
     await expect(page.locator('h1')).toContainText('コンピテンシー管理');
@@ -85,7 +85,7 @@ test.describe('コンピテンシー管理', () => {
       }
     });
 
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // 空状態のメッセージ確認
     await expect(page.locator('text=コンピテンシーがありません')).toBeVisible();
@@ -95,7 +95,7 @@ test.describe('コンピテンシー管理', () => {
   });
 
   test('コンピテンシー作成ダイアログの表示', async ({ page }) => {
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // 作成ボタンをクリック
     await page.click('button:has-text("コンピテンシー作成")');
@@ -111,7 +111,7 @@ test.describe('コンピテンシー管理', () => {
   });
 
   test('コンピテンシーのフィルタリング', async ({ page }) => {
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // 検索フィールドに入力
     await page.fill('input[placeholder*="コンピテンシーを検索"]', 'コミュニケーション');
@@ -124,7 +124,7 @@ test.describe('コンピテンシー管理', () => {
 test.describe('権限テスト', () => {
   test('メンバーはコンピテンシー作成ボタンが表示されない', async ({ page }) => {
     await mockAuth(page, 'member');
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // メンバーには作成ボタンが表示されないことを確認
     await expect(page.locator('button', { hasText: 'コンピテンシー作成' })).not.toBeVisible();
@@ -132,7 +132,7 @@ test.describe('権限テスト', () => {
 
   test('マネージャーはコンピテンシー作成ボタンが表示される', async ({ page }) => {
     await mockAuth(page, 'manager');
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // マネージャーには作成ボタンが表示されることを確認
     await expect(page.locator('button', { hasText: 'コンピテンシー作成' })).toBeVisible();
@@ -145,7 +145,7 @@ test.describe('レスポンシブテスト', () => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     await mockAuth(page, 'admin');
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // モバイルビューでもコンテンツが表示されることを確認
     await expect(page.locator('h1')).toContainText('評価管理');
@@ -157,7 +157,7 @@ test.describe('レスポンシブテスト', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
 
     await mockAuth(page, 'admin');
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // タブレットビューでもコンテンツが表示されることを確認
     await expect(page.locator('h1')).toContainText('評価管理');

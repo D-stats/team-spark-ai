@@ -6,18 +6,41 @@ import { locales, defaultLocale } from '@/i18n/config';
 const intlMiddleware = createIntlMiddleware({
   locales,
   defaultLocale,
-  localePrefix: 'as-needed', // Only show locale in URL when it's not the default
+  localePrefix: 'always', // Always show locale in URL for clarity and SEO
+  localeDetection: false, // We handle detection manually without cookies
 });
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Skip internationalization for API routes
-  if (pathname.startsWith('/api')) {
+  // Skip internationalization for API routes and static files
+  if (
+    pathname.startsWith('/api') ||
+    pathname.includes('/_next') ||
+    pathname.includes('/favicon.ico')
+  ) {
     return NextResponse.next();
   }
 
-  // Apply internationalization middleware
+  // Check if the pathname already includes a locale
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
+  );
+
+  if (!pathnameHasLocale) {
+    // No locale in URL, redirect to URL with locale
+    // We don't auto-detect from Accept-Language header to avoid automatic redirects
+    // The client-side LanguageInitializer will handle suggestions
+    const locale = defaultLocale;
+    const newUrl = new URL(`/${locale}${pathname}`, request.url);
+
+    // Preserve query parameters
+    newUrl.search = request.nextUrl.search;
+
+    return NextResponse.redirect(newUrl);
+  }
+
+  // Apply internationalization middleware for locale validation
   return intlMiddleware(request);
 }
 

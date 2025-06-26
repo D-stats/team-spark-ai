@@ -37,17 +37,11 @@ import {
 import { Plus, Edit, Trash2, Target, Users, Briefcase, Lightbulb } from 'lucide-react';
 // Using console.log for toast functionality
 const toast = {
-  success: (message: string) => {
+  success: (_message: string) => {
     // TODO: Replace with proper toast implementation
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Success:', message);
-    }
   },
-  error: (message: string) => {
+  error: (_message: string) => {
     // TODO: Replace with proper toast implementation
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Error:', message);
-    }
   },
 };
 

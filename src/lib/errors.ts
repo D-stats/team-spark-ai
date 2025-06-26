@@ -254,7 +254,9 @@ export class ErrorHandler {
         console.warn('MEDIUM ERROR:', logData);
         break;
       case ErrorSeverity.LOW:
-        console.info('LOW ERROR:', logData);
+        if (process.env.NODE_ENV === 'development') {
+          console.info('LOW ERROR:', logData);
+        }
         break;
     }
   }

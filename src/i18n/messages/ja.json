@@ -523,5 +523,287 @@
       "confirmButton": "削除",
       "cancelButton": "キャンセル"
     }
+  },
+  "evaluations": {
+    "title": "評価管理",
+    "subtitle": "従業員の評価とフィードバックを管理します",
+    "createCycle": "評価サイクル作成",
+    "cycleStatus": {
+      "draft": "ドラフト",
+      "active": "アクティブ",
+      "completed": "完了",
+      "archived": "アーカイブ"
+    },
+    "evaluationStatus": {
+      "draft": "ドラフト",
+      "submitted": "提出済み",
+      "reviewed": "レビュー済み",
+      "approved": "承認済み",
+      "shared": "共有済み"
+    },
+    "evaluationType": {
+      "self": "自己評価",
+      "peer": "ピア評価",
+      "manager": "上司評価",
+      "skip_level": "スキップレベル",
+      "upward": "部下評価"
+    },
+    "stats": {
+      "activeCycle": "アクティブサイクル",
+      "pendingEvaluations": "未完了評価",
+      "totalCycles": "総サイクル数",
+      "notStarted": "未実施",
+      "evaluationsCount": "{count}件の評価",
+      "noActiveCycle": "現在アクティブなサイクルはありません",
+      "yourEvaluations": "あなたが実施する評価",
+      "completedCycles": "これまでに実施したサイクル"
+    },
+    "tabs": {
+      "overview": "概要",
+      "cycles": "評価サイクル",
+      "myEvaluations": "私の評価"
+    },
+    "phases": {
+      "title": "評価フェーズ",
+      "inProgress": "実施中"
+    },
+    "actions": {
+      "start": "開始",
+      "continue": "続ける",
+      "review": "確認する",
+      "viewDetails": "詳細を見る",
+      "showMore": "さらに表示"
+    },
+    "competencies": {
+      "title": "コンピテンシー管理",
+      "subtitle": "評価に使用するコンピテンシーを管理します",
+      "create": "コンピテンシー作成",
+      "edit": "コンピテンシー編集",
+      "initDefault": "デフォルトを初期化",
+      "category": {
+        "core": "コアコンピテンシー",
+        "leadership": "リーダーシップ",
+        "technical": "技術スキル",
+        "functional": "職能別スキル"
+      },
+      "form": {
+        "name": "コンピテンシー名",
+        "namePlaceholder": "例: コミュニケーション",
+        "category": "カテゴリ",
+        "description": "説明",
+        "descriptionPlaceholder": "コンピテンシーの詳細説明",
+        "displayOrder": "表示順序",
+        "expectedBehaviors": "期待される行動",
+        "behaviorPlaceholder": "行動例 {index}",
+        "addBehavior": "行動を追加",
+        "deleteBehavior": "削除"
+      },
+      "filter": {
+        "search": "コンピテンシーを検索...",
+        "allCategories": "すべてのカテゴリ"
+      },
+      "empty": "コンピテンシーがありません",
+      "emptyDescription": "コンピテンシーを作成して評価システムを開始しましょう。",
+      "deleteConfirm": {
+        "title": "コンピテンシーを削除しますか？",
+        "message": "「{name}」を削除します。この操作は元に戻せません。",
+        "warning": "※ このコンピテンシーは評価データがあるため、非アクティブ化されます。"
+      },
+      "info": {
+        "expectedBehaviors": "期待される行動:",
+        "usedInEvaluations": "{count}件の評価で使用済み"
+      },
+      "messages": {
+        "loadError": "コンピテンシーの読み込みに失敗しました",
+        "initError": "デフォルトコンピテンシーの初期化に失敗しました",
+        "updateSuccess": "コンピテンシーを更新しました",
+        "createSuccess": "コンピテンシーを作成しました",
+        "saveError": "コンピテンシーの保存に失敗しました",
+        "deleteSuccess": "コンピテンシーを削除しました",
+        "deleteError": "コンピテンシーの削除に失敗しました"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "welcome": "ようこそ、{name}さん",
+    "subtitle": "チームのエンゲージメント状況を確認しましょう",
+    "stats": {
+      "monthlyKudos": {
+        "title": "今月のKudos",
+        "description": "チーム内で送受信"
+      },
+      "checkinRate": {
+        "title": "チェックイン完了率",
+        "description": "今週のチェックイン"
+      },
+      "teamMembers": {
+        "title": "チームメンバー",
+        "description": "アクティブメンバー"
+      },
+      "engagementScore": {
+        "title": "エンゲージメントスコア",
+        "description": "過去30日平均",
+        "notStarted": "計測開始前"
+      }
+    },
+    "recentKudos": {
+      "title": "最近のKudos",
+      "description": "チームメンバーからの感謝メッセージ",
+      "empty": "まだKudosがありません。チームメンバーに感謝を伝えてみましょう！"
+    },
+    "recentCheckins": {
+      "title": "最近のチェックイン",
+      "description": "チームの活動状況",
+      "empty": "まだチェックインがありません。週次チェックインを開始してみましょう！",
+      "noResponse": "回答なし"
+    }
+  },
+  "teams": {
+    "manage": {
+      "title": "チーム管理",
+      "subtitle": "組織内のチームとメンバーを管理します",
+      "empty": {
+        "title": "チームがありません",
+        "description": "まだチームが作成されていません。",
+        "managerAction": "最初のチームを作成してみましょう。",
+        "memberAction": "マネージャーがチームを作成するまでお待ちください。"
+      },
+      "memberCount": "{count}名のメンバー",
+      "moreMembers": "+{count} 他",
+      "actions": {
+        "edit": "編集",
+        "details": "詳細"
+      }
+    }
+  },
+  "settings": {
+    "personal": {
+      "title": "個人設定",
+      "tabs": {
+        "profile": "プロフィール",
+        "notifications": "通知",
+        "security": "セキュリティ"
+      }
+    },
+    "slack": {
+      "title": "Slack連携",
+      "connectionStatus": {
+        "title": "接続ステータス",
+        "connected": "接続済み",
+        "notConnected": "未接続",
+        "workspace": "ワークスペース"
+      },
+      "userAccount": {
+        "title": "あなたのSlackアカウント",
+        "notConnected": "Slackアカウントが接続されていません",
+        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
+        "connectButton": "Slackアカウントを接続",
+        "disconnect": "切断",
+        "reconnect": "再接続"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "ログイン",
+      "subtitle": "アカウントにログインして、ダッシュボードにアクセスしてください",
+      "emailLabel": "メールアドレス",
+      "submitButton": "ログイン",
+      "submitting": "ログイン中...",
+      "noAccount": "アカウントをお持ちでない方は",
+      "signUpLink": "新規登録",
+      "error": "ログインに失敗しました"
+    },
+    "signup": {
+      "title": "アカウント作成",
+      "subtitle": "新しいアカウントを作成して、チームのエンゲージメント向上を始めましょう",
+      "nameLabel": "お名前",
+      "namePlaceholder": "山田 太郎",
+      "emailLabel": "メールアドレス",
+      "passwordHelp": "6文字以上のパスワードを入力してください",
+      "submitButton": "アカウントを作成",
+      "submitting": "アカウント作成中...",
+      "hasAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン",
+      "error": "サインアップに失敗しました"
+    },
+    "verifyEmail": {
+      "title": "メールを確認してください",
+      "message": "確認メールを送信しました。メール内のリンクをクリックして、アカウントの作成を完了してください。",
+      "note": "メールが届かない場合は、迷惑メールフォルダをご確認ください。",
+      "backToLogin": "ログインページに戻る"
+    }
+  },
+  "organization": {
+    "manage": {
+      "title": "組織管理",
+      "tabs": {
+        "overview": "概要",
+        "setup": "セットアップ",
+        "billing": "請求"
+      }
+    }
+  },
+  "setup": {
+    "title": "初期設定",
+    "subtitle": "組織の設定を完了してください",
+    "organizationName": {
+      "label": "組織名",
+      "description": "アプリケーション全体で表示されます"
+    },
+    "complete": "設定を完了"
+  },
+  "surveys": {
+    "title": "サーベイ",
+    "empty": {
+      "title": "サーベイがありません",
+      "description": "サーベイが作成されるとここに表示されます。"
+    }
+  },
+  "checkins": {
+    "title": "チェックイン",
+    "subtitle": "カスタマイズされたテンプレートで定期的な振り返りを記録しましょう"
+  },
+  "privacy": {
+    "title": "プライバシーポリシー",
+    "description": "お客様のデータの取り扱いとプライバシー保護について",
+    "lastUpdated": "最終更新日",
+    "languagePreferences": {
+      "title": "言語設定",
+      "description": "お客様のプライバシーを尊重し、言語設定にはクッキーを使用しないアプローチを採用しています",
+      "howWeStore": "保存方法",
+      "localStorage": "言語設定はお客様のブラウザにローカルで保存されます（localStorage）",
+      "noCookies": "言語設定にクッキーは使用しません",
+      "clientSideOnly": "設定はお客様のデバイス上でのみ処理されます",
+      "noServerStorage": "言語設定はサーバーに送信または保存されません",
+      "whatWeStore": "保存する情報",
+      "selectedLanguage": "選択された言語コード（例：'en'や'ja'）",
+      "selectionDate": "選択された日時",
+      "selectionMethod": "手動で選択されたか、提案を承諾したか",
+      "yourControl": "お客様によるコントロール",
+      "controlDescription": "ブラウザのローカルストレージをクリアすることで、いつでも言語設定を削除できます。言語設定は、お客様が削除するまでデバイスに保存されます。"
+    },
+    "cookiePolicy": {
+      "title": "クッキーポリシー",
+      "description": "クッキーとトラッキングに関する当社のアプローチ",
+      "noCookiesTitle": "設計によるクッキーフリー",
+      "noCookiesDescription": "TeamSpark AIは言語設定やトラッキングにクッキーを使用しません。お客様のプライバシーを優先し、クッキー同意バナーを必要とせずにGDPRなどのプライバシー規制に準拠しています。"
+    },
+    "dataCollection": {
+      "title": "データ収集",
+      "description": "サービス提供のために収集する情報",
+      "teamData": "チームデータ",
+      "teamMessages": "チームコミュニケーションメッセージ（組織の同意を得て）",
+      "engagementMetrics": "エンゲージメント指標と分析",
+      "performanceData": "パフォーマンスレビューデータ",
+      "security": "セキュリティ",
+      "securityDescription": "すべてのデータは転送時および保存時に暗号化されます。データセキュリティに関する業界のベストプラクティスに従い、定期的にシステムを監査しています。"
+    },
+    "contact": {
+      "title": "お問い合わせ",
+      "description": "プライバシーポリシーに関するご質問がございましたら、お問い合わせください",
+      "email": "メール"
+    }
   }
 }

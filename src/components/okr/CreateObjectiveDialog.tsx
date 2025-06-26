@@ -61,7 +61,7 @@ interface CreateObjectiveDialogProps {
 }
 
 export function CreateObjectiveDialog({
-  organizationId,
+  _organizationId,
   defaultOwnerType = ObjectiveOwner.INDIVIDUAL,
   defaultOwnerUserId,
   defaultOwnerTeamId,
@@ -91,8 +91,8 @@ export function CreateObjectiveDialog({
     },
   });
 
-  const selectedCycle = form.watch('cycle');
-  const selectedYear = form.watch('year');
+  const _selectedCycle = form.watch('cycle');
+  const _selectedYear = form.watch('year');
   const ownerType = form.watch('ownerType');
 
   const onSubmit = async (data: CreateObjectiveForm) => {

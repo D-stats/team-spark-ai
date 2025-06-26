@@ -12,7 +12,7 @@ import {
   CompetencyRating,
   SaveEvaluationRequest,
   Result,
-  ApiError,
+  _ApiError,
 } from '@/types/api';
 import { EvaluationStatus } from '@prisma/client';
 
@@ -231,7 +231,15 @@ export const useEvaluationStore = create<EvaluationStore>()(
                     };
                     return acc;
                   },
-                  {} as Record<string, any>,
+                  {} as Record<
+                    string,
+                    {
+                      competencyId: string;
+                      rating: number;
+                      strongPoints: string;
+                      improvementAreas: string;
+                    }
+                  >,
                 ),
               };
 
@@ -385,7 +393,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
         completeStep: (stepId: string) => {
           set((state) => {
-            const step = state.steps.find((s: any) => s.id === stepId);
+            const step = state.steps.find((s) => s.id === stepId);
             if (step) {
               step.isCompleted = true;
             }
@@ -639,8 +647,7 @@ export function useAutoSave() {
       }
     },
     {
-      equalityFn: (a: any, b: any) =>
-        a.isDirty === b.isDirty && a.autoSaveEnabled === b.autoSaveEnabled,
+      equalityFn: (a, b) => a.isDirty === b.isDirty && a.autoSaveEnabled === b.autoSaveEnabled,
     },
   );
 

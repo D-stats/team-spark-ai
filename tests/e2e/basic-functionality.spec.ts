@@ -10,7 +10,7 @@ const testUser = {
 test.describe('基本機能テスト', () => {
   test.beforeEach(async ({ page }) => {
     // ログインページへ移動
-    await page.goto('http://localhost:3000/login');
+    await page.goto('/ja/login');
   });
 
   test('ログイン機能', async ({ page }) => {
@@ -147,7 +147,7 @@ test.describe('基本機能テスト', () => {
 
 test.describe('エラーハンドリング', () => {
   test('無効な認証情報でのログイン', async ({ page }) => {
-    await page.goto('http://localhost:3000/login');
+    await page.goto('/ja/login');
 
     // 無効な認証情報を入力
     await page.fill('input[type="email"]', 'invalid@test.com');
@@ -161,7 +161,7 @@ test.describe('エラーハンドリング', () => {
 
   test('未認証でのアクセス', async ({ page }) => {
     // 直接ダッシュボードにアクセス
-    await page.goto('http://localhost:3000/dashboard');
+    await page.goto('/ja/dashboard');
 
     // ログインページへリダイレクトされることを確認
     await page.waitForURL('**/login**');

@@ -69,7 +69,7 @@ function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: D
     },
   ];
 
-  let currentDate = new Date(startDate);
+  const currentDate = new Date(startDate);
 
   return phases.map((phase) => {
     const phaseDays = Math.floor(totalDays * phase.durationRatio);
@@ -399,7 +399,7 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
       acc[key].count += 1;
       return acc;
     },
-    {} as Record<string, { competency: any; sum: number; count: number }>,
+    {} as Record<string, { competency: unknown; sum: number; count: number }>,
   );
 
   const competencyResults = Object.values(competencyAverages).map((data) => ({

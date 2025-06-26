@@ -292,7 +292,7 @@ npm run pre-flight
 
 After environment setup is complete:
 
-1. Check `docs/development-plan.md` to start development tasks
+1. Check `docs/development/plan.md` to start development tasks
 2. Follow guidelines in `CLAUDE.md` for development
 3. Set up test environment before implementing features
 

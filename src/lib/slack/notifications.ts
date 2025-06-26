@@ -35,7 +35,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
     });
 
     if (!receiver?.slackUserId || !receiver.organization.slackWorkspaces[0]) {
-      console.log('Slack notification skipped: user or workspace not connected');
+      // Slack notification skipped: user or workspace not connected
       return;
     }
 

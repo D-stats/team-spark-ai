@@ -9,10 +9,10 @@ export const getTranslations = getNextIntlTranslations;
 export function getNestedTranslation(
   translations: ReturnType<typeof useTranslations>,
   key: string,
-  values?: Record<string, any>,
+  values?: Record<string, string | number | Date>,
 ): string {
   const keys = key.split('.');
-  let result: any = translations;
+  let result: unknown = translations;
 
   for (const k of keys) {
     if (result && typeof result === 'function') {

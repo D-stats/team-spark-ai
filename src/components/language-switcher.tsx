@@ -1,6 +1,5 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import {
   Select,
@@ -9,49 +8,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { languages, type LanguageCode } from '@/i18n/utils';
-import { locales } from '@/i18n/config';
+import { Globe } from 'lucide-react';
+import { useLanguagePreference } from '@/hooks/use-language-preference';
+import { type Locale, localeNames } from '@/i18n/config';
 
 export function LanguageSwitcher() {
-  const router = useRouter();
-  const pathname = usePathname();
   const locale = useLocale();
+  const { changeLanguage, isClient } = useLanguagePreference();
 
   const handleLocaleChange = (newLocale: string) => {
-    // Remove the current locale from pathname if it exists
-    const segments = pathname.split('/');
-    const pathnameHasLocale = locales.some((l) => segments[1] === l);
-
-    let newPathname = pathname;
-    if (pathnameHasLocale) {
-      segments[1] = newLocale;
-      newPathname = segments.join('/');
-    } else {
-      // Add locale to pathname
-      newPathname = `/${newLocale}${pathname}`;
-    }
-
-    router.push(newPathname);
-    router.refresh();
+    changeLanguage(newLocale as Locale);
   };
+
+  // Don't render during SSR to avoid hydration mismatch
+  if (!isClient) {
+    return <div className="h-10 w-[140px] animate-pulse rounded-md bg-muted/50" />;
+  }
 
   return (
     <Select value={locale} onValueChange={handleLocaleChange}>
-      <SelectTrigger className="w-[140px]">
+      <SelectTrigger className="w-[140px]" aria-label="Select language">
         <SelectValue>
           <span className="flex items-center gap-2">
-            <span>{languages[locale as LanguageCode].flag}</span>
-            <span className="hidden sm:inline">{languages[locale as LanguageCode].nativeName}</span>
-            <span className="sm:hidden">{languages[locale as LanguageCode].flag}</span>
+            <Globe className="h-4 w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">{localeNames[locale as Locale]}</span>
+            <span className="sm:hidden">{locale.toUpperCase()}</span>
           </span>
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {(Object.keys(languages) as LanguageCode[]).map((code) => (
-          <SelectItem key={code} value={code}>
+        {(Object.entries(localeNames) as [Locale, string][]).map(([code, name]) => (
+          <SelectItem key={code} value={code} className="flex items-center gap-2">
             <span className="flex items-center gap-2">
-              <span>{languages[code].flag}</span>
-              <span>{languages[code].nativeName}</span>
+              <Globe className="h-4 w-4" aria-hidden="true" />
+              <span>{name}</span>
+              {locale === code && <span className="sr-only">(Current language)</span>}
             </span>
           </SelectItem>
         ))}

@@ -45,16 +45,16 @@ cp .env.example .env.local
 npm run dev:safe
 ```
 
-For detailed setup instructions, see the [Setup Guide](./docs/setup-guide.md).
+For detailed setup instructions, see the [Setup Guide](./docs/guides/setup.md).
 
 ## Development Guide
 
 ### Important Documentation
 
 - [CLAUDE.md](./CLAUDE.md) - AI Developer Guidelines
-- [Development Plan](./docs/development-plan.md) - Detailed development todos
-- [Architecture](./docs/architecture.md) - System design
-- [Setup Guide](./docs/setup-guide.md) - Detailed environment setup instructions
+- [Development Plan](./docs/development/plan.md) - Detailed development todos
+- [Architecture](./docs/development/architecture.md) - System design
+- [Setup Guide](./docs/guides/setup.md) - Detailed environment setup instructions
 
 ### Command List
 
@@ -73,9 +73,12 @@ npm run format       # Prettier formatting
 npm run validate     # Run all checks
 
 # Testing
-npm test             # Run E2E tests
-npm run test:headed  # Run tests with browser display
-npm run test:stories # Run user story tests
+npm run test:db:setup    # Setup test database (Docker)
+npm test                 # Run E2E tests
+npm run test:headed      # Run tests with browser display
+npm run test:stories     # Run user story tests
+npm run test:with-db     # Setup DB, run tests, teardown DB
+npm run test:db:teardown # Stop test database
 
 # User Stories
 npm run validate:stories  # Generate story validation report
@@ -121,6 +124,42 @@ npm run verify       # Server verification
 ├── public/              # Static files
 └── docs/                # Documentation
 ```
+
+## Testing
+
+### E2E Testing with Docker
+
+This project uses Docker for test database setup. Tests run against a PostgreSQL container.
+
+#### Quick Test Run
+
+```bash
+# Run tests with automatic database setup/teardown
+npm run test:with-db
+```
+
+#### Manual Test Setup
+
+```bash
+# 1. Start test database
+npm run test:db:setup
+
+# 2. Run tests
+npm test
+
+# 3. Stop test database (when done)
+npm run test:db:teardown
+```
+
+#### Test Database Configuration
+
+- **Host**: localhost
+- **Port**: 54322
+- **Database**: team_spark_test
+- **User**: postgres
+- **Password**: postgres
+
+The test database runs in Docker and is completely isolated from your development environment.
 
 ## License
 

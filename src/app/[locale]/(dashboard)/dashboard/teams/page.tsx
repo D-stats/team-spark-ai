@@ -4,9 +4,11 @@ import { CreateTeamDialog } from '@/components/teams/create-team-dialog';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
 export default async function TeamsPage() {
   const { dbUser } = await requireAuthWithOrganization();
+  const t = await getTranslations('teams.manage');
 
   // 組織のチームを取得
   const teams = await prisma.team.findMany({
@@ -58,8 +60,8 @@ export default async function TeamsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">チーム管理</h1>
-          <p className="mt-2 text-muted-foreground">組織内のチームとメンバーを管理します</p>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="mt-2 text-muted-foreground">{t('subtitle')}</p>
         </div>
         {isManager && <CreateTeamDialog users={allUsers} />}
       </div>
@@ -68,13 +70,11 @@ export default async function TeamsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Users className="mb-4 h-16 w-16 text-muted-foreground" />
-            <h3 className="mb-2 text-lg font-medium">チームがありません</h3>
+            <h3 className="mb-2 text-lg font-medium">{t('empty.title')}</h3>
             <p className="mb-4 text-center text-sm text-muted-foreground">
-              まだチームが作成されていません。
+              {t('empty.description')}
               <br />
-              {isManager
-                ? '最初のチームを作成してみましょう。'
-                : 'マネージャーがチームを作成するまでお待ちください。'}
+              {isManager ? t('empty.managerAction') : t('empty.memberAction')}
             </p>
             {isManager && <CreateTeamDialog users={allUsers} />}
           </CardContent>
@@ -97,7 +97,9 @@ export default async function TeamsPage() {
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <h4 className="mb-2 text-sm font-medium text-muted-foreground">メンバー</h4>
+                      <h4 className="mb-2 text-sm font-medium text-muted-foreground">
+                        {t('memberCount', { count: team._count.members }).split(' ')[1]}
+                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {team.members.slice(0, 6).map((member) => (
                           <div
@@ -113,7 +115,7 @@ export default async function TeamsPage() {
                         ))}
                         {team.members.length > 6 && (
                           <div className="px-2 py-1 text-xs text-muted-foreground">
-                            +{team.members.length - 6} 他
+                            {t('moreMembers', { count: team.members.length - 6 })}
                           </div>
                         )}
                       </div>
@@ -121,10 +123,10 @@ export default async function TeamsPage() {
                     {isManager && (
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" className="flex-1">
-                          編集
+                          {t('actions.edit')}
                         </Button>
                         <Button variant="outline" size="sm" className="flex-1">
-                          詳細
+                          {t('actions.details')}
                         </Button>
                       </div>
                     )}

@@ -7,7 +7,7 @@ test.describe('評価システム基本テスト', () => {
   });
 
   test('評価ページにアクセスできる', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
@@ -17,7 +17,7 @@ test.describe('評価システム基本テスト', () => {
   });
 
   test('コンピテンシーページにアクセスできる', async ({ page }) => {
-    await page.goto('/evaluations/competencies');
+    await page.goto('/ja/evaluations/competencies');
 
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
@@ -27,7 +27,7 @@ test.describe('評価システム基本テスト', () => {
   });
 
   test('ダッシュボードにアクセスできる', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('/ja/dashboard');
 
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
@@ -37,7 +37,7 @@ test.describe('評価システム基本テスト', () => {
   });
 
   test('タブナビゲーションが機能する', async ({ page }) => {
-    await page.goto('/evaluations');
+    await page.goto('/ja/evaluations');
 
     // タブが表示されることを確認
     await expect(page.locator('[role="tablist"]')).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('評価システム基本テスト', () => {
 test.describe('モック認証テスト', () => {
   test('管理者でログインできる', async ({ page }) => {
     await mockAuth(page, 'admin');
-    await page.goto('/dashboard');
+    await page.goto('/ja/dashboard');
 
     // ログイン状態が正しく設定されることを確認
     const isAuth = await page.evaluate(() => {
@@ -66,7 +66,7 @@ test.describe('モック認証テスト', () => {
 
   test('メンバーでログインできる', async ({ page }) => {
     await mockAuth(page, 'member');
-    await page.goto('/dashboard');
+    await page.goto('/ja/dashboard');
 
     // ログイン状態が正しく設定されることを確認
     const isAuth = await page.evaluate(() => {

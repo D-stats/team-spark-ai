@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Users, Calendar, TrendingUp, Clock } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface EvaluationCycle {
   id: string;
@@ -56,34 +57,38 @@ interface Evaluation {
   };
 }
 
-const statusLabels = {
-  DRAFT: 'ドラフト',
-  ACTIVE: 'アクティブ',
-  COMPLETED: '完了',
-  ARCHIVED: 'アーカイブ',
-};
-
-const evaluationTypeLabels = {
-  SELF: '自己評価',
-  PEER: 'ピア評価',
-  MANAGER: '上司評価',
-  SKIP_LEVEL: 'スキップレベル',
-  UPWARD: '部下評価',
-};
-
-const evaluationStatusLabels = {
-  DRAFT: 'ドラフト',
-  SUBMITTED: '提出済み',
-  REVIEWED: 'レビュー済み',
-  APPROVED: '承認済み',
-  SHARED: '共有済み',
-};
+// Status labels will be translated dynamically
 
 export default function EvaluationsPage() {
   const [cycles, setCycles] = useState<EvaluationCycle[]>([]);
   const [myEvaluations, setMyEvaluations] = useState<Evaluation[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const t = useTranslations('evaluations');
+  const locale = useLocale();
+
+  const statusLabels = {
+    DRAFT: t('cycleStatus.draft'),
+    ACTIVE: t('cycleStatus.active'),
+    COMPLETED: t('cycleStatus.completed'),
+    ARCHIVED: t('cycleStatus.archived'),
+  };
+
+  const evaluationTypeLabels = {
+    SELF: t('evaluationType.self'),
+    PEER: t('evaluationType.peer'),
+    MANAGER: t('evaluationType.manager'),
+    SKIP_LEVEL: t('evaluationType.skip_level'),
+    UPWARD: t('evaluationType.upward'),
+  };
+
+  const evaluationStatusLabels = {
+    DRAFT: t('evaluationStatus.draft'),
+    SUBMITTED: t('evaluationStatus.submitted'),
+    REVIEWED: t('evaluationStatus.reviewed'),
+    APPROVED: t('evaluationStatus.approved'),
+    SHARED: t('evaluationStatus.shared'),
+  };
 
   useEffect(() => {
     loadData();
@@ -162,12 +167,12 @@ export default function EvaluationsPage() {
     <div className="container mx-auto space-y-6 py-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">評価管理</h1>
-          <p className="mt-2 text-muted-foreground">従業員の評価とフィードバックを管理します</p>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
+          <p className="mt-2 text-muted-foreground">{t('subtitle')}</p>
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          評価サイクル作成
+          {t('createCycle')}
         </Button>
       </div>
 
@@ -175,38 +180,40 @@ export default function EvaluationsPage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card data-testid="active-cycle-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">アクティブサイクル</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('stats.activeCycle')}</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeCycle ? activeCycle.name : '未実施'}</div>
+            <div className="text-2xl font-bold">
+              {activeCycle ? activeCycle.name : t('stats.notStarted')}
+            </div>
             <p className="text-xs text-muted-foreground">
               {activeCycle
-                ? `${activeCycle._count.evaluations}件の評価`
-                : '現在アクティブなサイクルはありません'}
+                ? t('stats.evaluationsCount', { count: activeCycle._count.evaluations })
+                : t('stats.noActiveCycle')}
             </p>
           </CardContent>
         </Card>
 
         <Card data-testid="pending-evaluations-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">未完了評価</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('stats.pendingEvaluations')}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{pendingEvaluations.length}</div>
-            <p className="text-xs text-muted-foreground">あなたが実施する評価</p>
+            <p className="text-xs text-muted-foreground">{t('stats.yourEvaluations')}</p>
           </CardContent>
         </Card>
 
         <Card data-testid="total-cycles-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">総サイクル数</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('stats.totalCycles')}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{cycles.length}</div>
-            <p className="text-xs text-muted-foreground">これまでに実施したサイクル</p>
+            <p className="text-xs text-muted-foreground">{t('stats.completedCycles')}</p>
           </CardContent>
         </Card>
       </div>
@@ -214,9 +221,9 @@ export default function EvaluationsPage() {
       {/* タブ */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="overview">概要</TabsTrigger>
-          <TabsTrigger value="cycles">評価サイクル</TabsTrigger>
-          <TabsTrigger value="my-evaluations">私の評価</TabsTrigger>
+          <TabsTrigger value="overview">{t('tabs.overview')}</TabsTrigger>
+          <TabsTrigger value="cycles">{t('tabs.cycles')}</TabsTrigger>
+          <TabsTrigger value="my-evaluations">{t('tabs.myEvaluations')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -228,8 +235,13 @@ export default function EvaluationsPage() {
                   <div>
                     <CardTitle>{activeCycle.name}</CardTitle>
                     <CardDescription>
-                      {new Date(activeCycle.startDate).toLocaleDateString('ja-JP')} -
-                      {new Date(activeCycle.endDate).toLocaleDateString('ja-JP')}
+                      {new Date(activeCycle.startDate).toLocaleDateString(
+                        locale === 'ja' ? 'ja-JP' : 'en-US',
+                      )}{' '}
+                      -
+                      {new Date(activeCycle.endDate).toLocaleDateString(
+                        locale === 'ja' ? 'ja-JP' : 'en-US',
+                      )}
                     </CardDescription>
                   </div>
                   <Badge variant={getStatusBadgeVariant(activeCycle.status)}>
@@ -239,18 +251,23 @@ export default function EvaluationsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <h4 className="font-medium">評価フェーズ</h4>
+                  <h4 className="font-medium">{t('phases.title')}</h4>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     {activeCycle.phases.map((phase) => (
                       <div key={phase.id} className="rounded-lg border p-3">
                         <div className="text-sm font-medium">{phase.name}</div>
                         <div className="mt-1 text-xs text-muted-foreground">
-                          {new Date(phase.startDate).toLocaleDateString('ja-JP')} -
-                          {new Date(phase.endDate).toLocaleDateString('ja-JP')}
+                          {new Date(phase.startDate).toLocaleDateString(
+                            locale === 'ja' ? 'ja-JP' : 'en-US',
+                          )}{' '}
+                          -
+                          {new Date(phase.endDate).toLocaleDateString(
+                            locale === 'ja' ? 'ja-JP' : 'en-US',
+                          )}
                         </div>
                         {phase.isActive && (
                           <Badge variant="default" className="mt-2 text-xs">
-                            実施中
+                            {t('phases.inProgress')}
                           </Badge>
                         )}
                       </div>
@@ -265,9 +282,9 @@ export default function EvaluationsPage() {
           {pendingEvaluations.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>未完了の評価</CardTitle>
+                <CardTitle>{t('stats.pendingEvaluations')}</CardTitle>
                 <CardDescription>
-                  あなたが実施する必要がある評価が{pendingEvaluations.length}件あります
+                  {t('stats.evaluationsCount', { count: pendingEvaluations.length })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -303,14 +320,14 @@ export default function EvaluationsPage() {
                             ]
                           }
                         </Badge>
-                        <Button size="sm">開始</Button>
+                        <Button size="sm">{t('actions.start')}</Button>
                       </div>
                     </div>
                   ))}
                   {pendingEvaluations.length > 5 && (
                     <div className="text-center">
                       <Button variant="outline" onClick={() => setActiveTab('my-evaluations')}>
-                        さらに表示
+                        {t('actions.showMore')}
                       </Button>
                     </div>
                   )}
@@ -329,8 +346,13 @@ export default function EvaluationsPage() {
                     <div>
                       <CardTitle>{cycle.name}</CardTitle>
                       <CardDescription>
-                        {new Date(cycle.startDate).toLocaleDateString('ja-JP')} -
-                        {new Date(cycle.endDate).toLocaleDateString('ja-JP')}
+                        {new Date(cycle.startDate).toLocaleDateString(
+                          locale === 'ja' ? 'ja-JP' : 'en-US',
+                        )}{' '}
+                        -
+                        {new Date(cycle.endDate).toLocaleDateString(
+                          locale === 'ja' ? 'ja-JP' : 'en-US',
+                        )}
                       </CardDescription>
                     </div>
                     <Badge variant={getStatusBadgeVariant(cycle.status)}>
@@ -341,10 +363,11 @@ export default function EvaluationsPage() {
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                      {cycle._count.evaluations}件の評価 • {cycle.type}評価
+                      {t('stats.evaluationsCount', { count: cycle._count.evaluations })} •{' '}
+                      {cycle.type}
                     </div>
                     <Button variant="outline" size="sm">
-                      詳細を見る
+                      {t('actions.viewDetails')}
                     </Button>
                   </div>
                 </CardContent>
@@ -380,7 +403,7 @@ export default function EvaluationsPage() {
                               •{' '}
                               {formatDistanceToNow(new Date(evaluation.submittedAt), {
                                 addSuffix: true,
-                                locale: ja,
+                                locale: locale === 'ja' ? ja : undefined,
                               })}
                             </span>
                           )}
@@ -402,7 +425,9 @@ export default function EvaluationsPage() {
                         size="sm"
                         variant={evaluation.status === 'DRAFT' ? 'default' : 'outline'}
                       >
-                        {evaluation.status === 'DRAFT' ? '続ける' : '確認する'}
+                        {evaluation.status === 'DRAFT'
+                          ? t('actions.continue')
+                          : t('actions.review')}
                       </Button>
                     </div>
                   </div>

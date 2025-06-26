@@ -76,8 +76,8 @@ export function KudosForm({ users }: KudosFormProps) {
 
       // ページをリフレッシュして新しいKudosを表示
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }

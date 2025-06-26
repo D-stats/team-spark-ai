@@ -206,7 +206,7 @@ To avoid port conflicts in development, we adopt the following strategies:
 2. **Environment Variable Support**: Flexible configuration via PORT and other environment variables
 3. **Docker Compose Usage**: Services for internal communication don't expose external ports
 
-See `docs/PORT_MANAGEMENT.md` for details.
+See `docs/development/port-management.md` for details.
 
 ### Code Quality Checks
 
@@ -349,11 +349,11 @@ npm run build
 
 ## 🐛 Troubleshooting
 
-See [docs/SETUP_TROUBLESHOOTING.md](./docs/SETUP_TROUBLESHOOTING.md) for detailed troubleshooting guide.
+See [docs/guides/troubleshooting.md](./docs/guides/troubleshooting.md) for detailed troubleshooting guide.
 
 ### Common Issues
 
-- **Port Conflicts**: Check with `npm run check:ports`, see [PORT_MANAGEMENT.md](./docs/PORT_MANAGEMENT.md)
+- **Port Conflicts**: Check with `npm run check:ports`, see [PORT_MANAGEMENT.md](./docs/development/port-management.md)
 - **Supabase Connection Error**: Check status with `npx supabase status`
 - **Prisma Error**: Regenerate Client with `npx prisma generate`
 - **Schema Mismatch**: Pre-check with `npm run pre-flight`
@@ -409,7 +409,7 @@ See [docs/SETUP_TROUBLESHOOTING.md](./docs/SETUP_TROUBLESHOOTING.md) for detaile
 
 If issues aren't resolved, check:
 
-1. `docs/troubleshooting.md` (to be created)
+1. `docs/guides/troubleshooting.md`
 2. Search project issues
 3. Ask in Slack development channel (after setup)
 
@@ -463,3 +463,116 @@ If issues aren't resolved, check:
    - Update to `status: StoryStatus.DONE` when all acceptance criteria are met
 
 This approach ensures business value and implementation are always linked during development.
+
+## 🌐 多言語対応（i18n）ガイドライン
+
+### Cookie不使用ポリシー
+
+このプロジェクトはプライバシーファーストの方針により、言語設定の管理にCookieを使用しません。
+
+- **言語設定の保存**: localStorageのみで管理
+- **サーバーサイド**: URLパスから言語を判定
+- **自動検出**: 初回訪問時のみ提案（強制リダイレクトなし）
+
+### 開発時の必須事項
+
+1. **すべてのユーザー向け文字列は翻訳キーを使用**
+
+   ```typescript
+   // ❌ 悪い例
+   <h1>ダッシュボード</h1>
+   <p>Welcome to the dashboard</p>
+
+   // ✅ 良い例
+   const t = useTranslations('dashboard');
+   <h1>{t('title')}</h1>
+   <p>{t('welcome')}</p>
+   ```
+
+2. **ハードコーディングされた日本語/英語は禁止**
+
+   - 開発時に直接文字列を書かず、必ず翻訳ファイルに追加
+   - コメントやconsole.logは例外
+
+3. **新機能は必ず両言語でテスト**
+
+   - 英語と日本語の両方で表示確認
+   - テキストの長さによるレイアウト崩れをチェック
+
+4. **日付・数値は必ずロケール対応フォーマッターを使用**
+
+   ```typescript
+   // ❌ 悪い例
+   new Date().toLocaleDateString('ja-JP')`${price}円`;
+
+   // ✅ 良い例（クライアントサイド）
+   import { useI18n } from '@/hooks/use-i18n';
+   const { formatDate, formatCurrency } = useI18n();
+   formatDate(new Date());
+   formatCurrency(price, 'JPY');
+
+   // ✅ 良い例（サーバーサイド）
+   import { serverFormatDate } from '@/lib/i18n-server';
+   await serverFormatDate(new Date());
+   ```
+
+### 翻訳キーの命名規則
+
+```
+{section}.{subsection}.{element}.{state}
+```
+
+例:
+
+- `dashboard.stats.monthlyKudos.title`
+- `auth.login.submitButton`
+- `errors.validation.required`
+
+### 翻訳ファイルの構造
+
+```
+src/i18n/messages/
+├── en.json  # 英語（デフォルト）
+└── ja.json  # 日本語
+```
+
+新しい翻訳を追加する際は、必ず両方のファイルに追加してください。
+
+### 動的コンテンツの扱い
+
+- **翻訳が必要**: システムメッセージ、ラベル、エラー、通知
+- **翻訳不要**: ユーザー生成コンテンツ（名前、投稿内容、コメント等）
+
+### テキスト長の考慮事項
+
+言語によってテキストの長さが大きく変わります：
+
+- 英語→日本語: 文字数が約半分になることがある
+- 日本語→英語: 文字数が2-3倍になることがある
+
+UIデザイン時は、これらの変動を考慮して柔軟なレイアウトを設計してください。
+
+### 実装チェックリスト
+
+新機能を実装する際は、以下を確認してください：
+
+- [ ] すべてのユーザー向け文字列が翻訳キーを使用している
+- [ ] 日付・時刻・数値が適切にフォーマットされている
+- [ ] エラーメッセージが翻訳されている
+- [ ] フォームバリデーションメッセージが翻訳されている
+- [ ] メタデータ（title, description）が翻訳されている
+- [ ] 両言語でのレイアウト崩れがない
+- [ ] 言語切り替え後も機能が正常に動作する
+
+### よく使うフック・ユーティリティ
+
+```typescript
+// クライアントサイド
+import { useTranslations } from 'next-intl';
+import { useI18n } from '@/hooks/use-i18n';
+import { useLanguagePreference } from '@/hooks/use-language-preference';
+
+// サーバーサイド
+import { getTranslations } from 'next-intl/server';
+import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
+```
