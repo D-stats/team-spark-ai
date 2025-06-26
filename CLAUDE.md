@@ -6,7 +6,7 @@ This document provides guidelines for AI assistants (such as Claude) to efficien
 
 - **Project Name**: TeamSpark AI
 - **Purpose**: AI-powered team communication and engagement platform
-- **Tech Stack**: Next.js 14, TypeScript, Supabase, Prisma, Slack SDK
+- **Tech Stack**: Next.js 14, TypeScript, PostgreSQL (Docker), Prisma, Slack SDK
 
 ## 📋 User Story-Driven Development
 
@@ -90,18 +90,17 @@ docker ps
 
 # Check for port conflicts
 lsof -i :3000  # Next.js
-lsof -i :54321 # Supabase Studio
-lsof -i :54322 # Supabase API
+lsof -i :5432  # PostgreSQL
 ```
 
-### 2. Starting Supabase Local
+### 2. Starting PostgreSQL with Docker
 
 ```bash
-# If Supabase is not running
-npx supabase start
+# Start PostgreSQL container
+docker-compose up -d postgres
 
-# Check status
-npx supabase status
+# Check if PostgreSQL is running
+docker-compose ps
 ```
 
 ## 🛠️ Development Commands
@@ -128,15 +127,15 @@ PORT=3001 npm run dev    # Specify via environment variable
 npm run dev:alt          # Start on port 3001
 npm run dev:custom       # Interactively specify port
 
-# Start Supabase Studio in another terminal
-npx supabase status  # Check URL
+# Access database with Prisma Studio
+npm run prisma:studio
 ```
 
 ### Pre-flight Check
 
 The `npm run pre-flight` command checks:
 
-- ✅ Supabase running status
+- ✅ PostgreSQL Docker container status
 - ✅ Database connection
 - ✅ Migration application status
 - ✅ Prisma Client generation status
@@ -354,7 +353,7 @@ See [docs/guides/troubleshooting.md](./docs/guides/troubleshooting.md) for detai
 ### Common Issues
 
 - **Port Conflicts**: Check with `npm run check:ports`, see [PORT_MANAGEMENT.md](./docs/development/port-management.md)
-- **Supabase Connection Error**: Check status with `npx supabase status`
+- **PostgreSQL Connection Error**: Check Docker status with `docker-compose ps`
 - **Prisma Error**: Regenerate Client with `npx prisma generate`
 - **Schema Mismatch**: Pre-check with `npm run pre-flight`
 
@@ -576,3 +575,66 @@ import { useLanguagePreference } from '@/hooks/use-language-preference';
 import { getTranslations } from 'next-intl/server';
 import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
 ```
+
+## 🔧 MCP Atlassian Integration
+
+### Setup Instructions
+
+1. **Install mcp-atlassian**:
+
+   ```bash
+   uv tool install mcp-atlassian
+   ```
+
+2. **Configure Atlassian credentials**:
+
+   ```bash
+   cp .env.sample .env
+   # Edit .env with your JIRA credentials
+   ```
+
+3. **Enable direnv** (if not already installed):
+
+   ```bash
+   brew install direnv  # macOS
+   direnv allow .       # In project directory
+   ```
+
+4. **Restart Claude Code** to load MCP server
+
+### JIRA Workflow
+
+When working with JIRA tickets:
+
+1. **Use the slash command**:
+
+   ```
+   /resolve-jira-issue TSA-XXX
+   ```
+
+2. **JIRA Format Requirements**:
+
+   - Use JIRA format for ticket updates: `h1.`, `*bold*`, `{code}`, etc.
+   - Keep comments concise and structured
+   - Always link to relevant PRs
+
+3. **Status Transitions**:
+   - Move to "In Progress" when starting work
+   - Add progress comments regularly
+   - Only move to "Done" after PR is merged
+
+### Git Commit Convention with JIRA
+
+Always include JIRA ticket ID in commits:
+
+```bash
+feat(TSA-123): Add user authentication feature
+fix(TSA-456): Resolve login timeout issue
+```
+
+# important-instruction-reminders
+
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User.

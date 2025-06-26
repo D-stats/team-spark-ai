@@ -2,28 +2,28 @@ version: '3.8'
 
 # Network definition
 networks:
-  startup-hr-network:
+  team-spark-network:
     driver: bridge
 
 services:
   # PostgreSQL database (internal communication only)
   postgres:
-    image: postgres:15-alpine
-    container_name: startup-hr-db
+    image: postgres:16-alpine
+    container_name: team-spark-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: startup_hr
+      POSTGRES_DB: team_spark_dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - startup-hr-network
-    # Don't expose to host (internal communication only)
-    expose:
-      - "5432"
+      - team-spark-network
+    # Expose to host for development
+    ports:
+      - '5432:5432'
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,14 +31,14 @@ services:
   # Redis (for session management, internal communication only)
   redis:
     image: redis:7-alpine
-    container_name: startup-hr-redis
+    container_name: team-spark-redis
     restart: unless-stopped
     networks:
-      - startup-hr-network
+      - team-spark-network
     expose:
-      - "6379"
+      - '6379'
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,26 +46,26 @@ services:
   # Mail server (development, expose Web UI only)
   mailhog:
     image: mailhog/mailhog
-    container_name: startup-hr-mail
+    container_name: team-spark-mail
     restart: unless-stopped
     networks:
-      - startup-hr-network
+      - team-spark-network
     ports:
       # Expose Web UI only (SMTP for internal communication only)
-      - "${MAILHOG_UI_PORT:-8025}:8025"
+      - '${MAILHOG_UI_PORT:-8025}:8025'
     expose:
-      - "1025" # SMTP
+      - '1025' # SMTP
 
   # Next.js application
   app:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: startup-hr-app
+    container_name: team-spark-app
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/startup_hr
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/team_spark_dev
       REDIS_URL: redis://redis:6379
       SMTP_HOST: mailhog
       SMTP_PORT: 1025
@@ -75,9 +75,9 @@ services:
       - /app/node_modules
       - /app/.next
     ports:
-      - "${PORT:-3000}:3000"
+      - '${PORT:-3000}:3000'
     networks:
-      - startup-hr-network
+      - team-spark-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,4 +88,4 @@ services:
 # Named volumes
 volumes:
   postgres_data:
-    name: startup-hr-postgres-data
+    name: team-spark-postgres-data

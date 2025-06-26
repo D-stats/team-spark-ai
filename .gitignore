@@ -44,8 +44,9 @@ next-env.d.ts
 prisma/*.db
 prisma/*.db-journal
 
-# supabase
-.supabase/
+# docker
+.docker/
+docker-compose.override.yml
 
 # IDEs
 .vscode/*
