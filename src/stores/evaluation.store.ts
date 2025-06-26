@@ -12,7 +12,7 @@ import {
   CompetencyRating,
   SaveEvaluationRequest,
   Result,
-  _ApiError,
+  ApiError as _ApiError,
 } from '@/types/api';
 import { EvaluationStatus } from '@prisma/client';
 
@@ -236,7 +236,9 @@ export const useEvaluationStore = create<EvaluationStore>()(
                     {
                       competencyId: string;
                       rating: number;
-                      strongPoints: string;
+                      comments: string;
+                      behaviors: string[];
+                      examples: string;
                       improvementAreas: string;
                     }
                   >,

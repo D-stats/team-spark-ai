@@ -18,7 +18,7 @@ export function getNestedTranslation(
     if (result && typeof result === 'function') {
       result = result(k, values);
     } else if (result && typeof result === 'object') {
-      result = result[k];
+      result = (result as Record<string, unknown>)[k];
     } else {
       return key; // Return key if translation not found
     }

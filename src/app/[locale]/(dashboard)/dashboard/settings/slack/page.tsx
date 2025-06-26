@@ -29,8 +29,14 @@ export default async function SlackSettingsPage() {
     },
   });
 
-  // Slack認証URLを生成
-  const slackAuthUrl = getSlackAuthUrl(dbUser.organizationId);
+  // Slack認証URLを生成（Slackが設定されている場合のみ）
+  let slackAuthUrl: string | null = null;
+  let slackConfigured = true;
+  try {
+    slackAuthUrl = getSlackAuthUrl(dbUser.organizationId);
+  } catch (error) {
+    slackConfigured = false;
+  }
 
   return (
     <div className="space-y-6">
@@ -59,7 +65,14 @@ export default async function SlackSettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {slackWorkspace ? (
+          {!slackConfigured ? (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Slack連携機能は現在設定されていません。システム管理者にお問い合わせください。
+              </AlertDescription>
+            </Alert>
+          ) : slackWorkspace ? (
             <div className="space-y-4">
               <div className="rounded-lg bg-muted p-4">
                 <h4 className="mb-2 font-medium">連携済みワークスペース</h4>
@@ -82,7 +95,7 @@ export default async function SlackSettingsPage() {
 
               <div className="border-t pt-4">
                 <Button variant="outline" asChild>
-                  <a href={slackAuthUrl}>
+                  <a href={slackAuthUrl!}>
                     <Slack className="mr-2 h-4 w-4" />
                     連携を更新
                   </a>
@@ -111,7 +124,7 @@ export default async function SlackSettingsPage() {
               </Alert>
 
               <Button asChild>
-                <a href={slackAuthUrl}>
+                <a href={slackAuthUrl!}>
                   <Slack className="mr-2 h-4 w-4" />
                   Slackと連携する
                 </a>

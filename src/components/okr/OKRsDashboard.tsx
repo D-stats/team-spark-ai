@@ -30,11 +30,16 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
   const [objectives, setObjectives] = useState<ObjectiveWithRelations[]>([]);
   const [alignment, setAlignment] = useState<OkrAlignment | null>(null);
   const [summary, setSummary] = useState<{
-    total: number;
-    onTrack: number;
-    atRisk: number;
-    behind: number;
+    totalObjectives: number;
+    activeObjectives: number;
+    completedObjectives: number;
     averageProgress: number;
+    averageConfidence: number;
+    keyResultsByType: {
+      metric: number;
+      milestone: number;
+    };
+    objectivesByCycle: Record<OkrCycle, number>;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);

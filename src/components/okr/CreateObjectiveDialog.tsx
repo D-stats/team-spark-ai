@@ -61,7 +61,7 @@ interface CreateObjectiveDialogProps {
 }
 
 export function CreateObjectiveDialog({
-  _organizationId,
+  organizationId: _organizationId,
   defaultOwnerType = ObjectiveOwner.INDIVIDUAL,
   defaultOwnerUserId,
   defaultOwnerTeamId,

@@ -78,7 +78,14 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
     setIsSubmitting(true);
 
     try {
-      const checkInData = {
+      const checkInData: {
+        keyResultId: string;
+        progress: number;
+        confidence: number | undefined;
+        comment: string | undefined;
+        blockers: string | undefined;
+        currentValue?: number;
+      } = {
         keyResultId: keyResult.id,
         progress: data.progress,
         confidence: data.confidence,

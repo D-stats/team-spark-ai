@@ -5,6 +5,11 @@ import { slackApp } from '@/lib/slack/client';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Slack is configured
+    if (!slackApp) {
+      return NextResponse.json({ error: 'Slack integration is not configured' }, { status: 503 });
+    }
+
     const { dbUser } = await requireAuthWithOrganization();
 
     // Only admins can connect Slack
