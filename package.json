@@ -35,6 +35,7 @@
     "health": "curl -s http://localhost:${PORT:-3000}/api/health | jq . || echo 'Server not responding'",
     "verify": "bash scripts/verify-server.sh",
     "prepare": "husky install",
+    "prisma:seed": "tsx prisma/seed.ts",
     "validate:stories": "tsx src/lib/user-stories/validate-cli.ts",
     "test:stories": "playwright test tests/e2e/stories",
     "report:stories": "npm run validate:stories && npm run test:stories -- --reporter=html",
