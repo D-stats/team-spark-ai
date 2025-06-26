@@ -16,7 +16,7 @@ Setup and usage guides for developers and users.
 Technical documentation for developers.
 
 - **[Architecture](development/architecture.md)** - System design and architecture overview
-- **[Development Plan](development/plan.md)** - Detailed development roadmap and tasks
+- **[Development Plan](development/plan.md)** - Detailed development tasks
 - **[Port Management](development/port-management.md)** - Port conflict resolution strategies
 
 ### 📊 Analysis
@@ -52,8 +52,8 @@ User story documentation and management.
 
 ### For Project Managers
 
-- Current status: [Project Status](project-status.md)
-- Roadmap: [Development Plan](development/plan.md)
+- Current status: [Feature Status](FEATURE_STATUS.md)
+- Development tasks: [Development Plan](development/plan.md)
 - Market analysis: [Competitive Analysis](analysis/competitive-analysis.md)
 
 ## 📝 Documentation Standards

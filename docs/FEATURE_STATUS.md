@@ -1,4 +1,4 @@
-# TeamSpark AI - Feature Status & Roadmap
+# TeamSpark AI - Feature Status
 
 ## 📊 Feature Implementation Status
 

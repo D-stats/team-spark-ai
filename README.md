@@ -291,35 +291,6 @@ graph TB
     G --> M
 ```
 
-## 🚀 Product Roadmap
-
-```mermaid
-gantt
-    title TeamSpark AI Development Roadmap
-    dateFormat  YYYY-MM-DD
-    section Phase 1 - Core MVP
-    Authentication System         :done, 2024-01-01, 30d
-    Kudos System                 :done, 2024-01-15, 30d
-    Check-ins                    :done, 2024-02-01, 30d
-    Basic Dashboards            :done, 2024-02-15, 20d
-
-    section Phase 2 - Engagement
-    Slack Integration           :active, 2024-03-01, 45d
-    Email Notifications         :2024-03-15, 30d
-    Team Management            :2024-04-01, 30d
-    Analytics Dashboard        :2024-04-15, 30d
-
-    section Phase 3 - Intelligence
-    AI Insights                :2024-05-01, 45d
-    Predictive Analytics       :2024-05-15, 45d
-    Automated Recommendations  :2024-06-01, 30d
-
-    section Phase 4 - Enterprise
-    HRIS Integrations         :2024-07-01, 60d
-    Advanced Security         :2024-07-15, 45d
-    Multi-tenant Support      :2024-08-01, 60d
-```
-
 ## 💡 Competitive Advantages
 
 1. **Privacy-First Design**: Cookie-free i18n, GDPR/CCPA compliant
