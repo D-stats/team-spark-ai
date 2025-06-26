@@ -127,7 +127,10 @@ cp .env.example .env.local
 npm run dev:safe
 ```
 
-For detailed setup instructions, see the [Setup Guide](./docs/guides/setup.md).
+For detailed setup instructions, see:
+
+- [Setup Guide](./docs/guides/setup.md) - Complete setup instructions
+- [Environment Setup](./docs/setup/ENVIRONMENT_SETUP.md) - Environment variables and direnv configuration
 
 ## Development Guide
 

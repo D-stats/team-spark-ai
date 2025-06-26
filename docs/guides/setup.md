@@ -6,8 +6,9 @@ Please ensure the following tools are installed:
 
 - **Node.js**: v18.0.0 or higher (recommended: v20.x)
 - **npm**: v9.0.0 or higher
-- **Docker**: v20.0.0 or higher (for Supabase Local)
+- **Docker**: v20.0.0 or higher (for PostgreSQL)
 - **Git**: v2.0.0 or higher
+- **direnv**: (recommended) for automatic environment variable loading
 
 ### Verify Required Tools Installation
 
@@ -29,210 +30,226 @@ git --version
 
 ```bash
 # Clone the repository
-git clone [repository-url]
-cd startup-hr
-
-# Or for new projects
-mkdir startup-hr
-cd startup-hr
-git init
+git clone https://github.com/D-stats/team-spark-ai.git
+cd team-spark-ai
 ```
 
 ## 2. Install Dependencies
 
 ```bash
-# If package.json exists
 npm install
-
-# For new projects (see initial setup below)
-npm init -y
 ```
 
-## 3. Supabase Local Setup
+## 3. Environment Setup
 
-### 3.1 Install Supabase CLI
+### 3.1 Install and Configure direnv (Recommended)
 
 ```bash
-# Install with npm (recommended)
-npm install -g supabase
+# macOS
+brew install direnv
 
-# Or install with Homebrew (macOS)
-brew install supabase/tap/supabase
+# Ubuntu/Debian
+sudo apt-get install direnv
+
+# Add to your shell configuration
+# For bash (~/.bashrc)
+eval "$(direnv hook bash)"
+
+# For zsh (~/.zshrc)
+eval "$(direnv hook zsh)"
+
+# Reload your shell
+exec $SHELL
 ```
 
-### 3.2 Initialize Supabase Project
+### 3.2 Environment Variables Setup
+
+Create `.env` file from examples:
 
 ```bash
-# Initialize Supabase
-npx supabase init
+# Copy main environment variables
+cp .env.example .env
 
-# Start local Supabase
-npx supabase start
+# If using MCP Atlassian integration, append those variables
+cat .env.sample >> .env
 ```
 
-Once started, you'll see information like:
+### 3.3 Configure Environment Variables
 
-```
-Started supabase local development setup.
-
-         API URL: http://localhost:54321
-          DB URL: postgresql://postgres:postgres@localhost:54322/postgres
-      Studio URL: http://localhost:54323
-    Inbucket URL: http://localhost:54324
-        anon key: eyJ...
-service_role key: eyJ...
-```
-
-Save this information to `.env.local`.
-
-### 3.3 Environment Variables Setup
-
-Create `.env.local` file:
+Edit `.env` and set the following:
 
 ```bash
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-
-# Database Connection (for Prisma)
-DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres?schema=public
+# Database Configuration
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/team_spark_dev
 
 # Application Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+PORT=3000  # Optional, defaults to 3000
 
-# Slack Configuration (configure later)
-SLACK_CLIENT_ID=
-SLACK_CLIENT_SECRET=
-SLACK_SIGNING_SECRET=
-SLACK_BOT_TOKEN=
+# Slack Configuration (Optional)
+SLACK_CLIENT_ID=your-client-id
+SLACK_CLIENT_SECRET=your-client-secret
+SLACK_SIGNING_SECRET=your-signing-secret
+
+# Email Configuration (Optional)
+RESEND_API_KEY=your-resend-api-key
+EMAIL_FROM=noreply@yourdomain.com
+
+# MCP Atlassian Integration (Optional)
+JIRA_URL=https://your-company.atlassian.net
+JIRA_USERNAME=your-email@example.com
+JIRA_API_TOKEN=your-jira-api-token
 ```
 
-Also create `.env.example` file (without sensitive information):
+### 3.4 Allow direnv
 
 ```bash
-cp .env.local .env.example
-# Remove actual values from .env.example
+# In the project directory
+direnv allow .
+
+# Verify environment variables are loaded
+echo $DATABASE_URL
 ```
 
-## 4. Next.js Project Initial Setup
+For detailed environment setup, see [Environment Setup Guide](../setup/ENVIRONMENT_SETUP.md).
 
-### 4.1 If Project Not Created Yet
+## 4. Database Setup
+
+### 4.1 Start PostgreSQL with Docker
 
 ```bash
-# Create Next.js project
-npx create-next-app@latest . --typescript --tailwind --app --use-npm
+# Start PostgreSQL container
+docker-compose up -d postgres
 
-# Install additional dependencies
-npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
-npm install prisma @prisma/client
-npm install @slack/bolt @slack/web-api
-npm install zod react-hook-form @hookform/resolvers
-npm install zustand
-npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
-npm install recharts
-npm install clsx tailwind-merge
+# Verify it's running
+docker-compose ps
 
-# Development dependencies
-npm install -D @types/node
-npm install -D eslint-config-prettier prettier
+# The database will be available at:
+# postgresql://postgres:postgres@localhost:5432/team_spark_dev
 ```
 
-### 4.2 Initialize Prisma
+### 4.2 Run Database Migrations
 
 ```bash
-# Initialize Prisma
-npx prisma init
-
-# Edit schema file (see below)
-# Run migration
-npx prisma migrate dev --name init
+# Run existing migrations
+npx prisma migrate deploy
 
 # Generate Prisma Client
 npx prisma generate
-```
 
-## 5. Database Setup
-
-### 5.1 Configure Prisma Schema
-
-Edit `prisma/schema.prisma` to define data models.
-
-### 5.2 Initial Migration
-
-```bash
-# Create and run migration files
-npx prisma migrate dev --name initial_schema
-
-# Seed data (optional)
+# (Optional) Seed initial data
 npx prisma db seed
 ```
 
-## 6. Create Slack App
+### 4.3 Verify Database Setup
+
+```bash
+# Open Prisma Studio to view database
+npm run prisma:studio
+```
+
+## 5. MCP Atlassian Setup (Optional)
+
+If you're using JIRA integration:
+
+### 5.1 Install MCP Atlassian
+
+```bash
+# Install using uv (Python package manager)
+uv tool install mcp-atlassian
+```
+
+### 5.2 Configure JIRA Credentials
+
+Add to your `.env` file:
+
+```bash
+JIRA_URL=https://your-company.atlassian.net
+JIRA_USERNAME=your-email@example.com
+JIRA_API_TOKEN=your-jira-api-token
+```
+
+### 5.3 Restart Claude Code
+
+After configuration, restart Claude Code to load the MCP server.
+
+## 6. Create Slack App (Optional)
 
 ### 6.1 Create Slack App
 
 1. Visit https://api.slack.com/apps
-2. Select "Create New App" → "From scratch"
-3. Set app name and workspace
+2. Click "Create New App" → "From scratch"
+3. App name: "TeamSpark AI"
+4. Choose your workspace
 
-### 6.2 Required Permissions (Bot Token Scopes)
+### 6.2 Configure OAuth & Permissions
 
+Add these Bot Token Scopes:
+
+- `channels:read`
 - `chat:write`
 - `commands`
+- `groups:read`
+- `im:read`
+- `im:write`
 - `users:read`
 - `users:read.email`
-- `team:read`
 
 ### 6.3 Configure Slash Commands
 
-Register the following commands:
+Add command:
 
-- `/kudos` - Request URL: `https://your-domain.com/api/slack/commands`
-- `/checkin` - Request URL: `https://your-domain.com/api/slack/commands`
-- `/mood` - Request URL: `https://your-domain.com/api/slack/commands`
+- Command: `/kudos`
+- Request URL: `https://your-domain.com/api/slack/commands/kudos`
+- Short Description: "Send kudos to a team member"
+- Usage Hint: `@user [category] message`
 
-### 6.4 Update Environment Variables
+### 6.4 Get App Credentials
 
-Add Slack App information to `.env.local`:
+From "Basic Information" page, copy:
 
-```bash
-SLACK_CLIENT_ID=your-client-id
-SLACK_CLIENT_SECRET=your-client-secret
-SLACK_SIGNING_SECRET=your-signing-secret
-SLACK_BOT_TOKEN=xoxb-your-bot-token
-```
+- Client ID
+- Client Secret
+- Signing Secret
+
+Add these to your `.env` file.
 
 ## 7. Start Development Server
 
-### 7.1 Verify Supabase is Running
+### 7.1 Run Pre-flight Checks
 
 ```bash
-npx supabase status
+# Verify everything is set up correctly
+npm run pre-flight
 ```
+
+This checks:
+
+- ✅ PostgreSQL connection
+- ✅ Database migrations
+- ✅ Environment variables
+- ✅ Dependencies
+- ✅ TypeScript configuration
 
 ### 7.2 Start Development Server
 
 ```bash
-# Recommended: Start with pre-flight checks (prevents schema mismatch errors)
+# Recommended: Start with safety checks
 npm run dev:safe
 
 # Or normal start
 npm run dev
 
-# Alternative start for port conflicts
-PORT=3001 npm run dev
-
-# Open Supabase Studio in another terminal
-npx supabase status
-# Open the displayed Studio URL in browser
+# If port 3000 is in use
+npm run dev:alt      # Uses port 3001
+PORT=3002 npm run dev # Custom port
 ```
 
 ### 7.3 Verify Operation
 
-- http://localhost:3000 - Application
-- http://localhost:54323 - Supabase Studio
-- http://localhost:54324 - Inbucket (for email testing)
+- http://localhost:3000 - TeamSpark AI Application
+- http://localhost:5555 - Prisma Studio (run `npm run prisma:studio`)
+- http://localhost:8025 - MailHog UI (if using local email testing)
 
 ## 8. VSCode Recommended Settings
 
@@ -274,27 +291,44 @@ See [SETUP_TROUBLESHOOTING.md](./SETUP_TROUBLESHOOTING.md) for detailed troubles
 
 ### Quick Help
 
-#### Pre-flight Check
-
-```bash
-# Verify environment health
-npm run pre-flight
-```
-
 #### Common Issues
 
-1. **Schema mismatch error**: `npm run prisma:reset` (development only)
-2. **Port conflict**: `PORT=3001 npm run dev`
-3. **Supabase connection error**: `npx supabase stop && npx supabase start`
-4. **TypeScript error**: Check details with `npm run type-check`
+1. **Database connection error**:
+
+   ```bash
+   docker-compose ps  # Check if PostgreSQL is running
+   docker-compose up -d postgres  # Start if needed
+   ```
+
+2. **Port conflict**:
+
+   ```bash
+   npm run check:ports  # See what's using ports
+   npm run dev:alt     # Use alternate port
+   ```
+
+3. **Environment variables not loading**:
+
+   ```bash
+   direnv allow .      # Re-allow direnv
+   exec $SHELL        # Reload shell
+   echo $DATABASE_URL # Verify
+   ```
+
+4. **TypeScript errors**:
+   ```bash
+   npm run type-check  # See detailed errors
+   npm run prisma:generate  # Regenerate types
+   ```
 
 ## 10. Next Steps
 
 After environment setup is complete:
 
-1. Check `docs/development/plan.md` to start development tasks
-2. Follow guidelines in `CLAUDE.md` for development
-3. Set up test environment before implementing features
+1. Read [CLAUDE.md](../../CLAUDE.md) for AI developer guidelines
+2. Check [PRODUCT_OVERVIEW.md](../PRODUCT_OVERVIEW.md) to understand the product
+3. Review [ARCHITECTURE.md](../ARCHITECTURE.md) for technical details
+4. See [FEATURE_STATUS.md](../FEATURE_STATUS.md) for implementation status
 
 ## Appendix: Frequently Used Commands
 
@@ -306,11 +340,19 @@ See [Command List in README.md](../README.md#command-list) for complete list of 
 # Start development server (with pre-flight checks)
 npm run dev:safe
 
-# When changing schema
+# Database management
 npx prisma migrate dev --name descriptive_name
 npx prisma generate
-npm run type-check
+npm run prisma:studio
 
 # Quality checks
-npm run validate
+npm run validate       # Run all checks
+npm run type-check    # TypeScript only
+npm run lint          # ESLint only
+npm run test          # Run tests
+
+# Docker management
+docker-compose up -d   # Start services
+docker-compose ps      # Check status
+docker-compose down    # Stop services
 ```

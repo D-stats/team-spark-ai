@@ -7,6 +7,7 @@ This document provides guidelines for AI assistants (such as Claude) to efficien
 - **Project Name**: TeamSpark AI
 - **Purpose**: AI-powered team communication and engagement platform
 - **Tech Stack**: Next.js 14, TypeScript, PostgreSQL (Docker), Prisma, Slack SDK
+- **Repository**: https://github.com/D-stats/team-spark-ai
 
 ## 📋 User Story-Driven Development
 
@@ -93,7 +94,20 @@ lsof -i :3000  # Next.js
 lsof -i :5432  # PostgreSQL
 ```
 
-### 2. Starting PostgreSQL with Docker
+### 2. Environment Setup with direnv
+
+```bash
+# Install direnv (if not already installed)
+brew install direnv  # macOS
+
+# Allow direnv in the project
+direnv allow .
+
+# Verify environment variables are loaded
+echo $DATABASE_URL
+```
+
+### 3. Starting PostgreSQL with Docker
 
 ```bash
 # Start PostgreSQL container
@@ -172,7 +186,7 @@ The development server implements a `/api/health` endpoint that provides:
 {
   "status": "ok",
   "timestamp": "2025-06-19T22:47:16.340Z",
-  "service": "startup-hr-engagement",
+  "service": "team-spark-ai",
   "version": "0.1.0",
   "checks": {
     "server": true,
@@ -192,7 +206,7 @@ The development server implements a `/api/health` endpoint that provides:
 1. **Port Check**: Is the specified port open?
 2. **Process Check**: Is the Node.js process running?
 3. **HTTP Header Check**: Is it responding as a Next.js server?
-4. **Health Check**: Is it the correct service (startup-hr-engagement)?
+4. **Health Check**: Is it the correct service (team-spark-ai)?
 5. **Next.js Route Check**: Do Next.js-specific paths exist?
 
 If 3 or more checks pass, the correct development server is considered to be running.
@@ -290,8 +304,9 @@ npx prisma generate
 
 ### 3. Environment Variable Check
 
-- Confirm `.env.local` doesn't contain sensitive information
+- Confirm `.env` doesn't contain sensitive information in commits
 - Update `.env.example` if new environment variables were added
+- Ensure direnv is loading variables correctly: `direnv status`
 
 ### 4. Automatic Checks on Commit (Husky + lint-staged)
 
@@ -589,15 +604,17 @@ import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
 2. **Configure Atlassian credentials**:
 
    ```bash
-   cp .env.sample .env
-   # Edit .env with your JIRA credentials
+   # Add JIRA credentials to your .env file
+   echo "JIRA_URL=https://d-stats.atlassian.net" >> .env
+   echo "JIRA_USERNAME=your-email@example.com" >> .env
+   echo "JIRA_API_TOKEN=your-api-token" >> .env
    ```
 
-3. **Enable direnv** (if not already installed):
+3. **Ensure direnv is active**:
 
    ```bash
-   brew install direnv  # macOS
    direnv allow .       # In project directory
+   direnv status        # Verify it's loaded
    ```
 
 4. **Restart Claude Code** to load MCP server
