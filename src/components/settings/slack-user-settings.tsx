@@ -97,7 +97,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      
+
       {success && (
         <Alert>
           <Check className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
 
       <div className="space-y-4">
         <div>
-          <h4 className="text-sm font-medium mb-2">連携ワークスペース</h4>
+          <h4 className="mb-2 text-sm font-medium">連携ワークスペース</h4>
           <div className="flex items-center space-x-2">
             <Slack className="h-4 w-4" />
             <span className="text-sm">{slackWorkspace.teamName}</span>
@@ -122,7 +122,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">Slack連携状態</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     SlackユーザーID: {user.slackUserId}
                   </p>
                 </div>
@@ -143,12 +143,8 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
               </ul>
             </div>
 
-            <div className="pt-4 border-t">
-              <Button 
-                variant="outline" 
-                onClick={handleDisconnectSlack}
-                disabled={loading}
-              >
+            <div className="border-t pt-4">
+              <Button variant="outline" onClick={handleDisconnectSlack} disabled={loading}>
                 {loading ? '処理中...' : 'Slack連携を解除'}
               </Button>
             </div>

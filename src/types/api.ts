@@ -4,13 +4,13 @@
  */
 
 import { z } from 'zod';
-import { 
-  EvaluationType, 
-  EvaluationStatus, 
-  EvaluationCycleType, 
+import {
+  EvaluationType,
+  EvaluationStatus,
+  EvaluationCycleType,
   CycleStatus,
   CompetencyCategory,
-  Role 
+  Role,
 } from '@prisma/client';
 
 // ================
@@ -83,14 +83,16 @@ export const EvaluationCycleWithStatsSchema = EvaluationCycleSchema.extend({
   _count: z.object({
     evaluations: z.number(),
   }),
-  phases: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    type: z.nativeEnum(EvaluationType),
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date(),
-    order: z.number(),
-  })),
+  phases: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      type: z.nativeEnum(EvaluationType),
+      startDate: z.coerce.date(),
+      endDate: z.coerce.date(),
+      order: z.number(),
+    }),
+  ),
 });
 
 export const CompetencySchema = z.object({
@@ -136,6 +138,7 @@ export const EvaluationSchema = z.object({
   improvements: z.string().optional(),
   careerGoals: z.string().optional(),
   developmentPlan: z.string().optional(),
+  managerComments: z.string().optional(),
   isVisible: z.boolean(),
   submittedAt: z.coerce.date().optional(),
   reviewedAt: z.coerce.date().optional(),
@@ -165,9 +168,11 @@ export const EvaluationWithDetailsSchema = EvaluationSchema.extend({
     type: z.nativeEnum(EvaluationCycleType),
     status: z.nativeEnum(CycleStatus),
   }),
-  competencyRatings: z.array(CompetencyRatingSchema.extend({
-    competency: CompetencySchema,
-  })),
+  competencyRatings: z.array(
+    CompetencyRatingSchema.extend({
+      competency: CompetencySchema,
+    }),
+  ),
 });
 
 // ================
@@ -207,14 +212,16 @@ export const SaveEvaluationSchema = z.object({
   improvements: z.string().optional(),
   careerGoals: z.string().optional(),
   developmentPlan: z.string().optional(),
-  competencyRatings: z.array(z.object({
-    competencyId: z.string(),
-    rating: z.number().min(1).max(5),
-    comments: z.string().optional(),
-    behaviors: z.array(z.string()),
-    examples: z.string().optional(),
-    improvementAreas: z.string().optional(),
-  })),
+  competencyRatings: z.array(
+    z.object({
+      competencyId: z.string(),
+      rating: z.number().min(1).max(5),
+      comments: z.string().optional(),
+      behaviors: z.array(z.string()),
+      examples: z.string().optional(),
+      improvementAreas: z.string().optional(),
+    }),
+  ),
   isDraft: z.boolean().default(true),
 });
 
@@ -222,14 +229,18 @@ export const SubmitEvaluationSchema = SaveEvaluationSchema.extend({
   isDraft: z.literal(false),
   overallRating: z.number().min(1).max(5),
   overallComments: z.string().min(1, '総合コメントは必須です'),
-  competencyRatings: z.array(z.object({
-    competencyId: z.string(),
-    rating: z.number().min(1).max(5),
-    comments: z.string().min(1, 'コメントは必須です'),
-    behaviors: z.array(z.string()).min(1, '行動指標は1つ以上選択してください'),
-    examples: z.string().optional(),
-    improvementAreas: z.string().optional(),
-  })).min(1, 'コンピテンシー評価は必須です'),
+  competencyRatings: z
+    .array(
+      z.object({
+        competencyId: z.string(),
+        rating: z.number().min(1).max(5),
+        comments: z.string().min(1, 'コメントは必須です'),
+        behaviors: z.array(z.string()).min(1, '行動指標は1つ以上選択してください'),
+        examples: z.string().optional(),
+        improvementAreas: z.string().optional(),
+      }),
+    )
+    .min(1, 'コンピテンシー評価は必須です'),
 });
 
 // ================
@@ -255,9 +266,7 @@ export type SubmitEvaluationRequest = z.infer<typeof SubmitEvaluationSchema>;
 // Result型パターン
 // ================
 
-export type Result<T, E = ApiError> = 
-  | { success: true; data: T }
-  | { success: false; error: E };
+export type Result<T, E = ApiError> = { success: true; data: T } | { success: false; error: E };
 
 export type AsyncResult<T, E = ApiError> = Promise<Result<T, E>>;
 
@@ -269,7 +278,10 @@ export interface EvaluationApi {
   // 評価サイクル
   getEvaluationCycles(): AsyncResult<EvaluationCycleWithStats[]>;
   createEvaluationCycle(data: CreateEvaluationCycleRequest): AsyncResult<EvaluationCycle>;
-  updateEvaluationCycle(id: string, data: UpdateEvaluationCycleRequest): AsyncResult<EvaluationCycle>;
+  updateEvaluationCycle(
+    id: string,
+    data: UpdateEvaluationCycleRequest,
+  ): AsyncResult<EvaluationCycle>;
   deleteEvaluationCycle(id: string): AsyncResult<void>;
 
   // コンピテンシー

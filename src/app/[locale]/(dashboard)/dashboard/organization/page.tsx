@@ -69,9 +69,7 @@ export default async function OrganizationPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">組織設定</h1>
-        <p className="mt-2 text-muted-foreground">
-          組織の基本情報と設定を管理します
-        </p>
+        <p className="mt-2 text-muted-foreground">組織の基本情報と設定を管理します</p>
       </div>
 
       <div className="grid gap-6">
@@ -90,11 +88,13 @@ export default async function OrganizationPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">組織ID</p>
-                <p className="text-lg font-mono text-muted-foreground">{organization.slug}</p>
+                <p className="font-mono text-lg text-muted-foreground">{organization.slug}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">作成日</p>
-                <p className="text-lg">{new Date(organization.createdAt).toLocaleDateString('ja-JP')}</p>
+                <p className="text-lg">
+                  {new Date(organization.createdAt).toLocaleDateString('ja-JP')}
+                </p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">プラン</p>
@@ -134,16 +134,14 @@ export default async function OrganizationPage() {
                   </Badge>
                 )}
               </div>
-              <CardDescription>
-                SlackワークスペースとTeamSpark AIを連携します
-              </CardDescription>
+              <CardDescription>SlackワークスペースとTeamSpark AIを連携します</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {hasSlackIntegration ? (
                   <>
                     <div className="rounded-lg bg-muted p-4">
-                      <p className="text-sm font-medium mb-1">連携済みワークスペース</p>
+                      <p className="mb-1 text-sm font-medium">連携済みワークスペース</p>
                       <p className="text-sm text-muted-foreground">
                         {organization.slackWorkspaces[0].teamName}
                       </p>

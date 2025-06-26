@@ -1,8 +1,17 @@
-import { requireAuthWithOrganization } from '@/lib/auth/utils'
-import { OKRsDashboard } from '@/components/okr/OKRsDashboard'
+import { requireAuthWithOrganization } from '@/lib/auth/utils';
+import { OKRsDashboard } from '@/components/okr/OKRsDashboard';
+import { prisma } from '@/lib/prisma';
 
 export default async function OKRsPage() {
-  const { dbUser } = await requireAuthWithOrganization()
-  
-  return <OKRsDashboard user={dbUser} organization={dbUser.organization!} />
+  const { dbUser } = await requireAuthWithOrganization();
+
+  // Get full user and organization data
+  const fullUser = await prisma.user.findUniqueOrThrow({
+    where: { id: dbUser.id },
+    include: {
+      organization: true,
+    },
+  });
+
+  return <OKRsDashboard user={fullUser} organization={fullUser.organization!} />;
 }

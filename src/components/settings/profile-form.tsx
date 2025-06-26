@@ -64,11 +64,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
       )}
-      
+
       {success && (
         <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
           プロフィールが正常に更新されました
@@ -89,47 +87,32 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="email">メールアドレス</Label>
-          <Input
-            id="email"
-            type="email"
-            value={user.email}
-            disabled
-            className="bg-muted"
-          />
-          <p className="text-xs text-muted-foreground">
-            メールアドレスは変更できません
-          </p>
+          <Input id="email" type="email" value={user.email} disabled className="bg-muted" />
+          <p className="text-xs text-muted-foreground">メールアドレスは変更できません</p>
         </div>
-
 
         <div className="space-y-2">
           <Label htmlFor="role">権限</Label>
           <Input
             id="role"
             value={
-              user.role === 'ADMIN' ? '管理者' :
-              user.role === 'MANAGER' ? 'マネージャー' :
-              'メンバー'
+              user.role === 'ADMIN'
+                ? '管理者'
+                : user.role === 'MANAGER'
+                  ? 'マネージャー'
+                  : 'メンバー'
             }
             disabled
             className="bg-muted"
           />
-          <p className="text-xs text-muted-foreground">
-            権限は管理者によって設定されます
-          </p>
+          <p className="text-xs text-muted-foreground">権限は管理者によって設定されます</p>
         </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="organization">所属組織</Label>
-        <Input
-          id="organization"
-          value={user.organization.name}
-          disabled
-          className="bg-muted"
-        />
+        <Input id="organization" value={user.organization.name} disabled className="bg-muted" />
       </div>
-
 
       <div className="flex justify-end">
         <Button type="submit" disabled={loading || !name}>

@@ -16,7 +16,7 @@ export default function DevPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className="container mx-auto space-y-6 py-6">
       <div className="flex items-center space-x-3">
         <Terminal className="h-8 w-8 text-blue-600" />
         <h1 className="text-3xl font-bold">開発者ダッシュボード</h1>
@@ -35,23 +35,23 @@ export default function DevPage() {
           <CardTitle>便利なコマンド</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <div className="font-mono text-sm space-y-2">
-            <div className="p-3 bg-gray-100 rounded">
+          <div className="space-y-2 font-mono text-sm">
+            <div className="rounded bg-gray-100 p-3">
               <div className="text-gray-600"># ストーリー検証レポートの生成</div>
               <div>npm run validate:stories</div>
             </div>
-            
-            <div className="p-3 bg-gray-100 rounded">
+
+            <div className="rounded bg-gray-100 p-3">
               <div className="text-gray-600"># ストーリーベースのテスト実行</div>
               <div>npm run test:stories</div>
             </div>
 
-            <div className="p-3 bg-gray-100 rounded">
+            <div className="rounded bg-gray-100 p-3">
               <div className="text-gray-600"># 型チェック</div>
               <div>npm run type-check</div>
             </div>
 
-            <div className="p-3 bg-gray-100 rounded">
+            <div className="rounded bg-gray-100 p-3">
               <div className="text-gray-600"># すべての検証を実行</div>
               <div>npm run validate</div>
             </div>

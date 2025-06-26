@@ -1,10 +1,7 @@
 import { createHmac } from 'crypto';
 import { NextRequest } from 'next/server';
 
-export async function verifySlackRequest(
-  request: NextRequest,
-  body: string
-): Promise<boolean> {
+export async function verifySlackRequest(request: NextRequest, body: string): Promise<boolean> {
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
     console.error('SLACK_SIGNING_SECRET is not set');
@@ -28,9 +25,8 @@ export async function verifySlackRequest(
   const sigBasestring = `v0:${timestamp}:${body}`;
 
   // HMAC SHA256ハッシュを生成
-  const mySignature = 'v0=' + createHmac('sha256', signingSecret)
-    .update(sigBasestring)
-    .digest('hex');
+  const mySignature =
+    'v0=' + createHmac('sha256', signingSecret).update(sigBasestring).digest('hex');
 
   // 署名を比較
   return mySignature === slackSignature;

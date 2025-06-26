@@ -17,25 +17,18 @@ interface EvaluationGoalsStepProps {
   isReadOnly?: boolean;
 }
 
-export function EvaluationGoalsStep({ 
-  evaluation, 
-  isReadOnly = false 
-}: EvaluationGoalsStepProps) {
-  const {
-    formData,
-    updateCareerGoals,
-    updateDevelopmentPlan,
-  } = useEvaluationStore();
+export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: EvaluationGoalsStepProps) {
+  const { formData, updateCareerGoals, updateDevelopmentPlan } = useEvaluationStore();
 
   return (
     <div className="space-y-6">
       {/* 説明 */}
-      <Card className="bg-green-50 border-green-200">
+      <Card className="border-green-200 bg-green-50">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <Target className="h-5 w-5 text-green-600 mt-0.5" />
+            <Target className="mt-0.5 h-5 w-5 text-green-600" />
             <div>
-              <h4 className="font-semibold text-green-900 mb-2">目標と開発計画について</h4>
+              <h4 className="mb-2 font-semibold text-green-900">目標と開発計画について</h4>
               <p className="text-sm text-green-800">
                 今後のキャリア目標と具体的な開発計画を記入してください。
                 この情報は個人の成長支援に活用されます。
@@ -75,10 +68,10 @@ export function EvaluationGoalsStep({
           </div>
 
           {/* 入力ガイド */}
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="border-blue-200 bg-blue-50">
             <CardContent className="p-3">
-              <h5 className="font-semibold text-blue-900 text-sm mb-2">💡 記入のポイント</h5>
-              <ul className="text-xs text-blue-800 space-y-1">
+              <h5 className="mb-2 text-sm font-semibold text-blue-900">💡 記入のポイント</h5>
+              <ul className="space-y-1 text-xs text-blue-800">
                 <li>• 具体的で実現可能な目標を設定してください</li>
                 <li>• 現在の役割からの成長ステップを明確にしてください</li>
                 <li>• 技術的スキル、ソフトスキル両面を考慮してください</li>
@@ -127,11 +120,11 @@ export function EvaluationGoalsStep({
           </div>
 
           {/* 開発領域のヒント */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <Card className="bg-purple-50 border-purple-200">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="border-purple-200 bg-purple-50">
               <CardContent className="p-3">
-                <h5 className="font-semibold text-purple-900 text-sm mb-2">🎯 開発領域の例</h5>
-                <ul className="text-xs text-purple-800 space-y-1">
+                <h5 className="mb-2 text-sm font-semibold text-purple-900">🎯 開発領域の例</h5>
+                <ul className="space-y-1 text-xs text-purple-800">
                   <li>• 技術的専門性の向上</li>
                   <li>• リーダーシップ・マネジメント</li>
                   <li>• コミュニケーション能力</li>
@@ -141,10 +134,10 @@ export function EvaluationGoalsStep({
               </CardContent>
             </Card>
 
-            <Card className="bg-orange-50 border-orange-200">
+            <Card className="border-orange-200 bg-orange-50">
               <CardContent className="p-3">
-                <h5 className="font-semibold text-orange-900 text-sm mb-2">📚 学習方法の例</h5>
-                <ul className="text-xs text-orange-800 space-y-1">
+                <h5 className="mb-2 text-sm font-semibold text-orange-900">📚 学習方法の例</h5>
+                <ul className="space-y-1 text-xs text-orange-800">
                   <li>• 社内研修・外部セミナー参加</li>
                   <li>• メンタリング・コーチング</li>
                   <li>• 新しいプロジェクト・業務への挑戦</li>
@@ -158,15 +151,15 @@ export function EvaluationGoalsStep({
       </Card>
 
       {/* 支援要請 */}
-      <Card className="bg-yellow-50 border-yellow-200">
+      <Card className="border-yellow-200 bg-yellow-50">
         <CardHeader>
           <CardTitle className="text-base text-yellow-900">🤝 組織への支援要請</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-yellow-800 mb-3">
+          <p className="mb-3 text-sm text-yellow-800">
             目標達成のために組織からの支援が必要な場合は、以下の観点で記述してください：
           </p>
-          <ul className="text-sm text-yellow-800 space-y-1 mb-4">
+          <ul className="mb-4 space-y-1 text-sm text-yellow-800">
             <li>• 必要な研修や学習機会の提供</li>
             <li>• 新しい業務やプロジェクトへのアサイン</li>
             <li>• メンタリングやコーチングの機会</li>
@@ -180,9 +173,9 @@ export function EvaluationGoalsStep({
 
       {/* 評価タイプ別のガイド */}
       {evaluation.type === 'SELF' && (
-        <Card className="bg-indigo-50 border-indigo-200">
+        <Card className="border-indigo-200 bg-indigo-50">
           <CardContent className="p-4">
-            <h4 className="font-semibold text-indigo-900 mb-2">自己評価でのポイント</h4>
+            <h4 className="mb-2 font-semibold text-indigo-900">自己評価でのポイント</h4>
             <p className="text-sm text-indigo-800">
               自分自身の成長意欲や将来への展望を率直に表現してください。
               現実的でありながらも挑戦的な目標設定を心がけましょう。
@@ -192,9 +185,9 @@ export function EvaluationGoalsStep({
       )}
 
       {evaluation.type === 'MANAGER' && (
-        <Card className="bg-emerald-50 border-emerald-200">
+        <Card className="border-emerald-200 bg-emerald-50">
           <CardContent className="p-4">
-            <h4 className="font-semibold text-emerald-900 mb-2">上司評価でのポイント</h4>
+            <h4 className="mb-2 font-semibold text-emerald-900">上司評価でのポイント</h4>
             <p className="text-sm text-emerald-800">
               部下の現在の能力と将来のポテンシャルを考慮し、
               適切な挑戦レベルの目標と具体的な成長支援策を提案してください。
@@ -205,12 +198,8 @@ export function EvaluationGoalsStep({
 
       {/* 文字数カウンター */}
       <div className="flex justify-between text-sm text-gray-500">
-        <span>
-          キャリア目標: {formData.careerGoals?.length || 0}文字
-        </span>
-        <span>
-          開発計画: {formData.developmentPlan?.length || 0}文字
-        </span>
+        <span>キャリア目標: {formData.careerGoals?.length || 0}文字</span>
+        <span>開発計画: {formData.developmentPlan?.length || 0}文字</span>
       </div>
     </div>
   );

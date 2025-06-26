@@ -4,8 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { createEvaluationCycle, generateEvaluations } from '@/services/evaluation.service';
 import { EvaluationCycleType } from '@prisma/client';
 
-// 評価サイクル一覧取得
-export async function GET(request: NextRequest) {
+// Get evaluation cycles list
+export async function GET(_request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -29,10 +29,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(cycles);
   } catch (error) {
     console.error('Error fetching evaluation cycles:', error);
-    return NextResponse.json(
-      { error: '評価サイクルの取得に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '評価サイクルの取得に失敗しました' }, { status: 500 });
   }
 }
 
@@ -43,10 +40,7 @@ export async function POST(request: NextRequest) {
 
     // 管理者またはマネージャーのみ作成可能
     if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
-      return NextResponse.json(
-        { error: '評価サイクルの作成権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '評価サイクルの作成権限がありません' }, { status: 403 });
     }
 
     const body = await request.json();
@@ -54,10 +48,7 @@ export async function POST(request: NextRequest) {
 
     // バリデーション
     if (!name || !type || !startDate || !endDate) {
-      return NextResponse.json(
-        { error: '必要な項目が入力されていません' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 
     const start = new Date(startDate);
@@ -66,7 +57,7 @@ export async function POST(request: NextRequest) {
     if (start >= end) {
       return NextResponse.json(
         { error: '終了日は開始日より後に設定してください' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -76,10 +67,7 @@ export async function POST(request: NextRequest) {
         organizationId: dbUser.organizationId,
         OR: [
           {
-            AND: [
-              { startDate: { lte: end } },
-              { endDate: { gte: start } },
-            ],
+            AND: [{ startDate: { lte: end } }, { endDate: { gte: start } }],
           },
         ],
         status: { in: ['DRAFT', 'ACTIVE'] },
@@ -89,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (existingCycle) {
       return NextResponse.json(
         { error: '期間が重複する評価サイクルが存在します' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -104,23 +92,20 @@ export async function POST(request: NextRequest) {
 
     // 自動生成が有効な場合、評価を生成
     if (autoGenerate) {
-      const evaluationCount = await generateEvaluations(
-        cycle.id,
-        dbUser.organizationId
+      const evaluationCount = await generateEvaluations(cycle.id, dbUser.organizationId);
+
+      return NextResponse.json(
+        {
+          ...cycle,
+          generatedEvaluations: evaluationCount,
+        },
+        { status: 201 },
       );
-      
-      return NextResponse.json({
-        ...cycle,
-        generatedEvaluations: evaluationCount,
-      }, { status: 201 });
     }
 
     return NextResponse.json(cycle, { status: 201 });
   } catch (error) {
     console.error('Error creating evaluation cycle:', error);
-    return NextResponse.json(
-      { error: '評価サイクルの作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '評価サイクルの作成に失敗しました' }, { status: 500 });
   }
 }

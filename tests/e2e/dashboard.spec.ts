@@ -8,10 +8,10 @@ test.describe('ダッシュボード', () => {
 
   test('ダッシュボードの表示', async ({ page }) => {
     await page.goto('/dashboard');
-    
+
     // ページタイトルの確認
     await expect(page.locator('h1')).toContainText('ダッシュボード');
-    
+
     // メインカードの確認
     await expect(page.locator('text=チームのムード')).toBeVisible();
     await expect(page.locator('text=今週のKudos')).toBeVisible();
@@ -20,7 +20,7 @@ test.describe('ダッシュボード', () => {
 
   test('ナビゲーションメニューの確認', async ({ page }) => {
     await page.goto('/dashboard');
-    
+
     // サイドバーのメニューアイテムを確認
     await expect(page.locator('text=ダッシュボード')).toBeVisible();
     await expect(page.locator('text=チーム')).toBeVisible();
@@ -40,17 +40,17 @@ test.describe('Kudos機能', () => {
 
   test('Kudosページの表示', async ({ page }) => {
     await page.goto('/dashboard/kudos');
-    
+
     await expect(page.locator('h1')).toContainText('Kudos');
     await expect(page.locator('button', { hasText: 'Kudosを送る' })).toBeVisible();
   });
 
   test('Kudos送信フォームの表示', async ({ page }) => {
     await page.goto('/dashboard/kudos');
-    
+
     // Kudos送信ボタンをクリック
     await page.click('button:has-text("Kudosを送る")');
-    
+
     // フォームが表示されることを確認
     await expect(page.locator('[role="dialog"]')).toBeVisible();
     await expect(page.locator('text=Kudosを送る')).toBeVisible();
@@ -64,17 +64,17 @@ test.describe('チェックイン機能', () => {
 
   test('チェックインページの表示', async ({ page }) => {
     await page.goto('/dashboard/checkins');
-    
+
     await expect(page.locator('h1')).toContainText('チェックイン');
     await expect(page.locator('button', { hasText: 'チェックインを作成' })).toBeVisible();
   });
 
   test('チェックイン作成フォームの表示', async ({ page }) => {
     await page.goto('/dashboard/checkins');
-    
+
     // チェックイン作成ボタンをクリック
     await page.click('button:has-text("チェックインを作成")');
-    
+
     // フォームが表示されることを確認
     await expect(page.locator('[role="dialog"]')).toBeVisible();
     await expect(page.locator('text=チェックイン作成')).toBeVisible();
@@ -88,17 +88,17 @@ test.describe('チーム管理', () => {
 
   test('チームページの表示', async ({ page }) => {
     await page.goto('/dashboard/teams');
-    
+
     await expect(page.locator('h1')).toContainText('チーム管理');
     await expect(page.locator('button', { hasText: 'チーム作成' })).toBeVisible();
   });
 
   test('チーム作成フォームの表示', async ({ page }) => {
     await page.goto('/dashboard/teams');
-    
+
     // チーム作成ボタンをクリック
     await page.click('button:has-text("チーム作成")');
-    
+
     // フォームが表示されることを確認
     await expect(page.locator('[role="dialog"]')).toBeVisible();
     await expect(page.locator('text=チーム作成')).toBeVisible();
@@ -112,7 +112,7 @@ test.describe('OKR機能', () => {
 
   test('OKRページの表示', async ({ page }) => {
     await page.goto('/okrs');
-    
+
     // ページが読み込まれることを確認
     await expect(page.locator('body')).toBeVisible();
   });
@@ -125,17 +125,17 @@ test.describe('サーベイ機能', () => {
 
   test('サーベイページの表示', async ({ page }) => {
     await page.goto('/dashboard/surveys');
-    
+
     await expect(page.locator('h1')).toContainText('サーベイ');
     await expect(page.locator('button', { hasText: 'サーベイ作成' })).toBeVisible();
   });
 
   test('サーベイ作成フォームの表示', async ({ page }) => {
     await page.goto('/dashboard/surveys');
-    
+
     // サーベイ作成ボタンをクリック
     await page.click('button:has-text("サーベイ作成")');
-    
+
     // フォームが表示されることを確認
     await expect(page.locator('[role="dialog"]')).toBeVisible();
     await expect(page.locator('text=サーベイ作成')).toBeVisible();

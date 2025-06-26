@@ -7,6 +7,7 @@ This document provides instructions for renaming the repository from `startup-hr
 ### 1. Update Remote URL
 
 If you're using GitHub:
+
 ```bash
 # Check current remote URL
 git remote -v
@@ -24,6 +25,7 @@ git remote -v
 ### 2. Rename Local Directory (Optional)
 
 If you want to rename your local directory:
+
 ```bash
 # Navigate to parent directory
 cd ..
@@ -50,6 +52,7 @@ GitHub will automatically set up redirects from the old repository name to the n
 ### 4. Update Local Configuration
 
 After renaming on GitHub:
+
 ```bash
 # Fetch the latest changes
 git fetch origin
@@ -61,6 +64,7 @@ git branch --set-upstream-to=origin/main main
 ### 5. Update Any CI/CD or Deployment Configurations
 
 Make sure to update:
+
 - Any CI/CD pipelines that reference the old repository name
 - Deployment scripts
 - Environment variables that might contain the old repository URL
@@ -69,6 +73,7 @@ Make sure to update:
 ### 6. Notify Team Members
 
 If working in a team, make sure all team members update their local repositories:
+
 ```bash
 # Team members should run:
 git remote set-url origin https://github.com/USERNAME/team-spark-ai.git
@@ -78,6 +83,7 @@ git fetch origin
 ## Verification
 
 To verify everything is working correctly:
+
 ```bash
 # Check remote URL
 git remote -v

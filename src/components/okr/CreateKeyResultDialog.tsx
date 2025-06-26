@@ -1,54 +1,80 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { KeyResultType, MilestoneStatus } from '@prisma/client'
-import { useToast } from '@/components/ui/use-toast'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { KeyResultType, MilestoneStatus } from '@prisma/client';
+import { useToast } from '@/components/ui/use-toast';
 
-const createKeyResultSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200),
-  description: z.string().optional(),
-  type: z.nativeEnum(KeyResultType),
-  // For METRIC type
-  startValue: z.number().optional(),
-  targetValue: z.number().optional(),
-  unit: z.string().optional(),
-  // For MILESTONE type
-  milestoneStatus: z.nativeEnum(MilestoneStatus).optional()
-}).refine((data) => {
-  if (data.type === KeyResultType.METRIC) {
-    return data.targetValue !== undefined && data.targetValue !== null
-  }
-  return true
-}, {
-  message: "Target value is required for metric key results",
-  path: ["targetValue"]
-})
+const createKeyResultSchema = z
+  .object({
+    title: z.string().min(1, 'Title is required').max(200),
+    description: z.string().optional(),
+    type: z.nativeEnum(KeyResultType),
+    // For METRIC type
+    startValue: z.number().optional(),
+    targetValue: z.number().optional(),
+    unit: z.string().optional(),
+    // For MILESTONE type
+    milestoneStatus: z.nativeEnum(MilestoneStatus).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.type === KeyResultType.METRIC) {
+        return data.targetValue !== undefined && data.targetValue !== null;
+      }
+      return true;
+    },
+    {
+      message: 'Target value is required for metric key results',
+      path: ['targetValue'],
+    },
+  );
 
-type CreateKeyResultForm = z.infer<typeof createKeyResultSchema>
+type CreateKeyResultForm = z.infer<typeof createKeyResultSchema>;
 
 interface CreateKeyResultDialogProps {
-  objectiveId: string
-  onClose: () => void
-  onSuccess: () => void
+  objectiveId: string;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
 export function CreateKeyResultDialog({
   objectiveId,
   onClose,
-  onSuccess
+  onSuccess,
 }: CreateKeyResultDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<CreateKeyResultForm>({
     resolver: zodResolver(createKeyResultSchema),
@@ -59,46 +85,46 @@ export function CreateKeyResultDialog({
       startValue: 0,
       targetValue: undefined,
       unit: '',
-      milestoneStatus: MilestoneStatus.NOT_STARTED
-    }
-  })
+      milestoneStatus: MilestoneStatus.NOT_STARTED,
+    },
+  });
 
-  const keyResultType = form.watch('type')
+  const keyResultType = form.watch('type');
 
   const onSubmit = async (data: CreateKeyResultForm) => {
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
       const response = await fetch('/api/okr/key-results', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           objectiveId,
-          ...data
-        })
-      })
+          ...data,
+        }),
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to create key result')
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create key result');
       }
 
       toast({
         title: 'Key result created',
-        description: 'Your key result has been created successfully.'
-      })
-      
-      onSuccess()
+        description: 'Your key result has been created successfully.',
+      });
+
+      onSuccess();
     } catch (error) {
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create key result',
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -119,14 +145,9 @@ export function CreateKeyResultDialog({
                 <FormItem>
                   <FormLabel>Key Result Title</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="e.g., Increase NPS score from 30 to 50"
-                      {...field}
-                    />
+                    <Input placeholder="e.g., Increase NPS score from 30 to 50" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    A specific, measurable outcome
-                  </FormDescription>
+                  <FormDescription>A specific, measurable outcome</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -161,7 +182,7 @@ export function CreateKeyResultDialog({
                       <TabsTrigger value={KeyResultType.METRIC}>Metric</TabsTrigger>
                       <TabsTrigger value={KeyResultType.MILESTONE}>Milestone</TabsTrigger>
                     </TabsList>
-                    
+
                     <TabsContent value={KeyResultType.METRIC} className="space-y-4">
                       <div className="grid grid-cols-3 gap-4">
                         <FormField
@@ -209,10 +230,7 @@ export function CreateKeyResultDialog({
                             <FormItem>
                               <FormLabel>Unit</FormLabel>
                               <FormControl>
-                                <Input
-                                  placeholder="%,#,¥"
-                                  {...field}
-                                />
+                                <Input placeholder="%,#,¥" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -228,18 +246,19 @@ export function CreateKeyResultDialog({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Initial Status</FormLabel>
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
+                            <Select value={field.value} onValueChange={field.onChange}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={MilestoneStatus.NOT_STARTED}>Not Started</SelectItem>
-                                <SelectItem value={MilestoneStatus.IN_PROGRESS}>In Progress</SelectItem>
+                                <SelectItem value={MilestoneStatus.NOT_STARTED}>
+                                  Not Started
+                                </SelectItem>
+                                <SelectItem value={MilestoneStatus.IN_PROGRESS}>
+                                  In Progress
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -254,12 +273,7 @@ export function CreateKeyResultDialog({
             />
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
@@ -270,5 +284,5 @@ export function CreateKeyResultDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

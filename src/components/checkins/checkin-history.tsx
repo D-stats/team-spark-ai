@@ -1,7 +1,6 @@
 'use client';
 
 import { formatDistanceToNow } from 'date-fns';
-import { ja } from 'date-fns/locale';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, TrendingUp } from 'lucide-react';
 
@@ -22,7 +21,7 @@ interface CheckInTemplate {
 interface CheckIn {
   id: string;
   templateId: string;
-  answers: any; // JsonValue型対応
+  answers: Record<string, unknown>; // JsonValue type support
   moodRating?: number | null;
   createdAt: Date;
   template: CheckInTemplate;
@@ -37,13 +36,13 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
     return (
       <div className="py-8 text-center text-muted-foreground">
         <Calendar className="mx-auto mb-4 h-12 w-12 opacity-30" />
-        <p>まだチェックイン履歴がありません</p>
+        <p>No check-in history yet</p>
         <p className="text-sm">初回のチェックインを作成してみましょう！</p>
       </div>
     );
   }
 
-  // 平均気分スコアを計算（気分評価がある場合のみ）
+  // Calculate average mood score (only when mood rating exists)
   const checkInsWithMood = checkIns.filter(
     (c) => c.moodRating !== null && c.moodRating !== undefined,
   );
@@ -57,35 +56,36 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
 
   const getFrequencyLabel = (frequency: string) => {
     const labels: Record<string, string> = {
-      DAILY: '毎日',
-      WEEKLY: '毎週',
-      BIWEEKLY: '隔週',
-      MONTHLY: '毎月',
-      QUARTERLY: '四半期',
-      CUSTOM: 'カスタム',
+      DAILY: 'Daily',
+      WEEKLY: 'Weekly',
+      BIWEEKLY: 'Bi-weekly',
+      MONTHLY: 'Monthly',
+      QUARTERLY: 'Quarterly',
+      CUSTOM: 'Custom',
     };
     return labels[frequency] || frequency;
   };
 
-  const renderAnswerValue = (question: Question, answer: any) => {
+  const renderAnswerValue = (question: Question, answer: unknown) => {
     if (answer === undefined || answer === null || answer === '') {
-      return <span className="italic text-gray-400">未回答</span>;
+      return <span className="italic text-gray-400">No answer</span>;
     }
 
     if (question.type === 'rating') {
+      const rating = typeof answer === 'number' ? answer : 0;
       return (
         <div className="flex items-center space-x-2">
           <div className="flex">
             {[1, 2, 3, 4, 5].map((star) => (
               <span
                 key={star}
-                className={`text-sm ${star <= answer ? 'text-yellow-400' : 'text-gray-300'}`}
+                className={`text-sm ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
               >
                 ★
               </span>
             ))}
           </div>
-          <span className="text-xs text-muted-foreground">{answer}/5</span>
+          <span className="text-xs text-muted-foreground">{rating}/5</span>
         </div>
       );
     }
@@ -108,14 +108,14 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
               <div className="font-semibold">{checkIns.length}</div>
             </div>
             <div>
-              <div className="text-muted-foreground">平均気分スコア</div>
+              <div className="text-muted-foreground">Average Mood Score</div>
               <div className="font-semibold">{averageMood ? `${averageMood}/5` : '---'}</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* チェックイン履歴 */}
+      {/* Check-in History */}
       <div className="space-y-3">
         {checkIns.map((checkIn) => (
           <Card key={checkIn.id} className="transition-colors hover:bg-muted/30">
@@ -135,7 +135,9 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
                           <span
                             key={star}
                             className={`text-xs ${
-                              star <= checkIn.moodRating! ? 'text-yellow-400' : 'text-gray-300'
+                              star <= (checkIn.moodRating ?? 0)
+                                ? 'text-yellow-400'
+                                : 'text-gray-300'
                             }`}
                           >
                             ★
@@ -148,7 +150,6 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
                   <div className="text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(checkIn.createdAt), {
                       addSuffix: true,
-                      locale: ja,
                     })}
                   </div>
                 </div>

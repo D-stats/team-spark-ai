@@ -6,7 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Plus } from 'lucide-react';
 
@@ -71,15 +78,11 @@ export function CreateSurveyDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>新しいサーベイ作成</DialogTitle>
-          <DialogDescription>
-            チームの意見や満足度を調査するサーベイを作成します
-          </DialogDescription>
+          <DialogDescription>チームの意見や満足度を調査するサーベイを作成します</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
+            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
           )}
 
           <div className="space-y-2">
@@ -120,9 +123,7 @@ export function CreateSurveyDialog() {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="isActive">すぐに公開する</Label>
-              <p className="text-sm text-muted-foreground">
-                無効の場合は下書きとして保存されます
-              </p>
+              <p className="text-sm text-muted-foreground">無効の場合は下書きとして保存されます</p>
             </div>
             <Switch
               id="isActive"

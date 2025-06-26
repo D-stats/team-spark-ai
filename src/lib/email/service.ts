@@ -4,7 +4,7 @@ import CheckInReminderEmail from './templates/checkin-reminder';
 import SurveyNotificationEmail from './templates/survey-notification';
 import { ReactElement } from 'react';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 interface SendEmailOptions {
   to: string | string[];
@@ -13,6 +13,11 @@ interface SendEmailOptions {
 }
 
 async function sendEmail({ to, subject, react }: SendEmailOptions) {
+  if (!resend) {
+    console.warn('Email service not configured - RESEND_API_KEY is missing');
+    return null;
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'TeamSpark AI <noreply@teamspark.ai>',
@@ -43,7 +48,7 @@ interface KudosEmailData {
 
 export async function sendKudosEmail(data: KudosEmailData) {
   const kudosUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/kudos`;
-  
+
   return sendEmail({
     to: data.receiverEmail,
     subject: `${data.senderName}さんからKudosを受け取りました！`,
@@ -64,7 +69,7 @@ interface CheckInReminderData {
 
 export async function sendCheckInReminderEmail(data: CheckInReminderData) {
   const checkInUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/checkins`;
-  
+
   return sendEmail({
     to: data.userEmail,
     subject: '週次チェックインのリマインダー',
@@ -83,10 +88,10 @@ interface SurveyNotificationData {
 
 export async function sendSurveyNotificationEmail(data: SurveyNotificationData) {
   const surveyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/surveys`;
-  const deadlineText = data.deadline 
+  const deadlineText = data.deadline
     ? `（締切: ${new Date(data.deadline).toLocaleDateString('ja-JP')}）`
     : '';
-  
+
   return sendEmail({
     to: data.userEmails,
     subject: `新しいサーベイ「${data.surveyTitle}」が開始されました${deadlineText}`,

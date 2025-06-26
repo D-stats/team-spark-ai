@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { canEditEvaluation } from '@/services/evaluation.service';
-import { 
-  ErrorHandler, 
-  createErrorResponse, 
-  createSuccessResponse, 
-  NotFoundError, 
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  NotFoundError,
   AuthorizationError,
-  ConflictError 
+  ConflictError,
 } from '@/lib/errors';
 import { SubmitEvaluationSchema } from '@/types/api';
 

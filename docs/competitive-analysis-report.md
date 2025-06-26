@@ -20,19 +20,17 @@ AI-powered team communication and engagement platforms play a crucial role in mo
 - **Manager Effectiveness**: Real-time AI support and coaching features[^4]
 - **Integrated Learning and Development**: Live and on-demand manager training[^4]
 
-
 #### Pricing Structure
 
 15Five offers five pricing plans[^5]:
 
-
-| Plan Name | Price (Monthly/Employee) | Key Features |
-| :-- | :-- | :-- |
-| Engage | \$4.00 | Engagement surveys and insights |
-| Perform | \$10.00 | Performance management and feedback |
-| Total Platform | \$16.00 | Engage + Perform, HR dashboard, learning courses |
-| Transform Accelerator | \$220.00 (per manager) | Modern manager training |
-| Manager Products | Contact for pricing | Data-driven manager coaching |
+| Plan Name             | Price (Monthly/Employee) | Key Features                                     |
+| :-------------------- | :----------------------- | :----------------------------------------------- |
+| Engage                | \$4.00                   | Engagement surveys and insights                  |
+| Perform               | \$10.00                  | Performance management and feedback              |
+| Total Platform        | \$16.00                  | Engage + Perform, HR dashboard, learning courses |
+| Transform Accelerator | \$220.00 (per manager)   | Modern manager training                          |
+| Manager Products      | Contact for pricing      | Data-driven manager coaching                     |
 
 ### Lattice
 
@@ -46,19 +44,17 @@ Lattice provides comprehensive HR management solutions with a wide range of feat
 - **HRIS Integration**: HR information system integration[^7]
 - **Compensation Management**: Salary benchmarking and compensation cycle management[^7]
 
-
 #### Pricing Structure
 
 Lattice offers flexible pricing[^9]:
 
-
-| Plan Name | Price (Monthly/Employee) | Features |
-| :-- | :-- | :-- |
-| Performance Management + OKRs | \$11.00 | Performance management and goal setting |
-| Core HRIS | \$10.00 | Basic HR information system |
-| Engagement | \$4.00 | Engagement measurement |
-| Grow | \$4.00 | Growth and development support |
-| Compensation | \$6.00 | Compensation management |
+| Plan Name                     | Price (Monthly/Employee) | Features                                |
+| :---------------------------- | :----------------------- | :-------------------------------------- |
+| Performance Management + OKRs | \$11.00                  | Performance management and goal setting |
+| Core HRIS                     | \$10.00                  | Basic HR information system             |
+| Engagement                    | \$4.00                   | Engagement measurement                  |
+| Grow                          | \$4.00                   | Growth and development support          |
+| Compensation                  | \$6.00                   | Compensation management                 |
 
 ### Culture Amp
 
@@ -71,7 +67,6 @@ Culture Amp provides specialized features as an employee experience platform[^10
 - **Personalized Growth Plans**: Individual development plans and learning opportunities[^10]
 - **Multi-Language Support**: Multi-language support for global deployment[^10]
 
-
 #### Pricing Structure
 
 Culture Amp pricing varies by company size[^11]:
@@ -79,7 +74,6 @@ Culture Amp pricing varies by company size[^11]:
 - Starting from \$4,500 annually
 - Approximately \$27,000/year for 200 employees
 - Up to \$45,000/year for 1,000 employees
-
 
 ### Qualtrics Employee Experience
 
@@ -92,7 +86,6 @@ Qualtrics provides a comprehensive experience management platform[^12].
 - **Predictive Engagement**: Identification of engagement factors and improvement strategies[^12]
 - **Integrated Data Management**: Unified data management through Employee Experience ID[^13]
 
-
 ### Microsoft Viva Engage
 
 #### Key Features
@@ -103,12 +96,10 @@ Microsoft Viva Engage specializes in communication and community features[^14].
 - **Centralized Campaign Management**: Unified communication strategy management[^14]
 - **Leadership Corner**: Direct communication with executives[^14]
 
-
 #### Pricing Structure
 
 - Employee Communications and Communities: \$2.00/month (per user)
 - Viva Suite: \$12.00/month (per user)[^14]
-
 
 ## Permission Management and Security Features
 
@@ -122,7 +113,6 @@ Modern employee engagement platforms implement role-based access control as a st
 - **Hierarchical Permission Management**: Permission hierarchy based on organizational structure[^16]
 - **Automatic Provisioning**: Automatic permission updates when roles change[^15]
 
-
 ### Data Protection and Privacy
 
 Employee data protection is a top priority[^17].
@@ -133,7 +123,6 @@ Employee data protection is a top priority[^17].
 - **GDPR Compliance**: Compliance with European General Data Protection Regulation[^19]
 - **Audit Logs**: Recording all data access and modifications[^20]
 - **SAML SSO Integration**: Secure single sign-on functionality[^21]
-
 
 ## Platform Selection Guidelines
 
@@ -147,13 +136,11 @@ The choice between 15Five and Lattice depends on organizational needs[^8][^4].
 - Organizations focused on learning and development[^4]
 - Companies with existing HRIS wanting to add performance management[^8]
 
-
 #### Organizations Suited for Lattice
 
 - Medium to large enterprises seeking comprehensive HR solutions[^8]
 - US-based organizations requiring integrated HRIS and performance management[^8]
 - Companies emphasizing engagement analytics and HR analytics[^8]
-
 
 ### Implementation Considerations
 
@@ -163,13 +150,11 @@ The choice between 15Five and Lattice depends on organizational needs[^8][^4].
 - **Ease of Deployment**: Ability for rapid implementation[^22]
 - **External Review Features**: 360-degree feedback including stakeholders[^22]
 
-
 #### Organizational Requirements
 
 - **Company Size**: Scalability appropriate for employee count[^11]
 - **Industry Requirements**: Need for specific regulatory compliance[^17]
 - **Budget Constraints**: Total cost of ownership considerations[^11]
-
 
 ## Recommendations
 

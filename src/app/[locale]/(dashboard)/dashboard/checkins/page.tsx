@@ -11,7 +11,7 @@ import { CreateDefaultTemplateButton } from '@/components/checkins/create-defaul
 export default async function CheckInsPage() {
   const { dbUser } = await requireAuthWithOrganization();
 
-  // デフォルトテンプレートを取得（存在しない場合は作成を促す）
+  // Get default template (prompt creation if it doesn't exist)
   const defaultTemplate = await prisma.checkInTemplate.findFirst({
     where: {
       organizationId: dbUser.organizationId,
@@ -20,8 +20,8 @@ export default async function CheckInsPage() {
     },
   });
 
-  // 過去のチェックイン履歴を取得
-  const checkInHistory = await prisma.checkIn.findMany({
+  // Get past check-in history
+  const checkInHistoryData = await prisma.checkIn.findMany({
     where: {
       userId: dbUser.id,
     },
@@ -39,20 +39,36 @@ export default async function CheckInsPage() {
     take: 10,
   });
 
+  // Cast JsonValue to Question[]
+  const checkInHistory = checkInHistoryData.map((checkIn) => ({
+    ...checkIn,
+    answers: checkIn.answers as Record<string, unknown>,
+    template: {
+      ...checkIn.template,
+      questions:
+        (checkIn.template.questions as {
+          id: string;
+          type: string;
+          text: string;
+          required: boolean;
+        }[]) || [],
+    },
+  }));
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">チェックイン</h1>
+          <h1 className="text-3xl font-bold">Check-ins</h1>
           <p className="mt-2 text-muted-foreground">
-            カスタマイズされたテンプレートで定期的な振り返りを記録しましょう
+            Record regular reflections with customized templates
           </p>
         </div>
         {dbUser.role === 'ADMIN' && (
           <Link href="/dashboard/checkins/templates">
             <Button variant="outline" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              テンプレート管理
+              Template Management
             </Button>
           </Link>
         )}
@@ -61,28 +77,28 @@ export default async function CheckInsPage() {
       {!defaultTemplate ? (
         <Card>
           <CardHeader>
-            <CardTitle>テンプレートが設定されていません</CardTitle>
+            <CardTitle>No Template Configured</CardTitle>
             <CardDescription>
-              チェックインを開始するには、まず管理者がテンプレートを作成する必要があります
+              To start check-ins, an administrator must first create a template
             </CardDescription>
           </CardHeader>
           <CardContent>
             {dbUser.role === 'ADMIN' ? (
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  組織の最初のチェックインテンプレートを作成してください。
-                  デフォルトテンプレートから始めるか、カスタムテンプレートを作成できます。
+                  Please create your organization&apos;s first check-in template. You can start from
+                  a default template or create a custom one.
                 </p>
                 <div className="flex gap-3">
                   <CreateDefaultTemplateButton />
                   <Link href="/dashboard/checkins/templates">
-                    <Button variant="outline">カスタムテンプレートを作成</Button>
+                    <Button variant="outline">Create Custom Template</Button>
                   </Link>
                 </div>
               </div>
             ) : (
               <p className="text-sm text-gray-600">
-                管理者にテンプレートの作成を依頼してください。
+                Please ask an administrator to create a template.
               </p>
             )}
           </CardContent>
@@ -96,8 +112,8 @@ export default async function CheckInsPage() {
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
-                <CardTitle>チェックイン履歴</CardTitle>
-                <CardDescription>過去のチェックイン記録</CardDescription>
+                <CardTitle>Check-in History</CardTitle>
+                <CardDescription>Past check-in records</CardDescription>
               </CardHeader>
               <CardContent>
                 <CheckInHistory checkIns={checkInHistory} />

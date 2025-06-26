@@ -52,19 +52,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     });
 
     if (!competency) {
-      return NextResponse.json(
-        { error: 'コンピテンシーが見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーが見つかりません' }, { status: 404 });
     }
 
     return NextResponse.json(competency);
   } catch (error) {
     console.error('Error fetching competency:', error);
-    return NextResponse.json(
-      { error: 'コンピテンシーの取得に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'コンピテンシーの取得に失敗しました' }, { status: 500 });
   }
 }
 
@@ -75,10 +69,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // 管理者またはマネージャーのみ更新可能
     if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
-      return NextResponse.json(
-        { error: 'コンピテンシーの更新権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーの更新権限がありません' }, { status: 403 });
     }
 
     const competency = await prisma.competency.findFirst({
@@ -89,10 +80,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
 
     if (!competency) {
-      return NextResponse.json(
-        { error: 'コンピテンシーが見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーが見つかりません' }, { status: 404 });
     }
 
     const body = await request.json();
@@ -111,13 +99,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
       if (existingCompetency) {
         return NextResponse.json(
-          { error: '同じ名前のコンピテンシーが既に存在します' },
-          { status: 400 }
+          { error: 'A competency with the same name already exists' },
+          { status: 400 },
         );
       }
     }
 
-    const updateData: any = {};
+    const updateData: Partial<{
+      name: string;
+      description: string;
+      category: CompetencyCategory;
+      behaviors: string[];
+      order: number;
+      isActive: boolean;
+    }> = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
     if (category !== undefined) updateData.category = category as CompetencyCategory;
@@ -133,10 +128,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedCompetency);
   } catch (error) {
     console.error('Error updating competency:', error);
-    return NextResponse.json(
-      { error: 'コンピテンシーの更新に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'コンピテンシーの更新に失敗しました' }, { status: 500 });
   }
 }
 
@@ -147,10 +139,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // 管理者のみ削除可能
     if (dbUser.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'コンピテンシーの削除権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーの削除権限がありません' }, { status: 403 });
     }
 
     const competency = await prisma.competency.findFirst({
@@ -168,10 +157,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     });
 
     if (!competency) {
-      return NextResponse.json(
-        { error: 'コンピテンシーが見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーが見つかりません' }, { status: 404 });
     }
 
     // 評価データがある場合は論理削除（非アクティブ化）
@@ -195,9 +181,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting competency:', error);
-    return NextResponse.json(
-      { error: 'コンピテンシーの削除に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'コンピテンシーの削除に失敗しました' }, { status: 500 });
   }
 }

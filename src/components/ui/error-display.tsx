@@ -17,11 +17,11 @@ interface ErrorDisplayProps {
   className?: string;
 }
 
-export function ErrorDisplay({ 
-  error, 
-  onRetry, 
+export function ErrorDisplay({
+  error,
+  onRetry,
   showHomeButton = false,
-  className 
+  className,
 }: ErrorDisplayProps) {
   const router = useRouter();
   const errorMessage = getErrorMessage(error);
@@ -39,17 +39,15 @@ export function ErrorDisplay({
         <div>
           <p className="font-medium">{errorMessage}</p>
           {!isOperational && (
-            <p className="text-sm mt-1 opacity-80">
+            <p className="mt-1 text-sm opacity-80">
               予期しないエラーが発生しました。問題が続く場合は管理者にお問い合わせください。
             </p>
           )}
           {process.env.NODE_ENV === 'development' && (
-            <p className="text-xs mt-2 font-mono opacity-60">
-              エラーコード: {errorCode}
-            </p>
+            <p className="mt-2 font-mono text-xs opacity-60">エラーコード: {errorCode}</p>
           )}
         </div>
-        
+
         <div className="flex space-x-2">
           {onRetry && (
             <Button
@@ -62,7 +60,7 @@ export function ErrorDisplay({
               <span>再試行</span>
             </Button>
           )}
-          
+
           {showHomeButton && (
             <Button
               variant="outline"

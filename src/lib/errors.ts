@@ -50,10 +50,10 @@ export class AppError extends Error {
     statusCode: number = 500,
     isOperational: boolean = true,
     context?: Record<string, unknown>,
-    userMessage?: string
+    userMessage?: string,
   ) {
     super(message);
-    
+
     this.name = 'AppError';
     this.code = code;
     this.category = category;
@@ -131,7 +131,7 @@ export class ValidationError extends AppError {
       400,
       true,
       { field, ...context },
-      field ? `${field}: ${message}` : message
+      field ? `${field}: ${message}` : message,
     );
   }
 }
@@ -146,17 +146,17 @@ export class AuthenticationError extends AppError {
       401,
       true,
       undefined,
-      'errors.authentication.default'
+      'errors.authentication.default',
     );
   }
 }
 
 export class AuthorizationError extends AppError {
   constructor(action: string, resource?: string) {
-    const message = resource 
+    const message = resource
       ? `You do not have ${action} permission for ${resource}`
       : `You do not have ${action} permission`;
-    
+
     super(
       message,
       'AUTHORIZATION_ERROR',
@@ -165,7 +165,7 @@ export class AuthorizationError extends AppError {
       403,
       true,
       { action, resource },
-      'errors.authorization.default'
+      'errors.authorization.default',
     );
   }
 }
@@ -173,7 +173,7 @@ export class AuthorizationError extends AppError {
 export class NotFoundError extends AppError {
   constructor(resource: string, id?: string) {
     const message = id ? `${resource} (ID: ${id}) not found` : `${resource} not found`;
-    
+
     super(
       message,
       'NOT_FOUND_ERROR',
@@ -182,7 +182,7 @@ export class NotFoundError extends AppError {
       404,
       true,
       { resource, id },
-      'errors.notFound.default'
+      'errors.notFound.default',
     );
   }
 }
@@ -197,7 +197,7 @@ export class ConflictError extends AppError {
       409,
       true,
       context,
-      'errors.conflict.default'
+      'errors.conflict.default',
     );
   }
 }
@@ -212,7 +212,7 @@ export class DatabaseError extends AppError {
       500,
       true,
       { operation, ...context },
-      'errors.database.default'
+      'errors.database.default',
     );
   }
 }
@@ -227,7 +227,7 @@ export class ExternalServiceError extends AppError {
       503,
       true,
       { service, ...context },
-      'errors.externalService.default'
+      'errors.externalService.default',
     );
   }
 }
@@ -268,7 +268,11 @@ export class ErrorHandler {
 
     // Prisma error
     if (error && typeof error === 'object' && 'code' in error) {
-      const prismaError = error as { code: string; message: string; meta?: Record<string, unknown> };
+      const prismaError = error as {
+        code: string;
+        message: string;
+        meta?: Record<string, unknown>;
+      };
       return this.handlePrismaError(prismaError);
     }
 
@@ -285,7 +289,7 @@ export class ErrorHandler {
         ErrorCategory.UNKNOWN,
         ErrorSeverity.MEDIUM,
         500,
-        false
+        false,
       );
       this.logError(appError);
       return appError;
@@ -299,20 +303,29 @@ export class ErrorHandler {
       ErrorSeverity.MEDIUM,
       500,
       false,
-      { originalError: error }
+      { originalError: error },
     );
     this.logError(appError);
     return appError;
   }
 
-  private static handlePrismaError(error: { code: string; message: string; meta?: Record<string, unknown> }): AppError {
+  private static handlePrismaError(error: {
+    code: string;
+    message: string;
+    meta?: Record<string, unknown>;
+  }): AppError {
     switch (error.code) {
       case 'P2002': // Unique constraint violation
-        return new ConflictError('Data already exists', { prismaCode: error.code, meta: error.meta });
+        return new ConflictError('Data already exists', {
+          prismaCode: error.code,
+          meta: error.meta,
+        });
       case 'P2025': // Record not found
         return new NotFoundError('Data', undefined);
       case 'P2003': // Foreign key constraint violation
-        return new ValidationError('Related data does not exist', undefined, { prismaCode: error.code });
+        return new ValidationError('Related data does not exist', undefined, {
+          prismaCode: error.code,
+        });
       case 'P2016': // Query interpretation error
         return new ValidationError('Invalid query', undefined, { prismaCode: error.code });
       default:
@@ -320,7 +333,9 @@ export class ErrorHandler {
     }
   }
 
-  private static handleZodError(error: { issues: Array<{ path: string[]; message: string }> }): AppError {
+  private static handleZodError(error: {
+    issues: Array<{ path: string[]; message: string }>;
+  }): AppError {
     const firstIssue = error.issues[0];
     const field = firstIssue.path.join('.');
     return new ValidationError(firstIssue.message, field, { allIssues: error.issues });
@@ -355,7 +370,7 @@ export function getErrorCode(error: unknown): string {
 // API Response Helpers
 export function createErrorResponse(error: unknown, statusCode?: number) {
   const appError = ErrorHandler.handle(error);
-  
+
   return {
     success: false,
     error: appError.toApiError(),

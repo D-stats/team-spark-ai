@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -41,23 +41,19 @@ interface TemplateBasedCheckInProps {
 export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
   const [templates, setTemplates] = useState<CheckInTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<CheckInTemplate | null>(null);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [moodRating, setMoodRating] = useState<number>(3);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     try {
       const response = await fetch('/api/checkin-templates');
       if (response.ok) {
         const data = await response.json();
         setTemplates(data);
 
-        // デフォルトテンプレートを自動選択
+        // Auto-select default template
         const defaultTemplate = data.find((t: CheckInTemplate) => t.isDefault);
         if (defaultTemplate) {
           setSelectedTemplate(defaultTemplate);
@@ -69,10 +65,14 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void fetchTemplates();
+  }, [fetchTemplates]);
 
   const initializeAnswers = (template: CheckInTemplate) => {
-    const initialAnswers: Record<string, any> = {};
+    const initialAnswers: Record<string, unknown> = {};
     template.questions.forEach((question) => {
       if (question.type === 'rating') {
         initialAnswers[question.id] = 3;
@@ -91,7 +91,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     }
   };
 
-  const handleAnswerChange = (questionId: string, value: any) => {
+  const handleAnswerChange = (questionId: string, value: unknown) => {
     setAnswers((prev) => ({
       ...prev,
       [questionId]: value,
@@ -169,7 +169,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
       case 'text':
         return (
           <Input
-            value={value}
+            value={String(value)}
             onChange={(e) => handleAnswerChange(question.id, e.target.value)}
             placeholder="回答を入力してください"
             required={question.required}
@@ -179,7 +179,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
       case 'textarea':
         return (
           <Textarea
-            value={value}
+            value={String(value)}
             onChange={(e) => handleAnswerChange(question.id, e.target.value)}
             placeholder="回答を入力してください"
             rows={3}
@@ -190,7 +190,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
       case 'rating':
         return (
           <RadioGroup
-            value={value.toString()}
+            value={String(value || 3)}
             onValueChange={(val) => handleAnswerChange(question.id, parseInt(val))}
             className="flex space-x-4"
           >
@@ -205,7 +205,10 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
 
       case 'select':
         return (
-          <Select value={value} onValueChange={(val) => handleAnswerChange(question.id, val)}>
+          <Select
+            value={String(value)}
+            onValueChange={(val) => handleAnswerChange(question.id, val)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="選択してください" />
             </SelectTrigger>

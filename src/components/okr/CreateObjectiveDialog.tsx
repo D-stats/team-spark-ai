@@ -1,18 +1,39 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { ObjectiveOwner, OkrCycle } from '@prisma/client'
-import { getCurrentQuarter, getQuarterDates } from '@/types/okr'
-import { useToast } from '@/components/ui/use-toast'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { ObjectiveOwner, OkrCycle } from '@prisma/client';
+import { getCurrentQuarter, getQuarterDates } from '@/types/okr';
+import { useToast } from '@/components/ui/use-toast';
 
 const createObjectiveSchema = z.object({
   title: z.string().min(1, 'Title is required').max(200),
@@ -22,21 +43,21 @@ const createObjectiveSchema = z.object({
   ownerTeamId: z.string().optional(),
   parentId: z.string().optional(),
   cycle: z.nativeEnum(OkrCycle),
-  year: z.number().int().min(2024).max(2100)
-})
+  year: z.number().int().min(2024).max(2100),
+});
 
-type CreateObjectiveForm = z.infer<typeof createObjectiveSchema>
+type CreateObjectiveForm = z.infer<typeof createObjectiveSchema>;
 
 interface CreateObjectiveDialogProps {
-  organizationId: string
-  defaultOwnerType?: ObjectiveOwner
-  defaultOwnerUserId?: string
-  defaultOwnerTeamId?: string
-  parentObjective?: { id: string; title: string }
-  teams?: Array<{ id: string; name: string }>
-  companyObjectives?: Array<{ id: string; title: string }>
-  onClose: () => void
-  onSuccess: () => void
+  organizationId: string;
+  defaultOwnerType?: ObjectiveOwner;
+  defaultOwnerUserId?: string;
+  defaultOwnerTeamId?: string;
+  parentObjective?: { id: string; title: string };
+  teams?: Array<{ id: string; name: string }>;
+  companyObjectives?: Array<{ id: string; title: string }>;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
 export function CreateObjectiveDialog({
@@ -48,13 +69,13 @@ export function CreateObjectiveDialog({
   teams = [],
   companyObjectives = [],
   onClose,
-  onSuccess
+  onSuccess,
 }: CreateObjectiveDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
-  
-  const currentYear = new Date().getFullYear()
-  const currentQuarter = getCurrentQuarter()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
+  const currentYear = new Date().getFullYear();
+  const currentQuarter = getCurrentQuarter();
 
   const form = useForm<CreateObjectiveForm>({
     resolver: zodResolver(createObjectiveSchema),
@@ -66,51 +87,51 @@ export function CreateObjectiveDialog({
       ownerTeamId: defaultOwnerTeamId,
       parentId: parentObjective?.id,
       cycle: currentQuarter,
-      year: currentYear
-    }
-  })
+      year: currentYear,
+    },
+  });
 
-  const selectedCycle = form.watch('cycle')
-  const selectedYear = form.watch('year')
-  const ownerType = form.watch('ownerType')
+  const selectedCycle = form.watch('cycle');
+  const selectedYear = form.watch('year');
+  const ownerType = form.watch('ownerType');
 
   const onSubmit = async (data: CreateObjectiveForm) => {
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
-      const { start, end } = getQuarterDates(data.year, data.cycle)
-      
+      const { start, end } = getQuarterDates(data.year, data.cycle);
+
       const response = await fetch('/api/okr/objectives', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
           startDate: start.toISOString(),
-          endDate: end.toISOString()
-        })
-      })
+          endDate: end.toISOString(),
+        }),
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to create objective')
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create objective');
       }
 
       toast({
         title: 'Objective created',
-        description: 'Your objective has been created successfully.'
-      })
-      
-      onSuccess()
+        description: 'Your objective has been created successfully.',
+      });
+
+      onSuccess();
     } catch (error) {
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to create objective',
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -131,10 +152,7 @@ export function CreateObjectiveDialog({
                 <FormItem>
                   <FormLabel>Objective Title</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="e.g., Improve customer satisfaction"
-                      {...field}
-                    />
+                    <Input placeholder="e.g., Improve customer satisfaction" {...field} />
                   </FormControl>
                   <FormDescription>
                     A clear, inspirational statement of what you want to achieve
@@ -169,10 +187,7 @@ export function CreateObjectiveDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Owner Type</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue />
@@ -196,10 +211,7 @@ export function CreateObjectiveDialog({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Team</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
+                      <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a team" />
@@ -227,10 +239,7 @@ export function CreateObjectiveDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cycle</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
+                    <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue />
@@ -270,48 +279,40 @@ export function CreateObjectiveDialog({
               />
             </div>
 
-            {(ownerType === ObjectiveOwner.TEAM || ownerType === ObjectiveOwner.INDIVIDUAL) && 
-             companyObjectives.length > 0 && (
-              <FormField
-                control={form.control}
-                name="parentId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Align to Company Objective (optional)</FormLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a company objective" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="">None</SelectItem>
-                        {companyObjectives.map((objective) => (
-                          <SelectItem key={objective.id} value={objective.id}>
-                            {objective.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Link this objective to a company objective for better alignment
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+            {(ownerType === ObjectiveOwner.TEAM || ownerType === ObjectiveOwner.INDIVIDUAL) &&
+              companyObjectives.length > 0 && (
+                <FormField
+                  control={form.control}
+                  name="parentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Align to Company Objective (optional)</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a company objective" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="">None</SelectItem>
+                          {companyObjectives.map((objective) => (
+                            <SelectItem key={objective.id} value={objective.id}>
+                              {objective.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Link this objective to a company objective for better alignment
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
@@ -322,5 +323,5 @@ export function CreateObjectiveDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

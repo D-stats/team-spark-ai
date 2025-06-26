@@ -7,6 +7,7 @@ This document tracks the Japanese to English translation progress of the entire 
 ### ✅ Phase 1: Core Documentation (Completed)
 
 1. **README.md** - ✅ Translated
+
    - Project overview and description
    - Feature list
    - Getting started instructions
@@ -14,6 +15,7 @@ This document tracks the Japanese to English translation progress of the entire 
    - Development notes
 
 2. **CLAUDE.md** - ✅ Translated
+
    - AI developer guidelines
    - User story-driven development process
    - Development commands and workflows
@@ -21,6 +23,7 @@ This document tracks the Japanese to English translation progress of the entire 
    - Project structure
 
 3. **docs/employee-engagement-platform-comparison-report.md** - ✅ Translated & Renamed
+
    - Renamed from: 従業員エンゲージメント・評価システムプラットフォーム比較レポート.md
    - Platform comparison report
    - Feature comparisons
@@ -28,18 +31,21 @@ This document tracks the Japanese to English translation progress of the entire 
    - Security considerations
 
 4. **docs/development-plan.md** - ✅ Translated
+
    - Development phases and timelines
    - Task lists and completion status
    - Technical requirements
    - Future features
 
 5. **docs/setup-guide.md** - ✅ Translated
+
    - Environment setup instructions
    - Prerequisites
    - Installation steps
    - Configuration details
 
 6. **docs/architecture.md** - ✅ Translated
+
    - System architecture overview
    - Technology stack details
    - API design
@@ -47,6 +53,7 @@ This document tracks the Japanese to English translation progress of the entire 
    - Database schema
 
 7. **docs/SETUP_TROUBLESHOOTING.md** - ✅ Translated
+
    - Common setup issues
    - Solutions and workarounds
    - Preventive maintenance tips
@@ -57,12 +64,14 @@ This document tracks the Japanese to English translation progress of the entire 
 ### ✅ Phase 2: Error Messages and System Text (Partially Completed)
 
 1. **src/lib/errors.ts** - ✅ Translated
+
    - All error messages
    - Error categories
    - User-facing error text
    - Code comments
 
 2. **src/lib/checkin-templates/default-template.ts** - ✅ Translated
+
    - Template name and description
    - Check-in questions
    - Support category options
@@ -79,6 +88,7 @@ Still need to translate Japanese text in 80+ TypeScript/TSX files containing UI 
 ### 📋 Remaining Translation Tasks
 
 1. **User Interface Components**
+
    - Form labels and placeholders
    - Button text
    - Dialog messages
@@ -87,13 +97,16 @@ Still need to translate Japanese text in 80+ TypeScript/TSX files containing UI 
    - Dashboard text
 
 2. **User Stories**
+
    - Story descriptions in `/src/lib/user-stories/stories/`
    - Test descriptions
 
 3. **Email Templates**
+
    - `/src/lib/email/templates/` - Email content
 
 4. **API Response Messages**
+
    - Success/error messages from API routes
 
 5. **Configuration Files**
@@ -101,28 +114,28 @@ Still need to translate Japanese text in 80+ TypeScript/TSX files containing UI 
 
 ## Key Translation Mappings
 
-| Japanese | English |
-|----------|---------|
-| ダッシュボード | Dashboard |
-| チェックイン | Check-ins |
-| サーベイ | Surveys |
-| 組織設定 | Organization |
-| 個人設定 | Settings |
-| 評価 | Evaluations |
-| エンゲージメント | Engagement |
-| 目標 | Goals/Objectives |
-| チーム | Teams |
-| 認証 | Authentication |
-| 権限 | Permissions |
-| エラー | Error |
-| 成功 | Success |
-| 保存 | Save |
-| キャンセル | Cancel |
-| 作成 | Create |
-| 編集 | Edit |
-| 削除 | Delete |
-| 検索 | Search |
-| フィルター | Filter |
+| Japanese         | English          |
+| ---------------- | ---------------- |
+| ダッシュボード   | Dashboard        |
+| チェックイン     | Check-ins        |
+| サーベイ         | Surveys          |
+| 組織設定         | Organization     |
+| 個人設定         | Settings         |
+| 評価             | Evaluations      |
+| エンゲージメント | Engagement       |
+| 目標             | Goals/Objectives |
+| チーム           | Teams            |
+| 認証             | Authentication   |
+| 権限             | Permissions      |
+| エラー           | Error            |
+| 成功             | Success          |
+| 保存             | Save             |
+| キャンセル       | Cancel           |
+| 作成             | Create           |
+| 編集             | Edit             |
+| 削除             | Delete           |
+| 検索             | Search           |
+| フィルター       | Filter           |
 
 ## Standards Applied
 

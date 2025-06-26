@@ -1,10 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from '@/i18n/utils';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -30,11 +29,10 @@ interface HeaderProps {
 
 export function Header({ user, organization }: HeaderProps) {
   const router = useRouter();
-  const supabase = createClient();
   const t = useTranslations();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // TODO: Implement sign out without Supabase
     router.push('/login');
     router.refresh();
   };
@@ -58,7 +56,9 @@ export function Header({ user, organization }: HeaderProps) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user.user_metadata?.name || t('common.user')}</p>
+                <p className="text-sm font-medium">
+                  {user.user_metadata?.name || t('common.user')}
+                </p>
                 <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>

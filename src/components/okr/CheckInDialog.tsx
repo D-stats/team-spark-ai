@@ -1,21 +1,42 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Slider } from '@/components/ui/slider'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { KeyResultType, MilestoneStatus } from '@prisma/client'
-import { KeyResultWithProgress } from '@/types/okr'
-import { useToast } from '@/components/ui/use-toast'
-import { AlertCircle } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Slider } from '@/components/ui/slider';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { KeyResultType, MilestoneStatus } from '@prisma/client';
+import { KeyResultWithProgress } from '@/types/okr';
+import { useToast } from '@/components/ui/use-toast';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const checkInSchema = z.object({
   currentValue: z.number().optional(),
@@ -23,24 +44,20 @@ const checkInSchema = z.object({
   progress: z.number().min(0).max(1),
   confidence: z.number().min(0).max(1).optional(),
   comment: z.string().optional(),
-  blockers: z.string().optional()
-})
+  blockers: z.string().optional(),
+});
 
-type CheckInForm = z.infer<typeof checkInSchema>
+type CheckInForm = z.infer<typeof checkInSchema>;
 
 interface CheckInDialogProps {
-  keyResult: KeyResultWithProgress
-  onClose: () => void
-  onSuccess: () => void
+  keyResult: KeyResultWithProgress;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
-export function CheckInDialog({
-  keyResult,
-  onClose,
-  onSuccess
-}: CheckInDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { toast } = useToast()
+export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<CheckInForm>({
     resolver: zodResolver(checkInSchema),
@@ -50,38 +67,38 @@ export function CheckInDialog({
       progress: keyResult.progress,
       confidence: keyResult.confidence || 0.7,
       comment: '',
-      blockers: ''
-    }
-  })
+      blockers: '',
+    },
+  });
 
-  const progress = form.watch('progress')
-  const confidence = form.watch('confidence')
+  const progress = form.watch('progress');
+  const confidence = form.watch('confidence');
 
   const onSubmit = async (data: CheckInForm) => {
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
       const checkInData: any = {
         keyResultId: keyResult.id,
         progress: data.progress,
         confidence: data.confidence,
         comment: data.comment,
-        blockers: data.blockers
-      }
+        blockers: data.blockers,
+      };
 
       if (keyResult.type === KeyResultType.METRIC) {
-        checkInData.currentValue = data.currentValue
+        checkInData.currentValue = data.currentValue;
       }
 
       const response = await fetch('/api/okr/check-ins', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(checkInData)
-      })
+        body: JSON.stringify(checkInData),
+      });
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to create check-in')
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create check-in');
       }
 
       // Update milestone status if it's a milestone type
@@ -89,26 +106,26 @@ export function CheckInDialog({
         await fetch(`/api/okr/key-results/${keyResult.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ milestoneStatus: data.milestoneStatus })
-        })
+          body: JSON.stringify({ milestoneStatus: data.milestoneStatus }),
+        });
       }
 
       toast({
         title: 'Check-in recorded',
-        description: 'Your progress has been updated successfully.'
-      })
-      
-      onSuccess()
+        description: 'Your progress has been updated successfully.',
+      });
+
+      onSuccess();
     } catch (error) {
       toast({
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to record check-in',
-        variant: 'destructive'
-      })
+        variant: 'destructive',
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -135,15 +152,19 @@ export function CheckInDialog({
                           type="number"
                           {...field}
                           onChange={(e) => {
-                            const value = parseFloat(e.target.value)
-                            field.onChange(value)
-                            
+                            const value = parseFloat(e.target.value);
+                            field.onChange(value);
+
                             // Auto-calculate progress
-                            if (keyResult.targetValue && keyResult.startValue !== undefined) {
-                              const range = keyResult.targetValue - keyResult.startValue
-                              const current = value - keyResult.startValue
-                              const calculatedProgress = Math.min(Math.max(current / range, 0), 1)
-                              form.setValue('progress', calculatedProgress)
+                            if (
+                              keyResult.targetValue &&
+                              keyResult.startValue !== undefined &&
+                              keyResult.startValue !== null
+                            ) {
+                              const range = keyResult.targetValue - keyResult.startValue;
+                              const current = value - keyResult.startValue;
+                              const calculatedProgress = Math.min(Math.max(current / range, 0), 1);
+                              form.setValue('progress', calculatedProgress);
                             }
                           }}
                         />
@@ -169,17 +190,17 @@ export function CheckInDialog({
                     <Select
                       value={field.value}
                       onValueChange={(value) => {
-                        field.onChange(value)
-                        
+                        field.onChange(value);
+
                         // Auto-calculate progress based on status
                         const progressMap = {
                           [MilestoneStatus.NOT_STARTED]: 0,
                           [MilestoneStatus.IN_PROGRESS]: 0.5,
                           [MilestoneStatus.AT_RISK]: 0.3,
                           [MilestoneStatus.COMPLETED]: 1,
-                          [MilestoneStatus.CANCELLED]: 0
-                        }
-                        form.setValue('progress', progressMap[value as MilestoneStatus])
+                          [MilestoneStatus.CANCELLED]: 0,
+                        };
+                        form.setValue('progress', progressMap[value as MilestoneStatus]);
                       }}
                     >
                       <FormControl>
@@ -217,7 +238,7 @@ export function CheckInDialog({
                     />
                   </FormControl>
                   <FormDescription>
-                    Manually adjust if the calculated progress doesn't reflect reality
+                    Manually adjust if the calculated progress doesn&apos;t reflect reality
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -289,18 +310,14 @@ export function CheckInDialog({
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Low confidence detected. Consider discussing this key result with your team or manager.
+                  Low confidence detected. Consider discussing this key result with your team or
+                  manager.
                 </AlertDescription>
               </Alert>
             )}
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
@@ -311,5 +328,5 @@ export function CheckInDialog({
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

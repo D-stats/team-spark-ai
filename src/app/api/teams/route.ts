@@ -5,23 +5,17 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    
+
     // 管理者またはマネージャーのみチーム作成可能
     if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
-      return NextResponse.json(
-        { error: 'チーム作成権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'チーム作成権限がありません' }, { status: 403 });
     }
 
     const body = await request.json();
     const { name, description, memberIds } = body;
 
     if (!name || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'チーム名は必須です' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'チーム名は必須です' }, { status: 400 });
     }
 
     // 同名のチームが既に存在するかチェック
@@ -33,10 +27,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingTeam) {
-      return NextResponse.json(
-        { error: '同名のチームが既に存在します' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '同名のチームが既に存在します' }, { status: 400 });
     }
 
     // メンバーIDが有効かチェック
@@ -50,10 +41,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (validMembers.length !== memberIds.length) {
-        return NextResponse.json(
-          { error: '無効なメンバーが含まれています' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: '無効なメンバーが含まれています' }, { status: 400 });
       }
     }
 
@@ -63,9 +51,12 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         description: description?.trim() || null,
         organizationId: dbUser.organizationId,
-        members: memberIds && memberIds.length > 0 ? {
-          create: memberIds.map((userId: string) => ({ userId }))
-        } : undefined,
+        members:
+          memberIds && memberIds.length > 0
+            ? {
+                create: memberIds.map((userId: string) => ({ userId })),
+              }
+            : undefined,
       },
       include: {
         members: {
@@ -92,9 +83,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(team, { status: 201 });
   } catch (error) {
     console.error('Error creating team:', error);
-    return NextResponse.json(
-      { error: 'チームの作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'チームの作成に失敗しました' }, { status: 500 });
   }
 }

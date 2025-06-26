@@ -27,7 +27,7 @@ export class StoryValidator {
     };
 
     // Validate acceptance criteria
-    story.acceptanceCriteria.forEach(criteria => {
+    story.acceptanceCriteria.forEach((criteria) => {
       if (criteria.verified) {
         validation.completedCriteria++;
       }
@@ -36,7 +36,7 @@ export class StoryValidator {
     // Check implementation file existence
     if (story.implementedIn) {
       // Check components
-      story.implementedIn.components?.forEach(component => {
+      story.implementedIn.components?.forEach((component) => {
         const fullPath = path.join(this.projectRoot, component);
         if (!existsSync(fullPath)) {
           validation.missingImplementation.push(`Component: ${component}`);
@@ -45,7 +45,7 @@ export class StoryValidator {
       });
 
       // Check APIs
-      story.implementedIn.apis?.forEach(api => {
+      story.implementedIn.apis?.forEach((api) => {
         const fullPath = path.join(this.projectRoot, api);
         if (!existsSync(fullPath)) {
           validation.missingImplementation.push(`API: ${api}`);
@@ -54,7 +54,7 @@ export class StoryValidator {
       });
 
       // Check tests
-      story.implementedIn.tests?.forEach(test => {
+      story.implementedIn.tests?.forEach((test) => {
         const fullPath = path.join(this.projectRoot, test);
         if (!existsSync(fullPath)) {
           validation.missingImplementation.push(`Test: ${test}`);
@@ -66,19 +66,20 @@ export class StoryValidator {
     // Calculate test coverage
     const totalTests = story.acceptanceCriteria.reduce(
       (sum, criteria) => sum + (criteria.testIds?.length || 0),
-      0
+      0,
     );
     const verifiedTests = story.acceptanceCriteria.reduce(
-      (sum, criteria) => sum + (criteria.verified && criteria.testIds?.length || 0),
-      0
+      (sum, criteria) => sum + ((criteria.verified && criteria.testIds?.length) || 0),
+      0,
     );
     validation.testCoverage = totalTests > 0 ? (verifiedTests / totalTests) * 100 : 0;
 
     // Overall validation
-    validation.isValid = validation.isValid && 
-                        validation.completedCriteria === validation.totalCriteria &&
-                        validation.missingImplementation.length === 0 &&
-                        story.status === StoryStatus.DONE;
+    validation.isValid =
+      validation.isValid &&
+      validation.completedCriteria === validation.totalCriteria &&
+      validation.missingImplementation.length === 0 &&
+      story.status === StoryStatus.DONE;
 
     return validation;
   }
@@ -95,8 +96,8 @@ export class StoryValidator {
     };
     details: StoryValidation[];
   } {
-    const details = stories.map(story => this.validateStory(story));
-    const valid = details.filter(v => v.isValid).length;
+    const details = stories.map((story) => this.validateStory(story));
+    const valid = details.filter((v) => v.isValid).length;
     const totalCoverage = details.reduce((sum, v) => sum + v.testCoverage, 0);
 
     return {
@@ -133,7 +134,7 @@ export class StoryValidator {
     validation.details.forEach((detail, index) => {
       const story = stories[index];
       const status = detail.isValid ? '✅' : '❌';
-      
+
       report.push(`### ${status} ${story.id}: ${story.title}`);
       report.push(`**As a** ${story.asA}`);
       report.push(`**I want to** ${story.iWantTo}`);
@@ -141,16 +142,18 @@ export class StoryValidator {
       report.push('');
       report.push(`- Status: ${story.status}`);
       report.push(`- Priority: ${story.priority}`);
-      report.push(`- Acceptance criteria: ${detail.completedCriteria}/${detail.totalCriteria} completed`);
+      report.push(
+        `- Acceptance criteria: ${detail.completedCriteria}/${detail.totalCriteria} completed`,
+      );
       report.push(`- Test coverage: ${detail.testCoverage.toFixed(1)}%`);
-      
+
       if (detail.missingImplementation.length > 0) {
         report.push('- ⚠️ Missing implementation:');
-        detail.missingImplementation.forEach(missing => {
+        detail.missingImplementation.forEach((missing) => {
           report.push(`  - ${missing}`);
         });
       }
-      
+
       report.push('');
     });
 
@@ -161,19 +164,15 @@ export class StoryValidator {
 // Helper function for CLI tool
 export async function validateAllStories(): Promise<void> {
   const validator = new StoryValidator();
-  
+
   // Import all stories
   const { evaluationStories, kudosStories } = await import('./stories/evaluation-stories');
   const allStories = [...evaluationStories, ...kudosStories];
-  
+
   const report = validator.generateReport(allStories);
   console.log(report);
-  
+
   // Save as report file
   const fs = await import('fs/promises');
-  await fs.writeFile(
-    path.join(process.cwd(), 'user-story-validation-report.md'),
-    report,
-    'utf-8'
-  );
+  await fs.writeFile(path.join(process.cwd(), 'user-story-validation-report.md'), report, 'utf-8');
 }

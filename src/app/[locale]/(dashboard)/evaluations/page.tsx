@@ -92,7 +92,7 @@ export default function EvaluationsPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       // サイクル一覧を取得
       const cyclesResponse = await fetch('/api/evaluations/cycles');
       if (cyclesResponse.ok) {
@@ -140,17 +140,17 @@ export default function EvaluationsPage() {
     }
   };
 
-  const activeCycle = cycles.find(cycle => cycle.status === 'ACTIVE');
-  const pendingEvaluations = myEvaluations.filter(evaluation => evaluation.status === 'DRAFT');
+  const activeCycle = cycles.find((cycle) => cycle.status === 'ACTIVE');
+  const pendingEvaluations = myEvaluations.filter((evaluation) => evaluation.status === 'DRAFT');
 
   if (loading) {
     return (
       <div className="container mx-auto py-6">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="h-8 w-1/4 rounded bg-gray-200"></div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded"></div>
+              <div key={i} className="h-32 rounded bg-gray-200"></div>
             ))}
           </div>
         </div>
@@ -159,36 +159,31 @@ export default function EvaluationsPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="container mx-auto space-y-6 py-6">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">評価管理</h1>
-          <p className="text-muted-foreground mt-2">
-            従業員の評価とフィードバックを管理します
-          </p>
+          <p className="mt-2 text-muted-foreground">従業員の評価とフィードバックを管理します</p>
         </div>
         <Button>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           評価サイクル作成
         </Button>
       </div>
 
       {/* 概要カード */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card data-testid="active-cycle-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">アクティブサイクル</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {activeCycle ? activeCycle.name : '未実施'}
-            </div>
+            <div className="text-2xl font-bold">{activeCycle ? activeCycle.name : '未実施'}</div>
             <p className="text-xs text-muted-foreground">
-              {activeCycle 
+              {activeCycle
                 ? `${activeCycle._count.evaluations}件の評価`
-                : '現在アクティブなサイクルはありません'
-              }
+                : '現在アクティブなサイクルはありません'}
             </p>
           </CardContent>
         </Card>
@@ -200,9 +195,7 @@ export default function EvaluationsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{pendingEvaluations.length}</div>
-            <p className="text-xs text-muted-foreground">
-              あなたが実施する評価
-            </p>
+            <p className="text-xs text-muted-foreground">あなたが実施する評価</p>
           </CardContent>
         </Card>
 
@@ -213,9 +206,7 @@ export default function EvaluationsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{cycles.length}</div>
-            <p className="text-xs text-muted-foreground">
-              これまでに実施したサイクル
-            </p>
+            <p className="text-xs text-muted-foreground">これまでに実施したサイクル</p>
           </CardContent>
         </Card>
       </div>
@@ -233,11 +224,11 @@ export default function EvaluationsPage() {
           {activeCycle && (
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex items-start justify-between">
                   <div>
                     <CardTitle>{activeCycle.name}</CardTitle>
                     <CardDescription>
-                      {new Date(activeCycle.startDate).toLocaleDateString('ja-JP')} - 
+                      {new Date(activeCycle.startDate).toLocaleDateString('ja-JP')} -
                       {new Date(activeCycle.endDate).toLocaleDateString('ja-JP')}
                     </CardDescription>
                   </div>
@@ -249,12 +240,12 @@ export default function EvaluationsPage() {
               <CardContent>
                 <div className="space-y-4">
                   <h4 className="font-medium">評価フェーズ</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     {activeCycle.phases.map((phase) => (
-                      <div key={phase.id} className="border rounded-lg p-3">
-                        <div className="font-medium text-sm">{phase.name}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {new Date(phase.startDate).toLocaleDateString('ja-JP')} - 
+                      <div key={phase.id} className="rounded-lg border p-3">
+                        <div className="text-sm font-medium">{phase.name}</div>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {new Date(phase.startDate).toLocaleDateString('ja-JP')} -
                           {new Date(phase.endDate).toLocaleDateString('ja-JP')}
                         </div>
                         {phase.isActive && (
@@ -282,14 +273,22 @@ export default function EvaluationsPage() {
               <CardContent>
                 <div className="space-y-3">
                   {pendingEvaluations.slice(0, 5).map((evaluation) => (
-                    <div key={evaluation.id} className="flex items-center justify-between border rounded-lg p-3">
+                    <div
+                      key={evaluation.id}
+                      className="flex items-center justify-between rounded-lg border p-3"
+                    >
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                           <Users className="h-4 w-4" />
                         </div>
                         <div>
                           <div className="font-medium">
-                            {evaluation.evaluatee.name} - {evaluationTypeLabels[evaluation.type as keyof typeof evaluationTypeLabels]}
+                            {evaluation.evaluatee.name} -{' '}
+                            {
+                              evaluationTypeLabels[
+                                evaluation.type as keyof typeof evaluationTypeLabels
+                              ]
+                            }
                           </div>
                           <div className="text-sm text-muted-foreground">
                             {evaluation.cycle.name}
@@ -298,7 +297,11 @@ export default function EvaluationsPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Badge variant={getEvaluationStatusBadgeVariant(evaluation.status)}>
-                          {evaluationStatusLabels[evaluation.status as keyof typeof evaluationStatusLabels]}
+                          {
+                            evaluationStatusLabels[
+                              evaluation.status as keyof typeof evaluationStatusLabels
+                            ]
+                          }
                         </Badge>
                         <Button size="sm">開始</Button>
                       </div>
@@ -306,7 +309,9 @@ export default function EvaluationsPage() {
                   ))}
                   {pendingEvaluations.length > 5 && (
                     <div className="text-center">
-                      <Button variant="outline" onClick={() => setActiveTab('my-evaluations')}>さらに表示</Button>
+                      <Button variant="outline" onClick={() => setActiveTab('my-evaluations')}>
+                        さらに表示
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -320,11 +325,11 @@ export default function EvaluationsPage() {
             {cycles.map((cycle) => (
               <Card key={cycle.id}>
                 <CardHeader>
-                  <div className="flex justify-between items-start">
+                  <div className="flex items-start justify-between">
                     <div>
                       <CardTitle>{cycle.name}</CardTitle>
                       <CardDescription>
-                        {new Date(cycle.startDate).toLocaleDateString('ja-JP')} - 
+                        {new Date(cycle.startDate).toLocaleDateString('ja-JP')} -
                         {new Date(cycle.endDate).toLocaleDateString('ja-JP')}
                       </CardDescription>
                     </div>
@@ -355,31 +360,48 @@ export default function EvaluationsPage() {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
                         <Users className="h-5 w-5" />
                       </div>
                       <div>
                         <div className="font-medium">
-                          {evaluation.evaluatee.name} - {evaluationTypeLabels[evaluation.type as keyof typeof evaluationTypeLabels]}
+                          {evaluation.evaluatee.name} -{' '}
+                          {
+                            evaluationTypeLabels[
+                              evaluation.type as keyof typeof evaluationTypeLabels
+                            ]
+                          }
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {evaluation.cycle.name}
                           {evaluation.submittedAt && (
-                            <span> • {formatDistanceToNow(new Date(evaluation.submittedAt), { addSuffix: true, locale: ja })}</span>
+                            <span>
+                              {' '}
+                              •{' '}
+                              {formatDistanceToNow(new Date(evaluation.submittedAt), {
+                                addSuffix: true,
+                                locale: ja,
+                              })}
+                            </span>
                           )}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       {evaluation.overallRating && (
-                        <div className="text-sm font-medium">
-                          {evaluation.overallRating}/5
-                        </div>
+                        <div className="text-sm font-medium">{evaluation.overallRating}/5</div>
                       )}
                       <Badge variant={getEvaluationStatusBadgeVariant(evaluation.status)}>
-                        {evaluationStatusLabels[evaluation.status as keyof typeof evaluationStatusLabels]}
+                        {
+                          evaluationStatusLabels[
+                            evaluation.status as keyof typeof evaluationStatusLabels
+                          ]
+                        }
                       </Badge>
-                      <Button size="sm" variant={evaluation.status === 'DRAFT' ? 'default' : 'outline'}>
+                      <Button
+                        size="sm"
+                        variant={evaluation.status === 'DRAFT' ? 'default' : 'outline'}
+                      >
                         {evaluation.status === 'DRAFT' ? '続ける' : '確認する'}
                       </Button>
                     </div>

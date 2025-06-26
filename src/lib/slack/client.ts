@@ -1,12 +1,14 @@
 import { WebClient } from '@slack/web-api';
 import { App } from '@slack/bolt';
 
-// Slack Web API Client
-export const slackClient = new WebClient(process.env.SLACK_BOT_TOKEN);
+// Slack Web API Client factory - creates a client with workspace-specific token
+export function createSlackClient(botAccessToken: string) {
+  return new WebClient(botAccessToken);
+}
 
 // Slack Bolt App for handling events and commands
+// For multi-workspace apps, we use OAuth installer instead of a single token
 export const slackApp = new App({
-  token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
@@ -21,6 +23,10 @@ export const slackApp = new App({
     'users:read',
     'users:read.email',
   ],
+  installerOptions: {
+    // Optional: Add custom installation behavior here if needed
+    directInstall: true,
+  },
 });
 
 // Slack OAuth用のURL生成
@@ -42,6 +48,6 @@ export function getSlackAuthUrl(state: string) {
     redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/slack/callback`,
     state,
   });
-  
+
   return `https://slack.com/oauth/v2/authorize?${params.toString()}`;
 }

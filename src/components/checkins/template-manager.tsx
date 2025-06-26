@@ -7,17 +7,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { TemplateForm } from './template-form';
 
+interface Question {
+  id: string;
+  type: 'text' | 'textarea' | 'rating' | 'select';
+  text: string;
+  required: boolean;
+  options?: string[];
+}
+
 interface CheckInTemplate {
   id: string;
   name: string;
   description?: string;
   frequency: string;
-  questions: Array<{
-    id: string;
-    type: string;
-    text: string;
-    required: boolean;
-  }>;
+  questions: Question[];
   isActive: boolean;
   isDefault: boolean;
   createdAt: string;

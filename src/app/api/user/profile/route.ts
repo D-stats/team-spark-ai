@@ -5,15 +5,12 @@ import { prisma } from '@/lib/prisma';
 export async function PUT(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    
+
     const body = await request.json();
     const { name } = body;
 
     if (!name || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: '名前は必須です' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '名前は必須です' }, { status: 400 });
     }
 
     // ユーザープロフィールを更新
@@ -34,9 +31,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.error('Error updating user profile:', error);
-    return NextResponse.json(
-      { error: 'プロフィールの更新に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'プロフィールの更新に失敗しました' }, { status: 500 });
   }
 }

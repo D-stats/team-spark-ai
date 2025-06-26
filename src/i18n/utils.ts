@@ -9,11 +9,11 @@ export const getTranslations = getNextIntlTranslations;
 export function getNestedTranslation(
   translations: ReturnType<typeof useTranslations>,
   key: string,
-  values?: Record<string, any>
+  values?: Record<string, any>,
 ): string {
   const keys = key.split('.');
   let result: any = translations;
-  
+
   for (const k of keys) {
     if (result && typeof result === 'function') {
       result = result(k, values);
@@ -23,7 +23,7 @@ export function getNestedTranslation(
       return key; // Return key if translation not found
     }
   }
-  
+
   return typeof result === 'string' ? result : key;
 }
 
@@ -42,12 +42,20 @@ export function getLanguageName(code: LanguageCode, native = false): string {
 }
 
 // Format date according to locale
-export function formatDate(date: Date, locale: string, options?: Intl.DateTimeFormatOptions): string {
+export function formatDate(
+  date: Date,
+  locale: string,
+  options?: Intl.DateTimeFormatOptions,
+): string {
   return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
 // Format number according to locale
-export function formatNumber(number: number, locale: string, options?: Intl.NumberFormatOptions): string {
+export function formatNumber(
+  number: number,
+  locale: string,
+  options?: Intl.NumberFormatOptions,
+): string {
   return new Intl.NumberFormat(locale, options).format(number);
 }
 
@@ -64,7 +72,7 @@ export function formatRelativeTime(date: Date, locale: string): string {
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
   const now = new Date();
   const diffInSeconds = Math.floor((date.getTime() - now.getTime()) / 1000);
-  
+
   const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [
     ['year', 60 * 60 * 24 * 365],
     ['month', 60 * 60 * 24 * 30],
@@ -74,13 +82,13 @@ export function formatRelativeTime(date: Date, locale: string): string {
     ['minute', 60],
     ['second', 1],
   ];
-  
+
   for (const [unit, secondsInUnit] of units) {
     if (Math.abs(diffInSeconds) >= secondsInUnit) {
       const value = Math.floor(diffInSeconds / secondsInUnit);
       return rtf.format(value, unit);
     }
   }
-  
+
   return rtf.format(0, 'second');
 }

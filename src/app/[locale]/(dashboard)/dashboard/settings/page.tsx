@@ -37,9 +37,7 @@ export default async function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">個人設定</h1>
-        <p className="mt-2 text-muted-foreground">
-          プロフィールや通知設定を管理します
-        </p>
+        <p className="mt-2 text-muted-foreground">プロフィールや通知設定を管理します</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
@@ -53,9 +51,7 @@ export default async function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>プロフィール情報</CardTitle>
-              <CardDescription>
-                あなたの基本情報を更新します
-              </CardDescription>
+              <CardDescription>あなたの基本情報を更新します</CardDescription>
             </CardHeader>
             <CardContent>
               <ProfileForm user={userWithDetails} />
@@ -67,9 +63,7 @@ export default async function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>通知設定</CardTitle>
-              <CardDescription>
-                受信したい通知の種類を設定します
-              </CardDescription>
+              <CardDescription>受信したい通知の種類を設定します</CardDescription>
             </CardHeader>
             <CardContent>
               <NotificationSettings user={userWithDetails} />
@@ -87,10 +81,7 @@ export default async function SettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <SlackUserSettings 
-                  user={userWithDetails} 
-                  slackWorkspace={slackWorkspace}
-                />
+                <SlackUserSettings user={userWithDetails} slackWorkspace={slackWorkspace} />
               </CardContent>
             </Card>
           </TabsContent>

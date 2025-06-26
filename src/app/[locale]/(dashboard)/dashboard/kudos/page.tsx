@@ -62,9 +62,7 @@ export default async function KudosPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Kudos</h1>
-        <p className="mt-2 text-muted-foreground">
-          チームメンバーに感謝を伝えましょう
-        </p>
+        <p className="mt-2 text-muted-foreground">チームメンバーに感謝を伝えましょう</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -86,9 +84,7 @@ export default async function KudosPage() {
           <Card>
             <CardHeader>
               <CardTitle>最近のKudos</CardTitle>
-              <CardDescription>
-                チーム内で送られたKudosの一覧
-              </CardDescription>
+              <CardDescription>チーム内で送られたKudosの一覧</CardDescription>
             </CardHeader>
             <CardContent>
               <KudosFeed kudos={recentKudos} />

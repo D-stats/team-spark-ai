@@ -49,13 +49,14 @@ export default function SetupPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || '組織の作成に失敗しました');
+        throw new Error(errorData.error || 'Failed to create organization');
       }
 
       await response.json();
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -65,9 +66,9 @@ export default function SetupPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">組織をセットアップ</CardTitle>
+          <CardTitle className="text-2xl font-bold">Setup Organization</CardTitle>
           <CardDescription>
-            あなたの組織情報を入力して、TeamSpark AIの利用を開始しましょう
+            Enter your organization information to start using TeamSpark AI
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSetup}>
@@ -78,11 +79,11 @@ export default function SetupPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="orgName">組織名</Label>
+              <Label htmlFor="orgName">Organization Name</Label>
               <Input
                 id="orgName"
                 type="text"
-                placeholder="株式会社サンプル"
+                placeholder="Sample Company Inc."
                 value={orgName}
                 onChange={handleOrgNameChange}
                 required
@@ -90,7 +91,7 @@ export default function SetupPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="orgSlug">組織ID（URL用）</Label>
+              <Label htmlFor="orgSlug">Organization ID (for URL)</Label>
               <Input
                 id="orgSlug"
                 type="text"
@@ -100,16 +101,16 @@ export default function SetupPage() {
                 required
                 disabled={loading}
                 pattern="[a-z0-9-]+"
-                title="小文字、数字、ハイフンのみ使用可能"
+                title="Only lowercase letters, numbers, and hyphens allowed"
               />
               <p className="text-xs text-muted-foreground">
-                この識別子は後から変更できません
+                This identifier cannot be changed later
               </p>
             </div>
           </CardContent>
           <div className="p-6 pt-0">
             <Button type="submit" className="w-full" disabled={loading || !orgName || !orgSlug}>
-              {loading ? '組織を作成中...' : '組織を作成'}
+              {loading ? 'Creating organization...' : 'Create Organization'}
             </Button>
           </div>
         </form>

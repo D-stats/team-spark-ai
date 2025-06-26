@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import {
   EvaluationCycleType,
-  CycleStatus,
   EvaluationPhaseType,
   EvaluationType,
   EvaluationStatus,
@@ -38,7 +37,7 @@ export async function createEvaluationCycle(data: {
 // Generate default phases
 function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: Date) {
   const totalDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-  
+
   const phases = [
     {
       type: EvaluationPhaseType.SELF,
@@ -71,7 +70,7 @@ function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: D
   ];
 
   let currentDate = new Date(startDate);
-  
+
   return phases.map((phase) => {
     const phaseDays = Math.floor(totalDays * phase.durationRatio);
     const phaseStartDate = new Date(currentDate);
@@ -177,12 +176,15 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
   }
 
   // 重複を除去してデータベースに保存
-  const uniqueEvaluations = evaluations.filter((evaluation, index, self) =>
-    index === self.findIndex((e) =>
-      e.evaluateeId === evaluation.evaluateeId &&
-      e.evaluatorId === evaluation.evaluatorId &&
-      e.type === evaluation.type
-    )
+  const uniqueEvaluations = evaluations.filter(
+    (evaluation, index, self) =>
+      index ===
+      self.findIndex(
+        (e) =>
+          e.evaluateeId === evaluation.evaluateeId &&
+          e.evaluatorId === evaluation.evaluatorId &&
+          e.type === evaluation.type,
+      ),
   );
 
   await prisma.evaluation.createMany({
@@ -202,7 +204,7 @@ export function canViewEvaluation(
     type: EvaluationType;
     status: EvaluationStatus;
     isVisible: boolean;
-  }
+  },
 ): boolean {
   // 管理者は全て閲覧可能
   if (viewer.role === 'ADMIN') return true;
@@ -219,7 +221,7 @@ export function canViewEvaluation(
   }
 
   // マネージャーの場合、部下の評価を見れる（実装簡略化のため、ここでは省略）
-  
+
   return false;
 }
 
@@ -228,7 +230,7 @@ export function canEditEvaluation(
   evaluation: {
     evaluatorId: string;
     status: EvaluationStatus;
-  }
+  },
 ): boolean {
   // 提出済みの評価は編集不可
   if (evaluation.status !== 'DRAFT') return false;
@@ -358,38 +360,47 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
   });
 
   // タイプ別の平均評価
-  const ratingsByType = evaluations.reduce((acc, evaluation) => {
-    if (!evaluation.overallRating) return acc;
-    
-    if (!acc[evaluation.type]) {
-      acc[evaluation.type] = { sum: 0, count: 0 };
-    }
-    acc[evaluation.type].sum += evaluation.overallRating;
-    acc[evaluation.type].count += 1;
-    
-    return acc;
-  }, {} as Record<string, { sum: number; count: number }>);
+  const ratingsByType = evaluations.reduce(
+    (acc, evaluation) => {
+      if (!evaluation.overallRating) return acc;
 
-  const averagesByType = Object.entries(ratingsByType).reduce((acc, [type, data]) => {
-    acc[type] = data.count > 0 ? data.sum / data.count : 0;
-    return acc;
-  }, {} as Record<string, number>);
+      if (!acc[evaluation.type]) {
+        acc[evaluation.type] = { sum: 0, count: 0 };
+      }
+      acc[evaluation.type].sum += evaluation.overallRating;
+      acc[evaluation.type].count += 1;
+
+      return acc;
+    },
+    {} as Record<string, { sum: number; count: number }>,
+  );
+
+  const averagesByType = Object.entries(ratingsByType).reduce(
+    (acc, [type, data]) => {
+      acc[type] = data.count > 0 ? data.sum / data.count : 0;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   // コンピテンシー別の平均評価
   const competencyRatings = evaluations.flatMap((evaluation) => evaluation.competencyRatings);
-  const competencyAverages = competencyRatings.reduce((acc, rating) => {
-    const key = rating.competencyId;
-    if (!acc[key]) {
-      acc[key] = {
-        competency: rating.competency,
-        sum: 0,
-        count: 0,
-      };
-    }
-    acc[key].sum += rating.rating;
-    acc[key].count += 1;
-    return acc;
-  }, {} as Record<string, { competency: any; sum: number; count: number }>);
+  const competencyAverages = competencyRatings.reduce(
+    (acc, rating) => {
+      const key = rating.competencyId;
+      if (!acc[key]) {
+        acc[key] = {
+          competency: rating.competency,
+          sum: 0,
+          count: 0,
+        };
+      }
+      acc[key].sum += rating.rating;
+      acc[key].count += 1;
+      return acc;
+    },
+    {} as Record<string, { competency: any; sum: number; count: number }>,
+  );
 
   const competencyResults = Object.values(competencyAverages).map((data) => ({
     competency: data.competency,
@@ -401,6 +412,8 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
     evaluationCount: evaluations.length,
     averagesByType,
     competencyResults,
-    overallAverage: evaluations.reduce((sum, evaluation) => sum + (evaluation.overallRating || 0), 0) / evaluations.length,
+    overallAverage:
+      evaluations.reduce((sum, evaluation) => sum + (evaluation.overallRating || 0), 0) /
+      evaluations.length,
   };
 }

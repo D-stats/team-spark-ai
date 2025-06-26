@@ -1,5 +1,5 @@
 /**
- * 評価入力フォーム - ステップ形式の評価フォーム
+ * Evaluation input form - Step-based evaluation form
  */
 
 'use client';
@@ -11,23 +11,21 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Save, 
-  Send, 
-  AlertCircle, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Save,
+  Send,
+  AlertCircle,
   CheckCircle2,
   Clock,
   Wifi,
-  WifiOff 
+  WifiOff,
 } from 'lucide-react';
 import { useEvaluationStore, useAutoSave } from '@/stores/evaluation.store';
-import { getErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
-// ステップコンポーネント
+// Step components
 import { EvaluationOverviewStep } from './form-steps/overview-step';
 import { EvaluationCompetenciesStep } from './form-steps/competencies-step';
 import { EvaluationGoalsStep } from './form-steps/goals-step';
@@ -52,7 +50,6 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
     isDirty,
     lastSavedAt,
     autoSaveEnabled,
-    errors,
     submitError,
     isOnline,
     loadEvaluation,
@@ -99,7 +96,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
   // 送信処理
   const handleSubmit = async () => {
     clearAllErrors();
-    
+
     if (!canSubmit()) {
       return;
     }
@@ -124,9 +121,9 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
   // ローディング状態
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
           <p className="text-gray-600">評価データを読み込んでいます...</p>
         </div>
       </div>
@@ -137,9 +134,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          評価データが見つかりません。
-        </AlertDescription>
+        <AlertDescription>評価データが見つかりません。</AlertDescription>
       </Alert>
     );
   }
@@ -149,7 +144,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
   const isReadOnly = currentEvaluation.status !== 'DRAFT';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -162,12 +157,16 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
             <ArrowLeft className="h-4 w-4" />
             <span>戻る</span>
           </Button>
-          
+
           <div>
             <h1 className="text-2xl font-bold">
-              {currentEvaluation.type === 'SELF' ? '自己評価' : 
-               currentEvaluation.type === 'MANAGER' ? '上司評価' : 
-               currentEvaluation.type === 'PEER' ? '同僚評価' : '評価'}
+              {currentEvaluation.type === 'SELF'
+                ? '自己評価'
+                : currentEvaluation.type === 'MANAGER'
+                  ? '上司評価'
+                  : currentEvaluation.type === 'PEER'
+                    ? '同僚評価'
+                    : '評価'}
             </h1>
             <p className="text-gray-600">
               {currentEvaluation.evaluatee.name} - {currentEvaluation.cycle.name}
@@ -199,21 +198,33 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
                 {new Date(lastSavedAt).toLocaleTimeString('ja-JP', {
                   hour: '2-digit',
                   minute: '2-digit',
-                })} 保存済み
+                })}{' '}
+                保存済み
               </span>
             </div>
           )}
 
           {/* 評価ステータス */}
-          <Badge variant={
-            currentEvaluation.status === 'DRAFT' ? 'secondary' :
-            currentEvaluation.status === 'SUBMITTED' ? 'default' :
-            currentEvaluation.status === 'REVIEWED' ? 'outline' : 'default'
-          }>
-            {currentEvaluation.status === 'DRAFT' ? '下書き' :
-             currentEvaluation.status === 'SUBMITTED' ? '提出済み' :
-             currentEvaluation.status === 'REVIEWED' ? '承認済み' :
-             currentEvaluation.status === 'SHARED' ? '共有済み' : currentEvaluation.status}
+          <Badge
+            variant={
+              currentEvaluation.status === 'DRAFT'
+                ? 'secondary'
+                : currentEvaluation.status === 'SUBMITTED'
+                  ? 'default'
+                  : currentEvaluation.status === 'REVIEWED'
+                    ? 'outline'
+                    : 'default'
+            }
+          >
+            {currentEvaluation.status === 'DRAFT'
+              ? '下書き'
+              : currentEvaluation.status === 'SUBMITTED'
+                ? '提出済み'
+                : currentEvaluation.status === 'REVIEWED'
+                  ? '承認済み'
+                  : currentEvaluation.status === 'SHARED'
+                    ? '共有済み'
+                    : currentEvaluation.status}
           </Badge>
         </div>
       </div>
@@ -222,34 +233,35 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <span className="text-sm font-medium">進捗状況</span>
               <span className="text-sm text-gray-600">{Math.round(progress)}%</span>
             </div>
             <Progress value={progress} className="h-2" />
-            
+
             {/* ステップ表示 */}
             <div className="flex justify-between text-xs">
               {steps.map((step, index) => (
                 <div
                   key={step.id}
                   className={cn(
-                    'flex flex-col items-center space-y-1 cursor-pointer',
-                    index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-500',
-                    step.isCompleted && 'text-green-600'
+                    'flex cursor-pointer flex-col items-center space-y-1',
+                    index === currentStep ? 'font-medium text-blue-600' : 'text-gray-500',
+                    step.isCompleted && 'text-green-600',
                   )}
                   onClick={() => goToStep(index)}
                 >
-                  <div className={cn(
-                    'w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs',
-                    index === currentStep ? 'border-blue-600 bg-blue-50' :
-                    step.isCompleted ? 'border-green-600 bg-green-50' : 'border-gray-300'
-                  )}>
-                    {step.isCompleted ? (
-                      <CheckCircle2 className="h-3 w-3" />
-                    ) : (
-                      index + 1
+                  <div
+                    className={cn(
+                      'flex h-6 w-6 items-center justify-center rounded-full border-2 text-xs',
+                      index === currentStep
+                        ? 'border-blue-600 bg-blue-50'
+                        : step.isCompleted
+                          ? 'border-green-600 bg-green-50'
+                          : 'border-gray-300',
                     )}
+                  >
+                    {step.isCompleted ? <CheckCircle2 className="h-3 w-3" /> : index + 1}
                   </div>
                   <span className="max-w-[80px] text-center">{step.name}</span>
                 </div>
@@ -273,42 +285,32 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
           <CardTitle className="flex items-center justify-between">
             <span>{currentStepData.name}</span>
             {currentStepData.isRequired && (
-              <Badge variant="outline" className="text-red-600">必須</Badge>
+              <Badge variant="outline" className="text-red-600">
+                必須
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* ステップコンテンツ */}
           {currentStepData.id === 'overview' && (
-            <EvaluationOverviewStep 
-              evaluation={currentEvaluation}
-              isReadOnly={isReadOnly}
-            />
+            <EvaluationOverviewStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
-          
+
           {currentStepData.id === 'competencies' && (
-            <EvaluationCompetenciesStep 
-              evaluation={currentEvaluation}
-              isReadOnly={isReadOnly}
-            />
+            <EvaluationCompetenciesStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
-          
+
           {currentStepData.id === 'goals' && (
-            <EvaluationGoalsStep 
-              evaluation={currentEvaluation}
-              isReadOnly={isReadOnly}
-            />
+            <EvaluationGoalsStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
-          
+
           {currentStepData.id === 'review' && (
-            <EvaluationReviewStep 
-              evaluation={currentEvaluation}
-              isReadOnly={isReadOnly}
-            />
+            <EvaluationReviewStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
 
           {/* ナビゲーションボタン */}
-          <div className="flex justify-between items-center pt-6 border-t">
+          <div className="flex items-center justify-between border-t pt-6">
             <div className="flex space-x-3">
               <Button
                 variant="outline"
@@ -319,7 +321,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
                 <ArrowLeft className="h-4 w-4" />
                 <span>前へ</span>
               </Button>
-              
+
               {currentStep < steps.length - 1 && (
                 <Button
                   onClick={handleNext}
@@ -343,7 +345,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
 
               {isSaving && (
                 <div className="flex items-center space-x-1 text-sm text-blue-600">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></div>
                   <span>保存中...</span>
                 </div>
               )}
@@ -369,7 +371,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
                       className="flex items-center space-x-2"
                     >
                       {isSubmitting ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-white"></div>
                       ) : (
                         <Send className="h-4 w-4" />
                       )}

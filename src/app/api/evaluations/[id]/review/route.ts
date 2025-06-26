@@ -1,18 +1,16 @@
 /**
- * 評価承認・レビューAPI
+ * Evaluation approval and review API
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
-import { 
-  ErrorHandler, 
-  createErrorResponse, 
-  createSuccessResponse, 
-  NotFoundError, 
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  NotFoundError,
   AuthorizationError,
   ConflictError,
-  ValidationError 
 } from '@/lib/errors';
 import { z } from 'zod';
 

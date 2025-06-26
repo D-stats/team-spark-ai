@@ -17,10 +17,7 @@ interface CheckInReminderEmailProps {
   checkInUrl: string;
 }
 
-export default function CheckInReminderEmail({
-  userName,
-  checkInUrl,
-}: CheckInReminderEmailProps) {
+export default function CheckInReminderEmail({ userName, checkInUrl }: CheckInReminderEmailProps) {
   return (
     <Html>
       <Head />
@@ -28,11 +25,9 @@ export default function CheckInReminderEmail({
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>📝 週次チェックインのリマインダー</Heading>
-          
-          <Text style={paragraph}>
-            {userName}さん、こんにちは！
-          </Text>
-          
+
+          <Text style={paragraph}>{userName}さん、こんにちは！</Text>
+
           <Text style={paragraph}>
             今週の振り返りと来週の目標を設定する時間です。
             定期的なチェックインは、あなたの成長と目標達成をサポートします。
@@ -57,7 +52,8 @@ export default function CheckInReminderEmail({
           </Section>
 
           <Text style={tipText}>
-            💡 ヒント: チェックインは5-10分で完了できます。正直に、具体的に記入することで、より良い振り返りができます。
+            💡 ヒント:
+            チェックインは5-10分で完了できます。正直に、具体的に記入することで、より良い振り返りができます。
           </Text>
 
           <Hr style={hr} />
@@ -65,7 +61,8 @@ export default function CheckInReminderEmail({
           <Text style={footer}>
             このメールは <Link href="https://teamspark.ai">TeamSpark AI</Link> から送信されました。
             <br />
-            通知設定は<Link href={`${checkInUrl.replace('/checkins', '/settings')}`}>こちら</Link>から変更できます。
+            通知設定は<Link href={`${checkInUrl.replace('/checkins', '/settings')}`}>こちら</Link>
+            から変更できます。
           </Text>
         </Container>
       </Body>
@@ -75,7 +72,8 @@ export default function CheckInReminderEmail({
 
 const main = {
   backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

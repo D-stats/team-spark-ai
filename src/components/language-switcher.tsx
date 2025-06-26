@@ -2,7 +2,13 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { languages, type LanguageCode } from '@/i18n/utils';
 import { locales } from '@/i18n/config';
 
@@ -14,10 +20,8 @@ export function LanguageSwitcher() {
   const handleLocaleChange = (newLocale: string) => {
     // Remove the current locale from pathname if it exists
     const segments = pathname.split('/');
-    const pathnameHasLocale = locales.some(
-      l => segments[1] === l
-    );
-    
+    const pathnameHasLocale = locales.some((l) => segments[1] === l);
+
     let newPathname = pathname;
     if (pathnameHasLocale) {
       segments[1] = newLocale;

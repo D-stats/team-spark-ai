@@ -28,16 +28,16 @@ export const TEST_USERS = {
 // モック認証のセットアップ
 export async function mockAuth(page: Page, userType: 'admin' | 'manager' | 'member') {
   const user = TEST_USERS[userType];
-  
+
   // フェイクのセッションデータをセット
   await page.addInitScript((userData) => {
     // localStorageにユーザー情報をセット
     localStorage.setItem('test-user', JSON.stringify(userData));
-    
+
     // 認証ステータスをセット
     localStorage.setItem('auth-status', 'authenticated');
   }, user);
-  
+
   // APIリクエストをモック
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({
@@ -49,7 +49,7 @@ export async function mockAuth(page: Page, userType: 'admin' | 'manager' | 'memb
       }),
     });
   });
-  
+
   // ユーザー情報取得APIをモック
   await page.route('**/api/user/profile', async (route) => {
     await route.fulfill({

@@ -6,7 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Plus, X } from 'lucide-react';
 
 interface User {
@@ -69,14 +76,12 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
   };
 
   const toggleMember = (userId: string) => {
-    setSelectedMembers(prev =>
-      prev.includes(userId)
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+    setSelectedMembers((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId],
     );
   };
 
-  const getSelectedUser = (userId: string) => users.find(user => user.id === userId);
+  const getSelectedUser = (userId: string) => users.find((user) => user.id === userId);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -89,15 +94,11 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>新しいチーム作成</DialogTitle>
-          <DialogDescription>
-            チーム名とメンバーを設定してください
-          </DialogDescription>
+          <DialogDescription>チーム名とメンバーを設定してください</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
+            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
           )}
 
           <div className="space-y-2">
@@ -126,11 +127,11 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
 
           <div className="space-y-2">
             <Label>メンバー選択</Label>
-            <div className="max-h-40 overflow-y-auto border rounded-md p-2 space-y-2">
+            <div className="max-h-40 space-y-2 overflow-y-auto rounded-md border p-2">
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center space-x-2 p-2 hover:bg-muted rounded cursor-pointer"
+                  className="flex cursor-pointer items-center space-x-2 rounded p-2 hover:bg-muted"
                   onClick={() => toggleMember(user.id)}
                 >
                   <input
@@ -161,13 +162,13 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
                   return (
                     <div
                       key={userId}
-                      className="flex items-center space-x-1 bg-primary/10 text-primary px-2 py-1 rounded text-sm"
+                      className="flex items-center space-x-1 rounded bg-primary/10 px-2 py-1 text-sm text-primary"
                     >
                       <span>{user.name}</span>
                       <button
                         type="button"
                         onClick={() => toggleMember(userId)}
-                        className="ml-1 hover:bg-primary/20 rounded p-0.5"
+                        className="ml-1 rounded p-0.5 hover:bg-primary/20"
                       >
                         <X className="h-3 w-3" />
                       </button>

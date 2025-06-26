@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth/utils';
 
+interface UserWithOrgAndRole {
+  id: string;
+  email: string;
+  organizationId: string;
+  role: string;
+}
+
 export async function GET(_request: NextRequest) {
   try {
     const user = await getUser();
@@ -11,7 +18,7 @@ export async function GET(_request: NextRequest) {
 
     const templates = await prisma.checkInTemplate.findMany({
       where: {
-        organizationId: (user as any).organizationId,
+        organizationId: (user as UserWithOrgAndRole).organizationId,
         isActive: true,
       },
       orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],
@@ -27,23 +34,23 @@ export async function GET(_request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser();
-    if (!user || (user as any).role !== 'ADMIN') {
+    if (!user || (user as UserWithOrgAndRole).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const body = await request.json();
     const { name, description, frequency, questions, isDefault } = body;
 
-    // バリデーション
+    // Validation
     if (!name || !frequency || !Array.isArray(questions)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // デフォルトテンプレートの設定時は他をfalseに
+    // When setting default template, set others to false
     if (isDefault) {
       await prisma.checkInTemplate.updateMany({
         where: {
-          organizationId: (user as any).organizationId,
+          organizationId: (user as UserWithOrgAndRole).organizationId,
           isDefault: true,
         },
         data: {
@@ -59,7 +66,7 @@ export async function POST(request: NextRequest) {
         frequency,
         questions,
         isDefault: isDefault || false,
-        organizationId: (user as any).organizationId,
+        organizationId: (user as UserWithOrgAndRole).organizationId,
       },
     });
 

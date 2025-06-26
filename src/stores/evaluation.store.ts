@@ -7,12 +7,12 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { 
-  EvaluationWithDetails, 
-  CompetencyRating, 
+import {
+  EvaluationWithDetails,
+  CompetencyRating,
   SaveEvaluationRequest,
   Result,
-  ApiError 
+  ApiError,
 } from '@/types/api';
 import { EvaluationStatus } from '@prisma/client';
 
@@ -28,16 +28,19 @@ export interface EvaluationFormData {
   improvements?: string;
   careerGoals?: string;
   developmentPlan?: string;
-  
+
   // コンピテンシー評価
-  competencyRatings: Record<string, {
-    competencyId: string;
-    rating?: number;
-    comments?: string;
-    behaviors: string[];
-    examples?: string;
-    improvementAreas?: string;
-  }>;
+  competencyRatings: Record<
+    string,
+    {
+      competencyId: string;
+      rating?: number;
+      comments?: string;
+      behaviors: string[];
+      examples?: string;
+      improvementAreas?: string;
+    }
+  >;
 }
 
 export interface EvaluationFormStep {
@@ -51,14 +54,14 @@ export interface EvaluationFormStep {
 export interface EvaluationFormState {
   // 現在の評価
   currentEvaluation: EvaluationWithDetails | null;
-  
+
   // フォームデータ
   formData: EvaluationFormData;
-  
+
   // ステップ管理
   steps: EvaluationFormStep[];
   currentStep: number;
-  
+
   // 状態管理
   isLoading: boolean;
   isSaving: boolean;
@@ -66,11 +69,11 @@ export interface EvaluationFormState {
   isDirty: boolean;
   lastSavedAt: Date | null;
   autoSaveEnabled: boolean;
-  
+
   // エラー管理
   errors: Record<string, string>;
   submitError: string | null;
-  
+
   // オフライン対応
   isOnline: boolean;
   pendingSaves: SaveEvaluationRequest[];
@@ -80,7 +83,7 @@ export interface EvaluationFormActions {
   // データ読み込み
   loadEvaluation: (evaluationId: string) => Promise<Result<EvaluationWithDetails>>;
   clearEvaluation: () => void;
-  
+
   // フォームデータ更新
   updateOverallRating: (rating: number) => void;
   updateOverallComments: (comments: string) => void;
@@ -89,30 +92,30 @@ export interface EvaluationFormActions {
   updateCareerGoals: (goals: string) => void;
   updateDevelopmentPlan: (plan: string) => void;
   updateCompetencyRating: (competencyId: string, updates: Partial<CompetencyRating>) => void;
-  
+
   // ステップ管理
   goToStep: (step: number) => void;
   nextStep: () => void;
   previousStep: () => void;
   validateCurrentStep: () => boolean;
   completeStep: (stepId: string) => void;
-  
+
   // 保存・送信
   saveDraft: () => Promise<Result<void>>;
   submitEvaluation: () => Promise<Result<void>>;
   enableAutoSave: () => void;
   disableAutoSave: () => void;
-  
+
   // エラー管理
   setError: (field: string, message: string) => void;
   clearError: (field: string) => void;
   clearAllErrors: () => void;
-  
+
   // ユーティリティ
   reset: () => void;
   getProgress: () => number;
   canSubmit: () => boolean;
-  
+
   // オフライン対応
   setOnlineStatus: (isOnline: boolean) => void;
   syncPendingSaves: () => Promise<void>;
@@ -207,7 +210,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
             set((state) => {
               state.currentEvaluation = evaluation;
               state.isLoading = false;
-              
+
               // フォームデータを評価データで初期化
               state.formData = {
                 overallRating: evaluation.overallRating || undefined,
@@ -216,17 +219,20 @@ export const useEvaluationStore = create<EvaluationStore>()(
                 improvements: evaluation.improvements || '',
                 careerGoals: evaluation.careerGoals || '',
                 developmentPlan: evaluation.developmentPlan || '',
-                competencyRatings: evaluation.competencyRatings.reduce((acc, rating) => {
-                  acc[rating.competencyId] = {
-                    competencyId: rating.competencyId,
-                    rating: rating.rating,
-                    comments: rating.comments || '',
-                    behaviors: rating.behaviors,
-                    examples: rating.examples || '',
-                    improvementAreas: rating.improvementAreas || '',
-                  };
-                  return acc;
-                }, {} as Record<string, any>),
+                competencyRatings: evaluation.competencyRatings.reduce(
+                  (acc, rating) => {
+                    acc[rating.competencyId] = {
+                      competencyId: rating.competencyId,
+                      rating: rating.rating,
+                      comments: rating.comments || '',
+                      behaviors: rating.behaviors,
+                      examples: rating.examples || '',
+                      improvementAreas: rating.improvementAreas || '',
+                    };
+                    return acc;
+                  },
+                  {} as Record<string, any>,
+                ),
               };
 
               state.isDirty = false;
@@ -237,7 +243,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
             set((state) => {
               state.isLoading = false;
             });
-            return { success: false, error: { code: 'LOAD_ERROR', message: '評価データの読み込みに失敗しました' } };
+            return {
+              success: false,
+              error: { code: 'LOAD_ERROR', message: '評価データの読み込みに失敗しました' },
+            };
           }
         },
 
@@ -246,7 +255,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
             state.currentEvaluation = null;
             state.formData = { competencyRatings: {} };
             state.currentStep = 0;
-            state.steps = initialSteps.map(step => ({ ...step, isCompleted: false }));
+            state.steps = initialSteps.map((step) => ({ ...step, isCompleted: false }));
             state.isDirty = false;
             state.errors = {};
             state.submitError = null;
@@ -311,10 +320,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
                 behaviors: [],
               };
             }
-            
+
             Object.assign(state.formData.competencyRatings[competencyId], updates);
             state.isDirty = true;
-            
+
             // エラーをクリア
             if (state.errors[`competency_${competencyId}`]) {
               delete state.errors[`competency_${competencyId}`];
@@ -353,17 +362,20 @@ export const useEvaluationStore = create<EvaluationStore>()(
         validateCurrentStep: () => {
           const state = get();
           const currentStepData = state.steps[state.currentStep];
-          
+
           if (!currentStepData.isRequired) return true;
 
           switch (currentStepData.id) {
             case 'overview':
               return !!state.formData.overallRating && !!state.formData.overallComments?.trim();
             case 'competencies':
-              return Object.keys(state.formData.competencyRatings).length > 0 &&
-                     Object.values(state.formData.competencyRatings).every(rating => 
-                       rating.rating && rating.comments?.trim() && rating.behaviors.length > 0
-                     );
+              return (
+                Object.keys(state.formData.competencyRatings).length > 0 &&
+                Object.values(state.formData.competencyRatings).every(
+                  (rating) =>
+                    rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
+                )
+              );
             case 'review':
               return state.canSubmit();
             default:
@@ -373,7 +385,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
         completeStep: (stepId: string) => {
           set((state) => {
-            const step = state.steps.find(s => s.id === stepId);
+            const step = state.steps.find((s: any) => s.id === stepId);
             if (step) {
               step.isCompleted = true;
             }
@@ -384,7 +396,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
         saveDraft: async () => {
           const state = get();
           if (!state.currentEvaluation) {
-            return { success: false, error: { code: 'NO_EVALUATION', message: '評価データがありません' } };
+            return {
+              success: false,
+              error: { code: 'NO_EVALUATION', message: '評価データがありません' },
+            };
           }
 
           set((draft) => {
@@ -394,7 +409,12 @@ export const useEvaluationStore = create<EvaluationStore>()(
           try {
             const saveData: SaveEvaluationRequest = {
               ...state.formData,
-              competencyRatings: Object.values(state.formData.competencyRatings),
+              competencyRatings: Object.values(state.formData.competencyRatings)
+                .filter((rating) => rating.rating !== undefined)
+                .map((rating) => ({
+                  ...rating,
+                  rating: rating.rating!,
+                })),
               isDraft: true,
             };
 
@@ -419,7 +439,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
             set((draft) => {
               draft.isSaving = false;
-              
+
               if (result.success) {
                 draft.isDirty = false;
                 draft.lastSavedAt = new Date();
@@ -438,7 +458,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
         submitEvaluation: async () => {
           const state = get();
           if (!state.currentEvaluation || !state.canSubmit()) {
-            return { success: false, error: { code: 'INVALID_SUBMISSION', message: '送信できません' } };
+            return {
+              success: false,
+              error: { code: 'INVALID_SUBMISSION', message: '送信できません' },
+            };
           }
 
           set((draft) => {
@@ -449,8 +472,8 @@ export const useEvaluationStore = create<EvaluationStore>()(
           try {
             const submitData = {
               ...state.formData,
-              competencyRatings: Object.values(state.formData.competencyRatings).filter(rating => 
-                rating.rating && rating.comments?.trim() && rating.behaviors.length > 0
+              competencyRatings: Object.values(state.formData.competencyRatings).filter(
+                (rating) => rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
               ),
               isDraft: false,
             };
@@ -465,7 +488,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
             set((draft) => {
               draft.isSubmitting = false;
-              
+
               if (result.success) {
                 draft.isDirty = false;
                 draft.lastSavedAt = new Date();
@@ -483,7 +506,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
               draft.isSubmitting = false;
               draft.submitError = '送信に失敗しました';
             });
-            return { success: false, error: { code: 'SUBMIT_ERROR', message: '送信に失敗しました' } };
+            return {
+              success: false,
+              error: { code: 'SUBMIT_ERROR', message: '送信に失敗しました' },
+            };
           }
         },
 
@@ -526,7 +552,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
         getProgress: () => {
           const state = get();
-          const completedSteps = state.steps.filter(step => step.isCompleted).length;
+          const completedSteps = state.steps.filter((step) => step.isCompleted).length;
           return (completedSteps / state.steps.length) * 100;
         },
 
@@ -536,8 +562,8 @@ export const useEvaluationStore = create<EvaluationStore>()(
             state.formData.overallRating &&
             state.formData.overallComments?.trim() &&
             Object.keys(state.formData.competencyRatings).length > 0 &&
-            Object.values(state.formData.competencyRatings).every(rating => 
-              rating.rating && rating.comments?.trim() && rating.behaviors.length > 0
+            Object.values(state.formData.competencyRatings).every(
+              (rating) => rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
             )
           );
         },
@@ -547,7 +573,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
           set((state) => {
             state.isOnline = isOnline;
           });
-          
+
           if (isOnline) {
             // オンラインになったら保留中の保存を同期
             get().syncPendingSaves();
@@ -586,9 +612,9 @@ export const useEvaluationStore = create<EvaluationStore>()(
           autoSaveEnabled: state.autoSaveEnabled,
           pendingSaves: state.pendingSaves,
         }),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // ================
@@ -612,7 +638,10 @@ export function useAutoSave() {
         }, 5000);
       }
     },
-    { equalityFn: (a: any, b: any) => a.isDirty === b.isDirty && a.autoSaveEnabled === b.autoSaveEnabled }
+    {
+      equalityFn: (a: any, b: any) =>
+        a.isDirty === b.isDirty && a.autoSaveEnabled === b.autoSaveEnabled,
+    },
   );
 
   return store;

@@ -27,7 +27,10 @@ const ratingOptions = [
   { value: 5, label: '卓越', description: '期待を大きく上回る', color: 'text-green-600' },
 ];
 
-export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: EvaluationOverviewStepProps) {
+export function EvaluationOverviewStep({
+  evaluation,
+  isReadOnly = false,
+}: EvaluationOverviewStepProps) {
   const {
     formData,
     errors,
@@ -52,8 +55,8 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-semibold">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+              <span className="font-semibold text-blue-600">
                 {evaluation.evaluatee.name.charAt(0)}
               </span>
             </div>
@@ -61,8 +64,11 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
               <h3 className="font-semibold">{evaluation.evaluatee.name}</h3>
               <p className="text-sm text-gray-600">{evaluation.evaluatee.email}</p>
               <Badge variant="outline" className="mt-1">
-                {evaluation.evaluatee.role === 'ADMIN' ? '管理者' :
-                 evaluation.evaluatee.role === 'MANAGER' ? 'マネージャー' : 'メンバー'}
+                {evaluation.evaluatee.role === 'ADMIN'
+                  ? '管理者'
+                  : evaluation.evaluatee.role === 'MANAGER'
+                    ? 'マネージャー'
+                    : 'メンバー'}
               </Badge>
             </div>
           </div>
@@ -75,7 +81,7 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
           <Label className="text-base font-semibold">
             総合評価 <span className="text-red-500">*</span>
           </Label>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="mt-1 text-sm text-gray-600">
             全体的なパフォーマンスを5段階で評価してください
           </p>
         </div>
@@ -85,11 +91,11 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
             <Card
               key={option.value}
               className={cn(
-                'cursor-pointer transition-all border-2',
+                'cursor-pointer border-2 transition-all',
                 formData.overallRating === option.value
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200 hover:border-gray-300',
-                isReadOnly && 'cursor-default opacity-75'
+                isReadOnly && 'cursor-default opacity-75',
               )}
               onClick={() => handleRatingChange(option.value)}
             >
@@ -102,35 +108,25 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
                           key={i}
                           className={cn(
                             'h-5 w-5',
-                            i < option.value
-                              ? `${option.color} fill-current`
-                              : 'text-gray-300'
+                            i < option.value ? `${option.color} fill-current` : 'text-gray-300',
                           )}
                         />
                       ))}
                     </div>
                     <div>
-                      <div className={cn('font-semibold', option.color)}>
-                        {option.label}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {option.description}
-                      </div>
+                      <div className={cn('font-semibold', option.color)}>{option.label}</div>
+                      <div className="text-sm text-gray-600">{option.description}</div>
                     </div>
                   </div>
-                  
-                  <div className="text-2xl font-bold text-gray-400">
-                    {option.value}
-                  </div>
+
+                  <div className="text-2xl font-bold text-gray-400">{option.value}</div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {errors.overallRating && (
-          <p className="text-sm text-red-600">{errors.overallRating}</p>
-        )}
+        {errors.overallRating && <p className="text-sm text-red-600">{errors.overallRating}</p>}
       </div>
 
       {/* 総合コメント */}
@@ -149,16 +145,18 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
           className="min-h-[120px]"
           readOnly={isReadOnly}
         />
-        <div className="flex justify-between items-center text-sm">
+        <div className="flex items-center justify-between text-sm">
           <div>
             {errors.overallComments && (
               <span className="text-red-600">{errors.overallComments}</span>
             )}
           </div>
-          <span className={cn(
-            'text-gray-500',
-            (formData.overallComments?.length || 0) < 100 && 'text-orange-600'
-          )}>
+          <span
+            className={cn(
+              'text-gray-500',
+              (formData.overallComments?.length || 0) < 100 && 'text-orange-600',
+            )}
+          >
             {formData.overallComments?.length || 0}/100文字以上
           </span>
         </div>
@@ -169,9 +167,7 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
         <Label htmlFor="strengths" className="text-base font-semibold">
           強み・優れた点
         </Label>
-        <p className="text-sm text-gray-600">
-          特に優れていた点や強みを記述してください
-        </p>
+        <p className="text-sm text-gray-600">特に優れていた点や強みを記述してください</p>
         <Textarea
           id="strengths"
           value={formData.strengths || ''}
@@ -187,9 +183,7 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
         <Label htmlFor="improvements" className="text-base font-semibold">
           改善点・成長領域
         </Label>
-        <p className="text-sm text-gray-600">
-          今後改善や成長が期待される領域を記述してください
-        </p>
+        <p className="text-sm text-gray-600">今後改善や成長が期待される領域を記述してください</p>
         <Textarea
           id="improvements"
           value={formData.improvements || ''}
@@ -201,10 +195,10 @@ export function EvaluationOverviewStep({ evaluation, isReadOnly = false }: Evalu
       </div>
 
       {/* 入力ガイド */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="border-blue-200 bg-blue-50">
         <CardContent className="p-4">
-          <h4 className="font-semibold text-blue-900 mb-2">📝 入力のポイント</h4>
-          <ul className="text-sm text-blue-800 space-y-1">
+          <h4 className="mb-2 font-semibold text-blue-900">📝 入力のポイント</h4>
+          <ul className="space-y-1 text-sm text-blue-800">
             <li>• 具体的な事例や行動を含めて記述してください</li>
             <li>• 客観的で建設的なフィードバックを心がけてください</li>
             <li>• 感情的な表現ではなく、事実に基づいた評価をしてください</li>

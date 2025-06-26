@@ -6,31 +6,25 @@ import { slackApp } from '@/lib/slack/client';
 export async function GET(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    
-    // 管理者のみSlack連携可能
+
+    // Only admins can connect Slack
     if (dbUser.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'Slack連携は管理者のみ実行できます' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Only admins can connect Slack' }, { status: 403 });
     }
 
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    const state = searchParams.get('state');
+    const _state = searchParams.get('state');
     const error = searchParams.get('error');
 
     if (error) {
       return NextResponse.redirect(
-        new URL('/dashboard/settings?slack_error=cancelled', request.url)
+        new URL('/dashboard/settings?slack_error=cancelled', request.url),
       );
     }
 
     if (!code) {
-      return NextResponse.json(
-        { error: '認証コードが見つかりません' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '認証コードが見つかりません' }, { status: 400 });
     }
 
     // Slack OAuthトークンを取得
@@ -41,39 +35,40 @@ export async function GET(request: NextRequest) {
       redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/slack/callback`,
     });
 
-    if (!oauthResponse.ok || !oauthResponse.access_token || !oauthResponse.team) {
+    if (!oauthResponse.ok || !oauthResponse.access_token || !oauthResponse.team?.id) {
       throw new Error('Slack認証に失敗しました');
     }
+
+    const teamId = oauthResponse.team.id;
+    const appId = oauthResponse.app_id || '';
 
     // Slackワークスペース情報を保存
     await prisma.slackWorkspace.upsert({
       where: {
-        teamId: oauthResponse.team.id,
+        teamId: teamId,
       },
       update: {
         teamName: oauthResponse.team.name || '',
-        accessToken: oauthResponse.access_token,
+        botAccessToken: oauthResponse.access_token,
         botUserId: oauthResponse.bot_user_id || '',
-        organizationId: dbUser.organizationId,
+        appId: appId,
+        organizationId: dbUser.organizationId!,
         updatedAt: new Date(),
       },
       create: {
-        teamId: oauthResponse.team.id,
+        teamId: teamId,
         teamName: oauthResponse.team.name || '',
-        accessToken: oauthResponse.access_token,
+        botAccessToken: oauthResponse.access_token,
         botUserId: oauthResponse.bot_user_id || '',
-        organizationId: dbUser.organizationId,
+        appId: appId,
+        organizationId: dbUser.organizationId!,
       },
     });
 
     // 成功時は設定ページにリダイレクト
-    return NextResponse.redirect(
-      new URL('/dashboard/settings?slack_connected=true', request.url)
-    );
+    return NextResponse.redirect(new URL('/dashboard/settings?slack_connected=true', request.url));
   } catch (error) {
     console.error('Slack OAuth error:', error);
-    return NextResponse.redirect(
-      new URL('/dashboard/settings?slack_error=failed', request.url)
-    );
+    return NextResponse.redirect(new URL('/dashboard/settings?slack_error=failed', request.url));
   }
 }

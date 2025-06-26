@@ -41,8 +41,8 @@ const kudosCategories = {
 export function KudosFeed({ kudos }: KudosFeedProps) {
   if (kudos.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        <Heart className="mx-auto h-12 w-12 mb-4 opacity-30" />
+      <div className="py-8 text-center text-muted-foreground">
+        <Heart className="mx-auto mb-4 h-12 w-12 opacity-30" />
         <p>まだKudosがありません</p>
         <p className="text-sm">チームメンバーに感謝を伝えてみましょう！</p>
       </div>
@@ -52,26 +52,25 @@ export function KudosFeed({ kudos }: KudosFeedProps) {
   return (
     <div className="space-y-4">
       {kudos.map((kudo) => {
-        const category = kudosCategories[kudo.category as keyof typeof kudosCategories] || kudosCategories.OTHER;
-        
+        const category =
+          kudosCategories[kudo.category as keyof typeof kudosCategories] || kudosCategories.OTHER;
+
         return (
           <Card key={kudo.id} className="border-l-4 border-l-primary/30">
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3 flex-1">
+                <div className="flex flex-1 items-start space-x-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium">
                     {kudo.sender.name.charAt(0)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <span className="font-medium text-sm">{kudo.sender.name}</span>
-                      <span className="text-muted-foreground text-xs">→</span>
-                      <span className="font-medium text-sm">{kudo.receiver.name}</span>
-                      {!kudo.isPublic && (
-                        <Lock className="h-3 w-3 text-muted-foreground" />
-                      )}
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex items-center space-x-2">
+                      <span className="text-sm font-medium">{kudo.sender.name}</span>
+                      <span className="text-xs text-muted-foreground">→</span>
+                      <span className="text-sm font-medium">{kudo.receiver.name}</span>
+                      {!kudo.isPublic && <Lock className="h-3 w-3 text-muted-foreground" />}
                     </div>
-                    <p className="text-sm text-foreground mb-2">{kudo.message}</p>
+                    <p className="mb-2 text-sm text-foreground">{kudo.message}</p>
                     <div className="flex items-center justify-between">
                       <Badge variant="secondary" className={category.color}>
                         {category.label}

@@ -1,4 +1,4 @@
-import { slackClient } from './client';
+import { createSlackClient } from './client';
 import { prisma } from '@/lib/prisma';
 
 interface KudosNotificationData {
@@ -40,11 +40,14 @@ export async function sendKudosNotification(data: KudosNotificationData) {
     }
 
     const slackWorkspace = receiver.organization.slackWorkspaces[0];
-    
+
+    // Create Slack client with workspace-specific token
+    const slackClient = createSlackClient(slackWorkspace.botAccessToken);
+
     // Category labels
     const categoryLabels: Record<string, string> = {
       TEAMWORK: 'Teamwork',
-      INNOVATION: 'Innovation', 
+      INNOVATION: 'Innovation',
       LEADERSHIP: 'Leadership',
       PROBLEM_SOLVING: 'Problem Solving',
       CUSTOMER_FOCUS: 'Customer Focus',
@@ -54,7 +57,6 @@ export async function sendKudosNotification(data: KudosNotificationData) {
 
     // Send Slack message
     await slackClient.chat.postMessage({
-      token: slackWorkspace.botAccessToken,
       channel: receiver.slackUserId,
       text: `🎉 You received Kudos from ${data.senderName}!`,
       blocks: [
@@ -119,8 +121,10 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
 
     const slackWorkspace = user.organization.slackWorkspaces[0];
 
+    // Create Slack client with workspace-specific token
+    const slackClient = createSlackClient(slackWorkspace.botAccessToken);
+
     await slackClient.chat.postMessage({
-      token: slackWorkspace.botAccessToken,
       channel: user.slackUserId,
       text: '📝 Time for your weekly check-in!',
       blocks: [
@@ -183,9 +187,12 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
     }
 
     const slackWorkspace = users[0].organization.slackWorkspaces[0];
-    const deadlineText = data.deadline 
+    const deadlineText = data.deadline
       ? `\n*締切:* ${new Date(data.deadline).toLocaleDateString('ja-JP')}`
       : '';
+
+    // Create Slack client with workspace-specific token
+    const slackClient = createSlackClient(slackWorkspace.botAccessToken);
 
     // 各ユーザーに通知を送信
     for (const user of users) {
@@ -193,7 +200,6 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
 
       try {
         await slackClient.chat.postMessage({
-          token: slackWorkspace.botAccessToken,
           channel: user.slackUserId,
           text: `📊 新しいサーベイ「${data.surveyTitle}」が開始されました`,
           blocks: [

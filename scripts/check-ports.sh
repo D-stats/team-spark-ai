@@ -13,30 +13,11 @@ NC='\033[0m' # No Color
 
 # デフォルトポート（環境変数で上書き可能）
 NEXT_PORT=${PORT:-3000}
-SUPABASE_API_PORT=${SUPABASE_API_PORT:-54321}
-SUPABASE_DB_PORT=${SUPABASE_DB_PORT:-54322}
-SUPABASE_STUDIO_PORT=${SUPABASE_STUDIO_PORT:-54323}
-SUPABASE_INBUCKET_PORT=${SUPABASE_INBUCKET_PORT:-54324}
-
-# チェックモード（環境変数で制御）
-CHECK_SUPABASE=${CHECK_SUPABASE:-false}
 
 # チェック対象のポート配列
-if [ "$CHECK_SUPABASE" = "true" ]; then
-  # Supabaseポートも含めてチェック
-  declare -A PORTS=(
-    ["Next.js"]=$NEXT_PORT
-    ["Supabase API"]=$SUPABASE_API_PORT
-    ["Supabase DB"]=$SUPABASE_DB_PORT
-    ["Supabase Studio"]=$SUPABASE_STUDIO_PORT
-    ["Inbucket Mail"]=$SUPABASE_INBUCKET_PORT
-  )
-else
-  # Next.jsポートのみチェック（通常の開発時）
-  declare -A PORTS=(
-    ["Next.js"]=$NEXT_PORT
-  )
-fi
+declare -A PORTS=(
+  ["Next.js"]=$NEXT_PORT
+)
 
 # ポートチェック関数
 check_port() {
@@ -100,6 +81,6 @@ else
   echo "Quick fixes:"
   echo "1. Kill process using a port: kill -9 \$(lsof -ti:PORT)"
   echo "2. Use alternative port: PORT=3001 npm run dev"
-  echo "3. Stop all services: npm run stop:all"
+  echo "3. Stop all services: npm run stop:dev"
   exit 1
 fi

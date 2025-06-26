@@ -2,12 +2,17 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -15,8 +20,6 @@ export default function SignUpPage() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  const supabase = createClient();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,28 +27,11 @@ export default function SignUpPage() {
     setError(null);
 
     try {
-      // Supabase Auth でユーザー作成
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: name,
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (authError) {
-        throw authError;
-      }
-
-      if (authData.user) {
-        // 確認メール送信の通知
-        router.push('/signup/verify-email');
-      }
-    } catch (err: any) {
-      setError(err.message || 'サインアップに失敗しました');
+      // TODO: Implement signup without Supabase
+      setError('Signup not implemented yet');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Signup failed';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -55,24 +41,18 @@ export default function SignUpPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">アカウント作成</CardTitle>
-          <CardDescription>
-            新しいアカウントを作成して、チームのエンゲージメント向上を始めましょう
-          </CardDescription>
+          <CardTitle className="text-center text-2xl font-bold">Sign Up</CardTitle>
+          <CardDescription className="text-center">Enter your account information</CardDescription>
         </CardHeader>
         <form onSubmit={handleSignUp}>
           <CardContent className="space-y-4">
-            {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
+            {error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
             <div className="space-y-2">
-              <Label htmlFor="name">お名前</Label>
+              <Label htmlFor="name">Full Name</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder="山田 太郎"
+                placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -80,7 +60,7 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">メールアドレス</Label>
+              <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -92,32 +72,29 @@ export default function SignUpPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">パスワード</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
                 minLength={6}
               />
-              <p className="text-xs text-muted-foreground">
-                6文字以上のパスワードを入力してください
-              </p>
+              <p className="text-xs text-muted-foreground">Must be at least 6 characters</p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'アカウント作成中...' : 'アカウントを作成'}
+              {loading ? 'Signing up...' : 'Sign Up'}
             </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              すでにアカウントをお持ちですか？{' '}
-              <Link href="/login" className="font-medium text-primary hover:underline">
-                ログイン
+            <div className="text-center text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/login" className="text-primary hover:underline">
+                Login
               </Link>
-            </p>
+            </div>
           </CardFooter>
         </form>
       </Card>

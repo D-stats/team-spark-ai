@@ -178,30 +178,31 @@ export async function setupTestData() {
           type: 'SELF',
           overallRating: Math.floor(Math.random() * 2) + 4, // Random 4-5
           overallComments:
-            '今期は新しい技術への取り組みと、チームとの連携を重視して業務に取り組みました。',
-          strengths: '新技術の習得が早く、チームメンバーとのコミュニケーションが円滑です。',
-          improvements: 'プロジェクト管理スキルをさらに向上させたいと思います。',
-          careerGoals: 'リードエンジニアとしてチーム全体の技術力向上に貢献したいです。',
+            'This term, I focused on adopting new technologies and emphasizing collaboration with the team.',
+          strengths: 'Quick to learn new technologies and smooth communication with team members.',
+          improvements: 'I would like to further improve my project management skills.',
+          careerGoals:
+            'I want to contribute to improving the technical skills of the entire team as a lead engineer.',
           developmentPlan:
-            '来期はプロジェクト管理研修を受講し、より効率的な開発プロセスを学びたいです。',
+            'Next term, I would like to take project management training and learn more efficient development processes.',
           status: 'SUBMITTED',
           submittedAt: new Date(),
         },
       });
 
-      // コンピテンシー評価の追加
+      // Add competency evaluations
       for (const competency of competencies.slice(0, 3)) {
         await prisma.competencyRating.create({
           data: {
             evaluationId: selfEvaluation.id,
             competencyId: competency.id,
-            rating: Math.floor(Math.random() * 2) + 4, // 4-5のランダム
-            evidence: `${competency.name}において、具体的な成果や行動例を示すことができます。`,
+            rating: Math.floor(Math.random() * 2) + 4, // Random 4-5
+            evidence: `I can demonstrate specific achievements and behavioral examples in ${competency.name}.`,
           },
         });
       }
 
-      // マネージャー評価
+      // Manager evaluation
       const managerEvaluation = await prisma.evaluation.create({
         data: {
           cycleId: evaluationCycle.id,
@@ -209,11 +210,13 @@ export async function setupTestData() {
           evaluatorId: manager.id,
           type: 'MANAGER',
           overallRating: Math.floor(Math.random() * 2) + 3, // Random 3-4
-          overallComments: 'チームの一員として着実に成長しており、期待を上回る成果を上げています。',
-          strengths: '技術力が高く、チームメンバーからの信頼も厚いです。',
-          improvements: 'リーダーシップをより発揮して、チーム全体を牽引してほしいです。',
-          careerGoals: '次期リーダー候補として、マネジメントスキルの習得が期待されます。',
-          developmentPlan: 'リーダーシップ研修とメンタリングプログラムへの参加を推奨します。',
+          overallComments:
+            'Steadily growing as a team member and achieving results that exceed expectations.',
+          strengths: 'High technical skills and strong trust from team members.',
+          improvements: 'I would like you to demonstrate more leadership and lead the entire team.',
+          careerGoals: 'As a next leader candidate, acquiring management skills is expected.',
+          developmentPlan:
+            'Participation in leadership training and mentoring programs is recommended.',
           status: 'REVIEWED',
           submittedAt: new Date(),
           reviewedAt: new Date(),
@@ -221,7 +224,7 @@ export async function setupTestData() {
         },
       });
 
-      // マネージャー評価のコンピテンシー評価
+      // Competency evaluations for manager evaluation
       for (const competency of competencies.slice(0, 3)) {
         await prisma.competencyRating.create({
           data: {
@@ -241,7 +244,7 @@ export async function setupTestData() {
           senderId: manager.id,
           receiverId: member1.id,
           message:
-            'Great job on implementing the new feature! Your high-quality code improved the entire team\'s productivity.',
+            "Great job on implementing the new feature! Your high-quality code improved the entire team's productivity.",
           category: 'INNOVATION',
           points: 3,
         },

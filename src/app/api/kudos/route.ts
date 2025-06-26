@@ -7,15 +7,12 @@ import { sendKudosEmail } from '@/lib/email/service';
 export async function POST(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    
+
     const body = await request.json();
     const { receiverId, message, category, isPublic } = body;
 
     if (!receiverId || !message || !category) {
-      return NextResponse.json(
-        { error: 'Required fields are missing' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Required fields are missing' }, { status: 400 });
     }
 
     // Check if receiver is a member of the same organization
@@ -28,26 +25,25 @@ export async function POST(request: NextRequest) {
     });
 
     if (!receiver) {
-      return NextResponse.json(
-        { error: 'Invalid recipient' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid recipient' }, { status: 400 });
     }
 
     // Cannot send Kudos to yourself
     if (receiverId === dbUser.id) {
-      return NextResponse.json(
-        { error: 'Cannot send Kudos to yourself' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Cannot send Kudos to yourself' }, { status: 400 });
     }
 
-    const validCategories = ['TEAMWORK', 'INNOVATION', 'LEADERSHIP', 'PROBLEM_SOLVING', 'CUSTOMER_FOCUS', 'LEARNING', 'OTHER'];
+    const validCategories = [
+      'TEAMWORK',
+      'INNOVATION',
+      'LEADERSHIP',
+      'PROBLEM_SOLVING',
+      'CUSTOMER_FOCUS',
+      'LEARNING',
+      'OTHER',
+    ];
     if (!validCategories.includes(category)) {
-      return NextResponse.json(
-        { error: 'Invalid category' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
     }
 
     // Kudosを作成
@@ -83,7 +79,7 @@ export async function POST(request: NextRequest) {
       senderName: kudos.sender.name,
       category: kudos.category,
       message: kudos.message,
-    }).catch(error => {
+    }).catch((error) => {
       console.error('Failed to send Slack notification:', error);
     });
 
@@ -94,16 +90,13 @@ export async function POST(request: NextRequest) {
       senderName: kudos.sender.name,
       category: kudos.category,
       message: kudos.message,
-    }).catch(error => {
+    }).catch((error) => {
       console.error('Failed to send email notification:', error);
     });
 
     return NextResponse.json(kudos, { status: 201 });
   } catch (error) {
     console.error('Error creating kudos:', error);
-    return NextResponse.json(
-      { error: 'Kudosの作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Kudosの作成に失敗しました' }, { status: 500 });
   }
 }

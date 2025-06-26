@@ -22,40 +22,37 @@ export const SurveyNotificationEmail = ({
   surveyUrl,
   deadline,
 }: SurveyNotificationEmailProps) => {
-  const deadlineText = deadline 
+  const deadlineText = deadline
     ? `（締切: ${new Date(deadline).toLocaleDateString('ja-JP')}）`
     : '';
-    
+
   return (
     <Html>
       <Head />
-      <Preview>新しいサーベイ「{surveyTitle}」が開始されました{deadlineText}</Preview>
+      <Preview>
+        新しいサーベイ「{surveyTitle}」が開始されました{deadlineText}
+      </Preview>
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>📊 新しいサーベイのお知らせ</Heading>
-          
+
           <Text style={text}>
             新しいサーベイ「<strong>{surveyTitle}</strong>」が開始されました。
           </Text>
-          
+
           {deadline && (
             <Text style={text}>
               締切: <strong>{new Date(deadline).toLocaleDateString('ja-JP')}</strong>
             </Text>
           )}
-          
+
           <Section style={buttonContainer}>
-            <Link
-              style={button}
-              href={surveyUrl}
-            >
+            <Link style={button} href={surveyUrl}>
               サーベイに回答する
             </Link>
           </Section>
-          
-          <Text style={footer}>
-            ご質問がございましたら、お気軽にお問い合わせください。
-          </Text>
+
+          <Text style={footer}>ご質問がございましたら、お気軽にお問い合わせください。</Text>
         </Container>
       </Body>
     </Html>

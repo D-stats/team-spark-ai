@@ -22,6 +22,6 @@ export async function GET() {
   }
 
   const httpStatus = health.checks.database ? 200 : 503;
-  
+
   return NextResponse.json(health, { status: httpStatus });
 }

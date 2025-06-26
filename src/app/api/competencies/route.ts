@@ -3,21 +3,25 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { CompetencyCategory } from '@prisma/client';
 
-// コンピテンシー一覧取得
+// Get competencies list
 export async function GET(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
-    
+
     const category = searchParams.get('category');
     const isActive = searchParams.get('active');
 
-    const where: any = {
+    const where: {
+      organizationId: string;
+      category?: CompetencyCategory;
+      isActive?: boolean;
+    } = {
       organizationId: dbUser.organizationId,
     };
 
     if (category) {
-      where.category = category;
+      where.category = category as CompetencyCategory;
     }
 
     if (isActive !== null) {
@@ -33,20 +37,13 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: [
-        { category: 'asc' },
-        { order: 'asc' },
-        { name: 'asc' },
-      ],
+      orderBy: [{ category: 'asc' }, { order: 'asc' }, { name: 'asc' }],
     });
 
     return NextResponse.json(competencies);
   } catch (error) {
     console.error('Error fetching competencies:', error);
-    return NextResponse.json(
-      { error: 'コンピテンシーの取得に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'コンピテンシーの取得に失敗しました' }, { status: 500 });
   }
 }
 
@@ -57,10 +54,7 @@ export async function POST(request: NextRequest) {
 
     // 管理者またはマネージャーのみ作成可能
     if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
-      return NextResponse.json(
-        { error: 'コンピテンシーの作成権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'コンピテンシーの作成権限がありません' }, { status: 403 });
     }
 
     const body = await request.json();
@@ -68,10 +62,7 @@ export async function POST(request: NextRequest) {
 
     // バリデーション
     if (!name || !description || !category) {
-      return NextResponse.json(
-        { error: '必要な項目が入力されていません' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 
     // 名前の重複チェック
@@ -86,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (existingCompetency) {
       return NextResponse.json(
         { error: '同じ名前のコンピテンシーが既に存在します' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -104,9 +95,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(competency, { status: 201 });
   } catch (error) {
     console.error('Error creating competency:', error);
-    return NextResponse.json(
-      { error: 'コンピテンシーの作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'コンピテンシーの作成に失敗しました' }, { status: 500 });
   }
 }

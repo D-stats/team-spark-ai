@@ -1,6 +1,6 @@
 /**
- * 評価フォーム - コンピテンシーステップ
- * 各コンピテンシーの詳細評価を入力
+ * Evaluation form - Competencies step
+ * Input detailed evaluation for each competency
  */
 
 'use client';
@@ -23,41 +23,37 @@ interface EvaluationCompetenciesStepProps {
 }
 
 const ratingLabels = [
-  { value: 1, label: '未達成', color: 'text-red-600' },
-  { value: 2, label: '要改善', color: 'text-orange-600' },
-  { value: 3, label: '達成', color: 'text-yellow-600' },
-  { value: 4, label: '優秀', color: 'text-blue-600' },
-  { value: 5, label: '卓越', color: 'text-green-600' },
+  { value: 1, label: 'Not Met', color: 'text-red-600' },
+  { value: 2, label: 'Needs Improvement', color: 'text-orange-600' },
+  { value: 3, label: 'Met', color: 'text-yellow-600' },
+  { value: 4, label: 'Exceeds', color: 'text-blue-600' },
+  { value: 5, label: 'Outstanding', color: 'text-green-600' },
 ];
 
 const categoryLabels = {
-  CORE: 'コア・コンピテンシー',
-  LEADERSHIP: 'リーダーシップ',
-  TECHNICAL: 'テクニカル',
-  BEHAVIORAL: '行動特性',
+  CORE: 'Core Competencies',
+  LEADERSHIP: 'Leadership',
+  TECHNICAL: 'Technical',
+  BEHAVIORAL: 'Behavioral',
 };
 
-export function EvaluationCompetenciesStep({ 
-  evaluation, 
-  isReadOnly = false 
+export function EvaluationCompetenciesStep({
+  evaluation: _evaluation,
+  isReadOnly = false,
 }: EvaluationCompetenciesStepProps) {
   const [competencies, setCompetencies] = useState<CompetencyWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCompetencies, setExpandedCompetencies] = useState<Set<string>>(new Set());
 
-  const {
-    formData,
-    errors,
-    updateCompetencyRating,
-  } = useEvaluationStore();
+  const { formData, errors, updateCompetencyRating } = useEvaluationStore();
 
-  // コンピテンシー一覧の取得
+  // Get competencies list
   useEffect(() => {
     const fetchCompetencies = async () => {
       try {
         const response = await fetch('/api/competencies');
         const result = await response.json();
-        
+
         if (result.success) {
           setCompetencies(result.data);
         }
@@ -100,10 +96,10 @@ export function EvaluationCompetenciesStep({
 
     const currentRating = formData.competencyRatings[competencyId];
     const currentBehaviors = currentRating?.behaviors || [];
-    
+
     const updatedBehaviors = checked
       ? [...currentBehaviors, behavior]
-      : currentBehaviors.filter(b => b !== behavior);
+      : currentBehaviors.filter((b) => b !== behavior);
 
     updateCompetencyRating(competencyId, { behaviors: updatedBehaviors });
   };
@@ -123,28 +119,31 @@ export function EvaluationCompetenciesStep({
   if (loading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   // カテゴリ別にグループ化
-  const competenciesByCategory = competencies.reduce((acc, competency) => {
-    const category = competency.category;
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(competency);
-    return acc;
-  }, {} as Record<string, CompetencyWithStats[]>);
+  const competenciesByCategory = competencies.reduce(
+    (acc, competency) => {
+      const category = competency.category;
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(competency);
+      return acc;
+    },
+    {} as Record<string, CompetencyWithStats[]>,
+  );
 
   return (
     <div className="space-y-6">
       {/* 説明 */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="border-blue-200 bg-blue-50">
         <CardContent className="p-4">
           <div className="flex items-start space-x-3">
-            <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+            <Info className="mt-0.5 h-5 w-5 text-blue-600" />
             <div>
-              <h4 className="font-semibold text-blue-900 mb-2">コンピテンシー評価について</h4>
+              <h4 className="mb-2 font-semibold text-blue-900">コンピテンシー評価について</h4>
               <p className="text-sm text-blue-800">
                 各コンピテンシーについて、1〜5段階で評価してください。
                 該当する行動指標にチェックを入れ、具体的な事例やコメントを記入してください。
@@ -158,7 +157,9 @@ export function EvaluationCompetenciesStep({
       {Object.entries(competenciesByCategory).map(([category, categoryCompetencies]) => (
         <div key={category} className="space-y-4">
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-semibold">{categoryLabels[category as keyof typeof categoryLabels]}</h3>
+            <h3 className="text-lg font-semibold">
+              {categoryLabels[category as keyof typeof categoryLabels]}
+            </h3>
             <Badge variant="outline">{categoryCompetencies.length}項目</Badge>
           </div>
 
@@ -168,17 +169,20 @@ export function EvaluationCompetenciesStep({
             const hasRating = !!currentRating?.rating;
 
             return (
-              <Card key={competency.id} className={cn(
-                'transition-all',
-                hasRating ? 'border-green-200 bg-green-50' : 'border-gray-200'
-              )}>
-                <CardHeader 
+              <Card
+                key={competency.id}
+                className={cn(
+                  'transition-all',
+                  hasRating ? 'border-green-200 bg-green-50' : 'border-gray-200',
+                )}
+              >
+                <CardHeader
                   className="cursor-pointer"
                   onClick={() => toggleCompetency(competency.id)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-base flex items-center space-x-2">
+                      <CardTitle className="flex items-center space-x-2 text-base">
                         <span>{competency.name}</span>
                         {hasRating && (
                           <Badge variant="outline" className="text-green-600">
@@ -186,11 +190,9 @@ export function EvaluationCompetenciesStep({
                           </Badge>
                         )}
                       </CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {competency.description}
-                      </p>
+                      <p className="mt-1 text-sm text-gray-600">{competency.description}</p>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       {hasRating && (
                         <div className="flex items-center">
@@ -200,14 +202,14 @@ export function EvaluationCompetenciesStep({
                               className={cn(
                                 'h-4 w-4',
                                 i < (currentRating.rating || 0)
-                                  ? 'text-yellow-500 fill-current'
-                                  : 'text-gray-300'
+                                  ? 'fill-current text-yellow-500'
+                                  : 'text-gray-300',
                               )}
                             />
                           ))}
                         </div>
                       )}
-                      
+
                       {isExpanded ? (
                         <ChevronUp className="h-5 w-5 text-gray-500" />
                       ) : (
@@ -224,17 +226,17 @@ export function EvaluationCompetenciesStep({
                       <Label className="text-sm font-semibold">
                         評価 <span className="text-red-500">*</span>
                       </Label>
-                      
+
                       <div className="grid grid-cols-5 gap-2">
                         {ratingLabels.map((rating) => (
                           <Card
                             key={rating.value}
                             className={cn(
-                              'cursor-pointer transition-all p-3 text-center border-2',
+                              'cursor-pointer border-2 p-3 text-center transition-all',
                               currentRating?.rating === rating.value
                                 ? 'border-blue-500 bg-blue-50'
                                 : 'border-gray-200 hover:border-gray-300',
-                              isReadOnly && 'cursor-default opacity-75'
+                              isReadOnly && 'cursor-default opacity-75',
                             )}
                             onClick={() => handleRatingChange(competency.id, rating.value)}
                           >
@@ -258,21 +260,21 @@ export function EvaluationCompetenciesStep({
                       <Label className="text-sm font-semibold">
                         該当する行動指標 <span className="text-red-500">*</span>
                       </Label>
-                      
+
                       <div className="space-y-2">
                         {competency.behaviors.map((behavior, index) => (
                           <div key={index} className="flex items-start space-x-2">
                             <Checkbox
                               id={`${competency.id}-behavior-${index}`}
                               checked={currentRating?.behaviors?.includes(behavior) || false}
-                              onCheckedChange={(checked) => 
+                              onCheckedChange={(checked) =>
                                 handleBehaviorChange(competency.id, behavior, !!checked)
                               }
                               disabled={isReadOnly}
                             />
                             <Label
                               htmlFor={`${competency.id}-behavior-${index}`}
-                              className="text-sm leading-relaxed cursor-pointer"
+                              className="cursor-pointer text-sm leading-relaxed"
                             >
                               {behavior}
                             </Label>
@@ -312,7 +314,9 @@ export function EvaluationCompetenciesStep({
                       <Label className="text-sm font-semibold">改善・成長領域</Label>
                       <Textarea
                         value={currentRating?.improvementAreas || ''}
-                        onChange={(e) => handleImprovementAreasChange(competency.id, e.target.value)}
+                        onChange={(e) =>
+                          handleImprovementAreasChange(competency.id, e.target.value)
+                        }
                         placeholder="このコンピテンシーで改善や成長が期待される領域..."
                         className="min-h-[60px]"
                         readOnly={isReadOnly}
@@ -329,7 +333,7 @@ export function EvaluationCompetenciesStep({
       {/* 進捗表示 */}
       <Card className="bg-gray-50">
         <CardContent className="p-4">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <span className="text-sm font-medium">評価進捗</span>
             <span className="text-sm text-gray-600">
               {Object.keys(formData.competencyRatings).length} / {competencies.length} 完了
@@ -343,15 +347,11 @@ export function EvaluationCompetenciesStep({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setExpandedCompetencies(new Set(competencies.map(c => c.id)))}
+          onClick={() => setExpandedCompetencies(new Set(competencies.map((c) => c.id)))}
         >
           すべて展開
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setExpandedCompetencies(new Set())}
-        >
+        <Button variant="outline" size="sm" onClick={() => setExpandedCompetencies(new Set())}>
           すべて折りたたみ
         </Button>
       </div>

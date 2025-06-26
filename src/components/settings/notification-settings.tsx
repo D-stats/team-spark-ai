@@ -68,11 +68,9 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
       )}
-      
+
       {success && (
         <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
           通知設定が正常に更新されました
@@ -82,13 +80,11 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
       <div className="space-y-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center">
+            <CardTitle className="flex items-center text-base">
               <Mail className="mr-2 h-4 w-4" />
               メール通知
             </CardTitle>
-            <CardDescription>
-              メールで通知を受信するかどうかを設定します
-            </CardDescription>
+            <CardDescription>メールで通知を受信するかどうかを設定します</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -110,21 +106,17 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center">
+            <CardTitle className="flex items-center text-base">
               <Bell className="mr-2 h-4 w-4" />
               活動通知
             </CardTitle>
-            <CardDescription>
-              アプリ内の活動に関する通知設定
-            </CardDescription>
+            <CardDescription>アプリ内の活動に関する通知設定</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="kudos-notifications">Kudos通知</Label>
-                <p className="text-sm text-muted-foreground">
-                  Kudosを受け取った時の通知
-                </p>
+                <p className="text-sm text-muted-foreground">Kudosを受け取った時の通知</p>
               </div>
               <Switch
                 id="kudos-notifications"
@@ -152,9 +144,7 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="survey-notifications">サーベイ通知</Label>
-                <p className="text-sm text-muted-foreground">
-                  新しいサーベイが作成された時の通知
-                </p>
+                <p className="text-sm text-muted-foreground">新しいサーベイが作成された時の通知</p>
               </div>
               <Switch
                 id="survey-notifications"
@@ -168,13 +158,11 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center">
+            <CardTitle className="flex items-center text-base">
               <MessageSquare className="mr-2 h-4 w-4" />
               チーム通知
             </CardTitle>
-            <CardDescription>
-              チームに関する通知設定
-            </CardDescription>
+            <CardDescription>チームに関する通知設定</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">

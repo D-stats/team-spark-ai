@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySlackRequest } from '@/lib/slack/verify';
+import { KudosCategory } from '@prisma/client';
 
 interface SlackCommandPayload {
   token: string;
@@ -18,18 +19,15 @@ interface SlackCommandPayload {
 
 export async function POST(request: NextRequest) {
   try {
-    // Slackリクエストの検証
+    // Verify Slack request
     const body = await request.text();
     const isValid = await verifySlackRequest(request, body);
-    
+
     if (!isValid) {
-      return NextResponse.json(
-        { text: '無効なリクエストです' },
-        { status: 401 }
-      );
+      return NextResponse.json({ text: 'Invalid request' }, { status: 401 });
     }
 
-    // フォームデータをパース
+    // Parse form data
     const formData = new URLSearchParams(body);
     const payload: SlackCommandPayload = {
       token: formData.get('token') || '',
@@ -113,22 +111,30 @@ export async function POST(request: NextRequest) {
     }
 
     // カテゴリの検証
-    const validCategories = ['TEAMWORK', 'INNOVATION', 'LEADERSHIP', 'PROBLEM_SOLVING', 'CUSTOMER_FOCUS', 'LEARNING', 'OTHER'];
+    const validCategories = [
+      'TEAMWORK',
+      'INNOVATION',
+      'LEADERSHIP',
+      'PROBLEM_SOLVING',
+      'CUSTOMER_FOCUS',
+      'LEARNING',
+      'OTHER',
+    ];
     if (!validCategories.includes(category)) {
       return NextResponse.json({
         response_type: 'ephemeral',
-        text: `無効なカテゴリです。以下から選んでください: ${validCategories.map(c => c.toLowerCase()).join(', ')}`,
+        text: `無効なカテゴリです。以下から選んでください: ${validCategories.map((c) => c.toLowerCase()).join(', ')}`,
       });
     }
 
     // Kudosを作成
-    const kudos = await prisma.kudos.create({
+    await prisma.kudos.create({
       data: {
         senderId: sender.id,
         receiverId: receiver.id,
         message,
-        category,
-        isPublic: true, // Slackからのkudosは公開
+        category: category as KudosCategory, // Type assertion since we've already validated it's a valid category
+        isPublic: true, // Kudos from Slack are public
       },
     });
 

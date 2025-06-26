@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth/utils';
 
+interface UserWithOrgAndRole {
+  id: string;
+  email: string;
+  organizationId: string;
+  role: string;
+}
+
 interface Props {
   params: { id: string };
 }
@@ -16,7 +23,7 @@ export async function GET(request: NextRequest, { params }: Props) {
     const template = await prisma.checkInTemplate.findFirst({
       where: {
         id: params.id,
-        organizationId: (user as any).organizationId,
+        organizationId: (user as UserWithOrgAndRole).organizationId,
       },
     });
 
@@ -34,7 +41,7 @@ export async function GET(request: NextRequest, { params }: Props) {
 export async function PUT(request: NextRequest, { params }: Props) {
   try {
     const user = await getUser();
-    if (!user || (user as any).role !== 'ADMIN') {
+    if (!user || (user as UserWithOrgAndRole).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -45,7 +52,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
     const existingTemplate = await prisma.checkInTemplate.findFirst({
       where: {
         id: params.id,
-        organizationId: (user as any).organizationId,
+        organizationId: (user as UserWithOrgAndRole).organizationId,
       },
     });
 
@@ -57,7 +64,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
     if (isDefault && !existingTemplate.isDefault) {
       await prisma.checkInTemplate.updateMany({
         where: {
-          organizationId: (user as any).organizationId,
+          organizationId: (user as UserWithOrgAndRole).organizationId,
           isDefault: true,
           id: { not: params.id },
         },
@@ -89,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
 export async function DELETE(request: NextRequest, { params }: Props) {
   try {
     const user = await getUser();
-    if (!user || (user as any).role !== 'ADMIN') {
+    if (!user || (user as UserWithOrgAndRole).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -97,7 +104,7 @@ export async function DELETE(request: NextRequest, { params }: Props) {
     const existingTemplate = await prisma.checkInTemplate.findFirst({
       where: {
         id: params.id,
-        organizationId: (user as any).organizationId,
+        organizationId: (user as UserWithOrgAndRole).organizationId,
       },
     });
 

@@ -37,13 +37,14 @@ export function CheckInForm() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'チェックインの作成に失敗しました');
+        throw new Error(errorData.error || 'Failed to create check-in');
       }
 
-      // ページをリフレッシュして新しいチェックインを表示
+      // Refresh page to display new check-in
       router.refresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -52,9 +53,7 @@ export function CheckInForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
       )}
 
       <div className="space-y-2">
@@ -90,7 +89,7 @@ export function CheckInForm() {
                   ★
                 </button>
               ))}
-              <span className="text-sm text-muted-foreground ml-2">
+              <span className="ml-2 text-sm text-muted-foreground">
                 {moodRating === 0 && '評価を選択してください'}
                 {moodRating === 1 && '1 - とても悪い'}
                 {moodRating === 2 && '2 - 悪い'}
@@ -128,9 +127,9 @@ export function CheckInForm() {
         />
       </div>
 
-      <Button 
-        type="submit" 
-        className="w-full" 
+      <Button
+        type="submit"
+        className="w-full"
         disabled={loading || !achievements || !nextWeekGoals || moodRating === 0}
       >
         {loading ? 'チェックインを作成中...' : 'チェックインを作成'}

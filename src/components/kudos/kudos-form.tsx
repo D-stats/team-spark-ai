@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 
@@ -77,14 +83,12 @@ export function KudosForm({ users }: KudosFormProps) {
     }
   };
 
-  const selectedCategory = kudosCategories.find(cat => cat.value === category);
+  const selectedCategory = kudosCategories.find((cat) => cat.value === category);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
       )}
 
       <div className="space-y-2">
@@ -157,9 +161,9 @@ export function KudosForm({ users }: KudosFormProps) {
         </Label>
       </div>
 
-      <Button 
-        type="submit" 
-        className="w-full" 
+      <Button
+        type="submit"
+        className="w-full"
         disabled={loading || !receiverId || !message || !category}
       >
         {loading ? 'Kudosを送信中...' : 'Kudosを送信'}

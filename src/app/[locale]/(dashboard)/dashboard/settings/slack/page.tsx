@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slack, Check, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
 
 export default async function SlackSettingsPage() {
   const { dbUser } = await requireAuthWithOrganization();
@@ -17,9 +16,7 @@ export default async function SlackSettingsPage() {
       <div className="space-y-6">
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Slack連携の設定は管理者のみが行えます。
-          </AlertDescription>
+          <AlertDescription>Slack連携の設定は管理者のみが行えます。</AlertDescription>
         </Alert>
       </div>
     );
@@ -39,9 +36,7 @@ export default async function SlackSettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Slack連携設定</h1>
-        <p className="mt-2 text-muted-foreground">
-          SlackワークスペースとTeamSpark AIを連携します
-        </p>
+        <p className="mt-2 text-muted-foreground">SlackワークスペースとTeamSpark AIを連携します</p>
       </div>
 
       <Card>
@@ -59,20 +54,17 @@ export default async function SlackSettingsPage() {
             )}
           </div>
           <CardDescription>
-            SlackワークスペースとTeamSpark AIを連携することで、Slack上から直接Kudosの送信や通知の受信ができるようになります。
+            SlackワークスペースとTeamSpark
+            AIを連携することで、Slack上から直接Kudosの送信や通知の受信ができるようになります。
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {slackWorkspace ? (
             <div className="space-y-4">
               <div className="rounded-lg bg-muted p-4">
-                <h4 className="font-medium mb-2">連携済みワークスペース</h4>
-                <p className="text-sm text-muted-foreground">
-                  チーム名: {slackWorkspace.teamName}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  チームID: {slackWorkspace.teamId}
-                </p>
+                <h4 className="mb-2 font-medium">連携済みワークスペース</h4>
+                <p className="text-sm text-muted-foreground">チーム名: {slackWorkspace.teamName}</p>
+                <p className="text-sm text-muted-foreground">チームID: {slackWorkspace.teamId}</p>
                 <p className="text-sm text-muted-foreground">
                   連携日: {new Date(slackWorkspace.installedAt).toLocaleDateString('ja-JP')}
                 </p>
@@ -88,7 +80,7 @@ export default async function SlackSettingsPage() {
                 </ul>
               </div>
 
-              <div className="pt-4 border-t">
+              <div className="border-t pt-4">
                 <Button variant="outline" asChild>
                   <a href={slackAuthUrl}>
                     <Slack className="mr-2 h-4 w-4" />
@@ -113,7 +105,8 @@ export default async function SlackSettingsPage() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   連携にはSlackワークスペースの管理者権限が必要です。
-                  連携後、チームメンバーがSlackアカウントとTeamSpark AIアカウントを紐付ける必要があります。
+                  連携後、チームメンバーがSlackアカウントとTeamSpark
+                  AIアカウントを紐付ける必要があります。
                 </AlertDescription>
               </Alert>
 
@@ -132,21 +125,19 @@ export default async function SlackSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Slackコマンドの使い方</CardTitle>
-            <CardDescription>
-              Slack上で利用できるコマンドの一覧です
-            </CardDescription>
+            <CardDescription>Slack上で利用できるコマンドの一覧です</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <div className="rounded-lg bg-muted p-4 font-mono text-sm">
-                <p className="font-semibold mb-1">/kudos @ユーザー名 カテゴリ メッセージ</p>
+                <p className="mb-1 font-semibold">/kudos @ユーザー名 カテゴリ メッセージ</p>
                 <p className="text-xs text-muted-foreground">
                   例: /kudos @tanaka teamwork 素晴らしいプレゼンテーションでした！
                 </p>
               </div>
-              
+
               <div className="text-sm">
-                <p className="font-medium mb-2">カテゴリ一覧:</p>
+                <p className="mb-2 font-medium">カテゴリ一覧:</p>
                 <ul className="grid grid-cols-2 gap-1 text-muted-foreground">
                   <li>• teamwork - チームワーク</li>
                   <li>• innovation - イノベーション</li>

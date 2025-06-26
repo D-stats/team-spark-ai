@@ -18,7 +18,7 @@ export const storyTest = base.extend<{
 export function describeStory(story: UserStory, testFn: () => void) {
   storyTest.describe(`[${story.id}] ${story.title}`, () => {
     storyTest.describe.configure({ mode: 'serial' });
-    
+
     storyTest.beforeEach(async ({}, testInfo) => {
       // テスト情報にストーリーIDを追加
       testInfo.annotations.push({
@@ -41,7 +41,7 @@ export function describeStory(story: UserStory, testFn: () => void) {
 // 受け入れ基準ベースのテスト
 export function testCriteria(
   criteria: AcceptanceCriteria,
-  testImplementation: (args: { page: any }) => Promise<void>
+  testImplementation: (args: { page: any }) => Promise<void>,
 ) {
   storyTest(`✓ Given: ${criteria.given}`, async ({ page }, testInfo) => {
     // テスト情報に基準IDを追加
@@ -52,7 +52,7 @@ export function testCriteria(
 
     console.log(`When: ${criteria.when}`);
     console.log(`Then: ${criteria.then}`);
-    
+
     await testImplementation({ page });
   });
 }
@@ -64,7 +64,7 @@ export function markStoryImplemented(
     component?: string;
     api?: string;
     test?: string;
-  }
+  },
 ) {
   return storyTest(`Implementation: ${storyId}`, async ({}, testInfo) => {
     testInfo.annotations.push({
@@ -85,7 +85,7 @@ export class StoryReporter {
   onTestEnd(test: any, result: any) {
     const storyAnnotation = test.annotations.find((a: any) => a.type === 'story');
     const criteriaAnnotation = test.annotations.find((a: any) => a.type === 'criteria');
-    
+
     if (storyAnnotation && criteriaAnnotation) {
       const key = `${storyAnnotation.description}:${criteriaAnnotation.description}`;
       this.results.set(key, result.status === 'passed');
@@ -94,7 +94,7 @@ export class StoryReporter {
 
   generateReport(): Record<string, Record<string, boolean>> {
     const report: Record<string, Record<string, boolean>> = {};
-    
+
     this.results.forEach((passed, key) => {
       const [storyId, criteriaId] = key.split(':');
       if (!report[storyId]) {
@@ -102,7 +102,7 @@ export class StoryReporter {
       }
       report[storyId][criteriaId] = passed;
     });
-    
+
     return report;
   }
 }

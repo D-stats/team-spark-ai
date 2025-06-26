@@ -59,34 +59,31 @@ export default async function TeamsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">チーム管理</h1>
-          <p className="mt-2 text-muted-foreground">
-            組織内のチームとメンバーを管理します
-          </p>
+          <p className="mt-2 text-muted-foreground">組織内のチームとメンバーを管理します</p>
         </div>
-        {isManager && (
-          <CreateTeamDialog users={allUsers} />
-        )}
+        {isManager && <CreateTeamDialog users={allUsers} />}
       </div>
 
       {teams.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">チームがありません</h3>
-            <p className="text-sm text-muted-foreground text-center mb-4">
-              まだチームが作成されていません。<br />
-              {isManager ? '最初のチームを作成してみましょう。' : 'マネージャーがチームを作成するまでお待ちください。'}
+            <Users className="mb-4 h-16 w-16 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-medium">チームがありません</h3>
+            <p className="mb-4 text-center text-sm text-muted-foreground">
+              まだチームが作成されていません。
+              <br />
+              {isManager
+                ? '最初のチームを作成してみましょう。'
+                : 'マネージャーがチームを作成するまでお待ちください。'}
             </p>
-            {isManager && (
-              <CreateTeamDialog users={allUsers} />
-            )}
+            {isManager && <CreateTeamDialog users={allUsers} />}
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {teams.map((team) => (
-              <Card key={team.id} className="hover:shadow-md transition-shadow">
+              <Card key={team.id} className="transition-shadow hover:shadow-md">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{team.name}</CardTitle>
@@ -95,29 +92,27 @@ export default async function TeamsPage() {
                       {team._count.members}
                     </div>
                   </div>
-                  {team.description && (
-                    <CardDescription>{team.description}</CardDescription>
-                  )}
+                  {team.description && <CardDescription>{team.description}</CardDescription>}
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">メンバー</h4>
+                      <h4 className="mb-2 text-sm font-medium text-muted-foreground">メンバー</h4>
                       <div className="flex flex-wrap gap-2">
                         {team.members.slice(0, 6).map((member) => (
                           <div
                             key={member.id}
-                            className="flex items-center space-x-1 text-xs bg-muted px-2 py-1 rounded"
+                            className="flex items-center space-x-1 rounded bg-muted px-2 py-1 text-xs"
                             title={`${member.user.name} (${member.user.email})`}
                           >
                             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-primary/10 text-xs">
                               {member.user.name.charAt(0)}
                             </div>
-                            <span className="truncate max-w-20">{member.user.name}</span>
+                            <span className="max-w-20 truncate">{member.user.name}</span>
                           </div>
                         ))}
                         {team.members.length > 6 && (
-                          <div className="text-xs text-muted-foreground px-2 py-1">
+                          <div className="px-2 py-1 text-xs text-muted-foreground">
                             +{team.members.length - 6} 他
                           </div>
                         )}

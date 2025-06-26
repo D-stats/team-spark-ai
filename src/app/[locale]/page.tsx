@@ -7,11 +7,10 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
       <main className="flex flex-col items-center gap-8 px-4 text-center">
-        <h1 className="text-5xl font-bold tracking-tight">
-          TeamSpark AI
-        </h1>
+        <h1 className="text-5xl font-bold tracking-tight">TeamSpark AI</h1>
         <p className="max-w-2xl text-lg text-muted-foreground">
-          Boost employee engagement and accelerate team growth with our AI-powered HR platform designed for modern teams
+          Boost employee engagement and accelerate team growth with our AI-powered HR platform
+          designed for modern teams
         </p>
         <div className="flex gap-4">
           <Link

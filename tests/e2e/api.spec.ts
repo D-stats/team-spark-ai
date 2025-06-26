@@ -32,7 +32,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/evaluations');
-    
+
     // APIが呼び出されてデータが表示されることを確認
     await expect(page.locator('text=2024年上期評価').first()).toBeVisible();
   });
@@ -63,7 +63,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/evaluations/competencies');
-    
+
     // APIが呼び出されてデータが表示されることを確認
     await expect(page.locator('text=コミュニケーション').first()).toBeVisible();
   });
@@ -102,7 +102,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/dashboard/kudos');
-    
+
     // APIが呼び出されてデータが表示されることを確認
     await expect(page.locator('text=素晴らしい仕事でした！')).toBeVisible();
   });
@@ -136,7 +136,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/dashboard/checkins');
-    
+
     // APIが呼び出されてデータが表示されることを確認
     await expect(page.locator('text=新機能の開発を完了しました')).toBeVisible();
   });
@@ -186,7 +186,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/dashboard/teams');
-    
+
     // APIが呼び出されてデータが表示されることを確認
     await expect(page.locator('text=開発チーム')).toBeVisible();
   });
@@ -202,7 +202,7 @@ test.describe('APIエンドポイントテスト', () => {
     });
 
     await page.goto('/evaluations');
-    
+
     // エラーが適切に処理されることを確認
     // ローディング状態が終了し、エラーメッセージまたはフォールバックが表示されることを確認
     await page.waitForLoadState('networkidle');

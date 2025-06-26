@@ -2,32 +2,40 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { canViewEvaluation } from '@/services/evaluation.service';
+import { EvaluationType, EvaluationStatus } from '@prisma/client';
 
-// 評価一覧取得
+// Get evaluations list
 export async function GET(request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
-    
+
     const cycleId = searchParams.get('cycleId');
     const evaluateeId = searchParams.get('evaluateeId');
     const evaluatorId = searchParams.get('evaluatorId');
     const type = searchParams.get('type');
     const status = searchParams.get('status');
 
-    const where: any = {};
+    const where: {
+      cycleId?: string;
+      cycle?: { organizationId: string };
+      evaluateeId?: string;
+      evaluatorId?: string;
+      type?: EvaluationType;
+      status?: EvaluationStatus;
+    } = {};
 
-    // サイクルフィルター
+    // Cycle filter
     if (cycleId) {
       where.cycleId = cycleId;
     } else {
-      // サイクルが指定されていない場合は、組織内のサイクルのみ
+      // If no cycle is specified, only cycles within the organization
       where.cycle = {
         organizationId: dbUser.organizationId,
       };
     }
 
-    // 被評価者フィルター
+    // Evaluatee filter
     if (evaluateeId) {
       where.evaluateeId = evaluateeId;
     }
@@ -39,12 +47,12 @@ export async function GET(request: NextRequest) {
 
     // タイプフィルター
     if (type) {
-      where.type = type;
+      where.type = type as EvaluationType;
     }
 
     // ステータスフィルター
     if (status) {
-      where.status = status;
+      where.status = status as EvaluationStatus;
     }
 
     const evaluations = await prisma.evaluation.findMany({
@@ -91,16 +99,13 @@ export async function GET(request: NextRequest) {
 
     // 権限チェック - 閲覧可能な評価のみフィルタリング
     const filteredEvaluations = evaluations.filter((evaluation) =>
-      canViewEvaluation(dbUser, evaluation)
+      canViewEvaluation(dbUser, evaluation),
     );
 
     return NextResponse.json(filteredEvaluations);
   } catch (error) {
     console.error('Error fetching evaluations:', error);
-    return NextResponse.json(
-      { error: '評価の取得に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '評価の取得に失敗しました' }, { status: 500 });
   }
 }
 
@@ -111,10 +116,7 @@ export async function POST(request: NextRequest) {
 
     // 管理者またはマネージャーのみ作成可能
     if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
-      return NextResponse.json(
-        { error: '評価の作成権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '評価の作成権限がありません' }, { status: 403 });
     }
 
     const body = await request.json();
@@ -122,10 +124,7 @@ export async function POST(request: NextRequest) {
 
     // バリデーション
     if (!cycleId || !evaluateeId || !evaluatorId || !type) {
-      return NextResponse.json(
-        { error: '必要な項目が入力されていません' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 
     // サイクルの存在確認
@@ -137,10 +136,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!cycle) {
-      return NextResponse.json(
-        { error: '評価サイクルが見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '評価サイクルが見つかりません' }, { status: 404 });
     }
 
     // 被評価者・評価者の存在確認
@@ -159,10 +155,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!evaluatee || !evaluator) {
-      return NextResponse.json(
-        { error: '指定されたユーザーが見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '指定されたユーザーが見つかりません' }, { status: 404 });
     }
 
     // 重複チェック
@@ -178,10 +171,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingEvaluation) {
-      return NextResponse.json(
-        { error: '同じ評価が既に存在します' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '同じ評価が既に存在します' }, { status: 400 });
     }
 
     const evaluation = await prisma.evaluation.create({
@@ -219,9 +209,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(evaluation, { status: 201 });
   } catch (error) {
     console.error('Error creating evaluation:', error);
-    return NextResponse.json(
-      { error: '評価の作成に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '評価の作成に失敗しました' }, { status: 500 });
   }
 }

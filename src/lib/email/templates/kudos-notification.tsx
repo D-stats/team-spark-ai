@@ -46,11 +46,9 @@ export default function KudosNotificationEmail({
       <Body style={main}>
         <Container style={container}>
           <Heading style={h1}>🎉 Kudosを受け取りました！</Heading>
-          
-          <Text style={paragraph}>
-            {receiverName}さん、
-          </Text>
-          
+
+          <Text style={paragraph}>{receiverName}さん、</Text>
+
           <Text style={paragraph}>
             {senderName}さんからあなたに感謝のメッセージが届いています。
           </Text>
@@ -59,9 +57,7 @@ export default function KudosNotificationEmail({
             <Text style={kudosCategory}>
               <strong>カテゴリ:</strong> {categoryLabel}
             </Text>
-            <Text style={kudosMessage}>
-              {message}
-            </Text>
+            <Text style={kudosMessage}>{message}</Text>
           </Section>
 
           <Section style={buttonContainer}>
@@ -75,7 +71,8 @@ export default function KudosNotificationEmail({
           <Text style={footer}>
             このメールは <Link href="https://teamspark.ai">TeamSpark AI</Link> から送信されました。
             <br />
-            通知設定は<Link href={`${kudosUrl.replace('/kudos', '/settings')}`}>こちら</Link>から変更できます。
+            通知設定は<Link href={`${kudosUrl.replace('/kudos', '/settings')}`}>こちら</Link>
+            から変更できます。
           </Text>
         </Container>
       </Body>
@@ -85,7 +82,8 @@ export default function KudosNotificationEmail({
 
 const main = {
   backgroundColor: '#f6f9fc',
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 };
 
 const container = {

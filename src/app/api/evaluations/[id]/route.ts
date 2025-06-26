@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { canViewEvaluation, canEditEvaluation } from '@/services/evaluation.service';
-import { ErrorHandler, createErrorResponse, createSuccessResponse, NotFoundError, AuthorizationError } from '@/lib/errors';
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  NotFoundError,
+  AuthorizationError,
+} from '@/lib/errors';
 import { SaveEvaluationSchema } from '@/types/api';
 
 interface RouteParams {
@@ -181,10 +186,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // 管理者のみ削除可能
     if (dbUser.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: '評価の削除権限がありません' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: '評価の削除権限がありません' }, { status: 403 });
     }
 
     const evaluation = await prisma.evaluation.findUnique({
@@ -199,26 +201,17 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     });
 
     if (!evaluation) {
-      return NextResponse.json(
-        { error: '評価が見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '評価が見つかりません' }, { status: 404 });
     }
 
     // 組織確認
     if (evaluation.cycle.organizationId !== dbUser.organizationId) {
-      return NextResponse.json(
-        { error: '評価が見つかりません' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: '評価が見つかりません' }, { status: 404 });
     }
 
     // 提出済みの評価は削除不可
     if (evaluation.status !== 'DRAFT') {
-      return NextResponse.json(
-        { error: '提出済みの評価は削除できません' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '提出済みの評価は削除できません' }, { status: 400 });
     }
 
     await prisma.evaluation.delete({
@@ -228,9 +221,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting evaluation:', error);
-    return NextResponse.json(
-      { error: '評価の削除に失敗しました' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: '評価の削除に失敗しました' }, { status: 500 });
   }
 }

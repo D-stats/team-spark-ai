@@ -41,50 +41,46 @@ export default async function SurveysPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">サーベイ</h1>
-          <p className="mt-2 text-muted-foreground">
-            チームの意見や満足度を調査します
-          </p>
+          <p className="mt-2 text-muted-foreground">チームの意見や満足度を調査します</p>
         </div>
-        {isManager && (
-          <CreateSurveyDialog />
-        )}
+        {isManager && <CreateSurveyDialog />}
       </div>
 
       {surveys.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <BarChart3 className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">サーベイがありません</h3>
-            <p className="text-sm text-muted-foreground text-center mb-4">
-              まだサーベイが作成されていません。<br />
-              {isManager ? '最初のサーベイを作成してみましょう。' : 'マネージャーがサーベイを作成するまでお待ちください。'}
+            <BarChart3 className="mb-4 h-16 w-16 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-medium">サーベイがありません</h3>
+            <p className="mb-4 text-center text-sm text-muted-foreground">
+              まだサーベイが作成されていません。
+              <br />
+              {isManager
+                ? '最初のサーベイを作成してみましょう。'
+                : 'マネージャーがサーベイを作成するまでお待ちください。'}
             </p>
-            {isManager && (
-              <CreateSurveyDialog />
-            )}
+            {isManager && <CreateSurveyDialog />}
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {surveys.map((survey) => {
-            const responseRate = totalUsers > 0 
-              ? Math.round((survey._count.responses / totalUsers) * 100)
-              : 0;
-            
+            const responseRate =
+              totalUsers > 0 ? Math.round((survey._count.responses / totalUsers) * 100) : 0;
+
             const isActive = survey.isActive;
             const hasDeadline = survey.endDate;
             const isExpired = hasDeadline && new Date(survey.endDate!) < new Date();
 
             return (
-              <Card key={survey.id} className="hover:shadow-md transition-shadow">
+              <Card key={survey.id} className="transition-shadow hover:shadow-md">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-2">{survey.title}</CardTitle>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge 
-                          variant={isActive && !isExpired ? "default" : "secondary"}
-                          className={isActive && !isExpired ? "bg-green-100 text-green-800" : ""}
+                      <CardTitle className="line-clamp-2 text-lg">{survey.title}</CardTitle>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Badge
+                          variant={isActive && !isExpired ? 'default' : 'secondary'}
+                          className={isActive && !isExpired ? 'bg-green-100 text-green-800' : ''}
                         >
                           {isExpired ? '期限切れ' : isActive ? 'アクティブ' : '下書き'}
                         </Badge>
@@ -98,9 +94,7 @@ export default async function SurveysPage() {
                     </div>
                   </div>
                   {survey.description && (
-                    <CardDescription className="line-clamp-2">
-                      {survey.description}
-                    </CardDescription>
+                    <CardDescription className="line-clamp-2">{survey.description}</CardDescription>
                   )}
                 </CardHeader>
                 <CardContent>
@@ -114,10 +108,10 @@ export default async function SurveysPage() {
                         {survey._count.responses}/{totalUsers} ({responseRate}%)
                       </div>
                     </div>
-                    
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all"
+
+                    <div className="h-2 w-full rounded-full bg-gray-200">
+                      <div
+                        className="h-2 rounded-full bg-primary transition-all"
                         style={{ width: `${responseRate}%` }}
                       />
                     </div>

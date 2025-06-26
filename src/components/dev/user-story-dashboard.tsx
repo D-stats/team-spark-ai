@@ -11,26 +11,18 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  CheckCircle2, 
-  XCircle, 
-  AlertTriangle, 
+import {
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
   RefreshCw,
   FileText,
   GitBranch,
   TestTube,
-  Target
 } from 'lucide-react';
 import { UserStory, StoryValidation, StoryStatus, StoryPriority } from '@/lib/user-stories/types';
 import { StoryValidator } from '@/lib/user-stories/validator';
 import { cn } from '@/lib/utils';
-
-// 開発環境でのみ表示
-if (process.env.NODE_ENV !== 'development') {
-  export function UserStoryDashboard() {
-    return null;
-  }
-}
 
 export function UserStoryDashboard() {
   const [stories, setStories] = useState<UserStory[]>([]);
@@ -42,11 +34,18 @@ export function UserStoryDashboard() {
     loadStories();
   }, []);
 
+  // Show only in development environment
+  if (process.env.NODE_ENV !== 'development') {
+    return null;
+  }
+
   const loadStories = async () => {
     setLoading(true);
     try {
       // ストーリーをインポート
-      const { evaluationStories, kudosStories } = await import('@/lib/user-stories/stories/evaluation-stories');
+      const { evaluationStories, kudosStories } = await import(
+        '@/lib/user-stories/stories/evaluation-stories'
+      );
       const allStories = [...evaluationStories, ...kudosStories];
       setStories(allStories);
 
@@ -63,17 +62,23 @@ export function UserStoryDashboard() {
 
   const getStatusColor = (status: StoryStatus) => {
     switch (status) {
-      case StoryStatus.DONE: return 'text-green-600';
-      case StoryStatus.IN_PROGRESS: return 'text-blue-600';
-      case StoryStatus.TESTING: return 'text-purple-600';
-      case StoryStatus.BLOCKED: return 'text-red-600';
-      case StoryStatus.READY: return 'text-yellow-600';
-      default: return 'text-gray-600';
+      case StoryStatus.DONE:
+        return 'text-green-600';
+      case StoryStatus.IN_PROGRESS:
+        return 'text-blue-600';
+      case StoryStatus.TESTING:
+        return 'text-purple-600';
+      case StoryStatus.BLOCKED:
+        return 'text-red-600';
+      case StoryStatus.READY:
+        return 'text-yellow-600';
+      default:
+        return 'text-gray-600';
     }
   };
 
   const getPriorityBadge = (priority: StoryPriority) => {
-    const variants: Record<StoryPriority, "destructive" | "default" | "secondary" | "outline"> = {
+    const variants: Record<StoryPriority, 'destructive' | 'default' | 'secondary' | 'outline'> = {
       [StoryPriority.P0]: 'destructive',
       [StoryPriority.P1]: 'default',
       [StoryPriority.P2]: 'secondary',
@@ -83,26 +88,29 @@ export function UserStoryDashboard() {
     return <Badge variant={variants[priority]}>{priority}</Badge>;
   };
 
-  const validStories = validations.filter(v => v.isValid).length;
+  const validStories = validations.filter((v) => v.isValid).length;
   const totalStories = stories.length;
   const overallProgress = totalStories > 0 ? (validStories / totalStories) * 100 : 0;
 
   // Epic別にグループ化
-  const storiesByEpic = stories.reduce((acc, story) => {
-    const epic = story.epicId || 'その他';
-    if (!acc[epic]) acc[epic] = [];
-    acc[epic].push(story);
-    return acc;
-  }, {} as Record<string, UserStory[]>);
+  const storiesByEpic = stories.reduce(
+    (acc, story) => {
+      const epic = story.epicId || 'その他';
+      if (!acc[epic]) acc[epic] = [];
+      acc[epic].push(story);
+      return acc;
+    },
+    {} as Record<string, UserStory[]>,
+  );
 
-  const filteredStories = selectedEpic 
-    ? stories.filter(s => (s.epicId || 'その他') === selectedEpic)
+  const filteredStories = selectedEpic
+    ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic)
     : stories;
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -110,12 +118,12 @@ export function UserStoryDashboard() {
   return (
     <div className="space-y-6">
       {/* ヘッダー */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">ユーザーストーリー検証</h2>
           <p className="text-gray-600">機能の実装状況とテストカバレッジ</p>
         </div>
-        
+
         <Button onClick={loadStories} className="flex items-center space-x-2">
           <RefreshCw className="h-4 w-4" />
           <span>再検証</span>
@@ -123,7 +131,7 @@ export function UserStoryDashboard() {
       </div>
 
       {/* サマリーカード */}
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base">総ストーリー数</CardTitle>
@@ -148,7 +156,7 @@ export function UserStoryDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {stories.filter(s => s.status === StoryStatus.IN_PROGRESS).length}
+              {stories.filter((s) => s.status === StoryStatus.IN_PROGRESS).length}
             </div>
           </CardContent>
         </Card>
@@ -175,7 +183,7 @@ export function UserStoryDashboard() {
         >
           すべて
         </Button>
-        {Object.keys(storiesByEpic).map(epic => (
+        {Object.keys(storiesByEpic).map((epic) => (
           <Button
             key={epic}
             variant={selectedEpic === epic ? 'default' : 'outline'}
@@ -189,17 +197,17 @@ export function UserStoryDashboard() {
 
       {/* ストーリー一覧 */}
       <div className="space-y-4">
-        {filteredStories.map((story, index) => {
+        {filteredStories.map((story, _index) => {
           const validation = validations[stories.indexOf(story)];
           const isValid = validation?.isValid;
 
           return (
-            <Card key={story.id} className={cn(
-              'transition-all',
-              isValid ? 'border-green-200' : 'border-gray-200'
-            )}>
+            <Card
+              key={story.id}
+              className={cn('transition-all', isValid ? 'border-green-200' : 'border-gray-200')}
+            >
               <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
                     {isValid ? (
                       <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -208,24 +216,21 @@ export function UserStoryDashboard() {
                     ) : (
                       <XCircle className="h-5 w-5 text-red-600" />
                     )}
-                    
+
                     <div>
                       <CardTitle className="text-lg">
                         {story.id}: {story.title}
                       </CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
-                        As a <strong>{story.asA}</strong>, 
-                        I want to <strong>{story.iWantTo}</strong>, 
-                        so that <strong>{story.soThat}</strong>
+                      <p className="mt-1 text-sm text-gray-600">
+                        As a <strong>{story.asA}</strong>, I want to{' '}
+                        <strong>{story.iWantTo}</strong>, so that <strong>{story.soThat}</strong>
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-2">
                     {getPriorityBadge(story.priority)}
-                    <Badge className={getStatusColor(story.status)}>
-                      {story.status}
-                    </Badge>
+                    <Badge className={getStatusColor(story.status)}>{story.status}</Badge>
                   </div>
                 </div>
               </CardHeader>
@@ -239,53 +244,51 @@ export function UserStoryDashboard() {
                       {validation?.completedCriteria || 0}/{validation?.totalCriteria || 0}
                     </span>
                   </div>
-                  <Progress 
-                    value={(validation?.completedCriteria || 0) / (validation?.totalCriteria || 1) * 100} 
-                    className="h-2" 
+                  <Progress
+                    value={
+                      ((validation?.completedCriteria || 0) / (validation?.totalCriteria || 1)) *
+                      100
+                    }
+                    className="h-2"
                   />
                 </div>
 
                 {/* 実装状況 */}
-                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                <div className="grid gap-4 text-sm md:grid-cols-3">
                   <div className="flex items-center space-x-2">
                     <FileText className="h-4 w-4 text-gray-500" />
-                    <span>
-                      コンポーネント: {story.implementedIn?.components?.length || 0}
-                    </span>
+                    <span>コンポーネント: {story.implementedIn?.components?.length || 0}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <GitBranch className="h-4 w-4 text-gray-500" />
-                    <span>
-                      API: {story.implementedIn?.apis?.length || 0}
-                    </span>
+                    <span>API: {story.implementedIn?.apis?.length || 0}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <TestTube className="h-4 w-4 text-gray-500" />
-                    <span>
-                      テスト: {story.implementedIn?.tests?.length || 0}
-                    </span>
+                    <span>テスト: {story.implementedIn?.tests?.length || 0}</span>
                   </div>
                 </div>
 
                 {/* エラー表示 */}
-                {validation?.missingImplementation && validation.missingImplementation.length > 0 && (
-                  <Alert variant="destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>
-                      <div className="font-medium">実装が不足しています:</div>
-                      <ul className="list-disc list-inside text-sm mt-1">
-                        {validation.missingImplementation.map((missing, i) => (
-                          <li key={i}>{missing}</li>
-                        ))}
-                      </ul>
-                    </AlertDescription>
-                  </Alert>
-                )}
+                {validation?.missingImplementation &&
+                  validation.missingImplementation.length > 0 && (
+                    <Alert variant="destructive">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription>
+                        <div className="font-medium">実装が不足しています:</div>
+                        <ul className="mt-1 list-inside list-disc text-sm">
+                          {validation.missingImplementation.map((missing, i) => (
+                            <li key={i}>{missing}</li>
+                          ))}
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                  )}
 
                 {/* タグ */}
                 {story.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1">
-                    {story.tags.map(tag => (
+                    {story.tags.map((tag) => (
                       <Badge key={tag} variant="outline" className="text-xs">
                         {tag}
                       </Badge>

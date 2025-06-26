@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 export default async function DashboardPage() {
   const { dbUser } = await requireAuthWithOrganization();
 
-  // 統計データを取得
+  // Get statistical data
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   endOfWeek.setDate(endOfWeek.getDate() + 6);
   endOfWeek.setHours(23, 59, 59, 999);
 
-  // 今月のKudos数
+  // Number of Kudos this month
   const thisMonthKudos = await prisma.kudos.count({
     where: {
       OR: [
@@ -31,7 +31,7 @@ export default async function DashboardPage() {
     },
   });
 
-  // 今週のチェックイン完了率
+  // Check-in completion rate this week
   const organizationUsers = await prisma.user.count({
     where: {
       organizationId: dbUser.organizationId,
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
 
   const stats = [
     {
-      title: '今月のKudos',
+      title: "This Month's Kudos",
       value: thisMonthKudos.toString(),
       description: 'チーム内で送受信',
       icon: Heart,
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
     {
       title: 'チェックイン完了率',
       value: `${checkInCompletionRate}%`,
-      description: '今週のチェックイン',
+      description: "This Week's Check-ins",
       icon: CheckSquare,
       iconColor: 'text-blue-600',
       bgColor: 'bg-blue-100',
@@ -233,10 +233,10 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
   return (
     <div className="space-y-3">
       {recentCheckIns.map((checkIn) => {
-        // 最初の質問への回答を表示（通常は成果や振り返り）
-        const answers = checkIn.answers as Record<string, any>;
+        // Display the answer to the first question (usually achievements or reflections)
+        const answers = checkIn.answers as Record<string, unknown>;
         const firstAnswer = answers ? Object.values(answers)[0] : null;
-        const displayText = typeof firstAnswer === 'string' ? firstAnswer : '回答なし';
+        const displayText = typeof firstAnswer === 'string' ? firstAnswer : 'No answer';
 
         return (
           <div key={checkIn.id} className="rounded-lg border bg-muted/20 p-3">
