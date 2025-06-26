@@ -19,10 +19,10 @@ interface SurveyNotificationData {
   deadline?: Date | null;
 }
 
-// Kudos受信通知を送信
+// Send Kudos reception notification
 export async function sendKudosNotification(data: KudosNotificationData) {
   try {
-    // 受信者の情報を取得
+    // Get receiver information
     const receiver = await prisma.user.findUnique({
       where: { id: data.receiverId },
       include: {
@@ -41,28 +41,28 @@ export async function sendKudosNotification(data: KudosNotificationData) {
 
     const slackWorkspace = receiver.organization.slackWorkspaces[0];
     
-    // カテゴリの日本語ラベル
+    // Category labels
     const categoryLabels: Record<string, string> = {
-      TEAMWORK: 'チームワーク',
-      INNOVATION: 'イノベーション', 
-      LEADERSHIP: 'リーダーシップ',
-      PROBLEM_SOLVING: '問題解決',
-      CUSTOMER_FOCUS: '顧客志向',
-      LEARNING: '学習・成長',
-      OTHER: 'その他',
+      TEAMWORK: 'Teamwork',
+      INNOVATION: 'Innovation', 
+      LEADERSHIP: 'Leadership',
+      PROBLEM_SOLVING: 'Problem Solving',
+      CUSTOMER_FOCUS: 'Customer Focus',
+      LEARNING: 'Learning & Growth',
+      OTHER: 'Other',
     };
 
-    // Slackメッセージを送信
+    // Send Slack message
     await slackClient.chat.postMessage({
       token: slackWorkspace.botAccessToken,
       channel: receiver.slackUserId,
-      text: `🎉 ${data.senderName}さんからKudosを受け取りました！`,
+      text: `🎉 You received Kudos from ${data.senderName}!`,
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `*🎉 Kudosを受け取りました！*\n${data.senderName}さんからあなたに感謝のメッセージが届いています。`,
+            text: `*🎉 You received Kudos!*\n${data.senderName} sent you a message of appreciation.`,
           },
         },
         {
@@ -70,11 +70,11 @@ export async function sendKudosNotification(data: KudosNotificationData) {
           fields: [
             {
               type: 'mrkdwn',
-              text: `*カテゴリ:*\n${categoryLabels[data.category] || data.category}`,
+              text: `*Category:*\n${categoryLabels[data.category] || data.category}`,
             },
             {
               type: 'mrkdwn',
-              text: `*メッセージ:*\n${data.message}`,
+              text: `*Message:*\n${data.message}`,
             },
           ],
         },
@@ -85,7 +85,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
               type: 'button',
               text: {
                 type: 'plain_text',
-                text: 'Kudosを確認',
+                text: 'View Kudos',
               },
               url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/kudos`,
               style: 'primary',
@@ -99,7 +99,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
   }
 }
 
-// チェックインリマインダーを送信
+// Send check-in reminder
 export async function sendCheckInReminder(data: CheckInReminderData) {
   try {
     const user = await prisma.user.findUnique({
@@ -122,7 +122,7 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
     await slackClient.chat.postMessage({
       token: slackWorkspace.botAccessToken,
       channel: user.slackUserId,
-      text: '📝 週次チェックインの時間です！',
+      text: '📝 Time for your weekly check-in!',
       blocks: [
         {
           type: 'section',

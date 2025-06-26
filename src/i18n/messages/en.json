@@ -1,0 +1,527 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "submit": "Submit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "refresh": "Refresh",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "actions": "Actions",
+    "status": "Status",
+    "date": "Date",
+    "time": "Time",
+    "name": "Name",
+    "email": "Email",
+    "description": "Description",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "changePassword": "Change Password",
+    "profile": "Profile",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "required": "Required",
+    "optional": "Optional",
+    "user": "User"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "okr": "OKR",
+    "kudos": "Kudos",
+    "checkins": "Check-ins",
+    "surveys": "Surveys",
+    "teams": "Teams",
+    "organization": "Organization",
+    "settings": "Settings",
+    "personalSettings": "Personal Settings",
+    "organizationSettings": "Organization Settings"
+  },
+  "errors": {
+    "validation": {
+      "default": "There is an issue with your input. Please enter valid values.",
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "minLength": "Must be at least {min} characters",
+      "maxLength": "Must be no more than {max} characters",
+      "passwordMismatch": "Passwords do not match",
+      "invalidCredentials": "Invalid email or password"
+    },
+    "authentication": {
+      "default": "Login required. Please log in again.",
+      "sessionExpired": "Your session has expired. Please log in again.",
+      "unauthorized": "You must be logged in to access this page"
+    },
+    "authorization": {
+      "default": "You do not have permission to perform this action.",
+      "insufficientPermissions": "Insufficient permissions",
+      "adminOnly": "This action requires administrator privileges"
+    },
+    "notFound": {
+      "default": "The specified resource was not found.",
+      "page": "Page not found",
+      "user": "User not found",
+      "organization": "Organization not found",
+      "team": "Team not found"
+    },
+    "conflict": {
+      "default": "Operation conflict occurred. Please refresh the page and try again.",
+      "alreadyExists": "This item already exists",
+      "duplicate": "Duplicate entry"
+    },
+    "rateLimit": {
+      "default": "Too many requests. Please wait a moment and try again."
+    },
+    "externalService": {
+      "default": "An error occurred while communicating with an external service.",
+      "slack": "Failed to connect to Slack",
+      "email": "Failed to send email"
+    },
+    "database": {
+      "default": "A database error occurred.",
+      "connectionFailed": "Failed to connect to database",
+      "queryFailed": "Database query failed"
+    },
+    "network": {
+      "default": "A network error occurred. Please check your connection.",
+      "offline": "You appear to be offline",
+      "timeout": "Request timed out"
+    },
+    "unknown": {
+      "default": "A system error occurred. Please wait a moment and try again."
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "subtitle": "Welcome back",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "rememberMe": "Remember me",
+      "submitButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "forgotPasswordLink": "Forgot your password?",
+      "success": "Successfully signed in",
+      "error": "Failed to sign in"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "subtitle": "Create your account",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "organizationLabel": "Organization Name",
+      "submitButton": "Sign Up",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "success": "Account created successfully. Please check your email to verify your account.",
+      "error": "Failed to create account"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email to reset your password",
+      "emailLabel": "Email",
+      "submitButton": "Send Reset Link",
+      "backToSignIn": "Back to sign in",
+      "success": "Password reset link sent to your email",
+      "error": "Failed to send reset link"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password",
+      "passwordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "submitButton": "Reset Password",
+      "success": "Password reset successfully",
+      "error": "Failed to reset password"
+    },
+    "verifyEmail": {
+      "title": "Verify Email",
+      "subtitle": "Please check your email for verification link",
+      "resendButton": "Resend verification email",
+      "success": "Verification email sent",
+      "error": "Failed to send verification email"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}!",
+    "overview": {
+      "title": "Overview",
+      "totalKudos": "Total Kudos",
+      "weeklyCheckins": "Weekly Check-ins",
+      "teamEngagement": "Team Engagement",
+      "pendingTasks": "Pending Tasks"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "viewAll": "View All",
+      "noActivity": "No recent activity"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "giveKudos": "Give Kudos",
+      "startCheckin": "Start Check-in",
+      "viewReports": "View Reports",
+      "inviteTeammate": "Invite Teammate"
+    }
+  },
+  "kudos": {
+    "title": "Kudos",
+    "subtitle": "Recognize and appreciate your teammates",
+    "give": {
+      "title": "Give Kudos",
+      "recipientLabel": "To",
+      "recipientPlaceholder": "Select a teammate",
+      "categoryLabel": "Category",
+      "categories": {
+        "teamwork": "Teamwork",
+        "innovation": "Innovation",
+        "leadership": "Leadership",
+        "customerFocus": "Customer Focus",
+        "excellence": "Excellence",
+        "growth": "Growth"
+      },
+      "messageLabel": "Message",
+      "messagePlaceholder": "Share why you're recognizing them...",
+      "pointsLabel": "Points",
+      "submitButton": "Send Kudos",
+      "success": "Kudos sent successfully!",
+      "error": "Failed to send kudos"
+    },
+    "feed": {
+      "title": "Kudos Feed",
+      "filter": {
+        "all": "All",
+        "received": "Received",
+        "given": "Given",
+        "team": "My Team"
+      },
+      "empty": "No kudos yet. Be the first to recognize someone!",
+      "loadMore": "Load More"
+    },
+    "stats": {
+      "received": "Kudos Received",
+      "given": "Kudos Given",
+      "points": "Total Points",
+      "streak": "Recognition Streak"
+    }
+  },
+  "checkins": {
+    "title": "Check-ins",
+    "subtitle": "Regular reflections and goal tracking",
+    "create": {
+      "title": "New Check-in",
+      "templateLabel": "Template",
+      "selectTemplate": "Select a template",
+      "submitButton": "Submit Check-in",
+      "saveDraft": "Save as Draft",
+      "success": "Check-in submitted successfully",
+      "error": "Failed to submit check-in"
+    },
+    "list": {
+      "title": "My Check-ins",
+      "filter": {
+        "all": "All",
+        "submitted": "Submitted",
+        "draft": "Drafts",
+        "reviewed": "Reviewed"
+      },
+      "empty": "No check-ins yet",
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "review": {
+      "title": "Review Check-ins",
+      "pending": "Pending Review",
+      "completed": "Completed Reviews",
+      "addComment": "Add Comment",
+      "approve": "Approve",
+      "requestChanges": "Request Changes",
+      "commentPlaceholder": "Add your feedback...",
+      "success": "Review submitted successfully",
+      "error": "Failed to submit review"
+    },
+    "templates": {
+      "title": "Check-in Templates",
+      "create": "Create Template",
+      "edit": "Edit Template",
+      "defaultBadge": "Default",
+      "activeBadge": "Active",
+      "inactiveBadge": "Inactive",
+      "frequency": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "biweekly": "Bi-weekly",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly"
+      }
+    },
+    "questions": {
+      "achievements": "What did you accomplish this week?",
+      "challenges": "What challenges or difficulties did you face this week?",
+      "nextGoals": "What are your goals for next week?",
+      "energyLevel": "How was your energy level this week? (1: Low - 5: High)",
+      "supportNeeded": "Are there any areas where you need support from your team or manager?"
+    }
+  },
+  "teams": {
+    "title": "Teams",
+    "subtitle": "Manage your teams and members",
+    "create": {
+      "title": "Create Team",
+      "nameLabel": "Team Name",
+      "namePlaceholder": "Enter team name",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe the team's purpose...",
+      "managerLabel": "Team Manager",
+      "selectManager": "Select a manager",
+      "submitButton": "Create Team",
+      "success": "Team created successfully",
+      "error": "Failed to create team"
+    },
+    "list": {
+      "title": "All Teams",
+      "myTeams": "My Teams",
+      "allTeams": "All Teams",
+      "members": "{count} members",
+      "manager": "Manager: {name}",
+      "viewDetails": "View Details",
+      "edit": "Edit Team",
+      "delete": "Delete Team",
+      "empty": "No teams yet"
+    },
+    "details": {
+      "title": "Team Details",
+      "members": "Team Members",
+      "addMember": "Add Member",
+      "removeMember": "Remove Member",
+      "makeManager": "Make Manager",
+      "activity": "Recent Activity",
+      "performance": "Team Performance"
+    }
+  },
+  "organization": {
+    "title": "Organization",
+    "subtitle": "Manage your organization settings",
+    "profile": {
+      "title": "Organization Profile",
+      "nameLabel": "Organization Name",
+      "domainLabel": "Domain",
+      "industryLabel": "Industry",
+      "sizeLabel": "Company Size",
+      "sizes": {
+        "startup": "1-10 employees",
+        "small": "11-50 employees",
+        "medium": "51-200 employees",
+        "large": "201-500 employees",
+        "enterprise": "500+ employees"
+      },
+      "updateButton": "Update Profile",
+      "success": "Organization profile updated",
+      "error": "Failed to update profile"
+    },
+    "members": {
+      "title": "Members",
+      "inviteButton": "Invite Members",
+      "filter": {
+        "all": "All",
+        "active": "Active",
+        "pending": "Pending",
+        "inactive": "Inactive"
+      },
+      "role": {
+        "admin": "Admin",
+        "manager": "Manager",
+        "member": "Member"
+      },
+      "actions": {
+        "changeRole": "Change Role",
+        "deactivate": "Deactivate",
+        "activate": "Activate",
+        "remove": "Remove"
+      }
+    },
+    "billing": {
+      "title": "Billing",
+      "currentPlan": "Current Plan",
+      "usage": "Usage",
+      "invoices": "Invoices",
+      "upgradePlan": "Upgrade Plan",
+      "cancelSubscription": "Cancel Subscription"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "slack": {
+        "title": "Slack",
+        "description": "Connect Slack for seamless team communication",
+        "connected": "Connected",
+        "notConnected": "Not Connected",
+        "connect": "Connect Slack",
+        "disconnect": "Disconnect",
+        "settings": "Settings"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your personal preferences",
+    "profile": {
+      "title": "Profile",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email",
+      "roleLabel": "Role",
+      "teamLabel": "Team",
+      "timezoneLabel": "Timezone",
+      "languageLabel": "Language",
+      "updateButton": "Update Profile",
+      "changePasswordButton": "Change Password",
+      "success": "Profile updated successfully",
+      "error": "Failed to update profile"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "email": {
+        "title": "Email Notifications",
+        "kudosReceived": "When I receive kudos",
+        "checkinReminder": "Check-in reminders",
+        "teamUpdates": "Team updates",
+        "weeklyDigest": "Weekly digest"
+      },
+      "inApp": {
+        "title": "In-App Notifications",
+        "all": "All notifications",
+        "mentions": "Mentions only",
+        "none": "None"
+      }
+    },
+    "preferences": {
+      "title": "Preferences",
+      "theme": {
+        "label": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "language": {
+        "label": "Language",
+        "en": "English",
+        "ja": "Japanese"
+      },
+      "dateFormat": {
+        "label": "Date Format",
+        "mdy": "MM/DD/YYYY",
+        "dmy": "DD/MM/YYYY",
+        "ymd": "YYYY/MM/DD"
+      }
+    },
+    "security": {
+      "title": "Security",
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "status": "Status",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA"
+      },
+      "sessions": {
+        "title": "Active Sessions",
+        "current": "Current Session",
+        "logoutAll": "Logout All Other Sessions"
+      }
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "engagement": {
+      "title": "Engagement Report",
+      "score": "Engagement Score",
+      "trend": "Trend",
+      "breakdown": "Breakdown by Team"
+    },
+    "performance": {
+      "title": "Performance Report",
+      "individual": "Individual Performance",
+      "team": "Team Performance",
+      "goals": "Goal Achievement"
+    },
+    "kudos": {
+      "title": "Kudos Report",
+      "topReceivers": "Top Receivers",
+      "topGivers": "Top Givers",
+      "categories": "By Category"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "minLength": "Must be at least {min} characters",
+      "maxLength": "Must not exceed {max} characters",
+      "url": "Please enter a valid URL",
+      "number": "Please enter a valid number",
+      "integer": "Please enter a whole number",
+      "positive": "Must be a positive number",
+      "date": "Please enter a valid date",
+      "time": "Please enter a valid time",
+      "match": "Fields do not match"
+    }
+  },
+  "time": {
+    "just_now": "Just now",
+    "minutes_ago": "{count} minutes ago",
+    "hours_ago": "{count} hours ago",
+    "days_ago": "{count} days ago",
+    "weeks_ago": "{count} weeks ago",
+    "months_ago": "{count} months ago",
+    "years_ago": "{count} years ago"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "first": "First",
+    "last": "Last",
+    "page": "Page {current} of {total}",
+    "showing": "Showing {start}-{end} of {total} results"
+  },
+  "empty": {
+    "default": "No data available",
+    "search": "No results found for your search",
+    "filter": "No results match your filters"
+  },
+  "modals": {
+    "confirm": {
+      "title": "Confirm Action",
+      "message": "Are you sure you want to proceed?",
+      "confirmButton": "Confirm",
+      "cancelButton": "Cancel"
+    },
+    "delete": {
+      "title": "Delete Confirmation",
+      "message": "This action cannot be undone. Are you sure you want to delete this item?",
+      "confirmButton": "Delete",
+      "cancelButton": "Cancel"
+    }
+  }
+}

@@ -135,7 +135,7 @@ export default async function OrganizationPage() {
                 )}
               </div>
               <CardDescription>
-                SlackワークスペースとStartup HRを連携します
+                SlackワークスペースとTeamSpark AIを連携します
               </CardDescription>
             </CardHeader>
             <CardContent>

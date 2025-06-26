@@ -5,7 +5,7 @@ export async function GET() {
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'startup-hr-engagement',
+    service: 'team-spark-ai',
     version: process.env.npm_package_version || '0.1.0',
     checks: {
       server: true,
@@ -13,7 +13,7 @@ export async function GET() {
     },
   };
 
-  // データベース接続チェック
+  // Database connection check
   try {
     await prisma.$queryRaw`SELECT 1`;
     health.checks.database = true;

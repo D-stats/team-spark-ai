@@ -1,5 +1,5 @@
 /**
- * チェックイン機能のユーザーストーリー
+ * User stories for check-in features
  */
 
 import { UserStory, StoryPriority, StoryStatus } from '../types';
@@ -8,39 +8,39 @@ export const checkinStories: UserStory[] = [
   {
     id: 'CHECKIN-001',
     epicId: 'EPIC-ENGAGEMENT',
-    title: 'カスタマイズ可能なチェックインテンプレート',
-    asA: '管理者',
-    iWantTo: '組織の文化に合わせたチェックイン質問を設定したい',
-    soThat: 'より意味のあるエンゲージメントデータを収集できる',
+    title: 'Customizable check-in templates',
+    asA: 'Administrator',
+    iWantTo: 'Configure check-in questions that match our organizational culture',
+    soThat: 'I can collect more meaningful engagement data',
     acceptanceCriteria: [
       {
         id: 'AC-C001-1',
-        given: '管理者としてログインしている',
-        when: 'チェックインテンプレート管理画面にアクセスする',
-        then: 'テンプレート一覧と作成ボタンが表示される',
+        given: 'I am logged in as an administrator',
+        when: 'I access the check-in template management screen',
+        then: 'Template list and create button are displayed',
         verified: true,
         testIds: ['checkin-templates.spec.ts#access'],
       },
       {
         id: 'AC-C001-2',
-        given: 'テンプレート作成画面を開いている',
-        when: '名前、頻度、カスタム質問を設定して保存する',
-        then: '新しいテンプレートが作成され、一覧に表示される',
+        given: 'I have the template creation screen open',
+        when: 'I set name, frequency, and custom questions and save',
+        then: 'A new template is created and displayed in the list',
         verified: true,
         testIds: ['checkin-templates.spec.ts#create'],
       },
       {
         id: 'AC-C001-3',
-        given: 'テンプレートが存在しない組織',
-        when: 'デフォルトテンプレート作成ボタンをクリックする',
-        then: '標準的な週次チェックインテンプレートが自動作成される',
+        given: 'An organization without templates',
+        when: 'I click the create default template button',
+        then: 'A standard weekly check-in template is automatically created',
         verified: true,
         testIds: ['checkin-templates.spec.ts#default-creation'],
       },
     ],
     priority: StoryPriority.P0,
     status: StoryStatus.DONE,
-    tags: ['チェックイン', 'テンプレート', '管理者'],
+    tags: ['checkin', 'template', 'admin'],
     implementedIn: {
       components: [
         '/src/components/checkins/template-manager.tsx',

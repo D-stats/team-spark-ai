@@ -159,7 +159,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 Slackアカウントと連携するには、Slackで使用しているメールアドレスを入力してください。
-                Startup HRのメールアドレスと同じ場合は、そのまま連携できます。
+                TeamSpark AIのメールアドレスと同じ場合は、そのまま連携できます。
               </AlertDescription>
             </Alert>
 
@@ -174,7 +174,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
                 disabled={loading}
               />
               <p className="text-xs text-muted-foreground">
-                空欄の場合は、Startup HRのメールアドレス ({user.email}) を使用します
+                空欄の場合は、TeamSpark AIのメールアドレス ({user.email}) を使用します
               </p>
             </div>
 

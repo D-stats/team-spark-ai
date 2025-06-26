@@ -1,5 +1,5 @@
 /**
- * 全ユーザーストーリーのエクスポート
+ * Export all user stories
  */
 
 import { evaluationStories, kudosStories } from './evaluation-stories';

@@ -1,50 +1,50 @@
-# AI開発者ガイド - Startup HR Engagement Platform
+# AI Developer Guide - TeamSpark AI
 
-このドキュメントは、AIアシスタント（Claude等）がこのプロジェクトで効率的に開発を進めるためのガイドラインです。
+This document provides guidelines for AI assistants (such as Claude) to efficiently develop within this project.
 
-## 🚀 プロジェクト概要
+## 🚀 Project Overview
 
-- **プロジェクト名**: Startup HR Engagement Platform
-- **目的**: スタートアップ向けの社内エンゲージメント・評価システム
-- **技術スタック**: Next.js 14, TypeScript, Supabase, Prisma, Slack SDK
+- **Project Name**: TeamSpark AI
+- **Purpose**: AI-powered team communication and engagement platform
+- **Tech Stack**: Next.js 14, TypeScript, Supabase, Prisma, Slack SDK
 
-## 📋 ユーザーストーリー駆動開発
+## 📋 User Story-Driven Development
 
-このプロジェクトでは**ユーザーストーリー駆動開発**を採用しています。新機能の実装や変更を行う際は、必ず以下のプロセスに従ってください。
+This project adopts **user story-driven development**. When implementing new features or making changes, always follow this process:
 
-### ユーザーストーリーの確認
+### Checking User Stories
 
-1. **既存ストーリーの確認**
+1. **Check Existing Stories**
 
    ```bash
-   # ストーリー検証レポートを確認
+   # Check story validation report
    npm run validate:stories
 
-   # 開発者ダッシュボードで確認（開発環境）
+   # Check in developer dashboard (development environment)
    http://localhost:3000/dev
    ```
 
-2. **ストーリーファイルの場所**
-   - `/src/lib/user-stories/stories/` - ストーリー定義
-   - `/tests/e2e/stories/` - ストーリーベースのテスト
+2. **Story File Locations**
+   - `/src/lib/user-stories/stories/` - Story definitions
+   - `/tests/e2e/stories/` - Story-based tests
 
-### 新機能実装時のフロー
+### New Feature Implementation Flow
 
-1. **ユーザーストーリーの作成または確認**
+1. **Create or Check User Story**
 
    ```typescript
-   // 例: /src/lib/user-stories/stories/feature-stories.ts
+   // Example: /src/lib/user-stories/stories/feature-stories.ts
    {
      id: 'FEAT-001',
-     title: '機能名',
-     asA: 'ユーザータイプ',
-     iWantTo: '実現したいこと',
-     soThat: 'ビジネス価値',
+     title: 'Feature Name',
+     asA: 'User Type',
+     iWantTo: 'What I want to achieve',
+     soThat: 'Business value',
      acceptanceCriteria: [
        {
-         given: '前提条件',
-         when: 'アクション',
-         then: '期待される結果',
+         given: 'Precondition',
+         when: 'Action',
+         then: 'Expected result',
          verified: false,
        }
      ],
@@ -53,121 +53,121 @@
    }
    ```
 
-2. **実装時の記録**
+2. **Record During Implementation**
 
-   - 実装したコンポーネント、API、テストのパスを `implementedIn` に記録
-   - 受け入れ基準に対応するテストIDを記録
+   - Record paths of implemented components, APIs, and tests in `implementedIn`
+   - Record test IDs corresponding to acceptance criteria
 
-3. **テストの作成**
+3. **Create Tests**
 
    ```typescript
-   // ストーリーベースのテストを作成
+   // Create story-based tests
    import { describeStory, testCriteria } from '../utils/story-test';
 
    describeStory(story, () => {
      testCriteria(story.acceptanceCriteria[0], async ({ page }) => {
-       // テスト実装
+       // Test implementation
      });
    });
    ```
 
-### 実装完了の確認
+### Confirming Implementation Completion
 
-- すべての受け入れ基準が満たされているか確認
-- `npm run validate:stories` で検証レポートを生成
-- ストーリーのステータスを `DONE` に更新
+- Confirm all acceptance criteria are met
+- Generate validation report with `npm run validate:stories`
+- Update story status to `DONE`
 
-## 📋 開発前チェックリスト
+## 📋 Pre-Development Checklist
 
-### 1. 環境確認
+### 1. Environment Check
 
 ```bash
-# Node.jsバージョン確認（18.x以上推奨）
+# Check Node.js version (18.x or higher recommended)
 node --version
 
-# Dockerが起動しているか確認
+# Check if Docker is running
 docker ps
 
-# ポート競合の確認
+# Check for port conflicts
 lsof -i :3000  # Next.js
 lsof -i :54321 # Supabase Studio
 lsof -i :54322 # Supabase API
 ```
 
-### 2. Supabase Local起動
+### 2. Starting Supabase Local
 
 ```bash
-# Supabaseが起動していない場合
+# If Supabase is not running
 npx supabase start
 
-# 起動状態の確認
+# Check status
 npx supabase status
 ```
 
-## 🛠️ 開発コマンド
+## 🛠️ Development Commands
 
-全コマンドの一覧はREADME.mdの[コマンド一覧](./README.md#コマンド一覧)を参照してください。
+For a complete list of commands, see the [Command List](./README.md#command-list) in README.md.
 
-### 開発サーバー起動
+### Starting Development Server
 
 ```bash
-# 依存関係のインストール
+# Install dependencies
 npm install
 
-# 🚀 推奨: 事前チェック付き起動（スキーマ不一致エラーを防ぐ）
+# 🚀 Recommended: Start with pre-flight checks (prevents schema mismatch errors)
 npm run dev:safe
 
-# 通常の起動方法
+# Normal start method
 npm run dev
 
-# 手動で事前チェックを実行
+# Manually run pre-flight check
 npm run pre-flight
 
-# ポート競合時の代替起動方法
-PORT=3001 npm run dev    # 環境変数で指定
-npm run dev:alt          # 3001番ポートで起動
-npm run dev:custom       # 対話的にポート指定
+# Alternative start methods for port conflicts
+PORT=3001 npm run dev    # Specify via environment variable
+npm run dev:alt          # Start on port 3001
+npm run dev:custom       # Interactively specify port
 
-# 別ターミナルでSupabase Studio起動
-npx supabase status  # URLを確認
+# Start Supabase Studio in another terminal
+npx supabase status  # Check URL
 ```
 
-### 開発前の事前チェック（pre-flight）
+### Pre-flight Check
 
-`npm run pre-flight` コマンドは以下をチェックします：
+The `npm run pre-flight` command checks:
 
-- ✅ Supabaseの起動状態
-- ✅ データベース接続
-- ✅ マイグレーション適用状態
-- ✅ Prisma Client生成状態
-- ✅ 依存関係のインストール
-- ✅ ポート競合
-- ✅ TypeScript型エラー（簡易版）
+- ✅ Supabase running status
+- ✅ Database connection
+- ✅ Migration application status
+- ✅ Prisma Client generation status
+- ✅ Dependency installation
+- ✅ Port conflicts
+- ✅ TypeScript type errors (simplified)
 
-問題がある場合は、具体的な解決方法を提示します。
+If issues are found, specific solutions will be provided.
 
-### 開発サーバーの起動確認
+### Development Server Startup Verification
 
-**重要**: サーバーが実際に起動したことを確認してから作業を進めてください。
+**Important**: Confirm the server has actually started before proceeding with work.
 
 ```bash
-# サーバーの起動を確認
+# Confirm server startup
 curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/
-# 200が返ればOK
+# 200 means OK
 
-# またはヘルスチェックエンドポイントを使用
+# Or use health check endpoint
 npm run health
 
-# 起動確認付きでサーバーを起動
-npm run dev:server  # 自動で起動確認を行います
+# Start server with startup verification
+npm run dev:server  # Automatically verifies startup
 
-# 正しいサービスが起動していることを詳細に検証
+# Verify the correct service is running in detail
 npm run verify
 ```
 
-### ヘルスチェックエンドポイント
+### Health Check Endpoint
 
-開発サーバーには `/api/health` エンドポイントが実装されており、以下の情報を提供します：
+The development server implements a `/api/health` endpoint that provides:
 
 ```json
 {
@@ -182,185 +182,185 @@ npm run verify
 }
 ```
 
-- **service**: 正しいサービスが起動していることを確認
-- **checks.server**: サーバーの稼働状態
-- **checks.database**: データベース接続の状態
+- **service**: Confirms the correct service is running
+- **checks.server**: Server running status
+- **checks.database**: Database connection status
 
-### サーバー検証スクリプト
+### Server Verification Script
 
-`scripts/verify-server.sh` では以下の5つのチェックを実行：
+`scripts/verify-server.sh` performs 5 checks:
 
-1. **ポート確認**: 指定ポートが開いているか
-2. **プロセス確認**: Node.jsプロセスが動作しているか
-3. **HTTPヘッダー確認**: Next.jsサーバーとして応答しているか
-4. **ヘルスチェック**: 正しいサービス（startup-hr-engagement）か
-5. **Next.jsルート確認**: Next.js特有のパスが存在するか
+1. **Port Check**: Is the specified port open?
+2. **Process Check**: Is the Node.js process running?
+3. **HTTP Header Check**: Is it responding as a Next.js server?
+4. **Health Check**: Is it the correct service (startup-hr-engagement)?
+5. **Next.js Route Check**: Do Next.js-specific paths exist?
 
-3つ以上のチェックが通れば、正しい開発サーバーが起動していると判断します。
+If 3 or more checks pass, the correct development server is considered to be running.
 
-### ポート管理戦略
+### Port Management Strategy
 
-開発環境でのポート競合を避けるため、以下の戦略を採用しています：
+To avoid port conflicts in development, we adopt the following strategies:
 
-1. **自動ポートチェック**: `npm run dev`実行時に自動でポート競合を確認
-2. **環境変数サポート**: PORTなどの環境変数で柔軟に設定可能
-3. **Docker Compose活用**: 内部通信のサービスは外部ポートを公開しない
+1. **Automatic Port Check**: Automatically checks for port conflicts when running `npm run dev`
+2. **Environment Variable Support**: Flexible configuration via PORT and other environment variables
+3. **Docker Compose Usage**: Services for internal communication don't expose external ports
 
-詳細は`docs/PORT_MANAGEMENT.md`を参照してください。
+See `docs/PORT_MANAGEMENT.md` for details.
 
-### コード品質チェック
+### Code Quality Checks
 
 ```bash
-# TypeScriptの型チェック
+# TypeScript type check
 npm run type-check
 
-# ESLintの実行
+# Run ESLint
 npm run lint
 
-# Prettierでのフォーマット
+# Format with Prettier
 npm run format
 
-# 全てのチェックを実行
+# Run all checks
 npm run validate
 
-# ユーザーストーリー検証
+# User story validation
 npm run validate:stories
 
-# ストーリーベースのテスト実行
+# Run story-based tests
 npm run test:stories
 ```
 
-## 📝 機能開発完了時の必須チェック
+## 📝 Required Checks After Feature Development
 
-### ⚠️ 重要: 機能開発完了後は必ずテスト・品質チェックを実行
+### ⚠️ Important: Always Run Tests and Quality Checks After Feature Development
 
-新機能の実装や既存機能の変更が完了したら、**必ず以下のチェックを実行してください**：
+After completing new feature implementation or changes to existing features, **always run the following checks**:
 
 ```bash
-# 1. TypeScript型チェック（必須）
+# 1. TypeScript type check (required)
 npm run type-check
 
-# 2. ESLint実行（必須）
+# 2. Run ESLint (required)
 npm run lint
 
-# 3. テスト実行（実装がある場合は必須）
+# 3. Run tests (required if implementation exists)
 npm test
 
-# 4. 全体品質チェック（推奨）
+# 4. Overall quality check (recommended)
 npm run validate
 ```
 
-### 機能開発フロー
+### Feature Development Flow
 
-1. **実装** → 機能やバグ修正を完了
-2. **品質チェック** → 上記コマンドを実行
-3. **修正** → エラーや警告があれば修正
-4. **再チェック** → 全てパスするまで繰り返し
-5. **コミット** → 品質チェック完了後のみコミット
+1. **Implementation** → Complete feature or bug fix
+2. **Quality Check** → Run above commands
+3. **Fix** → Fix any errors or warnings
+4. **Recheck** → Repeat until all pass
+5. **Commit** → Commit only after quality checks pass
 
-### エラー・警告の対応
+### Handling Errors and Warnings
 
-- **TypeScriptエラー**: 型定義の修正は必須
-- **ESLintエラー**: コード品質問題の修正は必須
-- **テスト失敗**: 既存機能を壊していないか確認し修正
-- **ESLint警告**: 可能な限り修正（重大でない場合はコミット可能）
+- **TypeScript Errors**: Type definition fixes are required
+- **ESLint Errors**: Code quality issue fixes are required
+- **Test Failures**: Confirm existing features aren't broken and fix
+- **ESLint Warnings**: Fix when possible (can commit if not critical)
 
-## 📝 コミット前の必須事項
+## 📝 Pre-Commit Requirements
 
-### 1. コード品質確認
+### 1. Code Quality Check
 
 ```bash
-# 必ず実行（機能開発完了時と同じ）
+# Always run (same as after feature development)
 npm run type-check
 npm run lint
 npm test
 
-# または一括実行
+# Or run all at once
 npm run validate
 ```
 
-### 2. データベースマイグレーション
+### 2. Database Migration
 
 ```bash
-# スキーマ変更がある場合
+# If there are schema changes
 npx prisma migrate dev --name [migration_name]
 
-# Prisma Clientの再生成
+# Regenerate Prisma Client
 npx prisma generate
 ```
 
-### 3. 環境変数の確認
+### 3. Environment Variable Check
 
-- `.env.local`に機密情報が含まれていないか確認
-- 新しい環境変数を追加した場合は`.env.example`も更新
+- Confirm `.env.local` doesn't contain sensitive information
+- Update `.env.example` if new environment variables were added
 
-### 4. コミット時の自動チェック（Husky + lint-staged）
+### 4. Automatic Checks on Commit (Husky + lint-staged)
 
-このプロジェクトでは、コミット時に自動的にコード品質チェックが実行されます：
+This project automatically runs code quality checks on commit:
 
 ```bash
-# コミット時に自動実行される内容
-- ESLint --fix（TypeScript/TSXファイル）
-- Prettier --write（全対象ファイル）
+# Automatically executed on commit
+- ESLint --fix (TypeScript/TSX files)
+- Prettier --write (all target files)
 ```
 
-手動でスキップする場合（推奨しません）：
+To manually skip (not recommended):
 
 ```bash
-git commit --no-verify -m "メッセージ"
+git commit --no-verify -m "message"
 ```
 
-## 🚨 プッシュ前チェックリスト
+## 🚨 Pre-Push Checklist
 
-1. **ローカルでの動作確認**
+1. **Local Operation Check**
 
-   - `npm run dev`でエラーがないこと
-   - 主要機能が正常に動作すること
+   - No errors with `npm run dev`
+   - Major features work normally
 
-2. **コード品質**
+2. **Code Quality**
 
-   - `npm run validate`が全てパスすること
-   - コンソールにエラーや警告がないこと
+   - `npm run validate` passes completely
+   - No errors or warnings in console
 
-3. **データベース**
-   - マイグレーションファイルがコミットされていること
-   - seedデータが必要な場合は更新されていること
+3. **Database**
+   - Migration files are committed
+   - Seed data is updated if needed
 
-## 🔄 CI/CD確認
+## 🔄 CI/CD Confirmation
 
-### GitHub Actions確認方法
+### GitHub Actions Check Method
 
-1. プッシュ後、GitHubリポジトリの「Actions」タブを確認
-2. 以下のワークフローが成功することを確認：
-   - `typecheck`: TypeScriptの型チェック
-   - `lint`: コード品質チェック
-   - `test`: テストの実行（実装後）
-   - `build`: ビルドの成功
+1. After push, check the "Actions" tab in the GitHub repository
+2. Confirm the following workflows succeed:
+   - `typecheck`: TypeScript type check
+   - `lint`: Code quality check
+   - `test`: Test execution (after implementation)
+   - `build`: Build success
 
-### 失敗時の対処
+### Handling Failures
 
 ```bash
-# ローカルで同じチェックを実行
+# Run same checks locally
 npm run typecheck
 npm run lint
 npm run test
 npm run build
 ```
 
-## 🐛 トラブルシューティング
+## 🐛 Troubleshooting
 
-詳細なトラブルシューティングガイドは[docs/SETUP_TROUBLESHOOTING.md](./docs/SETUP_TROUBLESHOOTING.md)を参照してください。
+See [docs/SETUP_TROUBLESHOOTING.md](./docs/SETUP_TROUBLESHOOTING.md) for detailed troubleshooting guide.
 
-### よくある問題
+### Common Issues
 
-- **ポート競合**: `npm run check:ports`で確認、[PORT_MANAGEMENT.md](./docs/PORT_MANAGEMENT.md)参照
-- **Supabase接続エラー**: `npx supabase status`で状態確認
-- **Prismaエラー**: `npx prisma generate`でClient再生成
-- **スキーマ不一致**: `npm run pre-flight`で事前チェック
+- **Port Conflicts**: Check with `npm run check:ports`, see [PORT_MANAGEMENT.md](./docs/PORT_MANAGEMENT.md)
+- **Supabase Connection Error**: Check status with `npx supabase status`
+- **Prisma Error**: Regenerate Client with `npx prisma generate`
+- **Schema Mismatch**: Pre-check with `npm run pre-flight`
 
-### スキーマ変更時の注意点
+### Schema Change Precautions
 
-1. **必須手順**
+1. **Required Steps**
 
    ```bash
    npx prisma migrate dev --name descriptive_name
@@ -368,98 +368,98 @@ npm run build
    npm run type-check
    ```
 
-2. **チーム開発での同期**
-   - マイグレーションファイルをPRに含める
-   - READMEで周知
+2. **Team Development Sync**
+   - Include migration files in PR
+   - Announce in README
 
-## 📁 プロジェクト構造
+## 📁 Project Structure
 
 ```
 .
 ├── src/
 │   ├── app/              # Next.js App Router
-│   ├── components/       # Reactコンポーネント
-│   ├── lib/             # ユーティリティ関数
-│   │   └── user-stories/ # ユーザーストーリー管理
-│   ├── services/        # ビジネスロジック
-│   ├── hooks/           # カスタムフック
-│   └── types/           # TypeScript型定義
+│   ├── components/       # React components
+│   ├── lib/             # Utility functions
+│   │   └── user-stories/ # User story management
+│   ├── services/        # Business logic
+│   ├── hooks/           # Custom hooks
+│   └── types/           # TypeScript type definitions
 ├── tests/
 │   └── e2e/
-│       └── stories/     # ストーリーベーステスト
+│       └── stories/     # Story-based tests
 ├── prisma/
-│   ├── schema.prisma    # データベーススキーマ
-│   └── migrations/      # マイグレーションファイル
-├── public/              # 静的ファイル
+│   ├── schema.prisma    # Database schema
+│   └── migrations/      # Migration files
+├── public/              # Static files
 └── docs/
-    └── user-stories/    # ストーリードキュメント
+    └── user-stories/    # Story documentation
 ```
 
-## 🔑 重要な開発原則
+## 🔑 Important Development Principles
 
-1. **ユーザーストーリー駆動**: 全ての機能はユーザーストーリーから始める
-2. **型安全性**: TypeScriptの型を最大限活用
-3. **エラーハンドリング**: 適切なエラー処理とユーザーフィードバック
-4. **セキュリティ**: 環境変数の適切な管理、認証・認可の確認
-5. **パフォーマンス**: 不要なレンダリングの回避、適切なキャッシング
-6. **アクセシビリティ**: キーボード操作、スクリーンリーダー対応
-7. **テスト駆動**: 受け入れ基準に基づくテストの作成
+1. **User Story-Driven**: All features start from user stories
+2. **Type Safety**: Maximize TypeScript type usage
+3. **Error Handling**: Proper error handling and user feedback
+4. **Security**: Proper environment variable management, authentication/authorization checks
+5. **Performance**: Avoid unnecessary rendering, proper caching
+6. **Accessibility**: Keyboard operation, screen reader support
+7. **Test-Driven**: Create tests based on acceptance criteria
 
-## 📞 サポート
+## 📞 Support
 
-問題が解決しない場合は、以下を確認：
+If issues aren't resolved, check:
 
-1. `docs/troubleshooting.md`（作成予定）
-2. プロジェクトのissuesを検索
-3. Slack開発チャンネルで質問（設定後）
+1. `docs/troubleshooting.md` (to be created)
+2. Search project issues
+3. Ask in Slack development channel (after setup)
 
-## 🎯 ユーザーストーリー実装の例
+## 🎯 User Story Implementation Example
 
-### 新しいエンゲージメント機能を追加する場合
+### When Adding a New Engagement Feature
 
-1. **ストーリーファイルの作成**
+1. **Create Story File**
 
    ```typescript
    // /src/lib/user-stories/stories/engagement-stories.ts
    export const newFeatureStory: UserStory = {
      id: 'ENG-005',
-     title: '1on1ミーティング記録',
-     asA: 'マネージャー',
-     iWantTo: '部下との1on1の内容を記録したい',
-     soThat: '継続的な成長支援ができる',
+     title: '1-on-1 Meeting Records',
+     asA: 'Manager',
+     iWantTo: 'Record 1-on-1 meeting content with my reports',
+     soThat: 'I can provide continuous growth support',
      acceptanceCriteria: [
        {
          id: 'AC-005-1',
-         given: '1on1ページを開いている',
-         when: '新規作成ボタンをクリック',
-         then: '記録フォームが表示される',
+         given: 'I am on the 1-on-1 page',
+         when: 'I click the new creation button',
+         then: 'A record form is displayed',
          verified: false,
        },
      ],
      priority: StoryPriority.P1,
      status: StoryStatus.READY,
-     tags: ['1on1', 'マネージャー', 'エンゲージメント'],
+     tags: ['1on1', 'manager', 'engagement'],
    };
    ```
 
-2. **実装とストーリーの更新**
+2. **Update Implementation and Story**
 
-   - コンポーネント作成後、`implementedIn.components` に追加
-   - API作成後、`implementedIn.apis` に追加
-   - テスト作成後、`implementedIn.tests` に追加
-   - 各受け入れ基準のテストが通ったら `verified: true` に更新
+   - After creating component, add to `implementedIn.components`
+   - After creating API, add to `implementedIn.apis`
+   - After creating test, add to `implementedIn.tests`
+   - Update to `verified: true` when tests for each acceptance criterion pass
 
-3. **検証の実行**
+3. **Run Validation**
 
    ```bash
-   # 実装状況の確認
+   # Check implementation status
    npm run validate:stories
 
-   # ストーリーベーステストの実行
+   # Run story-based tests
    npm run test:stories
    ```
 
-4. **ステータスの更新**
-   - すべての受け入れ基準が満たされたら `status: StoryStatus.DONE` に更新
+4. **Update Status**
+   - Update to `status: StoryStatus.DONE` when all acceptance criteria are met
 
-この方法により、ビジネス価値と実装が常に紐づいた状態で開発を進めることができます。
+This approach ensures business value and implementation are always linked during development.

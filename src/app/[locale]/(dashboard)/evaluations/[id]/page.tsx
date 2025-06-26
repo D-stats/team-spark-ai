@@ -20,7 +20,7 @@ export default function EvaluationDetailPage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps) {
   return {
-    title: '評価入力 - Startup HR',
+    title: '評価入力 - TeamSpark AI',
     description: '従業員評価の入力・編集を行います',
   };
 }

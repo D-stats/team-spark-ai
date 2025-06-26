@@ -40,7 +40,7 @@ export default async function SlackSettingsPage() {
       <div>
         <h1 className="text-3xl font-bold">Slack連携設定</h1>
         <p className="mt-2 text-muted-foreground">
-          SlackワークスペースとStartup HRを連携します
+          SlackワークスペースとTeamSpark AIを連携します
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default async function SlackSettingsPage() {
             )}
           </div>
           <CardDescription>
-            SlackワークスペースとStartup HRを連携することで、Slack上から直接Kudosの送信や通知の受信ができるようになります。
+            SlackワークスペースとTeamSpark AIを連携することで、Slack上から直接Kudosの送信や通知の受信ができるようになります。
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -113,7 +113,7 @@ export default async function SlackSettingsPage() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   連携にはSlackワークスペースの管理者権限が必要です。
-                  連携後、チームメンバーがSlackアカウントとStartup HRアカウントを紐付ける必要があります。
+                  連携後、チームメンバーがSlackアカウントとTeamSpark AIアカウントを紐付ける必要があります。
                 </AlertDescription>
               </Alert>
 

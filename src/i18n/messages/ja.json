@@ -1,0 +1,527 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "submit": "送信",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "refresh": "更新",
+    "yes": "はい",
+    "no": "いいえ",
+    "confirm": "確認",
+    "actions": "アクション",
+    "status": "ステータス",
+    "date": "日付",
+    "time": "時間",
+    "name": "名前",
+    "email": "メールアドレス",
+    "description": "説明",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "login": "ログイン",
+    "register": "登録",
+    "password": "パスワード",
+    "confirmPassword": "パスワード確認",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "resetPassword": "パスワードリセット",
+    "changePassword": "パスワード変更",
+    "profile": "プロフィール",
+    "success": "成功",
+    "error": "エラー",
+    "warning": "警告",
+    "info": "情報",
+    "required": "必須",
+    "optional": "任意",
+    "user": "ユーザー"
+  },
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "okr": "OKR",
+    "kudos": "クードス",
+    "checkins": "チェックイン",
+    "surveys": "サーベイ",
+    "teams": "チーム",
+    "organization": "組織",
+    "settings": "設定",
+    "personalSettings": "個人設定",
+    "organizationSettings": "組織設定"
+  },
+  "errors": {
+    "validation": {
+      "default": "入力内容に問題があります。有効な値を入力してください。",
+      "required": "この項目は必須です",
+      "email": "有効なメールアドレスを入力してください",
+      "minLength": "{min}文字以上で入力してください",
+      "maxLength": "{max}文字以下で入力してください",
+      "passwordMismatch": "パスワードが一致しません",
+      "invalidCredentials": "メールアドレスまたはパスワードが正しくありません"
+    },
+    "authentication": {
+      "default": "ログインが必要です。もう一度ログインしてください。",
+      "sessionExpired": "セッションの有効期限が切れました。もう一度ログインしてください。",
+      "unauthorized": "このページにアクセスするにはログインが必要です"
+    },
+    "authorization": {
+      "default": "この操作を実行する権限がありません。",
+      "insufficientPermissions": "権限が不足しています",
+      "adminOnly": "この操作には管理者権限が必要です"
+    },
+    "notFound": {
+      "default": "指定されたリソースが見つかりませんでした。",
+      "page": "ページが見つかりません",
+      "user": "ユーザーが見つかりません",
+      "organization": "組織が見つかりません",
+      "team": "チームが見つかりません"
+    },
+    "conflict": {
+      "default": "操作の競合が発生しました。ページを更新してもう一度お試しください。",
+      "alreadyExists": "このアイテムは既に存在します",
+      "duplicate": "重複エントリー"
+    },
+    "rateLimit": {
+      "default": "リクエストが多すぎます。しばらく待ってからもう一度お試しください。"
+    },
+    "externalService": {
+      "default": "外部サービスとの通信中にエラーが発生しました。",
+      "slack": "Slackへの接続に失敗しました",
+      "email": "メールの送信に失敗しました"
+    },
+    "database": {
+      "default": "データベースエラーが発生しました。",
+      "connectionFailed": "データベースへの接続に失敗しました",
+      "queryFailed": "データベースクエリが失敗しました"
+    },
+    "network": {
+      "default": "ネットワークエラーが発生しました。接続を確認してください。",
+      "offline": "オフラインのようです",
+      "timeout": "リクエストがタイムアウトしました"
+    },
+    "unknown": {
+      "default": "システムエラーが発生しました。しばらく待ってからもう一度お試しください。"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "ログイン",
+      "subtitle": "おかえりなさい",
+      "emailLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
+      "rememberMe": "ログイン状態を保持",
+      "submitButton": "ログイン",
+      "noAccount": "アカウントをお持ちでない方は",
+      "signUpLink": "新規登録",
+      "forgotPasswordLink": "パスワードをお忘れですか？",
+      "success": "ログインに成功しました",
+      "error": "ログインに失敗しました"
+    },
+    "signUp": {
+      "title": "新規登録",
+      "subtitle": "アカウントを作成",
+      "nameLabel": "氏名",
+      "emailLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
+      "confirmPasswordLabel": "パスワード確認",
+      "organizationLabel": "組織名",
+      "submitButton": "登録",
+      "hasAccount": "既にアカウントをお持ちの方は",
+      "signInLink": "ログイン",
+      "success": "アカウントが作成されました。メールを確認してアカウントを認証してください。",
+      "error": "アカウントの作成に失敗しました"
+    },
+    "forgotPassword": {
+      "title": "パスワードをお忘れですか",
+      "subtitle": "パスワードをリセットするためのメールアドレスを入力してください",
+      "emailLabel": "メールアドレス",
+      "submitButton": "リセットリンクを送信",
+      "backToSignIn": "ログインに戻る",
+      "success": "パスワードリセットリンクをメールで送信しました",
+      "error": "リセットリンクの送信に失敗しました"
+    },
+    "resetPassword": {
+      "title": "パスワードリセット",
+      "subtitle": "新しいパスワードを入力してください",
+      "passwordLabel": "新しいパスワード",
+      "confirmPasswordLabel": "新しいパスワード確認",
+      "submitButton": "パスワードをリセット",
+      "success": "パスワードが正常にリセットされました",
+      "error": "パスワードのリセットに失敗しました"
+    },
+    "verifyEmail": {
+      "title": "メール認証",
+      "subtitle": "認証リンクをメールで確認してください",
+      "resendButton": "認証メールを再送信",
+      "success": "認証メールを送信しました",
+      "error": "認証メールの送信に失敗しました"
+    }
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "welcome": "おかえりなさい、{name}さん！",
+    "overview": {
+      "title": "概要",
+      "totalKudos": "総クードス",
+      "weeklyCheckins": "週次チェックイン",
+      "teamEngagement": "チームエンゲージメント",
+      "pendingTasks": "保留中のタスク"
+    },
+    "recentActivity": {
+      "title": "最近のアクティビティ",
+      "viewAll": "すべて表示",
+      "noActivity": "最近のアクティビティはありません"
+    },
+    "quickActions": {
+      "title": "クイックアクション",
+      "giveKudos": "クードスを送る",
+      "startCheckin": "チェックインを開始",
+      "viewReports": "レポートを表示",
+      "inviteTeammate": "チームメイトを招待"
+    }
+  },
+  "kudos": {
+    "title": "クードス",
+    "subtitle": "チームメイトを認識し、感謝を伝える",
+    "give": {
+      "title": "クードスを送る",
+      "recipientLabel": "宛先",
+      "recipientPlaceholder": "チームメイトを選択",
+      "categoryLabel": "カテゴリー",
+      "categories": {
+        "teamwork": "チームワーク",
+        "innovation": "イノベーション",
+        "leadership": "リーダーシップ",
+        "customerFocus": "顧客志向",
+        "excellence": "卓越性",
+        "growth": "成長"
+      },
+      "messageLabel": "メッセージ",
+      "messagePlaceholder": "なぜ彼らを認識するのか共有してください...",
+      "pointsLabel": "ポイント",
+      "submitButton": "クードスを送信",
+      "success": "クードスが正常に送信されました！",
+      "error": "クードスの送信に失敗しました"
+    },
+    "feed": {
+      "title": "クードスフィード",
+      "filter": {
+        "all": "すべて",
+        "received": "受信",
+        "given": "送信",
+        "team": "マイチーム"
+      },
+      "empty": "まだクードスがありません。最初に誰かを認識してみましょう！",
+      "loadMore": "もっと読み込む"
+    },
+    "stats": {
+      "received": "受信したクードス",
+      "given": "送信したクードス",
+      "points": "合計ポイント",
+      "streak": "認識ストリーク"
+    }
+  },
+  "checkins": {
+    "title": "チェックイン",
+    "subtitle": "定期的な振り返りと目標追跡",
+    "create": {
+      "title": "新規チェックイン",
+      "templateLabel": "テンプレート",
+      "selectTemplate": "テンプレートを選択",
+      "submitButton": "チェックインを送信",
+      "saveDraft": "下書きとして保存",
+      "success": "チェックインが正常に送信されました",
+      "error": "チェックインの送信に失敗しました"
+    },
+    "list": {
+      "title": "マイチェックイン",
+      "filter": {
+        "all": "すべて",
+        "submitted": "送信済み",
+        "draft": "下書き",
+        "reviewed": "レビュー済み"
+      },
+      "empty": "チェックインはまだありません",
+      "viewDetails": "詳細を表示",
+      "edit": "編集",
+      "delete": "削除"
+    },
+    "review": {
+      "title": "チェックインをレビュー",
+      "pending": "レビュー待ち",
+      "completed": "完了したレビュー",
+      "addComment": "コメントを追加",
+      "approve": "承認",
+      "requestChanges": "変更を要求",
+      "commentPlaceholder": "フィードバックを追加...",
+      "success": "レビューが正常に送信されました",
+      "error": "レビューの送信に失敗しました"
+    },
+    "templates": {
+      "title": "チェックインテンプレート",
+      "create": "テンプレートを作成",
+      "edit": "テンプレートを編集",
+      "defaultBadge": "デフォルト",
+      "activeBadge": "アクティブ",
+      "inactiveBadge": "非アクティブ",
+      "frequency": {
+        "daily": "毎日",
+        "weekly": "毎週",
+        "biweekly": "隔週",
+        "monthly": "毎月",
+        "quarterly": "四半期ごと"
+      }
+    },
+    "questions": {
+      "achievements": "今週は何を達成しましたか？",
+      "challenges": "今週どのような課題や困難に直面しましたか？",
+      "nextGoals": "来週の目標は何ですか？",
+      "energyLevel": "今週のエネルギーレベルはどうでしたか？（1：低い - 5：高い）",
+      "supportNeeded": "チームやマネージャーからのサポートが必要な分野はありますか？"
+    }
+  },
+  "teams": {
+    "title": "チーム",
+    "subtitle": "チームとメンバーを管理",
+    "create": {
+      "title": "チームを作成",
+      "nameLabel": "チーム名",
+      "namePlaceholder": "チーム名を入力",
+      "descriptionLabel": "説明",
+      "descriptionPlaceholder": "チームの目的を説明...",
+      "managerLabel": "チームマネージャー",
+      "selectManager": "マネージャーを選択",
+      "submitButton": "チームを作成",
+      "success": "チームが正常に作成されました",
+      "error": "チームの作成に失敗しました"
+    },
+    "list": {
+      "title": "すべてのチーム",
+      "myTeams": "マイチーム",
+      "allTeams": "すべてのチーム",
+      "members": "{count}名のメンバー",
+      "manager": "マネージャー: {name}",
+      "viewDetails": "詳細を表示",
+      "edit": "チームを編集",
+      "delete": "チームを削除",
+      "empty": "チームはまだありません"
+    },
+    "details": {
+      "title": "チーム詳細",
+      "members": "チームメンバー",
+      "addMember": "メンバーを追加",
+      "removeMember": "メンバーを削除",
+      "makeManager": "マネージャーにする",
+      "activity": "最近のアクティビティ",
+      "performance": "チームパフォーマンス"
+    }
+  },
+  "organization": {
+    "title": "組織",
+    "subtitle": "組織設定を管理",
+    "profile": {
+      "title": "組織プロフィール",
+      "nameLabel": "組織名",
+      "domainLabel": "ドメイン",
+      "industryLabel": "業界",
+      "sizeLabel": "企業規模",
+      "sizes": {
+        "startup": "1-10名",
+        "small": "11-50名",
+        "medium": "51-200名",
+        "large": "201-500名",
+        "enterprise": "500名以上"
+      },
+      "updateButton": "プロフィールを更新",
+      "success": "組織プロフィールが更新されました",
+      "error": "プロフィールの更新に失敗しました"
+    },
+    "members": {
+      "title": "メンバー",
+      "inviteButton": "メンバーを招待",
+      "filter": {
+        "all": "すべて",
+        "active": "アクティブ",
+        "pending": "保留中",
+        "inactive": "非アクティブ"
+      },
+      "role": {
+        "admin": "管理者",
+        "manager": "マネージャー",
+        "member": "メンバー"
+      },
+      "actions": {
+        "changeRole": "役割を変更",
+        "deactivate": "無効化",
+        "activate": "有効化",
+        "remove": "削除"
+      }
+    },
+    "billing": {
+      "title": "請求",
+      "currentPlan": "現在のプラン",
+      "usage": "使用状況",
+      "invoices": "請求書",
+      "upgradePlan": "プランをアップグレード",
+      "cancelSubscription": "サブスクリプションをキャンセル"
+    },
+    "integrations": {
+      "title": "連携",
+      "slack": {
+        "title": "Slack",
+        "description": "Slackを接続してシームレスなチームコミュニケーションを実現",
+        "connected": "接続済み",
+        "notConnected": "未接続",
+        "connect": "Slackを接続",
+        "disconnect": "切断",
+        "settings": "設定"
+      }
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "subtitle": "個人設定を管理",
+    "profile": {
+      "title": "プロフィール",
+      "nameLabel": "氏名",
+      "emailLabel": "メールアドレス",
+      "roleLabel": "役割",
+      "teamLabel": "チーム",
+      "timezoneLabel": "タイムゾーン",
+      "languageLabel": "言語",
+      "updateButton": "プロフィールを更新",
+      "changePasswordButton": "パスワードを変更",
+      "success": "プロフィールが正常に更新されました",
+      "error": "プロフィールの更新に失敗しました"
+    },
+    "notifications": {
+      "title": "通知",
+      "email": {
+        "title": "メール通知",
+        "kudosReceived": "クードスを受信したとき",
+        "checkinReminder": "チェックインリマインダー",
+        "teamUpdates": "チームの更新",
+        "weeklyDigest": "週次ダイジェスト"
+      },
+      "inApp": {
+        "title": "アプリ内通知",
+        "all": "すべての通知",
+        "mentions": "メンションのみ",
+        "none": "なし"
+      }
+    },
+    "preferences": {
+      "title": "設定",
+      "theme": {
+        "label": "テーマ",
+        "light": "ライト",
+        "dark": "ダーク",
+        "system": "システム"
+      },
+      "language": {
+        "label": "言語",
+        "en": "英語",
+        "ja": "日本語"
+      },
+      "dateFormat": {
+        "label": "日付形式",
+        "mdy": "MM/DD/YYYY",
+        "dmy": "DD/MM/YYYY",
+        "ymd": "YYYY/MM/DD"
+      }
+    },
+    "security": {
+      "title": "セキュリティ",
+      "twoFactor": {
+        "title": "二要素認証",
+        "status": "ステータス",
+        "enabled": "有効",
+        "disabled": "無効",
+        "enable": "2FAを有効化",
+        "disable": "2FAを無効化"
+      },
+      "sessions": {
+        "title": "アクティブセッション",
+        "current": "現在のセッション",
+        "logoutAll": "他のすべてのセッションからログアウト"
+      }
+    }
+  },
+  "reports": {
+    "title": "レポート",
+    "engagement": {
+      "title": "エンゲージメントレポート",
+      "score": "エンゲージメントスコア",
+      "trend": "トレンド",
+      "breakdown": "チーム別内訳"
+    },
+    "performance": {
+      "title": "パフォーマンスレポート",
+      "individual": "個人パフォーマンス",
+      "team": "チームパフォーマンス",
+      "goals": "目標達成"
+    },
+    "kudos": {
+      "title": "クードスレポート",
+      "topReceivers": "トップ受信者",
+      "topGivers": "トップ送信者",
+      "categories": "カテゴリー別"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "この項目は必須です",
+      "email": "有効なメールアドレスを入力してください",
+      "minLength": "{min}文字以上で入力してください",
+      "maxLength": "{max}文字以下で入力してください",
+      "url": "有効なURLを入力してください",
+      "number": "有効な数値を入力してください",
+      "integer": "整数を入力してください",
+      "positive": "正の数を入力してください",
+      "date": "有効な日付を入力してください",
+      "time": "有効な時刻を入力してください",
+      "match": "フィールドが一致しません"
+    }
+  },
+  "time": {
+    "just_now": "たった今",
+    "minutes_ago": "{count}分前",
+    "hours_ago": "{count}時間前",
+    "days_ago": "{count}日前",
+    "weeks_ago": "{count}週間前",
+    "months_ago": "{count}ヶ月前",
+    "years_ago": "{count}年前"
+  },
+  "pagination": {
+    "previous": "前へ",
+    "next": "次へ",
+    "first": "最初",
+    "last": "最後",
+    "page": "{total}ページ中{current}ページ目",
+    "showing": "{total}件中{start}-{end}件を表示"
+  },
+  "empty": {
+    "default": "データがありません",
+    "search": "検索結果が見つかりませんでした",
+    "filter": "フィルターに一致する結果がありません"
+  },
+  "modals": {
+    "confirm": {
+      "title": "アクションの確認",
+      "message": "続行してもよろしいですか？",
+      "confirmButton": "確認",
+      "cancelButton": "キャンセル"
+    },
+    "delete": {
+      "title": "削除の確認",
+      "message": "この操作は元に戻せません。このアイテムを削除してもよろしいですか？",
+      "confirmButton": "削除",
+      "cancelButton": "キャンセル"
+    }
+  }
+}

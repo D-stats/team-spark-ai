@@ -9,7 +9,7 @@ import {
   Role,
 } from '@prisma/client';
 
-// 評価サイクル作成
+// Create evaluation cycle
 export async function createEvaluationCycle(data: {
   organizationId: string;
   name: string;
@@ -17,7 +17,7 @@ export async function createEvaluationCycle(data: {
   startDate: Date;
   endDate: Date;
 }) {
-  // デフォルトのフェーズ設定
+  // Default phase settings
   const defaultPhases = getDefaultPhases(data.type, data.startDate, data.endDate);
 
   return prisma.evaluationCycle.create({
@@ -35,36 +35,36 @@ export async function createEvaluationCycle(data: {
   });
 }
 
-// デフォルトフェーズの生成
+// Generate default phases
 function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: Date) {
   const totalDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
   
   const phases = [
     {
       type: EvaluationPhaseType.SELF,
-      name: '自己評価',
-      description: '自己の成果と成長を振り返る',
+      name: 'Self Evaluation',
+      description: 'Reflect on your achievements and growth',
       order: 1,
       durationRatio: 0.3,
     },
     {
       type: EvaluationPhaseType.PEER,
-      name: 'ピア評価',
-      description: '同僚からのフィードバック',
+      name: 'Peer Evaluation',
+      description: 'Feedback from colleagues',
       order: 2,
       durationRatio: 0.3,
     },
     {
       type: EvaluationPhaseType.MANAGER,
-      name: '上司評価',
-      description: '上司による評価とフィードバック',
+      name: 'Manager Evaluation',
+      description: 'Evaluation and feedback from manager',
       order: 3,
       durationRatio: 0.3,
     },
     {
       type: EvaluationPhaseType.CALIBRATION,
-      name: 'キャリブレーション',
-      description: '評価の調整と最終化',
+      name: 'Calibration',
+      description: 'Evaluation adjustment and finalization',
       order: 4,
       durationRatio: 0.1,
     },
@@ -89,7 +89,7 @@ function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: D
   });
 }
 
-// 評価対象者の自動生成
+// Automatically generate evaluation subjects
 export async function generateEvaluations(cycleId: string, organizationId: string) {
   const cycle = await prisma.evaluationCycle.findUnique({
     where: { id: cycleId },
@@ -97,10 +97,10 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
   });
 
   if (!cycle || cycle.organizationId !== organizationId) {
-    throw new Error('評価サイクルが見つかりません');
+    throw new Error('Evaluation cycle not found');
   }
 
-  // 組織内の全アクティブユーザーを取得
+  // Get all active users in the organization
   const users = await prisma.user.findMany({
     where: {
       organizationId,
@@ -126,7 +126,7 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
   const evaluations = [];
 
   for (const user of users) {
-    // 自己評価
+    // Self evaluation
     evaluations.push({
       cycleId,
       evaluateeId: user.id,
@@ -134,7 +134,7 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
       type: EvaluationType.SELF,
     });
 
-    // 上司評価（チームマネージャーから）
+    // Manager evaluation (from team manager)
     const managedTeams = await prisma.team.findMany({
       where: {
         members: {
@@ -155,7 +155,7 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
       }
     }
 
-    // ピア評価（同じチームメンバーから最大3人）
+    // Peer evaluation (up to 3 members from the same team)
     const teamMembers = new Set<string>();
     for (const membership of user.teamMemberships) {
       for (const member of membership.team.members) {

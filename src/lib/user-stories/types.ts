@@ -1,14 +1,14 @@
 /**
- * ユーザーストーリー型定義
+ * User story type definitions
  */
 
 export interface UserStory {
   id: string;
   epicId?: string;
   title: string;
-  asA: string; // ユーザータイプ
-  iWantTo: string; // 実現したいこと
-  soThat: string; // ビジネス価値
+  asA: string; // User type
+  iWantTo: string; // What I want to achieve
+  soThat: string; // Business value
   acceptanceCriteria: AcceptanceCriteria[];
   priority: StoryPriority;
   status: StoryStatus;
@@ -29,7 +29,7 @@ export interface AcceptanceCriteria {
   when: string;
   then: string;
   verified: boolean;
-  testIds?: string[]; // 関連するテストID
+  testIds?: string[]; // Related test IDs
 }
 
 export enum StoryPriority {

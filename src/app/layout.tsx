@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Startup HR - Employee Engagement Platform',
-  description: 'Boost employee engagement and build a positive workplace culture',
+  title: 'TeamSpark AI - AI-Powered Team Communication Platform',
+  description: 'Activate team communication and enhance engagement with AI-powered insights',
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja">
+    <html>
       <body className={inter.className}>{children}</body>
     </html>
   );

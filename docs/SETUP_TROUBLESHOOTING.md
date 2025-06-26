@@ -1,162 +1,161 @@
-# セットアップ・トラブルシューティングガイド
+# Setup & Troubleshooting Guide
 
-このドキュメントは、開発環境のセットアップ時によく遭遇する問題と解決方法をまとめています。
+This document compiles common issues and solutions encountered during development environment setup.
 
-## 🚨 よくある問題と解決方法
+## 🚨 Common Issues and Solutions
 
-### 1. スキーマ不一致エラー
+### 1. Schema Mismatch Error
 
-#### エラー例
+#### Error Example
 
 ```
 Error: Invalid `prisma.checkIn.findMany()` invocation:
 The column `CheckIn.templateId` does not exist in the current database.
 ```
 
-**注意**: 以前のバージョンでは`achievements`、`challenges`、`nextWeekGoals`などのフィールドがありましたが、
-現在はテンプレートベースのシステムに移行しています。
+**Note**: Previous versions had fields like `achievements`, `challenges`, `nextWeekGoals`, but the system has now migrated to a template-based system.
 
-#### 原因
+#### Cause
 
-Prismaスキーマとデータベースの実際の構造が一致していない
+Prisma schema and actual database structure do not match
 
-#### 解決方法
+#### Solution
 
 ```bash
-# 1. 現在のマイグレーション状態を確認
+# 1. Check current migration status
 DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate status
 
-# 2. 未適用のマイグレーションがある場合
+# 2. If there are unapplied migrations
 DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate deploy
 
-# 3. それでも解決しない場合はリセット（開発環境のみ）
+# 3. If still not resolved, reset (development only)
 DATABASE_URL="postgresql://postgres:postgres@localhost:54322/postgres?schema=public" npx prisma migrate reset --force
 ```
 
-### 2. ポート競合エラー
+### 2. Port Conflict Error
 
-#### エラー例
+#### Error Example
 
 ```
 Error: listen EADDRINUSE: address already in use :::3000
 ```
 
-#### 解決方法
+#### Solution
 
 ```bash
-# 1. 使用中のプロセスを確認
+# 1. Check processes using the port
 lsof -i :3000
 
-# 2. プロセスを終了
+# 2. Kill the process
 kill -9 [PID]
 
-# 3. 代替ポートで起動
+# 3. Start with alternative port
 PORT=3001 npm run dev
 
-# または自動ポートチェック付き起動
+# Or start with automatic port check
 npm run dev:safe
 ```
 
-### 3. Supabase接続エラー
+### 3. Supabase Connection Error
 
-#### エラー例
+#### Error Example
 
 ```
 Error: Could not connect to Supabase
 ```
 
-#### 解決方法
+#### Solution
 
 ```bash
-# 1. Supabaseの状態確認
+# 1. Check Supabase status
 npx supabase status
 
-# 2. 起動していない場合
+# 2. If not running
 npx supabase start
 
-# 3. 再起動が必要な場合
+# 3. If restart is needed
 npx supabase stop
 npx supabase start
 
-# 4. ログを確認
+# 4. Check logs
 npx supabase logs
 ```
 
-### 4. Prisma Client生成エラー
+### 4. Prisma Client Generation Error
 
-#### エラー例
+#### Error Example
 
 ```
 Error: @prisma/client did not initialize yet
 ```
 
-#### 解決方法
+#### Solution
 
 ```bash
-# 1. Prisma Clientを再生成
+# 1. Regenerate Prisma Client
 npx prisma generate
 
-# 2. node_modulesをクリーンアップ
+# 2. Clean up node_modules
 rm -rf node_modules
 npm install
 npx prisma generate
 ```
 
-### 5. TypeScriptエラー
+### 5. TypeScript Error
 
-#### エラー例
+#### Error Example
 
 ```
 Type 'JsonValue' is not assignable to type 'Question[]'
 ```
 
-#### 解決方法
+#### Solution
 
 ```bash
-# 1. 型チェックを実行
+# 1. Run type check
 npm run type-check
 
-# 2. .d.tsファイルをクリーンアップ
+# 2. Clean up .d.ts files
 rm -rf .next/types
 
-# 3. 再ビルド
+# 3. Rebuild
 npm run build
 ```
 
-## 🛠️ 予防的メンテナンス
+## 🛠️ Preventive Maintenance
 
-### 開発開始前のチェックリスト
+### Pre-Development Checklist
 
 ```bash
-# 推奨: 事前チェックスクリプトを実行
+# Recommended: Run pre-flight check script
 npm run pre-flight
 
-# または手動でチェック
-npx supabase status          # Supabase起動確認
-npm run check:ports           # ポート競合チェック
-npx prisma migrate status     # マイグレーション状態確認
+# Or check manually
+npx supabase status          # Verify Supabase is running
+npm run check:ports          # Check port conflicts
+npx prisma migrate status    # Check migration status
 ```
 
-### 定期的なメンテナンス
+### Regular Maintenance
 
 ```bash
-# 週次で実行を推奨
-npm update                    # 依存関係の更新
-npx prisma migrate dev        # マイグレーション同期
-npm run validate              # 品質チェック
+# Recommended weekly
+npm update                   # Update dependencies
+npx prisma migrate dev       # Sync migrations
+npm run validate             # Quality check
 ```
 
-## 📞 サポート
+## 📞 Support
 
-上記で解決しない場合：
+If the above doesn't resolve your issue:
 
-1. エラーメッセージの全文をコピー
-2. 実行したコマンドを記録
-3. `npm run health`の出力を確認
-4. GitHubのIssuesまたはSlackで報告
+1. Copy the full error message
+2. Record the commands you executed
+3. Check the output of `npm run health`
+4. Report on GitHub Issues or Slack
 
-## 関連ドキュメント
+## Related Documentation
 
-- [環境構築ガイド](./setup-guide.md)
-- [CLAUDE.md](../CLAUDE.md) - トラブルシューティングセクション
-- [ポート管理ガイド](./PORT_MANAGEMENT.md)
+- [Environment Setup Guide](./setup-guide.md)
+- [CLAUDE.md](../CLAUDE.md) - Troubleshooting section
+- [Port Management Guide](./PORT_MANAGEMENT.md)

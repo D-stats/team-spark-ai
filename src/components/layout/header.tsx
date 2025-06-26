@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useTranslations } from '@/i18n/utils';
 import { Button } from '@/components/ui/button';
 import { 
   DropdownMenu,
@@ -12,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, LogOut, Settings } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface HeaderProps {
   user: {
@@ -29,6 +31,7 @@ interface HeaderProps {
 export function Header({ user, organization }: HeaderProps) {
   const router = useRouter();
   const supabase = createClient();
+  const t = useTranslations();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -39,10 +42,11 @@ export function Header({ user, organization }: HeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
       <div className="flex items-center space-x-4">
-        <h1 className="text-lg font-semibold">ダッシュボード</h1>
+        <h1 className="text-lg font-semibold">{t('navigation.dashboard')}</h1>
         <span className="text-sm text-muted-foreground">・ {organization.name}</span>
       </div>
       <div className="flex items-center space-x-4">
+        <LanguageSwitcher />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -54,19 +58,19 @@ export function Header({ user, organization }: HeaderProps) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user.user_metadata?.name || 'ユーザー'}</p>
+                <p className="text-sm font-medium">{user.user_metadata?.name || t('common.user')}</p>
                 <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
               <Settings className="mr-2 h-4 w-4" />
-              個人設定
+              {t('navigation.personalSettings')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut}>
               <LogOut className="mr-2 h-4 w-4" />
-              ログアウト
+              {t('common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase管理者クライアントの作成
+// Create Supabase admin client
 const supabaseUrl = 'http://localhost:54321';
 const supabaseServiceKey =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU';
@@ -12,13 +12,13 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   },
 });
 
-// テストユーザーの定義
+// Test user definitions
 const testUsers = [
   {
     email: 'admin@test.com',
     password: 'password123',
     metadata: {
-      name: '管理者太郎',
+      name: 'Admin User',
       role: 'ADMIN',
     },
   },
@@ -26,7 +26,7 @@ const testUsers = [
     email: 'manager@test.com',
     password: 'password123',
     metadata: {
-      name: 'マネージャー花子',
+      name: 'Manager User',
       role: 'MANAGER',
     },
   },
@@ -34,7 +34,7 @@ const testUsers = [
     email: 'member1@test.com',
     password: 'password123',
     metadata: {
-      name: 'メンバー一郎',
+      name: 'Member One',
       role: 'MEMBER',
     },
   },
@@ -42,7 +42,7 @@ const testUsers = [
     email: 'member2@test.com',
     password: 'password123',
     metadata: {
-      name: 'メンバー二郎',
+      name: 'Member Two',
       role: 'MEMBER',
     },
   },
@@ -50,18 +50,18 @@ const testUsers = [
     email: 'member3@test.com',
     password: 'password123',
     metadata: {
-      name: 'メンバー三郎',
+      name: 'Member Three',
       role: 'MEMBER',
     },
   },
 ];
 
 async function createTestUsers() {
-  console.log('テストユーザーの作成を開始します...');
+  console.log('Starting test user creation...');
 
   for (const user of testUsers) {
     try {
-      // ユーザーを作成
+      // Create user
       const { error } = await supabase.auth.admin.createUser({
         email: user.email,
         password: user.password,
@@ -70,16 +70,16 @@ async function createTestUsers() {
       });
 
       if (error) {
-        console.error(`❌ ${user.email} の作成に失敗:`, error.message);
+        console.error(`❌ Failed to create ${user.email}:`, error.message);
       } else {
-        console.log(`✅ ${user.email} を作成しました`);
+        console.log(`✅ Created ${user.email}`);
       }
     } catch (error) {
-      console.error(`❌ ${user.email} の作成中にエラー:`, error);
+      console.error(`❌ Error creating ${user.email}:`, error);
     }
   }
 
-  console.log('\n📝 テストユーザー情報:');
+  console.log('\n📝 Test user information:');
   console.log('Email                | Password      | Role');
   console.log('-------------------- | ------------- | --------');
   testUsers.forEach((user) => {
@@ -87,13 +87,13 @@ async function createTestUsers() {
   });
 }
 
-// スクリプト実行
+// Execute script
 createTestUsers()
   .then(() => {
-    console.log('\n✨ セットアップが完了しました');
+    console.log('\n✨ Setup completed');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('エラー:', error);
+    console.error('Error:', error);
     process.exit(1);
   });

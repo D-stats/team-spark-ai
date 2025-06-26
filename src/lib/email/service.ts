@@ -15,7 +15,7 @@ interface SendEmailOptions {
 async function sendEmail({ to, subject, react }: SendEmailOptions) {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Startup HR <noreply@startup-hr.com>',
+      from: 'TeamSpark AI <noreply@teamspark.ai>',
       to,
       subject,
       react,

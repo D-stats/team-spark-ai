@@ -1,47 +1,49 @@
 import { prisma } from '@/lib/prisma';
 
 export async function createDefaultCheckInTemplate(organizationId: string) {
+  // Note: These are the default English questions. The actual display text
+  // should be handled by the i18n system using the question IDs as keys.
   const defaultTemplate = {
-    name: 'スタンダード週次チェックイン',
-    description: '標準的な週次チェックインテンプレートです',
+    name: 'Standard Weekly Check-in',
+    description: 'Standard weekly check-in template',
     frequency: 'WEEKLY' as const,
     questions: [
       {
         id: 'achievements',
         type: 'textarea',
-        text: '今週達成したことは何ですか？',
+        text: 'What did you accomplish this week?',
         required: true,
       },
       {
         id: 'challenges',
         type: 'textarea',
-        text: '今週直面した課題や困難があれば教えてください',
+        text: 'What challenges or difficulties did you face this week?',
         required: false,
       },
       {
         id: 'next_goals',
         type: 'textarea',
-        text: '来週の目標を教えてください',
+        text: 'What are your goals for next week?',
         required: true,
       },
       {
         id: 'energy_level',
         type: 'rating',
-        text: '今週のエネルギーレベルはどうでしたか？（1: 低い〜5: 高い）',
+        text: 'How was your energy level this week? (1: Low - 5: High)',
         required: false,
       },
       {
         id: 'support_needed',
         type: 'select',
-        text: 'チームや上司からのサポートが必要な分野はありますか？',
+        text: 'Are there any areas where you need support from your team or manager?',
         required: false,
         options: [
-          '特になし',
-          '技術的サポート',
-          'プロジェクト管理',
-          'コミュニケーション',
-          'リソース',
-          'その他',
+          'None',
+          'Technical Support',
+          'Project Management',
+          'Communication',
+          'Resources',
+          'Other',
         ],
       },
     ],
@@ -63,7 +65,7 @@ export async function createDefaultCheckInTemplate(organizationId: string) {
 }
 
 export async function ensureDefaultTemplate(organizationId: string) {
-  // 既にデフォルトテンプレートが存在するかチェック
+  // Check if default template already exists
   const existingDefault = await prisma.checkInTemplate.findFirst({
     where: {
       organizationId,
@@ -76,6 +78,6 @@ export async function ensureDefaultTemplate(organizationId: string) {
     return existingDefault;
   }
 
-  // デフォルトテンプレートが存在しない場合は作成
+  // Create default template if it doesn't exist
   return createDefaultCheckInTemplate(organizationId);
 }

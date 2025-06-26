@@ -1,7 +1,7 @@
 {
-  "name": "startup-hr-engagement",
+  "name": "team-spark-ai",
   "version": "0.1.0",
-  "description": "Employee engagement and evaluation platform for startups",
+  "description": "AI-powered team communication and engagement platform",
   "private": true,
   "scripts": {
     "predev": "bash scripts/check-ports.sh",
@@ -70,6 +70,7 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.323.0",
     "next": "14.1.0",
+    "next-intl": "^4.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.58.1",

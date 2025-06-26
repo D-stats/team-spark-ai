@@ -1,5 +1,5 @@
 /**
- * ユーザーストーリー検証エンジン
+ * User story validation engine
  */
 
 import { UserStory, StoryValidation, StoryStatus } from './types';
@@ -14,7 +14,7 @@ export class StoryValidator {
   }
 
   /**
-   * 単一のストーリーを検証
+   * Validate a single story
    */
   validateStory(story: UserStory): StoryValidation {
     const validation: StoryValidation = {
@@ -26,16 +26,16 @@ export class StoryValidator {
       testCoverage: 0,
     };
 
-    // 受け入れ基準の検証
+    // Validate acceptance criteria
     story.acceptanceCriteria.forEach(criteria => {
       if (criteria.verified) {
         validation.completedCriteria++;
       }
     });
 
-    // 実装ファイルの存在確認
+    // Check implementation file existence
     if (story.implementedIn) {
-      // コンポーネントの確認
+      // Check components
       story.implementedIn.components?.forEach(component => {
         const fullPath = path.join(this.projectRoot, component);
         if (!existsSync(fullPath)) {
@@ -44,7 +44,7 @@ export class StoryValidator {
         }
       });
 
-      // APIの確認
+      // Check APIs
       story.implementedIn.apis?.forEach(api => {
         const fullPath = path.join(this.projectRoot, api);
         if (!existsSync(fullPath)) {
@@ -53,7 +53,7 @@ export class StoryValidator {
         }
       });
 
-      // テストの確認
+      // Check tests
       story.implementedIn.tests?.forEach(test => {
         const fullPath = path.join(this.projectRoot, test);
         if (!existsSync(fullPath)) {
@@ -63,7 +63,7 @@ export class StoryValidator {
       });
     }
 
-    // テストカバレッジの計算
+    // Calculate test coverage
     const totalTests = story.acceptanceCriteria.reduce(
       (sum, criteria) => sum + (criteria.testIds?.length || 0),
       0
@@ -74,7 +74,7 @@ export class StoryValidator {
     );
     validation.testCoverage = totalTests > 0 ? (verifiedTests / totalTests) * 100 : 0;
 
-    // 全体的な検証
+    // Overall validation
     validation.isValid = validation.isValid && 
                         validation.completedCriteria === validation.totalCriteria &&
                         validation.missingImplementation.length === 0 &&
@@ -84,7 +84,7 @@ export class StoryValidator {
   }
 
   /**
-   * 複数のストーリーを検証
+   * Validate multiple stories
    */
   validateStories(stories: UserStory[]): {
     summary: {
@@ -111,22 +111,22 @@ export class StoryValidator {
   }
 
   /**
-   * ストーリーの実装状況をレポート
+   * Generate implementation status report for stories
    */
   generateReport(stories: UserStory[]): string {
     const validation = this.validateStories(stories);
     const report: string[] = [
-      '# ユーザーストーリー検証レポート',
+      '# User Story Validation Report',
       '',
-      `生成日時: ${new Date().toISOString()}`,
+      `Generated at: ${new Date().toISOString()}`,
       '',
-      '## サマリー',
-      `- 総ストーリー数: ${validation.summary.total}`,
-      `- ✅ 完了: ${validation.summary.valid}`,
-      `- ❌ 未完了: ${validation.summary.invalid}`,
-      `- 📊 平均テストカバレッジ: ${validation.summary.coverage.toFixed(1)}%`,
+      '## Summary',
+      `- Total stories: ${validation.summary.total}`,
+      `- ✅ Completed: ${validation.summary.valid}`,
+      `- ❌ Incomplete: ${validation.summary.invalid}`,
+      `- 📊 Average test coverage: ${validation.summary.coverage.toFixed(1)}%`,
       '',
-      '## 詳細',
+      '## Details',
       '',
     ];
 
@@ -139,13 +139,13 @@ export class StoryValidator {
       report.push(`**I want to** ${story.iWantTo}`);
       report.push(`**So that** ${story.soThat}`);
       report.push('');
-      report.push(`- ステータス: ${story.status}`);
-      report.push(`- 優先度: ${story.priority}`);
-      report.push(`- 受け入れ基準: ${detail.completedCriteria}/${detail.totalCriteria} 完了`);
-      report.push(`- テストカバレッジ: ${detail.testCoverage.toFixed(1)}%`);
+      report.push(`- Status: ${story.status}`);
+      report.push(`- Priority: ${story.priority}`);
+      report.push(`- Acceptance criteria: ${detail.completedCriteria}/${detail.totalCriteria} completed`);
+      report.push(`- Test coverage: ${detail.testCoverage.toFixed(1)}%`);
       
       if (detail.missingImplementation.length > 0) {
-        report.push('- ⚠️ 不足している実装:');
+        report.push('- ⚠️ Missing implementation:');
         detail.missingImplementation.forEach(missing => {
           report.push(`  - ${missing}`);
         });
@@ -158,18 +158,18 @@ export class StoryValidator {
   }
 }
 
-// CLIツール用のヘルパー関数
+// Helper function for CLI tool
 export async function validateAllStories(): Promise<void> {
   const validator = new StoryValidator();
   
-  // すべてのストーリーをインポート
+  // Import all stories
   const { evaluationStories, kudosStories } = await import('./stories/evaluation-stories');
   const allStories = [...evaluationStories, ...kudosStories];
   
   const report = validator.generateReport(allStories);
   console.log(report);
   
-  // レポートファイルとして保存
+  // Save as report file
   const fs = await import('fs/promises');
   await fs.writeFile(
     path.join(process.cwd(), 'user-story-validation-report.md'),

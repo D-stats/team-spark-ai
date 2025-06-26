@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     if (!slackWorkspace) {
       return NextResponse.json({
         response_type: 'ephemeral',
-        text: 'このワークスペースはStartup HRに登録されていません。管理者に連絡してください。',
+        text: 'このワークスペースはTeamSpark AIに登録されていません。管理者に連絡してください。',
       });
     }
 
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     if (!sender) {
       return NextResponse.json({
         response_type: 'ephemeral',
-        text: 'あなたのアカウントが見つかりません。Startup HRでSlack連携を完了してください。',
+        text: 'あなたのアカウントが見つかりません。TeamSpark AIでSlack連携を完了してください。',
       });
     }
 

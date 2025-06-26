@@ -83,7 +83,7 @@ export default async function SettingsPage() {
               <CardHeader>
                 <CardTitle>Slack連携設定</CardTitle>
                 <CardDescription>
-                  SlackアカウントとStartup HRアカウントを連携します
+                  SlackアカウントとTeamSpark AIアカウントを連携します
                 </CardDescription>
               </CardHeader>
               <CardContent>

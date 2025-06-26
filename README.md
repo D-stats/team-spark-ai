@@ -1,22 +1,22 @@
-# Startup HR Engagement Platform
+# TeamSpark AI
 
-スタートアップ向けの社内エンゲージメント・評価システム
+AI-powered team communication and engagement platform
 
-## 概要
+## Overview
 
-このプラットフォームは、スタートアップ企業の従業員エンゲージメントを向上させ、チームの成長を支援するために設計されています。Slackとの緊密な連携により、日常業務の中で自然にフィードバックと評価の文化を醸成します。
+TeamSpark AI is an intelligent platform that activates team communication and enhances engagement through AI-powered insights and automation. By leveraging AI agents and seamless Slack integration, it creates a dynamic environment where teams naturally collaborate, recognize achievements, and grow together.
 
-## 主な機能
+## Key Features
 
-- 📊 **ピア評価（Kudos）システム** - チームメンバー間での感謝と評価
-- ✅ **カスタマイズ可能なチェックイン** - 頻度とテンプレートを柔軟に設定
-- 📝 **評価管理システム** - 自己評価、マネージャーレビュー、360度評価
-- 🎯 **OKR管理** - 目標設定と進捗トラッキング
-- 💬 **Slack連携** - `/kudos`コマンドで簡単にフィードバック
-- 📱 **リアルタイムダッシュボード** - エンゲージメント状況を可視化
-- 📊 **ユーザーストーリー駆動開発** - ビジネス価値に基づく機能実装
+- 📊 **Peer Recognition (Kudos) System** - Appreciation and recognition between team members
+- ✅ **Customizable Check-ins** - Flexible frequency and template settings
+- 📝 **Evaluation Management System** - Self-evaluations, manager reviews, 360-degree feedback
+- 🎯 **OKR Management** - Goal setting and progress tracking
+- 💬 **Slack Integration** - Easy feedback with `/kudos` command
+- 📱 **Real-time Dashboard** - Visualize engagement status
+- 📊 **User Story-Driven Development** - Feature implementation based on business value
 
-## 技術スタック
+## Tech Stack
 
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Prisma ORM
@@ -24,124 +24,124 @@
 - **Authentication**: Supabase Auth
 - **External Integration**: Slack API
 
-## 開始方法
+## Getting Started
 
-### 前提条件
+### Prerequisites
 
-- Node.js v18.0.0以上
-- Docker（Supabase Local用）
-- npm v9.0.0以上
+- Node.js v18.0.0 or higher
+- Docker (for Supabase Local)
+- npm v9.0.0 or higher
 
-### クイックスタート
+### Quick Start
 
 ```bash
-# 1. 依存関係のインストール
+# 1. Install dependencies
 npm install
 
-# 2. 環境設定（初回のみ）
+# 2. Environment setup (first time only)
 cp .env.example .env.local
 
-# 3. 開発サーバー起動（事前チェック付き）
+# 3. Start development server (with pre-flight checks)
 npm run dev:safe
 ```
 
-詳細なセットアップ手順は[セットアップガイド](./docs/setup-guide.md)を参照してください。
+For detailed setup instructions, see the [Setup Guide](./docs/setup-guide.md).
 
-## 開発ガイド
+## Development Guide
 
-### 重要なドキュメント
+### Important Documentation
 
-- [CLAUDE.md](./CLAUDE.md) - AI開発者向けガイドライン
-- [開発計画](./docs/development-plan.md) - 詳細な開発ToDo
-- [アーキテクチャ](./docs/architecture.md) - システム設計
-- [セットアップガイド](./docs/setup-guide.md) - 詳細な環境構築手順
+- [CLAUDE.md](./CLAUDE.md) - AI Developer Guidelines
+- [Development Plan](./docs/development-plan.md) - Detailed development todos
+- [Architecture](./docs/architecture.md) - System design
+- [Setup Guide](./docs/setup-guide.md) - Detailed environment setup instructions
 
-### コマンド一覧
+### Command List
 
 ```bash
-# 開発
-npm run dev:safe     # 事前チェック付き開発サーバー起動（推奨）
-npm run dev          # 通常の開発サーバー起動
-npm run build        # プロダクションビルド
-npm run start        # プロダクションサーバー起動
-npm run pre-flight   # 環境の事前チェック
+# Development
+npm run dev:safe     # Start dev server with pre-flight checks (recommended)
+npm run dev          # Start dev server normally
+npm run build        # Production build
+npm run start        # Start production server
+npm run pre-flight   # Environment pre-flight check
 
-# コード品質
-npm run lint         # ESLint実行
-npm run type-check   # TypeScriptチェック
-npm run format       # Prettierフォーマット
-npm run validate     # 全チェック実行
+# Code Quality
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript check
+npm run format       # Prettier formatting
+npm run validate     # Run all checks
 
-# テスト
-npm test             # E2Eテスト実行
-npm run test:headed  # ブラウザ表示付きテスト
-npm run test:stories # ユーザーストーリーテスト
+# Testing
+npm test             # Run E2E tests
+npm run test:headed  # Run tests with browser display
+npm run test:stories # Run user story tests
 
-# ユーザーストーリー
-npm run validate:stories  # ストーリー検証レポート生成
-npm run report:stories    # ストーリーテストレポート
+# User Stories
+npm run validate:stories  # Generate story validation report
+npm run report:stories    # Story test report
 
-# データベース
-npm run prisma:generate  # Prisma Client生成
-npm run prisma:migrate   # マイグレーション実行
-npm run prisma:studio    # Prisma Studio起動
-npm run prisma:reset     # DBリセット（開発環境のみ）
+# Database
+npm run prisma:generate  # Generate Prisma Client
+npm run prisma:migrate   # Run migrations
+npm run prisma:studio    # Start Prisma Studio
+npm run prisma:reset     # Reset DB (development only)
 
 # Supabase
-npm run supabase:start   # Supabase起動
-npm run supabase:stop    # Supabase停止
-npm run supabase:status  # 状態確認
+npm run supabase:start   # Start Supabase
+npm run supabase:stop    # Stop Supabase
+npm run supabase:status  # Check status
 
-# ユーティリティ
-npm run check:ports  # ポート競合チェック
-npm run health       # ヘルスチェック
-npm run verify       # サーバー検証
+# Utilities
+npm run check:ports  # Check port conflicts
+npm run health       # Health check
+npm run verify       # Server verification
 ```
 
-## プロジェクト構造
+## Project Structure
 
 ```
 .
 ├── src/
 │   ├── app/              # Next.js App Router
-│   ├── components/       # Reactコンポーネント
-│   ├── lib/             # ユーティリティ関数
-│   │   └── user-stories/ # ユーザーストーリー管理
-│   ├── services/        # ビジネスロジック
-│   ├── stores/          # Zustand状態管理
-│   ├── hooks/           # カスタムフック
-│   └── types/           # TypeScript型定義
+│   ├── components/       # React components
+│   ├── lib/             # Utility functions
+│   │   └── user-stories/ # User story management
+│   ├── services/        # Business logic
+│   ├── stores/          # Zustand state management
+│   ├── hooks/           # Custom hooks
+│   └── types/           # TypeScript type definitions
 ├── tests/
 │   └── e2e/
-│       └── stories/     # ストーリーベーステスト
+│       └── stories/     # Story-based tests
 ├── prisma/
-│   ├── schema.prisma    # データベーススキーマ
-│   └── migrations/      # マイグレーションファイル
-├── scripts/             # ユーティリティスクリプト
-├── public/              # 静的ファイル
-└── docs/                # ドキュメント
+│   ├── schema.prisma    # Database schema
+│   └── migrations/      # Migration files
+├── scripts/             # Utility scripts
+├── public/              # Static files
+└── docs/                # Documentation
 ```
 
-## ライセンス
+## License
 
 [MIT License](LICENSE)
 
-## コントリビューション
+## Contributing
 
-コントリビューションは歓迎します！詳細は[CONTRIBUTING.md](CONTRIBUTING.md)をご覧ください。
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-## 開発上の注意
+## Development Notes
 
-### スキーマ変更時の手順
+### Schema Change Procedure
 
-1. Prismaスキーマを変更
-2. `npx prisma migrate dev --name 変更内容`
-3. `npx prisma generate`
-4. `npm run type-check`で型エラーを確認
-5. 関連するコードを全て更新
+1. Modify Prisma schema
+2. Run `npx prisma migrate dev --name change_description`
+3. Run `npx prisma generate`
+4. Check for type errors with `npm run type-check`
+5. Update all related code
 
-詳細は[CLAUDE.md](./CLAUDE.md)の「スキーマ不一致エラーの防止と対処」セクションを参照。
+For details, see the "Preventing and Handling Schema Mismatch Errors" section in [CLAUDE.md](./CLAUDE.md).
 
-## サポート
+## Support
 
-質問や問題がある場合は、[Issues](https://github.com/your-org/startup-hr/issues)でお知らせください。
+If you have questions or issues, please let us know via [Issues](https://github.com/your-org/startup-hr/issues).

@@ -73,7 +73,7 @@ export default function KudosNotificationEmail({
           <Hr style={hr} />
 
           <Text style={footer}>
-            このメールは <Link href="https://startup-hr.com">Startup HR</Link> から送信されました。
+            このメールは <Link href="https://teamspark.ai">TeamSpark AI</Link> から送信されました。
             <br />
             通知設定は<Link href={`${kudosUrl.replace('/kudos', '/settings')}`}>こちら</Link>から変更できます。
           </Text>

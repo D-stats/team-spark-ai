@@ -1,26 +1,26 @@
-# システムアーキテクチャ設計書
+# System Architecture Design Document
 
-## 1. システム概要
+## 1. System Overview
 
-### 1.1 プロジェクト名
+### 1.1 Project Name
 
-Startup HR Engagement Platform
+TeamSpark AI
 
-### 1.2 目的
+### 1.2 Purpose
 
-スタートアップ企業向けに、従業員エンゲージメントの向上と評価管理を支援するSaaSプラットフォームを提供する。
+To provide an AI-powered team communication and engagement platform that enhances team collaboration and performance.
 
-### 1.3 主要機能
+### 1.3 Key Features
 
-- ピア評価（Kudos）システム
-- カスタマイズ可能なチェックイン（頻度・質問設定可）
-- パルスサーベイ
-- Slack統合
-- リアルタイムダッシュボード
+- Peer recognition (Kudos) system
+- Customizable check-ins (configurable frequency and questions)
+- Pulse surveys
+- Slack integration
+- Real-time dashboard
 
-## 2. 技術スタック
+## 2. Technology Stack
 
-### 2.1 フロントエンド
+### 2.1 Frontend
 
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript 5.x
@@ -30,14 +30,14 @@ Startup HR Engagement Platform
 - **UI Components**: Radix UI
 - **Charts**: Recharts
 
-### 2.2 バックエンド
+### 2.2 Backend
 
 - **API**: Next.js API Routes
 - **ORM**: Prisma
 - **Validation**: Zod
 - **Background Jobs**: Vercel Cron Jobs
 
-### 2.3 インフラストラクチャ
+### 2.3 Infrastructure
 
 - **Database**: PostgreSQL (Supabase)
 - **Authentication**: Supabase Auth
@@ -46,15 +46,15 @@ Startup HR Engagement Platform
 - **Monitoring**: Vercel Analytics
 - **Error Tracking**: Sentry
 
-### 2.4 外部連携
+### 2.4 External Integrations
 
 - **Slack**: Slack SDK for Node.js (Bolt)
 - **Email**: Resend
 - **Analytics**: PostHog
 
-## 3. システムアーキテクチャ
+## 3. System Architecture
 
-### 3.1 全体構成図
+### 3.1 Overall Architecture Diagram
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -72,7 +72,7 @@ Startup HR Engagement Platform
                         └─────────────────┘
 ```
 
-### 3.2 レイヤーアーキテクチャ
+### 3.2 Layer Architecture
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -90,9 +90,9 @@ Startup HR Engagement Platform
 └─────────────────────────────────────────────────────┘
 ```
 
-## 4. データモデル
+## 4. Data Model
 
-### 4.1 主要エンティティ
+### 4.1 Main Entities
 
 ```mermaid
 erDiagram
@@ -166,7 +166,7 @@ erDiagram
     }
 ```
 
-### 4.2 データベーススキーマ（Prisma）
+### 4.2 Database Schema (Prisma)
 
 ```prisma
 model Organization {
@@ -207,23 +207,23 @@ enum Role {
 }
 ```
 
-## 5. API設計
+## 5. API Design
 
-### 5.1 RESTful API エンドポイント
+### 5.1 RESTful API Endpoints
 
 ```
-# 認証
+# Authentication
 POST   /api/auth/signup
 POST   /api/auth/login
 POST   /api/auth/logout
 POST   /api/auth/refresh
 
-# 組織
+# Organizations
 GET    /api/organizations/:id
 PUT    /api/organizations/:id
 POST   /api/organizations/:id/invite
 
-# ユーザー
+# Users
 GET    /api/users/me
 PUT    /api/users/me
 GET    /api/users
@@ -234,12 +234,12 @@ GET    /api/kudos
 GET    /api/kudos/received
 GET    /api/kudos/sent
 
-# チェックイン
+# Check-ins
 POST   /api/checkins
 GET    /api/checkins
 GET    /api/checkins/:userId
 
-# サーベイ
+# Surveys
 POST   /api/surveys
 GET    /api/surveys
 POST   /api/surveys/:id/responses
@@ -255,100 +255,100 @@ POST   /api/slack/events
 ### 5.2 Slack Slash Commands
 
 ```
-/kudos @user [message]    - Kudosを送信
-/checkin                  - チェックインを開始
-/mood [1-10]             - 気分を記録
-/dashboard               - ダッシュボードリンクを表示
+/kudos @user [message]    - Send kudos
+/checkin                  - Start check-in
+/mood [1-10]             - Record mood
+/dashboard               - Show dashboard link
 ```
 
-## 6. セキュリティ設計
+## 6. Security Design
 
-### 6.1 認証・認可
+### 6.1 Authentication & Authorization
 
-- **認証方式**: JWT + Refresh Token
-- **セッション管理**: Supabase Auth Session
-- **権限管理**: Role-Based Access Control (RBAC)
-  - Admin: 全機能へのアクセス
-  - Manager: チームメンバーのデータ閲覧
-  - Member: 自分のデータと公開情報のみ
+- **Authentication Method**: JWT + Refresh Token
+- **Session Management**: Supabase Auth Session
+- **Permission Management**: Role-Based Access Control (RBAC)
+  - Admin: Access to all features
+  - Manager: View team member data
+  - Member: Own data and public information only
 
-### 6.2 データ保護
+### 6.2 Data Protection
 
-- **暗号化**: TLS 1.3（通信）、AES-256（保存時）
-- **個人情報**: GDPR/CCPA準拠
-- **データ分離**: Row Level Security (RLS)
-- **監査ログ**: 全ての重要操作を記録
+- **Encryption**: TLS 1.3 (in transit), AES-256 (at rest)
+- **Personal Information**: GDPR/CCPA compliant
+- **Data Isolation**: Row Level Security (RLS)
+- **Audit Logs**: Record all important operations
 
-### 6.3 API セキュリティ
+### 6.3 API Security
 
 - **Rate Limiting**: 100 requests/minute per user
-- **CORS**: 許可されたドメインのみ
-- **Input Validation**: Zod によるスキーマ検証
-- **SQL Injection対策**: Prisma ORM使用
+- **CORS**: Allowed domains only
+- **Input Validation**: Schema validation with Zod
+- **SQL Injection Prevention**: Using Prisma ORM
 
-## 7. パフォーマンス設計
+## 7. Performance Design
 
-### 7.1 キャッシング戦略
+### 7.1 Caching Strategy
 
 - **CDN**: Vercel Edge Network
 - **API Cache**: Redis (Upstash)
 - **Database Cache**: Prisma Query Caching
-- **Static Generation**: 可能な限りSSG使用
+- **Static Generation**: Use SSG whenever possible
 
-### 7.2 最適化手法
+### 7.2 Optimization Techniques
 
 - **Code Splitting**: Dynamic Imports
 - **Image Optimization**: Next.js Image Component
-- **Database Index**: 頻繁にクエリされるカラム
+- **Database Index**: Frequently queried columns
 - **Connection Pooling**: Prisma Connection Pool
 
-## 8. スケーラビリティ
+## 8. Scalability
 
-### 8.1 水平スケーリング
+### 8.1 Horizontal Scaling
 
-- **アプリケーション**: Vercel Auto-scaling
-- **データベース**: Supabase Read Replicas
-- **キャッシュ**: Redis Cluster
+- **Application**: Vercel Auto-scaling
+- **Database**: Supabase Read Replicas
+- **Cache**: Redis Cluster
 
-### 8.2 負荷分散
+### 8.2 Load Balancing
 
 - **Global CDN**: Vercel Edge Network
-- **Database Load Balancing**: Supabase自動管理
+- **Database Load Balancing**: Supabase automatic management
 - **API Rate Limiting**: Per-user quotas
 
-## 9. 監視・運用
+## 9. Monitoring & Operations
 
-### 9.1 モニタリング
+### 9.1 Monitoring
 
 - **APM**: Vercel Analytics
 - **Error Tracking**: Sentry
 - **Uptime Monitoring**: Better Stack
 - **Database Monitoring**: Supabase Dashboard
 
-### 9.2 ログ管理
+### 9.2 Log Management
 
 - **Application Logs**: Vercel Functions Logs
 - **Error Logs**: Sentry
 - **Audit Logs**: Custom implementation
 - **Access Logs**: Vercel Edge Logs
 
-## 10. 災害復旧
+## 10. Disaster Recovery
 
-### 10.1 バックアップ
+### 10.1 Backup
 
-- **Database**: 日次自動バックアップ（30日保持）
+- **Database**: Daily automatic backup (30-day retention)
 - **File Storage**: Supabase Storage replication
 - **Configuration**: Git version control
 
-### 10.2 復旧計画
+### 10.2 Recovery Plan
 
-- **RTO**: 4時間
-- **RPO**: 24時間
-- **Failover**: Supabase自動フェイルオーバー
+- **RTO**: 4 hours
+- **RPO**: 24 hours
+- **Failover**: Supabase automatic failover
 
-## 11. 開発・デプロイフロー
+## 11. Development & Deployment Flow
 
-### 11.1 ブランチ戦略
+### 11.1 Branch Strategy
 
 ```
 main (production)
@@ -358,49 +358,49 @@ main (production)
        └── hotfix/xxx
 ```
 
-### 11.2 CI/CD パイプライン
+### 11.2 CI/CD Pipeline
 
-1. **開発**: ローカル開発 → feature branch
-2. **テスト**: 自動テスト実行（GitHub Actions）
-3. **レビュー**: Pull Request → Code Review
-4. **ステージング**: develop branch → Vercel Preview
-5. **本番**: main branch → Vercel Production
+1. **Development**: Local development → feature branch
+2. **Testing**: Automated test execution (GitHub Actions)
+3. **Review**: Pull Request → Code Review
+4. **Staging**: develop branch → Vercel Preview
+5. **Production**: main branch → Vercel Production
 
-## 12. 今後の拡張性
+## 12. Future Extensibility
 
-### 12.1 機能拡張
+### 12.1 Feature Extensions
 
-- GraphQL API対応
-- WebSocket（リアルタイム機能）
-- モバイルアプリ（React Native）
-- AI/ML機能（感情分析、予測）
+- GraphQL API support
+- WebSocket (real-time features)
+- Mobile app (React Native)
+- AI/ML features (sentiment analysis, predictions)
 
-### 12.2 インテグレーション
+### 12.2 Integrations
 
 - Microsoft Teams
 - Google Workspace
-- HR情報システム（HRIS）
-- 給与システム
+- HR Information Systems (HRIS)
+- Payroll systems
 
-## 13. 技術的決定事項
+## 13. Technical Decisions
 
-### 13.1 なぜNext.js 14？
+### 13.1 Why Next.js 14?
 
-- App Routerによる優れたDX
-- Server Componentsでパフォーマンス向上
-- Vercelとの統合が容易
-- TypeScriptサポートが優秀
+- Excellent DX with App Router
+- Performance improvements with Server Components
+- Easy integration with Vercel
+- Excellent TypeScript support
 
-### 13.2 なぜSupabase？
+### 13.2 Why Supabase?
 
-- オープンソース
-- ローカル開発環境が充実
-- 認証・DB・ストレージが統合
-- Row Level Securityが強力
+- Open source
+- Rich local development environment
+- Integrated auth, DB, and storage
+- Powerful Row Level Security
 
-### 13.3 なぜPrisma？
+### 13.3 Why Prisma?
 
-- 型安全性
-- マイグレーション管理
-- 優れたDX
-- 複数DBサポート
+- Type safety
+- Migration management
+- Excellent DX
+- Multiple database support

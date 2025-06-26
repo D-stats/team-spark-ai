@@ -67,7 +67,7 @@ export default function SetupPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">組織をセットアップ</CardTitle>
           <CardDescription>
-            あなたの組織情報を入力して、Startup HRの利用を開始しましょう
+            あなたの組織情報を入力して、TeamSpark AIの利用を開始しましょう
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSetup}>

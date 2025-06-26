@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
 
     if (!receiverId || !message || !category) {
       return NextResponse.json(
-        { error: '必要な項目が入力されていません' },
+        { error: 'Required fields are missing' },
         { status: 400 }
       );
     }
 
-    // 受信者が同じ組織のメンバーかチェック
+    // Check if receiver is a member of the same organization
     const receiver = await prisma.user.findFirst({
       where: {
         id: receiverId,
@@ -29,15 +29,15 @@ export async function POST(request: NextRequest) {
 
     if (!receiver) {
       return NextResponse.json(
-        { error: '無効な受信者です' },
+        { error: 'Invalid recipient' },
         { status: 400 }
       );
     }
 
-    // 自分自身にKudosを送ることはできない
+    // Cannot send Kudos to yourself
     if (receiverId === dbUser.id) {
       return NextResponse.json(
-        { error: '自分自身にKudosを送ることはできません' },
+        { error: 'Cannot send Kudos to yourself' },
         { status: 400 }
       );
     }
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     const validCategories = ['TEAMWORK', 'INNOVATION', 'LEADERSHIP', 'PROBLEM_SOLVING', 'CUSTOMER_FOCUS', 'LEARNING', 'OTHER'];
     if (!validCategories.includes(category)) {
       return NextResponse.json(
-        { error: '無効なカテゴリです' },
+        { error: 'Invalid category' },
         { status: 400 }
       );
     }

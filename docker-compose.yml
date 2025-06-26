@@ -1,12 +1,12 @@
 version: '3.8'
 
-# ネットワーク定義
+# Network definition
 networks:
   startup-hr-network:
     driver: bridge
 
 services:
-  # PostgreSQLデータベース（内部通信のみ）
+  # PostgreSQL database (internal communication only)
   postgres:
     image: postgres:15-alpine
     container_name: startup-hr-db
@@ -19,7 +19,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - startup-hr-network
-    # ホストには公開しない（内部通信のみ）
+    # Don't expose to host (internal communication only)
     expose:
       - "5432"
     healthcheck:
@@ -28,7 +28,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Redis（セッション管理用、内部通信のみ）
+  # Redis (for session management, internal communication only)
   redis:
     image: redis:7-alpine
     container_name: startup-hr-redis
@@ -43,7 +43,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # メールサーバー（開発用、Web UIのみ公開）
+  # Mail server (development, expose Web UI only)
   mailhog:
     image: mailhog/mailhog
     container_name: startup-hr-mail
@@ -51,12 +51,12 @@ services:
     networks:
       - startup-hr-network
     ports:
-      # Web UIのみ公開（SMTP は内部通信のみ）
+      # Expose Web UI only (SMTP for internal communication only)
       - "${MAILHOG_UI_PORT:-8025}:8025"
     expose:
       - "1025" # SMTP
 
-  # Next.jsアプリケーション
+  # Next.js application
   app:
     build:
       context: .
@@ -85,7 +85,7 @@ services:
         condition: service_healthy
     command: npm run dev
 
-# 名前付きボリューム
+# Named volumes
 volumes:
   postgres_data:
     name: startup-hr-postgres-data

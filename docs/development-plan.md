@@ -1,251 +1,251 @@
-# 開発計画ToDo - Startup HR Engagement Platform
+# Development Plan ToDo - TeamSpark AI
 
-## プロジェクト概要
+## Project Overview
 
-スタートアップ向けの社内エンゲージメント・評価システムの開発計画。
-MVP完成目標：4-6週間
+Development plan for an AI-powered team communication and engagement platform.
+MVP Completion Target: 4-6 weeks
 
-## フェーズ1: 基盤構築（1週目）
+## Phase 1: Foundation Building (Week 1)
 
-### ✅ 初期セットアップ
+### ✅ Initial Setup
 
-- [x] プロジェクトディレクトリ構造作成
-- [x] CLAUDE.md作成
-- [x] 開発計画書作成（本ドキュメント）
-- [x] アーキテクチャ設計書作成
-- [x] 環境構築ガイド作成
-- [x] .gitignoreファイル作成
+- [x] Create project directory structure
+- [x] Create CLAUDE.md
+- [x] Create development plan (this document)
+- [x] Create architecture design document
+- [x] Create environment setup guide
+- [x] Create .gitignore file
 
-### 技術基盤
+### Technical Foundation
 
-- [x] Next.js 14プロジェクト初期化
-- [x] TypeScript設定
-- [x] ESLint/Prettier設定
-- [x] Tailwind CSS設定
-- [x] Supabaseローカル環境設定
-- [x] Prismaセットアップ
-- [x] 環境変数設定（.env.local, .env.example）
+- [x] Initialize Next.js 14 project
+- [x] TypeScript configuration
+- [x] ESLint/Prettier configuration
+- [x] Tailwind CSS configuration
+- [x] Supabase local environment setup
+- [x] Prisma setup
+- [x] Environment variables setup (.env.local, .env.example)
 
-### データベース設計
+### Database Design
 
-- [x] ERD作成
-- [x] Prismaスキーマ定義
-  - [x] Organizationテーブル
-  - [x] Userテーブル
-  - [x] Teamテーブル
-  - [x] Kudos（評価）テーブル
-  - [x] CheckIn（振り返り）テーブル
-  - [x] CheckInTemplateテーブル
-  - [x] Surveyテーブル
-  - [x] Evaluationテーブル
-  - [x] EvaluationCycleテーブル
-  - [x] Competencyテーブル
-  - [x] Objective/KeyResultテーブル
-- [x] 初期マイグレーション実行
-- [x] Seedデータ作成（テストデータ）
+- [x] Create ERD
+- [x] Define Prisma schema
+  - [x] Organization table
+  - [x] User table
+  - [x] Team table
+  - [x] Kudos (recognition) table
+  - [x] CheckIn (reflection) table
+  - [x] CheckInTemplate table
+  - [x] Survey table
+  - [x] Evaluation table
+  - [x] EvaluationCycle table
+  - [x] Competency table
+  - [x] Objective/KeyResult tables
+- [x] Execute initial migration
+- [x] Create seed data (test data)
 
-## フェーズ2: 認証・基本機能（2週目）
+## Phase 2: Authentication & Basic Features (Week 2)
 
-### 認証システム
+### Authentication System
 
-- [x] Supabase Auth設定
-- [x] サインアップページ実装
-- [x] ログインページ実装
-- [x] パスワードリセット機能
-- [x] メール認証フロー
-- [x] 認証ミドルウェア作成
-- [x] セッション管理実装
+- [x] Supabase Auth configuration
+- [x] Implement signup page
+- [x] Implement login page
+- [x] Password reset functionality
+- [x] Email verification flow
+- [x] Create authentication middleware
+- [x] Implement session management
 
-### 組織管理
+### Organization Management
 
-- [x] 組織作成フロー
-- [x] 組織設定ページ
-- [ ] メンバー招待機能
-- [x] 役割管理（Admin/Manager/Member）
-- [x] チーム作成・管理
+- [x] Organization creation flow
+- [x] Organization settings page
+- [ ] Member invitation feature
+- [x] Role management (Admin/Manager/Member)
+- [x] Team creation and management
 
-### 基本UI/UX
+### Basic UI/UX
 
-- [x] レイアウトコンポーネント
-- [x] ナビゲーション
-- [x] ダッシュボード骨格
-- [x] 共通UIコンポーネント
+- [x] Layout components
+- [x] Navigation
+- [x] Dashboard skeleton
+- [x] Common UI components
   - [x] Button
-  - [x] Form要素
+  - [x] Form elements
   - [x] Card
   - [x] Modal
-  - [x] Toast通知
+  - [x] Toast notifications
 
-## フェーズ3: コア機能実装（3-4週目）
+## Phase 3: Core Features Implementation (Weeks 3-4)
 
-### ピア評価（Kudos）機能
+### Peer Recognition (Kudos) Feature
 
-- [x] Kudos送信フォーム
-- [x] Kudosフィード表示
-- [x] カテゴリ設定（感謝、協力、成果など）
-- [x] ポイントシステム
-- [ ] 通知機能
+- [x] Kudos submission form
+- [x] Kudos feed display
+- [x] Category settings (gratitude, collaboration, achievement, etc.)
+- [x] Points system
+- [ ] Notification feature
 
-### チェックイン機能
+### Check-in Feature
 
-- [x] カスタマイズ可能なチェックインテンプレート
-  - [x] 頻度設定（毎日、週次、隔週、月次等）
-  - [x] カスタム質問設定
-  - [x] テンプレート管理機能
-- [x] チェックインフォーム
-- [x] チェックイン履歴表示
-- [ ] マネージャー向けレビュー画面
-- [ ] リマインダー設定
+- [x] Customizable check-in templates
+  - [x] Frequency settings (daily, weekly, bi-weekly, monthly, etc.)
+  - [x] Custom question settings
+  - [x] Template management feature
+- [x] Check-in form
+- [x] Check-in history display
+- [ ] Manager review screen
+- [ ] Reminder settings
 
-### パルスサーベイ
+### Pulse Survey
 
-- [ ] サーベイ作成（管理者）
-- [ ] 質問テンプレート
-- [ ] 回答フォーム
-- [ ] 集計・可視化
-- [ ] 匿名/記名設定
+- [ ] Survey creation (admin)
+- [ ] Question templates
+- [ ] Response form
+- [ ] Aggregation and visualization
+- [ ] Anonymous/named settings
 
-### ダッシュボード
+### Dashboard
 
-- [x] 個人ダッシュボード
-  - [x] 受け取ったKudos
-  - [x] チェックイン状況
-  - [x] チームの活動
-  - [x] OKR進捗
-- [ ] チームダッシュボード
-  - [ ] エンゲージメントスコア
-  - [ ] 活動サマリー
-  - [ ] トレンドグラフ
-- [ ] 組織ダッシュボード（管理者）
+- [x] Personal dashboard
+  - [x] Received kudos
+  - [x] Check-in status
+  - [x] Team activities
+  - [x] OKR progress
+- [ ] Team dashboard
+  - [ ] Engagement score
+  - [ ] Activity summary
+  - [ ] Trend graphs
+- [ ] Organization dashboard (admin)
 
-## フェーズ4: Slack連携（5週目）
+## Phase 4: Slack Integration (Week 5)
 
-### Slack App作成
+### Slack App Creation
 
-- [ ] Slack App登録・設定
-- [ ] OAuth設定
-- [ ] Bot権限設定
-- [ ] イベントサブスクリプション
+- [ ] Slack App registration and setup
+- [ ] OAuth configuration
+- [ ] Bot permissions setup
+- [ ] Event subscriptions
 
-### Slack連携機能
+### Slack Integration Features
 
-- [ ] ワークスペース連携フロー
-- [ ] ユーザーマッピング（メールアドレスベース）
-- [ ] Slackトークン管理
-- [ ] 連携解除機能
+- [ ] Workspace connection flow
+- [ ] User mapping (email-based)
+- [ ] Slack token management
+- [ ] Disconnect feature
 
-### Slackコマンド
+### Slack Commands
 
-- [x] /kudos コマンド実装
-- [ ] /checkin コマンド実装
-- [ ] /mood コマンド実装
-- [ ] ヘルプコマンド
+- [x] /kudos command implementation
+- [ ] /checkin command implementation
+- [ ] /mood command implementation
+- [ ] Help command
 
-### Slack通知
+### Slack Notifications
 
-- [ ] Kudos受信通知
-- [ ] チェックインリマインダー
-- [ ] サーベイ依頼通知
-- [ ] 週次サマリー投稿
+- [ ] Kudos receipt notifications
+- [ ] Check-in reminders
+- [ ] Survey request notifications
+- [ ] Weekly summary posts
 
-## フェーズ5: 仕上げ・最適化（6週目）
+## Phase 5: Finalization & Optimization (Week 6)
 
-### テスト
+### Testing
 
-- [ ] ユニットテスト作成
-- [ ] 統合テスト作成
-- [x] E2Eテスト（主要フロー）
-  - [x] ユーザーストーリーベーステスト
-  - [x] Playwrightテスト環境
-- [ ] 負荷テスト
+- [ ] Create unit tests
+- [ ] Create integration tests
+- [x] E2E tests (major flows)
+  - [x] User story-based tests
+  - [x] Playwright test environment
+- [ ] Load testing
 
-### パフォーマンス最適化
+### Performance Optimization
 
-- [ ] データベースインデックス最適化
-- [ ] APIレスポンスキャッシング
-- [ ] 画像最適化
-- [ ] バンドルサイズ削減
+- [ ] Database index optimization
+- [ ] API response caching
+- [ ] Image optimization
+- [ ] Bundle size reduction
 
-### セキュリティ
+### Security
 
-- [ ] セキュリティ監査
-- [ ] ペネトレーションテスト
-- [ ] OWASP Top 10対策確認
-- [ ] データ暗号化確認
+- [ ] Security audit
+- [ ] Penetration testing
+- [ ] OWASP Top 10 compliance check
+- [ ] Data encryption verification
 
-### ドキュメント
+### Documentation
 
-- [ ] APIドキュメント
+- [ ] API documentation
 - [x] README.md
-- [x] CLAUDE.md（AI開発者ガイド）
-- [x] セットアップガイド
-- [x] ポート管理ドキュメント
-- [x] ユーザーストーリードキュメント
-- [ ] ユーザーガイド
-- [ ] 管理者ガイド
-- [ ] デプロイガイド
+- [x] CLAUDE.md (AI Developer Guide)
+- [x] Setup guide
+- [x] Port management documentation
+- [x] User stories documentation
+- [ ] User guide
+- [ ] Administrator guide
+- [ ] Deployment guide
 
-### デプロイ準備
+### Deployment Preparation
 
-- [ ] 本番環境設定
-- [ ] CI/CDパイプライン
-- [ ] モニタリング設定
-- [ ] バックアップ戦略
+- [ ] Production environment configuration
+- [ ] CI/CD pipeline
+- [ ] Monitoring setup
+- [ ] Backup strategy
 
-## 実装済み機能（MVP完成）
+## Implemented Features (MVP Complete)
 
-### 評価システム
+### Evaluation System
 
-- [x] 評価サイクル管理
-- [x] 自己評価フォーム
-- [x] マネージャーレビュー
-- [x] コンピテンシー評価
-- [x] 360度フィードバック基盤
+- [x] Evaluation cycle management
+- [x] Self-evaluation form
+- [x] Manager review
+- [x] Competency evaluation
+- [x] 360-degree feedback foundation
 
-### OKR管理
+### OKR Management
 
-- [x] Objective・キーリザルト管理
-- [x] 進捗チェックイン
-- [x] ダッシュボード表示
+- [x] Objective & Key Result management
+- [x] Progress check-ins
+- [x] Dashboard display
 
-## 今後の拡張機能
+## Future Extension Features
 
-### フェーズ6以降
+### Phase 6 and Beyond
 
-- [ ] 1on1ミーティング管理
-- [ ] スキルマッピング
-- [ ] 学習・成長トラッキング
-- [ ] Microsoft Teams連携
-- [ ] 詳細な分析・レポート機能
-- [ ] AI駆動の洞察
-- [ ] モバイルアプリ
-- [ ] 多言語対応
+- [ ] 1-on-1 meeting management
+- [ ] Skill mapping
+- [ ] Learning & growth tracking
+- [ ] Microsoft Teams integration
+- [ ] Detailed analytics & reporting
+- [ ] AI-driven insights
+- [ ] Mobile app
+- [ ] Multi-language support
 
-## リスク管理
+## Risk Management
 
-### 技術的リスク
+### Technical Risks
 
-- Slack API制限への対応
-- スケーラビリティの確保
-- データプライバシー対策
+- Handling Slack API limits
+- Ensuring scalability
+- Data privacy measures
 
-### ビジネスリスク
+### Business Risks
 
-- 競合他社の機能追加への対応
-- ユーザー獲得戦略
-- 価格設定の最適化
+- Responding to competitor feature additions
+- User acquisition strategy
+- Pricing optimization
 
-## 成功指標（KPI）
+## Success Metrics (KPIs)
 
-### 開発指標
+### Development Metrics
 
-- コードカバレッジ: 80%以上
-- パフォーマンス: ページロード3秒以内
-- エラー率: 0.1%以下
+- Code coverage: 80% or higher
+- Performance: Page load within 3 seconds
+- Error rate: Below 0.1%
 
-### ビジネス指標
+### Business Metrics
 
-- 月間アクティブユーザー
-- エンゲージメント率
-- 顧客満足度（NPS）
-- チャーンレート
+- Monthly active users
+- Engagement rate
+- Customer satisfaction (NPS)
+- Churn rate

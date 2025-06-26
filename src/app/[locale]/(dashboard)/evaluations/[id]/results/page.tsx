@@ -181,7 +181,7 @@ export default function EvaluationResultsPage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps) {
   return {
-    title: '評価結果 - Startup HR',
+    title: '評価結果 - TeamSpark AI',
     description: '従業員評価の結果を確認できます',
   };
 }
