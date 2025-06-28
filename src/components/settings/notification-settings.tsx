@@ -18,7 +18,7 @@ interface NotificationSettingsProps {
   user: User;
 }
 
-export function NotificationSettings(_props: NotificationSettingsProps) {
+export function NotificationSettings(_props: NotificationSettingsProps): JSX.Element {
   // デフォルト設定（実際のプロジェクトでは DB から取得）
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [kudosNotifications, setKudosNotifications] = useState(true);
@@ -30,7 +30,7 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -52,8 +52,8 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || '通知設定の更新に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? '通知設定の更新に失敗しました');
       }
 
       setSuccess(true);
@@ -67,15 +67,15 @@ export function NotificationSettings(_props: NotificationSettingsProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
+      {error !== null && error !== '' ? (
         <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-      )}
+      ) : null}
 
-      {success && (
+      {success ? (
         <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
           通知設定が正常に更新されました
         </div>
-      )}
+      ) : null}
 
       <div className="space-y-4">
         <Card>

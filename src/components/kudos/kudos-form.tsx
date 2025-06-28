@@ -35,7 +35,7 @@ const kudosCategories = [
   { value: 'OTHER', label: 'その他', color: 'bg-gray-100 text-gray-800' },
 ];
 
-export function KudosForm({ users }: KudosFormProps) {
+export function KudosForm({ users }: KudosFormProps): JSX.Element {
   const [receiverId, setReceiverId] = useState('');
   const [message, setMessage] = useState('');
   const [category, setCategory] = useState('');
@@ -44,7 +44,7 @@ export function KudosForm({ users }: KudosFormProps) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -64,8 +64,8 @@ export function KudosForm({ users }: KudosFormProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Kudosの送信に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'Kudosの送信に失敗しました');
       }
 
       // フォームをリセット
@@ -83,13 +83,13 @@ export function KudosForm({ users }: KudosFormProps) {
     }
   };
 
-  const selectedCategory = kudosCategories.find((cat) => cat.value === category);
+  const selectedCategory = kudosCategories.find((cat) => cat.value === category) ?? null;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
+      {error !== null && error !== '' ? (
         <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-      )}
+      ) : null}
 
       <div className="space-y-2">
         <Label htmlFor="receiver">送信先</Label>
@@ -128,11 +128,11 @@ export function KudosForm({ users }: KudosFormProps) {
             ))}
           </SelectContent>
         </Select>
-        {selectedCategory && (
+        {selectedCategory ? (
           <Badge variant="secondary" className={selectedCategory.color}>
             {selectedCategory.label}
           </Badge>
-        )}
+        ) : null}
       </div>
 
       <div className="space-y-2">

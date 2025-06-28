@@ -56,12 +56,12 @@ const questionTypes = [
   { value: 'select', label: '選択肢' },
 ];
 
-export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps) {
+export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps): JSX.Element {
   const [formData, setFormData] = useState({
-    name: template?.name || '',
-    description: template?.description || '',
-    frequency: template?.frequency || 'WEEKLY',
-    isDefault: template?.isDefault || false,
+    name: template?.name ?? '',
+    description: template?.description ?? '',
+    frequency: template?.frequency ?? 'WEEKLY',
+    isDefault: template?.isDefault ?? false,
     isActive: template?.isActive ?? true,
   });
 
@@ -90,7 +90,7 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const addQuestion = () => {
+  const addQuestion = (): void => {
     const newQuestion: Question = {
       id: Date.now().toString(),
       type: 'text',
@@ -100,15 +100,15 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
     setQuestions([...questions, newQuestion]);
   };
 
-  const updateQuestion = (id: string, updates: Partial<Question>) => {
+  const updateQuestion = (id: string, updates: Partial<Question>): void => {
     setQuestions(questions.map((q) => (q.id === id ? { ...q, ...updates } : q)));
   };
 
-  const removeQuestion = (id: string) => {
+  const removeQuestion = (id: string): void => {
     setQuestions(questions.filter((q) => q.id !== id));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -130,10 +130,11 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
       if (response.ok) {
         onSubmit();
       } else {
-        const error = await response.json();
-        alert(error.error || '保存に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        alert(errorData.error ?? '保存に失敗しました');
       }
     } catch (error) {
+      console.error('Failed to save template:', error);
       alert('保存に失敗しました');
     } finally {
       setIsSubmitting(false);
@@ -288,7 +289,7 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
                       <div>
                         <Label>選択肢（カンマ区切り）</Label>
                         <Input
-                          value={question.options?.join(', ') || ''}
+                          value={question.options?.join(', ') ?? ''}
                           onChange={(e) =>
                             updateQuestion(question.id, {
                               options: e.target.value
@@ -315,11 +316,11 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
                   </div>
                 ))}
 
-                {questions.length === 0 && (
+                {questions.length === 0 ? (
                   <div className="py-8 text-center text-gray-500">
                     質問がありません。「質問を追加」ボタンをクリックして質問を作成してください。
                   </div>
-                )}
+                ) : null}
               </CardContent>
             </Card>
           </div>

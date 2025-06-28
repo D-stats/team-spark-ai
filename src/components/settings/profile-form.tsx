@@ -23,14 +23,14 @@ interface ProfileFormProps {
   user: User;
 }
 
-export function ProfileForm({ user }: ProfileFormProps) {
+export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
   const [name, setName] = useState(user.name);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -48,8 +48,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'プロフィールの更新に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'プロフィールの更新に失敗しました');
       }
 
       setSuccess(true);
@@ -63,15 +63,15 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
+      {error !== null && error !== '' ? (
         <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-      )}
+      ) : null}
 
-      {success && (
+      {success ? (
         <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
           プロフィールが正常に更新されました
         </div>
-      )}
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div className="space-y-2">

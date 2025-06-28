@@ -27,7 +27,7 @@ interface CheckInTemplate {
   updatedAt: string;
 }
 
-export function CheckInTemplateManager() {
+export function CheckInTemplateManager(): JSX.Element {
   const [templates, setTemplates] = useState<CheckInTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -37,31 +37,32 @@ export function CheckInTemplateManager() {
     fetchTemplates();
   }, []);
 
-  const fetchTemplates = async () => {
+  const fetchTemplates = async (): Promise<void> => {
     try {
       const response = await fetch('/api/checkin-templates');
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as CheckInTemplate[];
         setTemplates(data);
       }
     } catch (error) {
+      console.error('Error fetching templates:', error);
       // Error fetching templates
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = (): void => {
     setEditingTemplate(null);
     setShowForm(true);
   };
 
-  const handleEdit = (template: CheckInTemplate) => {
+  const handleEdit = (template: CheckInTemplate): void => {
     setEditingTemplate(template);
     setShowForm(true);
   };
 
-  const handleDelete = async (templateId: string) => {
+  const handleDelete = async (templateId: string): Promise<void> => {
     if (!confirm('このテンプレートを削除しますか？')) return;
 
     try {
@@ -72,22 +73,23 @@ export function CheckInTemplateManager() {
       if (response.ok) {
         await fetchTemplates();
       } else {
-        const error = await response.json();
-        alert(error.error || '削除に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        alert(errorData.error ?? '削除に失敗しました');
       }
     } catch (error) {
+      console.error('Error deleting template:', error);
       // Error deleting template
       alert('削除に失敗しました');
     }
   };
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (): Promise<void> => {
     setShowForm(false);
     setEditingTemplate(null);
     await fetchTemplates();
   };
 
-  const getFrequencyLabel = (frequency: string) => {
+  const getFrequencyLabel = (frequency: string): string => {
     const labels: Record<string, string> = {
       DAILY: '毎日',
       WEEKLY: '毎週',
@@ -96,7 +98,7 @@ export function CheckInTemplateManager() {
       QUARTERLY: '四半期',
       CUSTOM: 'カスタム',
     };
-    return labels[frequency] || frequency;
+    return labels[frequency] ?? frequency;
   };
 
   if (isLoading) {
@@ -123,9 +125,9 @@ export function CheckInTemplateManager() {
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-lg">{template.name}</CardTitle>
-                  {template.description && (
+                  {template.description !== undefined && template.description !== '' ? (
                     <CardDescription>{template.description}</CardDescription>
-                  )}
+                  ) : null}
                 </div>
                 <div className="flex gap-1">
                   {template.isDefault && (
@@ -195,7 +197,7 @@ export function CheckInTemplateManager() {
         ))}
       </div>
 
-      {templates.length === 0 && (
+      {templates.length === 0 ? (
         <Card className="py-12 text-center">
           <CardContent>
             <Settings className="mx-auto mb-4 h-12 w-12 text-gray-400" />
@@ -207,9 +209,9 @@ export function CheckInTemplateManager() {
             </Button>
           </CardContent>
         </Card>
-      )}
+      ) : null}
 
-      {showForm && (
+      {showForm ? (
         <TemplateForm
           template={editingTemplate}
           onSubmit={handleFormSubmit}
@@ -218,7 +220,7 @@ export function CheckInTemplateManager() {
             setEditingTemplate(null);
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

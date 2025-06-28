@@ -55,17 +55,17 @@ interface CheckInDialogProps {
   onSuccess: () => void;
 }
 
-export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogProps) {
+export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogProps): JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<CheckInForm>({
     resolver: zodResolver(checkInSchema),
     defaultValues: {
-      currentValue: keyResult.currentValue || keyResult.startValue || 0,
-      milestoneStatus: keyResult.milestoneStatus || MilestoneStatus.NOT_STARTED,
+      currentValue: keyResult.currentValue ?? keyResult.startValue ?? 0,
+      milestoneStatus: keyResult.milestoneStatus ?? MilestoneStatus.NOT_STARTED,
       progress: keyResult.progress,
-      confidence: keyResult.confidence || 0.7,
+      confidence: keyResult.confidence ?? 0.7,
       comment: '',
       blockers: '',
     },
@@ -74,7 +74,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
   const progress = form.watch('progress');
   const confidence = form.watch('confidence');
 
-  const onSubmit = async (data: CheckInForm) => {
+  const onSubmit = async (data: CheckInForm): Promise<void> => {
     setIsSubmitting(true);
 
     try {
@@ -104,8 +104,8 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create check-in');
+        const error = (await response.json()) as { error?: string };
+        throw new Error(error.error ?? 'Failed to create check-in');
       }
 
       // Update milestone status if it's a milestone type
@@ -158,13 +158,14 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                         <Input
                           type="number"
                           {...field}
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                             const value = parseFloat(e.target.value);
                             field.onChange(value);
 
                             // Auto-calculate progress
                             if (
-                              keyResult.targetValue &&
+                              keyResult.targetValue !== undefined &&
+                              keyResult.targetValue !== null &&
                               keyResult.startValue !== undefined &&
                               keyResult.startValue !== null
                             ) {
@@ -176,12 +177,12 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                           }}
                         />
                         <span className="text-sm text-muted-foreground">
-                          / {keyResult.targetValue} {keyResult.unit}
+                          / {keyResult.targetValue ?? 0} {keyResult.unit ?? ''}
                         </span>
                       </div>
                     </FormControl>
                     <FormDescription>
-                      Started at: {keyResult.startValue || 0} {keyResult.unit}
+                      Started at: {keyResult.startValue ?? 0} {keyResult.unit ?? ''}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -196,7 +197,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                     <FormLabel>Milestone Status</FormLabel>
                     <Select
                       value={field.value}
-                      onValueChange={(value: string) => {
+                      onValueChange={(value: string): void => {
                         field.onChange(value);
 
                         // Auto-calculate progress based on status
@@ -258,11 +259,11 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Confidence: {confidence ? Math.round(confidence * 100) : 0}%
+                    Confidence: {confidence !== undefined ? Math.round(confidence * 100) : 0}%
                   </FormLabel>
                   <FormControl>
                     <Slider
-                      value={[(field.value || 0) * 100]}
+                      value={[(field.value ?? 0) * 100]}
                       onValueChange={([value]) => field.onChange((value ?? 0) / 100)}
                       max={100}
                       step={10}
@@ -313,7 +314,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
               )}
             />
 
-            {confidence && confidence < 0.5 && (
+            {confidence !== undefined && confidence < 0.5 && (
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>

@@ -17,7 +17,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Plus } from 'lucide-react';
 
-export function CreateSurveyDialog() {
+export function CreateSurveyDialog(): JSX.Element {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -27,7 +27,7 @@ export function CreateSurveyDialog() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -47,8 +47,8 @@ export function CreateSurveyDialog() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'サーベイの作成に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'サーベイの作成に失敗しました');
       }
 
       // フォームをリセット
@@ -81,9 +81,9 @@ export function CreateSurveyDialog() {
           <DialogDescription>チームの意見や満足度を調査するサーベイを作成します</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
+          {error !== null && error !== '' ? (
             <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-          )}
+          ) : null}
 
           <div className="space-y-2">
             <Label htmlFor="title">サーベイタイトル *</Label>

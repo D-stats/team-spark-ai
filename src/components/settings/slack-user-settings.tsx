@@ -27,14 +27,14 @@ interface SlackUserSettingsProps {
   slackWorkspace: SlackWorkspace;
 }
 
-export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsProps) {
+export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsProps): JSX.Element {
   const [slackEmail, setSlackEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const handleConnectSlack = async (e: React.FormEvent) => {
+  const handleConnectSlack = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -47,13 +47,13 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          slackEmail: slackEmail || user.email,
+          slackEmail: slackEmail !== '' ? slackEmail : user.email,
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Slack連携に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'Slack連携に失敗しました');
       }
 
       setSuccess(true);
@@ -65,7 +65,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
     }
   };
 
-  const handleDisconnectSlack = async () => {
+  const handleDisconnectSlack = async (): Promise<void> => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -76,8 +76,8 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Slack連携解除に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'Slack連携解除に失敗しました');
       }
 
       setSuccess(true);
@@ -91,7 +91,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
 
   return (
     <div className="space-y-6">
-      {error && (
+      {error !== null && error !== '' && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>
@@ -102,7 +102,9 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
         <Alert>
           <Check className="h-4 w-4" />
           <AlertDescription>
-            {user.slackUserId ? 'Slack連携が完了しました' : 'Slack連携を解除しました'}
+            {user.slackUserId !== null && user.slackUserId !== undefined
+              ? 'Slack連携が完了しました'
+              : 'Slack連携を解除しました'}
           </AlertDescription>
         </Alert>
       )}
@@ -116,7 +118,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
           </div>
         </div>
 
-        {user.slackUserId ? (
+        {user.slackUserId !== null && user.slackUserId !== undefined ? (
           <div className="space-y-4">
             <div className="rounded-lg bg-muted p-4">
               <div className="flex items-center justify-between">
@@ -165,7 +167,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
                 id="slackEmail"
                 type="email"
                 value={slackEmail}
-                onChange={(e) => setSlackEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSlackEmail(e.target.value)}
                 placeholder={user.email}
                 disabled={loading}
               />

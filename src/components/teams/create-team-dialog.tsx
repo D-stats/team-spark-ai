@@ -28,7 +28,7 @@ interface CreateTeamDialogProps {
   users: User[];
 }
 
-export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
+export function CreateTeamDialog({ users }: CreateTeamDialogProps): JSX.Element {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -37,7 +37,7 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -56,8 +56,8 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'チームの作成に失敗しました');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'チームの作成に失敗しました');
       }
 
       // フォームをリセット
@@ -75,13 +75,14 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
     }
   };
 
-  const toggleMember = (userId: string) => {
+  const toggleMember = (userId: string): void => {
     setSelectedMembers((prev) =>
       prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId],
     );
   };
 
-  const getSelectedUser = (userId: string) => users.find((user) => user.id === userId);
+  const getSelectedUser = (userId: string): User | undefined =>
+    users.find((user) => user.id === userId);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -97,9 +98,9 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
           <DialogDescription>チーム名とメンバーを設定してください</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
+          {error !== null && error !== '' ? (
             <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
-          )}
+          ) : null}
 
           <div className="space-y-2">
             <Label htmlFor="name">チーム名 *</Label>
@@ -152,7 +153,7 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
             </div>
           </div>
 
-          {selectedMembers.length > 0 && (
+          {selectedMembers.length > 0 ? (
             <div className="space-y-2">
               <Label>選択済みメンバー ({selectedMembers.length})</Label>
               <div className="flex flex-wrap gap-2">
@@ -177,7 +178,7 @@ export function CreateTeamDialog({ users }: CreateTeamDialogProps) {
                 })}
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="flex gap-2">
             <Button

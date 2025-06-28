@@ -24,7 +24,7 @@ interface OKRsDashboardProps {
   organization: Organization;
 }
 
-export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
+export function OKRsDashboard({ user, organization }: OKRsDashboardProps): JSX.Element {
   const { toast } = useToast();
 
   const [objectives, setObjectives] = useState<ObjectiveWithRelations[]>([]);
@@ -63,9 +63,10 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       const response = await fetch(`/api/okr/objectives?${params}`);
       if (!response.ok) throw new Error('Failed to fetch objectives');
 
-      const data = await response.json();
+      const data = (await response.json()) as ObjectiveWithRelations[];
       setObjectives(data);
     } catch (error) {
+      console.error('Failed to fetch objectives:', error);
       toast({
         title: 'Error',
         description: 'Failed to load objectives',
@@ -84,9 +85,10 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       const response = await fetch(`/api/okr/alignment?${params}`);
       if (!response.ok) throw new Error('Failed to fetch alignment');
 
-      const data = await response.json();
+      const data = (await response.json()) as OkrAlignment;
       setAlignment(data);
     } catch (error) {
+      console.error('Failed to fetch alignment:', error);
       // Error fetching alignment
     }
   }, [selectedCycle, selectedYear]);
@@ -101,9 +103,10 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       const response = await fetch(`/api/okr/summary?${params}`);
       if (!response.ok) throw new Error('Failed to fetch summary');
 
-      const data = await response.json();
+      const data = (await response.json()) as typeof summary;
       setSummary(data);
     } catch (error) {
+      console.error('Failed to fetch summary:', error);
       // Error fetching summary
     }
   }, [selectedCycle, selectedYear]);
@@ -297,7 +300,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       ) : (
         <div className="space-y-6">
           {/* Company Objectives */}
-          {alignment?.companyObjectives && alignment.companyObjectives.length > 0 && (
+          {alignment?.companyObjectives && alignment.companyObjectives.length > 0 ? (
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
@@ -314,10 +317,10 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
                 />
               ))}
             </div>
-          )}
+          ) : null}
 
           {/* Team Objectives */}
-          {alignment?.teamObjectives && Object.keys(alignment.teamObjectives).length > 0 && (
+          {alignment?.teamObjectives && Object.keys(alignment.teamObjectives).length > 0 ? (
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <Users className="h-5 w-5" />
@@ -325,7 +328,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
               </div>
               {Object.entries(alignment.teamObjectives).map(([teamId, objectives]) => (
                 <div key={teamId} className="mb-4 ml-6">
-                  <h3 className="mb-2 font-medium">{objectives[0]?.ownerTeam?.name || 'Team'}</h3>
+                  <h3 className="mb-2 font-medium">{objectives[0]?.ownerTeam?.name ?? 'Team'}</h3>
                   {objectives.map((objective) => (
                     <ObjectiveCard
                       key={objective.id}
@@ -340,40 +343,40 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
 
           {/* Individual Objectives */}
           {alignment?.individualObjectives &&
-            Object.keys(alignment.individualObjectives).length > 0 && (
-              <div>
-                <div className="mb-3 flex items-center gap-2">
-                  <Target className="h-5 w-5" />
-                  <h2 className="text-xl font-semibold">Individual Objectives</h2>
-                </div>
-                {Object.entries(alignment.individualObjectives).map(([userId, objectives]) => (
-                  <div key={userId} className="mb-4 ml-6">
-                    <h3 className="mb-2 font-medium">
-                      {objectives[0]?.ownerUser?.name || 'Individual'}
-                    </h3>
-                    {objectives.map((objective) => (
-                      <ObjectiveCard
-                        key={objective.id}
-                        objective={objective}
-                        showActions={userId === user.id}
-                        onUpdate={() => {
-                          fetchAlignment();
-                          fetchSummary();
-                        }}
-                      />
-                    ))}
-                  </div>
-                ))}
+          Object.keys(alignment.individualObjectives).length > 0 ? (
+            <div>
+              <div className="mb-3 flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                <h2 className="text-xl font-semibold">Individual Objectives</h2>
               </div>
-            )}
+              {Object.entries(alignment.individualObjectives).map(([userId, objectives]) => (
+                <div key={userId} className="mb-4 ml-6">
+                  <h3 className="mb-2 font-medium">
+                    {objectives[0]?.ownerUser?.name ?? 'Individual'}
+                  </h3>
+                  {objectives.map((objective) => (
+                    <ObjectiveCard
+                      key={objective.id}
+                      objective={objective}
+                      showActions={userId === user.id}
+                      onUpdate={() => {
+                        fetchAlignment();
+                        fetchSummary();
+                      }}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       )}
 
-      {showCreateDialog && (
+      {showCreateDialog ? (
         <CreateObjectiveDialog
           organizationId={organization.id}
           onClose={() => setShowCreateDialog(false)}
@@ -384,7 +387,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
             fetchSummary();
           }}
         />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -24,69 +24,11 @@ import { UserStory, StoryValidation, StoryStatus, StoryPriority } from '@/lib/us
 import { StoryValidator } from '@/lib/user-stories/validator';
 import { cn } from '@/lib/utils';
 
-export function UserStoryDashboard() {
+export function UserStoryDashboard(): JSX.Element {
   const [stories, setStories] = useState<UserStory[]>([]);
   const [validations, setValidations] = useState<StoryValidation[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEpic, setSelectedEpic] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadStories();
-  }, []);
-
-  // Show only in development environment
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
-
-  const loadStories = async () => {
-    setLoading(true);
-    try {
-      // ストーリーをインポート
-      const { evaluationStories, kudosStories } = await import(
-        '@/lib/user-stories/stories/evaluation-stories'
-      );
-      const allStories = [...evaluationStories, ...kudosStories];
-      setStories(allStories);
-
-      // 検証を実行
-      const validator = new StoryValidator();
-      const result = validator.validateStories(allStories);
-      setValidations(result.details);
-    } catch (error) {
-      // Error loading stories
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatusColor = (status: StoryStatus) => {
-    switch (status) {
-      case StoryStatus.DONE:
-        return 'text-green-600';
-      case StoryStatus.IN_PROGRESS:
-        return 'text-blue-600';
-      case StoryStatus.TESTING:
-        return 'text-purple-600';
-      case StoryStatus.BLOCKED:
-        return 'text-red-600';
-      case StoryStatus.READY:
-        return 'text-yellow-600';
-      default:
-        return 'text-gray-600';
-    }
-  };
-
-  const getPriorityBadge = (priority: StoryPriority) => {
-    const variants: Record<StoryPriority, 'destructive' | 'default' | 'secondary' | 'outline'> = {
-      [StoryPriority.P0]: 'destructive',
-      [StoryPriority.P1]: 'default',
-      [StoryPriority.P2]: 'secondary',
-      [StoryPriority.P3]: 'outline',
-    };
-
-    return <Badge variant={variants[priority]}>{priority}</Badge>;
-  };
 
   // Statistics calculations - optimized with useMemo
   const { validStories, totalStories, overallProgress } = useMemo(() => {
@@ -105,8 +47,10 @@ export function UserStoryDashboard() {
     () =>
       stories.reduce(
         (acc, story) => {
-          const epic = story.epicId || 'その他';
-          if (!acc[epic]) acc[epic] = [];
+          const epic = story.epicId ?? 'その他';
+          if (!acc[epic]) {
+            acc[epic] = [];
+          }
           acc[epic].push(story);
           return acc;
         },
@@ -117,9 +61,70 @@ export function UserStoryDashboard() {
 
   // Filtered stories - optimized with useMemo
   const filteredStories = useMemo(
-    () => (selectedEpic ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic) : stories),
+    () =>
+      selectedEpic !== null
+        ? stories.filter((s) => (s.epicId ?? 'その他') === selectedEpic)
+        : stories,
     [stories, selectedEpic],
   );
+
+  const loadStories = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      // ストーリーをインポート
+      const { evaluationStories, kudosStories } = await import(
+        '@/lib/user-stories/stories/evaluation-stories'
+      );
+      const allStories = [...evaluationStories, ...kudosStories] as UserStory[];
+      setStories(allStories);
+
+      // 検証を実行
+      const validator = new StoryValidator();
+      const result = validator.validateStories(allStories);
+      setValidations(result.details);
+    } catch (error) {
+      // Error loading stories
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadStories();
+  }, []);
+
+  // Show only in development environment
+  if (process.env.NODE_ENV !== 'development') {
+    return <></>;
+  }
+
+  const getStatusColor = (status: StoryStatus): string => {
+    switch (status) {
+      case StoryStatus.DONE:
+        return 'text-green-600';
+      case StoryStatus.IN_PROGRESS:
+        return 'text-blue-600';
+      case StoryStatus.TESTING:
+        return 'text-purple-600';
+      case StoryStatus.BLOCKED:
+        return 'text-red-600';
+      case StoryStatus.READY:
+        return 'text-yellow-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
+  const getPriorityBadge = (priority: StoryPriority): JSX.Element => {
+    const variants: Record<StoryPriority, 'destructive' | 'default' | 'secondary' | 'outline'> = {
+      [StoryPriority.P0]: 'destructive',
+      [StoryPriority.P1]: 'default',
+      [StoryPriority.P2]: 'secondary',
+      [StoryPriority.P3]: 'outline',
+    };
+
+    return <Badge variant={variants[priority]}>{priority}</Badge>;
+  };
 
   if (loading) {
     return (
@@ -138,7 +143,7 @@ export function UserStoryDashboard() {
           <p className="text-gray-600">機能の実装状況とテストカバレッジ</p>
         </div>
 
-        <Button onClick={loadStories} className="flex items-center space-x-2">
+        <Button onClick={() => void loadStories()} className="flex items-center space-x-2">
           <RefreshCw className="h-4 w-4" />
           <span>再検証</span>
         </Button>
@@ -213,7 +218,7 @@ export function UserStoryDashboard() {
       <div className="space-y-4">
         {filteredStories.map((story, _index) => {
           const validation = validations[stories.indexOf(story)];
-          const isValid = validation?.isValid;
+          const isValid = validation?.isValid === true;
 
           return (
             <Card
@@ -255,12 +260,12 @@ export function UserStoryDashboard() {
                   <div className="flex justify-between text-sm">
                     <span>受け入れ基準</span>
                     <span>
-                      {validation?.completedCriteria || 0}/{validation?.totalCriteria || 0}
+                      {validation?.completedCriteria ?? 0}/{validation?.totalCriteria ?? 0}
                     </span>
                   </div>
                   <Progress
                     value={
-                      ((validation?.completedCriteria || 0) / (validation?.totalCriteria || 1)) *
+                      ((validation?.completedCriteria ?? 0) / (validation?.totalCriteria ?? 1)) *
                       100
                     }
                     className="h-2"
@@ -271,20 +276,20 @@ export function UserStoryDashboard() {
                 <div className="grid gap-4 text-sm md:grid-cols-3">
                   <div className="flex items-center space-x-2">
                     <FileText className="h-4 w-4 text-gray-500" />
-                    <span>コンポーネント: {story.implementedIn?.components?.length || 0}</span>
+                    <span>コンポーネント: {story.implementedIn?.components?.length ?? 0}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <GitBranch className="h-4 w-4 text-gray-500" />
-                    <span>API: {story.implementedIn?.apis?.length || 0}</span>
+                    <span>API: {story.implementedIn?.apis?.length ?? 0}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <TestTube className="h-4 w-4 text-gray-500" />
-                    <span>テスト: {story.implementedIn?.tests?.length || 0}</span>
+                    <span>テスト: {story.implementedIn?.tests?.length ?? 0}</span>
                   </div>
                 </div>
 
                 {/* エラー表示 */}
-                {validation?.missingImplementation &&
+                {validation?.missingImplementation !== undefined &&
                   validation.missingImplementation.length > 0 && (
                     <Alert variant="destructive">
                       <AlertTriangle className="h-4 w-4" />
@@ -300,7 +305,7 @@ export function UserStoryDashboard() {
                   )}
 
                 {/* タグ */}
-                {story.tags.length > 0 && (
+                {story.tags !== undefined && story.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {story.tags.map((tag) => (
                       <Badge key={tag} variant="outline" className="text-xs">

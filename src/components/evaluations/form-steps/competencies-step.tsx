@@ -40,7 +40,7 @@ const categoryLabels = {
 export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesStep({
   evaluation: _evaluation,
   isReadOnly = false,
-}: EvaluationCompetenciesStepProps) {
+}: EvaluationCompetenciesStepProps): JSX.Element {
   const [competencies, setCompetencies] = useState<CompetencyWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCompetencies, setExpandedCompetencies] = useState<Set<string>>(new Set());
@@ -49,12 +49,12 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
 
   // Get competencies list
   useEffect(() => {
-    const fetchCompetencies = async () => {
+    const fetchCompetencies = async (): Promise<void> => {
       try {
         const response = await fetch('/api/competencies');
-        const result = await response.json();
+        const result = (await response.json()) as { success: boolean; data: CompetencyWithStats[] };
 
-        if (result.success) {
+        if (result.success === true) {
           setCompetencies(result.data);
         }
       } catch (error) {
@@ -64,11 +64,11 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
       }
     };
 
-    fetchCompetencies();
+    void fetchCompetencies();
   }, []);
 
   // コンピテンシーの展開/折りたたみ
-  const toggleCompetency = (competencyId: string) => {
+  const toggleCompetency = (competencyId: string): void => {
     const newExpanded = new Set(expandedCompetencies);
     if (newExpanded.has(competencyId)) {
       newExpanded.delete(competencyId);
@@ -79,23 +79,23 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
   };
 
   // 評価の更新
-  const handleRatingChange = (competencyId: string, rating: number) => {
+  const handleRatingChange = (competencyId: string, rating: number): void => {
     if (!isReadOnly) {
       updateCompetencyRating(competencyId, { rating });
     }
   };
 
-  const handleCommentsChange = (competencyId: string, comments: string) => {
+  const handleCommentsChange = (competencyId: string, comments: string): void => {
     if (!isReadOnly) {
       updateCompetencyRating(competencyId, { comments });
     }
   };
 
-  const handleBehaviorChange = (competencyId: string, behavior: string, checked: boolean) => {
+  const handleBehaviorChange = (competencyId: string, behavior: string, checked: boolean): void => {
     if (isReadOnly) return;
 
     const currentRating = formData.competencyRatings[competencyId];
-    const currentBehaviors = currentRating?.behaviors || [];
+    const currentBehaviors = currentRating?.behaviors ?? [];
 
     const updatedBehaviors = checked
       ? [...currentBehaviors, behavior]
@@ -104,17 +104,34 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
     updateCompetencyRating(competencyId, { behaviors: updatedBehaviors });
   };
 
-  const handleExamplesChange = (competencyId: string, examples: string) => {
+  const handleExamplesChange = (competencyId: string, examples: string): void => {
     if (!isReadOnly) {
       updateCompetencyRating(competencyId, { examples });
     }
   };
 
-  const handleImprovementAreasChange = (competencyId: string, improvementAreas: string) => {
+  const handleImprovementAreasChange = (competencyId: string, improvementAreas: string): void => {
     if (!isReadOnly) {
       updateCompetencyRating(competencyId, { improvementAreas });
     }
   };
+
+  // カテゴリ別にグループ化 - useMemoで最適化
+  const competenciesByCategory = useMemo(
+    () =>
+      competencies.reduce(
+        (acc, competency) => {
+          const category = competency.category;
+          if (!acc[category]) {
+            acc[category] = [];
+          }
+          acc[category].push(competency);
+          return acc;
+        },
+        {} as Record<string, CompetencyWithStats[]>,
+      ),
+    [competencies],
+  );
 
   if (loading) {
     return (
@@ -123,21 +140,6 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
       </div>
     );
   }
-
-  // カテゴリ別にグループ化 - useMemoで最適化
-  const competenciesByCategory = useMemo(
-    () =>
-      competencies.reduce(
-        (acc, competency) => {
-          const category = competency.category;
-          if (!acc[category]) acc[category] = [];
-          acc[category].push(competency);
-          return acc;
-        },
-        {} as Record<string, CompetencyWithStats[]>,
-      ),
-    [competencies],
-  );
 
   return (
     <div className="space-y-6">
@@ -170,7 +172,7 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
           {categoryCompetencies.map((competency) => {
             const currentRating = formData.competencyRatings[competency.id];
             const isExpanded = expandedCompetencies.has(competency.id);
-            const hasRating = !!currentRating?.rating;
+            const hasRating = currentRating?.rating !== undefined;
 
             return (
               <Card
@@ -200,12 +202,12 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                     <div className="flex items-center space-x-2">
                       {hasRating && (
                         <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
+                          {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
                               className={cn(
                                 'h-4 w-4',
-                                i < (currentRating.rating || 0)
+                                i < (currentRating.rating ?? 0)
                                   ? 'fill-current text-yellow-500'
                                   : 'text-gray-300',
                               )}
@@ -252,11 +254,12 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                         ))}
                       </div>
 
-                      {errors[`competency_${competency.id}`] && (
-                        <p className="text-sm text-red-600">
-                          {errors[`competency_${competency.id}`]}
-                        </p>
-                      )}
+                      {errors[`competency_${competency.id}`] !== undefined &&
+                        errors[`competency_${competency.id}`] !== '' && (
+                          <p className="text-sm text-red-600">
+                            {errors[`competency_${competency.id}`]}
+                          </p>
+                        )}
                     </div>
 
                     {/* 行動指標 */}
@@ -270,9 +273,9 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                           <div key={index} className="flex items-start space-x-2">
                             <Checkbox
                               id={`${competency.id}-behavior-${index}`}
-                              checked={currentRating?.behaviors?.includes(behavior) || false}
-                              onCheckedChange={(checked) =>
-                                handleBehaviorChange(competency.id, behavior, !!checked)
+                              checked={currentRating?.behaviors?.includes(behavior) ?? false}
+                              onCheckedChange={(checked: boolean | 'indeterminate') =>
+                                handleBehaviorChange(competency.id, behavior, checked === true)
                               }
                               disabled={isReadOnly}
                             />
@@ -293,7 +296,7 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                         評価コメント <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
-                        value={currentRating?.comments || ''}
+                        value={currentRating?.comments ?? ''}
                         onChange={(e) => handleCommentsChange(competency.id, e.target.value)}
                         placeholder="評価の根拠や具体的な事例を記述してください..."
                         className="min-h-[80px]"
@@ -305,7 +308,7 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                     <div className="space-y-2">
                       <Label className="text-sm font-semibold">具体的な事例</Label>
                       <Textarea
-                        value={currentRating?.examples || ''}
+                        value={currentRating?.examples ?? ''}
                         onChange={(e) => handleExamplesChange(competency.id, e.target.value)}
                         placeholder="具体的な行動や成果の事例を記述してください..."
                         className="min-h-[60px]"
@@ -317,7 +320,7 @@ export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesSt
                     <div className="space-y-2">
                       <Label className="text-sm font-semibold">改善・成長領域</Label>
                       <Textarea
-                        value={currentRating?.improvementAreas || ''}
+                        value={currentRating?.improvementAreas ?? ''}
                         onChange={(e) =>
                           handleImprovementAreasChange(competency.id, e.target.value)
                         }

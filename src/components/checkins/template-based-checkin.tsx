@@ -38,7 +38,7 @@ interface TemplateBasedCheckInProps {
   onSubmit?: () => void;
 }
 
-export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
+export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps): JSX.Element {
   const [templates, setTemplates] = useState<CheckInTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<CheckInTemplate | null>(null);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
@@ -46,11 +46,11 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchTemplates = useCallback(async () => {
+  const fetchTemplates = useCallback(async (): Promise<void> => {
     try {
       const response = await fetch('/api/checkin-templates');
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as CheckInTemplate[];
         setTemplates(data);
 
         // Auto-select default template
@@ -71,7 +71,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     void fetchTemplates();
   }, [fetchTemplates]);
 
-  const initializeAnswers = (template: CheckInTemplate) => {
+  const initializeAnswers = (template: CheckInTemplate): void => {
     const initialAnswers: Record<string, unknown> = {};
     template.questions.forEach((question) => {
       if (question.type === 'rating') {
@@ -83,7 +83,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     setAnswers(initialAnswers);
   };
 
-  const handleTemplateChange = (templateId: string) => {
+  const handleTemplateChange = (templateId: string): void => {
     const template = templates.find((t) => t.id === templateId);
     if (template) {
       setSelectedTemplate(template);
@@ -91,25 +91,28 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     }
   };
 
-  const handleAnswerChange = (questionId: string, value: unknown) => {
+  const handleAnswerChange = (questionId: string, value: unknown): void => {
     setAnswers((prev) => ({
       ...prev,
       [questionId]: value,
     }));
   };
 
-  const validateAnswers = () => {
+  const validateAnswers = (): boolean => {
     if (!selectedTemplate) return false;
 
     for (const question of selectedTemplate.questions) {
-      if (question.required && !answers[question.id]) {
+      if (
+        question.required &&
+        (answers[question.id] === undefined || answers[question.id] === '')
+      ) {
         return false;
       }
     }
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     if (!selectedTemplate || !validateAnswers()) {
@@ -139,8 +142,8 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
         setMoodRating(3);
         onSubmit?.();
       } else {
-        const error = await response.json();
-        alert(error.error || 'チェックインに失敗しました');
+        const error = (await response.json()) as { error?: string };
+        alert(error.error ?? 'チェックインに失敗しました');
       }
     } catch (error) {
       // Error submitting check-in
@@ -150,7 +153,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
     }
   };
 
-  const getFrequencyLabel = (frequency: string) => {
+  const getFrequencyLabel = (frequency: string): string => {
     const labels: Record<string, string> = {
       DAILY: '毎日',
       WEEKLY: '毎週',
@@ -159,11 +162,11 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
       QUARTERLY: '四半期',
       CUSTOM: 'カスタム',
     };
-    return labels[frequency] || frequency;
+    return labels[frequency] ?? frequency;
   };
 
-  const renderQuestion = (question: Question) => {
-    const value = answers[question.id] || '';
+  const renderQuestion = (question: Question): JSX.Element | null => {
+    const value = answers[question.id] ?? '';
 
     switch (question.type) {
       case 'text':
@@ -190,8 +193,8 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
       case 'rating':
         return (
           <RadioGroup
-            value={String(value || 3)}
-            onValueChange={(val) => handleAnswerChange(question.id, parseInt(val))}
+            value={String(value ?? 3)}
+            onValueChange={(val: string) => handleAnswerChange(question.id, parseInt(val))}
             className="flex space-x-4"
           >
             {[1, 2, 3, 4, 5].map((rating) => (
@@ -207,7 +210,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
         return (
           <Select
             value={String(value)}
-            onValueChange={(val) => handleAnswerChange(question.id, val)}
+            onValueChange={(val: string) => handleAnswerChange(question.id, val)}
           >
             <SelectTrigger>
               <SelectValue placeholder="選択してください" />
@@ -263,7 +266,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
           {/* テンプレート選択 */}
           <div className="space-y-2">
             <Label htmlFor="template">テンプレート選択</Label>
-            <Select value={selectedTemplate?.id || ''} onValueChange={handleTemplateChange}>
+            <Select value={selectedTemplate?.id ?? ''} onValueChange={handleTemplateChange}>
               <SelectTrigger>
                 <SelectValue placeholder="テンプレートを選択" />
               </SelectTrigger>
@@ -280,7 +283,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
                 ))}
               </SelectContent>
             </Select>
-            {selectedTemplate?.description && (
+            {selectedTemplate?.description !== undefined && selectedTemplate.description !== '' && (
               <p className="text-sm text-gray-600">{selectedTemplate.description}</p>
             )}
           </div>
