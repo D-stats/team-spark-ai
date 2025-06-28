@@ -17,7 +17,9 @@ interface EvaluationResultsClientProps {
   evaluationId: string;
 }
 
-export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClientProps) {
+export function EvaluationResultsClient({
+  evaluationId,
+}: EvaluationResultsClientProps): JSX.Element {
   const router = useRouter();
   const [evaluation, setEvaluation] = useState<EvaluationWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,12 +31,20 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
     const fetchEvaluation = async () => {
       try {
         const response = await fetch(`/api/evaluations/${evaluationId}`);
-        const result = await response.json();
+        const result = (await response.json()) as {
+          success: boolean;
+          data?: EvaluationWithDetails;
+          error?: { message: string };
+        };
 
-        if (result.success) {
+        if (result.success === true && result.data) {
           setEvaluation(result.data);
         } else {
-          setError(result.error?.message || '評価の取得に失敗しました');
+          setError(
+            result.error?.message !== undefined && result.error.message !== ''
+              ? result.error.message
+              : '評価の取得に失敗しました',
+          );
         }
       } catch (err) {
         setError(getErrorMessage(err));
@@ -62,13 +72,21 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
         }),
       });
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        success: boolean;
+        data?: Partial<EvaluationWithDetails>;
+        error?: { message: string };
+      };
 
-      if (result.success) {
+      if (result.success === true && result.data) {
         // 評価データを更新
-        setEvaluation((prev) => (prev ? { ...prev, ...result.data } : null));
+        setEvaluation((prev) => (prev !== null ? { ...prev, ...result.data } : null));
       } else {
-        setError(result.error?.message || 'レビューに失敗しました');
+        setError(
+          result.error?.message !== undefined && result.error.message !== ''
+            ? result.error.message
+            : 'レビューに失敗しました',
+        );
       }
     } catch (err) {
       setError(getErrorMessage(err));
@@ -86,13 +104,21 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
         method: 'PATCH',
       });
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        success: boolean;
+        data?: Partial<EvaluationWithDetails>;
+        error?: { message: string };
+      };
 
-      if (result.success) {
+      if (result.success === true && result.data) {
         // 評価データを更新
-        setEvaluation((prev) => (prev ? { ...prev, ...result.data } : null));
+        setEvaluation((prev) => (prev !== null ? { ...prev, ...result.data } : null));
       } else {
-        setError(result.error?.message || '共有に失敗しました');
+        setError(
+          result.error?.message !== undefined && result.error.message !== ''
+            ? result.error.message
+            : '共有に失敗しました',
+        );
       }
     } catch (err) {
       setError(getErrorMessage(err));
@@ -116,7 +142,7 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
   }
 
   // エラー状態
-  if (error || !evaluation) {
+  if (error !== null || evaluation === null) {
     return (
       <div className="container mx-auto py-6">
         <div className="mb-6 flex items-center space-x-4">
@@ -133,7 +159,7 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
 
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error || '評価結果が見つかりません'}</AlertDescription>
+          <AlertDescription>{error !== null ? error : '評価結果が見つかりません'}</AlertDescription>
         </Alert>
       </div>
     );
@@ -157,7 +183,7 @@ export function EvaluationResultsClient({ evaluationId }: EvaluationResultsClien
       </div>
 
       {/* エラー表示 */}
-      {error && (
+      {error !== null && (
         <Alert variant="destructive" className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{error}</AlertDescription>

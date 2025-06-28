@@ -796,6 +796,240 @@ mcp__mcp-atlassian__jira_search --jql "project = TSA" --fields "issuetype,parent
    - Keep technical terms consistent across issues
    - Follow the project's established naming conventions
 
+## 🚫 ESLint Compliance and Technical Debt Prevention
+
+### Critical: Preventing ESLint Errors
+
+This codebase uses strict TypeScript and ESLint rules to maintain high code quality. **ALL code must pass ESLint checks without errors.** Based on analysis of 485 ESLint errors that accumulated, here are the most common issues and how to prevent them:
+
+### Most Common ESLint Errors (Top 5)
+
+1. **`@typescript-eslint/strict-boolean-expressions` (229 errors - 47%)**
+
+   - This rule requires explicit handling of nullish/falsy values in conditionals
+   - **Never** use implicit boolean coercion for nullable values
+
+2. **`@typescript-eslint/explicit-module-boundary-types` (110 errors - 23%)**
+
+   - All exported functions must have explicit return type annotations
+   - This includes React components and API route handlers
+
+3. **`@typescript-eslint/no-unsafe-assignment` (73 errors - 15%)**
+
+   - Avoid assigning `any` typed values without proper type assertions
+   - Common in API responses and dynamic imports
+
+4. **`@typescript-eslint/no-unsafe-member-access` (52 errors - 11%)**
+
+   - Don't access properties on `any` typed values
+   - Always type API responses and external data
+
+5. **`@typescript-eslint/no-unsafe-call` (12 errors - 2%)**
+   - Don't call functions typed as `any`
+   - Ensure all function imports have proper types
+
+### ESLint Compliance Examples
+
+#### 1. Strict Boolean Expressions
+
+```typescript
+// ❌ BAD: Implicit boolean coercion
+if (userId) { ... }
+if (message) { ... }
+if (!error) { ... }
+
+// ✅ GOOD: Explicit null/undefined checks
+if (userId !== null && userId !== undefined) { ... }
+if (message !== '') { ... }
+if (error === null) { ... }
+
+// ✅ GOOD: For optional chaining results
+if (user?.email != null) { ... }
+
+// ✅ GOOD: For arrays
+if (items.length > 0) { ... }
+
+// ✅ GOOD: For booleans (already boolean, no coercion)
+if (isEnabled) { ... }
+```
+
+#### 2. Explicit Module Boundary Types
+
+```typescript
+// ❌ BAD: Missing return type
+export default function LoginPage() {
+  return <div>Login</div>;
+}
+
+export async function GET(request: Request) {
+  return Response.json({ data });
+}
+
+// ✅ GOOD: Explicit return types
+export default function LoginPage(): JSX.Element {
+  return <div>Login</div>;
+}
+
+export async function GET(request: Request): Promise<Response> {
+  return Response.json({ data });
+}
+
+// ✅ GOOD: For React components with props
+interface DashboardPageProps {
+  params: { locale: string };
+}
+
+export default function DashboardPage({
+  params
+}: DashboardPageProps): JSX.Element {
+  return <div>Dashboard</div>;
+}
+```
+
+#### 3. Type Safety with API Responses
+
+```typescript
+// ❌ BAD: Unsafe any assignments
+const response = await fetch('/api/users');
+const data = await response.json();
+const userId = data.id; // Error: unsafe member access
+const userName = data.name; // Error: unsafe member access
+
+// ✅ GOOD: Properly typed API responses
+interface ApiResponse<T> {
+  data: T;
+  error?: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+const response = await fetch('/api/users');
+const result = (await response.json()) as ApiResponse<User>;
+
+if (result.error) {
+  throw new Error(result.error);
+}
+
+const userId = result.data.id; // Type safe!
+const userName = result.data.name; // Type safe!
+```
+
+#### 4. Prisma Query Results
+
+```typescript
+// ❌ BAD: Assuming nullable fields exist
+const user = await prisma.user.findUnique({ where: { id } });
+if (user.email) { ... }  // Error: user might be null
+
+// ✅ GOOD: Proper null checking
+const user = await prisma.user.findUnique({ where: { id } });
+if (user && user.email !== null) {
+  // Now TypeScript knows user exists and email is not null
+}
+
+// ✅ GOOD: Using non-null assertion when you're certain
+const user = await prisma.user.findUniqueOrThrow({ where: { id } });
+// Now user is guaranteed to exist
+if (user.email !== null) { ... }
+```
+
+#### 5. Form Data and Request Parsing
+
+```typescript
+// ❌ BAD: Unsafe form data access
+export async function POST(request: Request) {
+  const formData = await request.formData();
+  const email = formData.get('email'); // Type: FormDataEntryValue | null
+  if (email) {
+    // Error: implicit boolean coercion
+    sendEmail(email); // Error: type mismatch
+  }
+}
+
+// ✅ GOOD: Proper type narrowing
+export async function POST(request: Request): Promise<Response> {
+  const formData = await request.formData();
+  const email = formData.get('email');
+
+  if (typeof email === 'string' && email !== '') {
+    await sendEmail(email); // Now TypeScript knows it's a non-empty string
+    return Response.json({ success: true });
+  }
+
+  return Response.json({ error: 'Email is required' }, { status: 400 });
+}
+```
+
+### Pre-Implementation ESLint Checklist
+
+Before writing any code, ensure you:
+
+- [ ] **Add explicit return types** to all exported functions
+- [ ] **Never use implicit boolean coercion** for nullable values
+- [ ] **Type all API responses** and external data sources
+- [ ] **Handle all nullable cases explicitly** in conditionals
+- [ ] **Avoid `any` type** - use `unknown` and type guards instead
+- [ ] **Run `npm run lint`** before making any commits
+
+### During Implementation
+
+1. **Enable ESLint in your editor** to catch errors as you type
+2. **Fix errors immediately** - don't accumulate technical debt
+3. **Run `npm run lint` frequently** during development
+4. **Never disable ESLint rules** without team consensus
+
+### Common Patterns to Memorize
+
+```typescript
+// String checks
+if (str !== '' && str !== null && str !== undefined) { ... }
+// Or use a helper
+if (str?.trim()) { ... }  // Only for strings where empty is falsy
+
+// Number checks
+if (num !== 0 && num != null) { ... }
+if (typeof num === 'number' && !isNaN(num)) { ... }
+
+// Array checks
+if (Array.isArray(arr) && arr.length > 0) { ... }
+
+// Object checks
+if (obj !== null && obj !== undefined) { ... }
+if (obj != null) { ... }  // Checks both null and undefined
+
+// Optional chaining with explicit checks
+if (user?.profile?.email != null) { ... }
+
+// Type guards for unknown types
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'email' in value
+  );
+}
+
+if (isUser(data)) {
+  console.log(data.email);  // Type safe!
+}
+```
+
+### Zero-Tolerance Policy for New ESLint Errors
+
+**IMPORTANT**: When implementing new features or modifying existing code:
+
+1. **No new ESLint errors** should be introduced
+2. **Fix existing errors** in files you modify
+3. **Run full validation** before committing: `npm run validate`
+4. **Document type decisions** when they're not obvious
+
+Remember: Clean code is not optional - it's a requirement for maintaining a scalable, maintainable codebase.
+
 # important-instruction-reminders
 
 Do what has been asked; nothing more, nothing less.

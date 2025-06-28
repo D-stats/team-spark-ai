@@ -57,7 +57,7 @@ export function EvaluationResults({
   onReview,
   onShare,
   isLoading = false,
-}: EvaluationResultsProps) {
+}: EvaluationResultsProps): JSX.Element {
   const { user } = useUser();
   const [reviewComments, setReviewComments] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -75,7 +75,7 @@ export function EvaluationResults({
       user.role === 'MANAGER');
 
   // 権限がない場合は何も表示しない
-  if (!canView) {
+  if (canView !== true) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
@@ -197,14 +197,14 @@ export function EvaluationResults({
       </Card>
 
       {/* アクションボタン */}
-      {(canReview || canShare) && (
+      {(canReview === true || canShare === true) && (
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold">管理者アクション</h3>
 
               <div className="flex space-x-3">
-                {canReview && (
+                {canReview === true && (
                   <>
                     <Button
                       variant="outline"
@@ -216,7 +216,7 @@ export function EvaluationResults({
                   </>
                 )}
 
-                {canShare && (
+                {canShare === true && (
                   <Button
                     onClick={onShare}
                     disabled={isLoading}
@@ -347,15 +347,15 @@ export function EvaluationResults({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {evaluation.overallRating && (
+          {evaluation.overallRating !== null && evaluation.overallRating !== undefined && (
             <div className="flex items-center space-x-4 rounded-lg border p-4">
               <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
+                {[...(Array(5) as unknown[])].map((_, i) => (
                   <Star
                     key={i}
                     className={cn(
                       'h-6 w-6',
-                      i < evaluation.overallRating!
+                      i < (evaluation.overallRating ?? 0)
                         ? 'fill-current text-yellow-500'
                         : 'text-gray-300',
                     )}
@@ -376,14 +376,16 @@ export function EvaluationResults({
             </div>
           )}
 
-          {evaluation.overallComments && (
-            <div className="rounded-lg bg-gray-50 p-4">
-              <h5 className="mb-2 font-medium">総合コメント</h5>
-              <p className="whitespace-pre-wrap text-sm text-gray-700">
-                {evaluation.overallComments}
-              </p>
-            </div>
-          )}
+          {evaluation.overallComments !== null &&
+            evaluation.overallComments !== undefined &&
+            evaluation.overallComments !== '' && (
+              <div className="rounded-lg bg-gray-50 p-4">
+                <h5 className="mb-2 font-medium">総合コメント</h5>
+                <p className="whitespace-pre-wrap text-sm text-gray-700">
+                  {evaluation.overallComments}
+                </p>
+              </div>
+            )}
         </CardContent>
       </Card>
 
@@ -414,7 +416,7 @@ export function EvaluationResults({
 
                         <div className="flex items-center space-x-2">
                           <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
+                            {[...(Array(5) as unknown[])].map((_, i) => (
                               <Star
                                 key={i}
                                 className={cn(
@@ -443,26 +445,32 @@ export function EvaluationResults({
                         </div>
                       )}
 
-                      {rating.comments && (
-                        <div className="mb-3 rounded bg-gray-50 p-3">
-                          <h6 className="mb-1 text-sm font-medium">評価コメント:</h6>
-                          <p className="text-sm text-gray-700">{rating.comments}</p>
-                        </div>
-                      )}
+                      {rating.comments !== null &&
+                        rating.comments !== undefined &&
+                        rating.comments !== '' && (
+                          <div className="mb-3 rounded bg-gray-50 p-3">
+                            <h6 className="mb-1 text-sm font-medium">評価コメント:</h6>
+                            <p className="text-sm text-gray-700">{rating.comments}</p>
+                          </div>
+                        )}
 
-                      {rating.examples && (
-                        <div className="mb-3 rounded bg-blue-50 p-3">
-                          <h6 className="mb-1 text-sm font-medium">具体的な事例:</h6>
-                          <p className="text-sm text-gray-700">{rating.examples}</p>
-                        </div>
-                      )}
+                      {rating.examples !== null &&
+                        rating.examples !== undefined &&
+                        rating.examples !== '' && (
+                          <div className="mb-3 rounded bg-blue-50 p-3">
+                            <h6 className="mb-1 text-sm font-medium">具体的な事例:</h6>
+                            <p className="text-sm text-gray-700">{rating.examples}</p>
+                          </div>
+                        )}
 
-                      {rating.improvementAreas && (
-                        <div className="rounded bg-orange-50 p-3">
-                          <h6 className="mb-1 text-sm font-medium">改善・成長領域:</h6>
-                          <p className="text-sm text-gray-700">{rating.improvementAreas}</p>
-                        </div>
-                      )}
+                      {rating.improvementAreas !== null &&
+                        rating.improvementAreas !== undefined &&
+                        rating.improvementAreas !== '' && (
+                          <div className="rounded bg-orange-50 p-3">
+                            <h6 className="mb-1 text-sm font-medium">改善・成長領域:</h6>
+                            <p className="text-sm text-gray-700">{rating.improvementAreas}</p>
+                          </div>
+                        )}
                     </div>
                   ))}
                 </div>
@@ -473,7 +481,12 @@ export function EvaluationResults({
       )}
 
       {/* 追加フィードバック */}
-      {(evaluation.strengths || evaluation.improvements) && (
+      {((evaluation.strengths !== null &&
+        evaluation.strengths !== undefined &&
+        evaluation.strengths !== '') ||
+        (evaluation.improvements !== null &&
+          evaluation.improvements !== undefined &&
+          evaluation.improvements !== '')) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -482,27 +495,38 @@ export function EvaluationResults({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {evaluation.strengths && (
-              <div className="rounded-lg bg-green-50 p-4">
-                <h5 className="mb-2 font-medium text-green-800">強み・優れた点</h5>
-                <p className="whitespace-pre-wrap text-sm text-gray-700">{evaluation.strengths}</p>
-              </div>
-            )}
+            {evaluation.strengths !== null &&
+              evaluation.strengths !== undefined &&
+              evaluation.strengths !== '' && (
+                <div className="rounded-lg bg-green-50 p-4">
+                  <h5 className="mb-2 font-medium text-green-800">強み・優れた点</h5>
+                  <p className="whitespace-pre-wrap text-sm text-gray-700">
+                    {evaluation.strengths}
+                  </p>
+                </div>
+              )}
 
-            {evaluation.improvements && (
-              <div className="rounded-lg bg-orange-50 p-4">
-                <h5 className="mb-2 font-medium text-orange-800">改善点・成長領域</h5>
-                <p className="whitespace-pre-wrap text-sm text-gray-700">
-                  {evaluation.improvements}
-                </p>
-              </div>
-            )}
+            {evaluation.improvements !== null &&
+              evaluation.improvements !== undefined &&
+              evaluation.improvements !== '' && (
+                <div className="rounded-lg bg-orange-50 p-4">
+                  <h5 className="mb-2 font-medium text-orange-800">改善点・成長領域</h5>
+                  <p className="whitespace-pre-wrap text-sm text-gray-700">
+                    {evaluation.improvements}
+                  </p>
+                </div>
+              )}
           </CardContent>
         </Card>
       )}
 
       {/* 目標・開発計画 */}
-      {(evaluation.careerGoals || evaluation.developmentPlan) && (
+      {((evaluation.careerGoals !== null &&
+        evaluation.careerGoals !== undefined &&
+        evaluation.careerGoals !== '') ||
+        (evaluation.developmentPlan !== null &&
+          evaluation.developmentPlan !== undefined &&
+          evaluation.developmentPlan !== '')) && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -511,51 +535,57 @@ export function EvaluationResults({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {evaluation.careerGoals && (
-              <div className="rounded-lg bg-blue-50 p-4">
-                <h5 className="mb-2 flex items-center space-x-2 font-medium">
-                  <Target className="h-4 w-4 text-blue-600" />
-                  <span>キャリア目標</span>
-                </h5>
-                <p className="whitespace-pre-wrap text-sm text-gray-700">
-                  {evaluation.careerGoals}
-                </p>
-              </div>
-            )}
+            {evaluation.careerGoals !== null &&
+              evaluation.careerGoals !== undefined &&
+              evaluation.careerGoals !== '' && (
+                <div className="rounded-lg bg-blue-50 p-4">
+                  <h5 className="mb-2 flex items-center space-x-2 font-medium">
+                    <Target className="h-4 w-4 text-blue-600" />
+                    <span>キャリア目標</span>
+                  </h5>
+                  <p className="whitespace-pre-wrap text-sm text-gray-700">
+                    {evaluation.careerGoals}
+                  </p>
+                </div>
+              )}
 
-            {evaluation.developmentPlan && (
-              <div className="rounded-lg bg-purple-50 p-4">
-                <h5 className="mb-2 flex items-center space-x-2 font-medium">
-                  <BookOpen className="h-4 w-4 text-purple-600" />
-                  <span>開発計画</span>
-                </h5>
-                <p className="whitespace-pre-wrap text-sm text-gray-700">
-                  {evaluation.developmentPlan}
-                </p>
-              </div>
-            )}
+            {evaluation.developmentPlan !== null &&
+              evaluation.developmentPlan !== undefined &&
+              evaluation.developmentPlan !== '' && (
+                <div className="rounded-lg bg-purple-50 p-4">
+                  <h5 className="mb-2 flex items-center space-x-2 font-medium">
+                    <BookOpen className="h-4 w-4 text-purple-600" />
+                    <span>開発計画</span>
+                  </h5>
+                  <p className="whitespace-pre-wrap text-sm text-gray-700">
+                    {evaluation.developmentPlan}
+                  </p>
+                </div>
+              )}
           </CardContent>
         </Card>
       )}
 
       {/* マネージャーコメント */}
-      {evaluation.managerComments && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <MessageSquare className="h-5 w-5 text-green-600" />
-              <span>マネージャーコメント</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="rounded-lg bg-green-50 p-4">
-              <p className="whitespace-pre-wrap text-sm text-gray-700">
-                {evaluation.managerComments}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {evaluation.managerComments !== null &&
+        evaluation.managerComments !== undefined &&
+        evaluation.managerComments !== '' && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <MessageSquare className="h-5 w-5 text-green-600" />
+                <span>マネージャーコメント</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-lg bg-green-50 p-4">
+                <p className="whitespace-pre-wrap text-sm text-gray-700">
+                  {evaluation.managerComments}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
     </div>
   );
 }

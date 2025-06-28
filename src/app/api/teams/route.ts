@@ -3,7 +3,13 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
 
-export async function POST(request: NextRequest) {
+interface CreateTeamBody {
+  name: string;
+  description?: string;
+  memberIds?: string[];
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -12,7 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'チーム作成権限がありません' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as CreateTeamBody;
     const { name, description, memberIds } = body;
 
     if (!name || name.trim().length === 0) {
@@ -32,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // メンバーIDが有効かチェック
-    if (memberIds && memberIds.length > 0) {
+    if (memberIds !== undefined && memberIds.length > 0) {
       const validMembers = await prisma.user.findMany({
         where: {
           id: { in: memberIds },
@@ -50,12 +56,13 @@ export async function POST(request: NextRequest) {
     const team = await prisma.team.create({
       data: {
         name: name.trim(),
-        description: description?.trim() || null,
+        description:
+          description !== undefined && description.trim() !== '' ? description.trim() : null,
         organizationId: dbUser.organizationId,
         members:
-          memberIds && memberIds.length > 0
+          memberIds !== undefined && memberIds.length > 0
             ? {
-                create: memberIds.map((userId: string) => ({ userId })),
+                create: memberIds.map((userId) => ({ userId })),
               }
             : undefined,
       },

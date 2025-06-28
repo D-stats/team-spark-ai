@@ -39,7 +39,7 @@ const ratingLabels = {
 export function EvaluationReviewStep({
   evaluation,
   isReadOnly: _isReadOnly = false,
-}: EvaluationReviewStepProps) {
+}: EvaluationReviewStepProps): JSX.Element {
   const { formData, errors } = useEvaluationStore();
 
   // 入力完了状況をチェック
@@ -55,9 +55,15 @@ export function EvaluationReviewStep({
       field.key === 'competencyRatings'
         ? Object.keys(formData.competencyRatings).length > 0 &&
           Object.values(formData.competencyRatings).every(
-            (rating) => rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
+            (rating) =>
+              rating.rating !== null &&
+              rating.rating !== undefined &&
+              rating.comments !== undefined &&
+              rating.comments.trim() !== '' &&
+              rating.behaviors.length > 0,
           )
-        : !!formData[field.key as keyof typeof formData],
+        : formData[field.key as keyof typeof formData] !== null &&
+          formData[field.key as keyof typeof formData] !== undefined,
   }));
 
   const allRequired = completionStatus.every((status) => status.isCompleted);
@@ -138,7 +144,7 @@ export function EvaluationReviewStep({
           </div>
 
           {/* 総合評価 */}
-          {formData.overallRating && (
+          {formData.overallRating !== null && formData.overallRating !== undefined && (
             <div className="space-y-3">
               <h4 className="flex items-center space-x-2 font-semibold">
                 <Star className="h-4 w-4" />
@@ -147,12 +153,12 @@ export function EvaluationReviewStep({
 
               <div className="flex items-center space-x-4 rounded-lg border p-4">
                 <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
+                  {[...(Array(5) as unknown[])].map((_, i) => (
                     <Star
                       key={i}
                       className={cn(
                         'h-6 w-6',
-                        i < formData.overallRating!
+                        i < (formData.overallRating ?? 0)
                           ? 'fill-current text-yellow-500'
                           : 'text-gray-300',
                       )}
@@ -160,26 +166,32 @@ export function EvaluationReviewStep({
                   ))}
                 </div>
                 <div>
-                  <div className="text-lg font-semibold">{formData.overallRating}/5</div>
+                  <div className="text-lg font-semibold">{formData.overallRating ?? 0}/5</div>
                   <div
                     className={cn(
                       'text-sm',
-                      ratingLabels[formData.overallRating as keyof typeof ratingLabels]?.color,
+                      ratingLabels[(formData.overallRating ?? 0) as keyof typeof ratingLabels]
+                        ?.color,
                     )}
                   >
-                    {ratingLabels[formData.overallRating as keyof typeof ratingLabels]?.label}
+                    {
+                      ratingLabels[(formData.overallRating ?? 0) as keyof typeof ratingLabels]
+                        ?.label
+                    }
                   </div>
                 </div>
               </div>
 
-              {formData.overallComments && (
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <h5 className="mb-2 font-medium">総合コメント</h5>
-                  <p className="whitespace-pre-wrap text-sm text-gray-700">
-                    {formData.overallComments}
-                  </p>
-                </div>
-              )}
+              {formData.overallComments !== null &&
+                formData.overallComments !== undefined &&
+                formData.overallComments !== '' && (
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <h5 className="mb-2 font-medium">総合コメント</h5>
+                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                      {formData.overallComments}
+                    </p>
+                  </div>
+                )}
             </div>
           )}
 
@@ -200,12 +212,12 @@ export function EvaluationReviewStep({
                       <h5 className="font-medium">コンピテンシー ID: {rating.competencyId}</h5>
                       <div className="flex items-center space-x-2">
                         <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
+                          {[...(Array(5) as unknown[])].map((_, i) => (
                             <Star
                               key={i}
                               className={cn(
                                 'h-4 w-4',
-                                i < (rating.rating || 0)
+                                i < (rating.rating ?? 0)
                                   ? 'fill-current text-yellow-500'
                                   : 'text-gray-300',
                               )}
@@ -224,11 +236,13 @@ export function EvaluationReviewStep({
                       </div>
                     )}
 
-                    {rating.comments && (
-                      <p className="rounded bg-gray-50 p-2 text-sm text-gray-700">
-                        {rating.comments}
-                      </p>
-                    )}
+                    {rating.comments !== null &&
+                      rating.comments !== undefined &&
+                      rating.comments !== '' && (
+                        <p className="rounded bg-gray-50 p-2 text-sm text-gray-700">
+                          {rating.comments}
+                        </p>
+                      )}
                   </div>
                 ))}
               </div>
@@ -238,61 +252,81 @@ export function EvaluationReviewStep({
           <Separator />
 
           {/* 目標・開発計画 */}
-          {(formData.careerGoals || formData.developmentPlan) && (
+          {((formData.careerGoals !== null &&
+            formData.careerGoals !== undefined &&
+            formData.careerGoals !== '') ||
+            (formData.developmentPlan !== null &&
+              formData.developmentPlan !== undefined &&
+              formData.developmentPlan !== '')) && (
             <div className="space-y-3">
               <h4 className="flex items-center space-x-2 font-semibold">
                 <Target className="h-4 w-4" />
                 <span>目標・開発計画</span>
               </h4>
 
-              {formData.careerGoals && (
-                <div className="rounded-lg bg-blue-50 p-4">
-                  <h5 className="mb-2 flex items-center space-x-2 font-medium">
-                    <Target className="h-4 w-4 text-blue-600" />
-                    <span>キャリア目標</span>
-                  </h5>
-                  <p className="whitespace-pre-wrap text-sm text-gray-700">
-                    {formData.careerGoals}
-                  </p>
-                </div>
-              )}
+              {formData.careerGoals !== null &&
+                formData.careerGoals !== undefined &&
+                formData.careerGoals !== '' && (
+                  <div className="rounded-lg bg-blue-50 p-4">
+                    <h5 className="mb-2 flex items-center space-x-2 font-medium">
+                      <Target className="h-4 w-4 text-blue-600" />
+                      <span>キャリア目標</span>
+                    </h5>
+                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                      {formData.careerGoals}
+                    </p>
+                  </div>
+                )}
 
-              {formData.developmentPlan && (
-                <div className="rounded-lg bg-purple-50 p-4">
-                  <h5 className="mb-2 flex items-center space-x-2 font-medium">
-                    <BookOpen className="h-4 w-4 text-purple-600" />
-                    <span>開発計画</span>
-                  </h5>
-                  <p className="whitespace-pre-wrap text-sm text-gray-700">
-                    {formData.developmentPlan}
-                  </p>
-                </div>
-              )}
+              {formData.developmentPlan !== null &&
+                formData.developmentPlan !== undefined &&
+                formData.developmentPlan !== '' && (
+                  <div className="rounded-lg bg-purple-50 p-4">
+                    <h5 className="mb-2 flex items-center space-x-2 font-medium">
+                      <BookOpen className="h-4 w-4 text-purple-600" />
+                      <span>開発計画</span>
+                    </h5>
+                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                      {formData.developmentPlan}
+                    </p>
+                  </div>
+                )}
             </div>
           )}
 
           <Separator />
 
           {/* 強み・改善点 */}
-          {(formData.strengths || formData.improvements) && (
+          {((formData.strengths !== null &&
+            formData.strengths !== undefined &&
+            formData.strengths !== '') ||
+            (formData.improvements !== null &&
+              formData.improvements !== undefined &&
+              formData.improvements !== '')) && (
             <div className="space-y-3">
               <h4 className="font-semibold">追加フィードバック</h4>
 
-              {formData.strengths && (
-                <div className="rounded-lg bg-green-50 p-4">
-                  <h5 className="mb-2 font-medium text-green-800">強み・優れた点</h5>
-                  <p className="whitespace-pre-wrap text-sm text-gray-700">{formData.strengths}</p>
-                </div>
-              )}
+              {formData.strengths !== null &&
+                formData.strengths !== undefined &&
+                formData.strengths !== '' && (
+                  <div className="rounded-lg bg-green-50 p-4">
+                    <h5 className="mb-2 font-medium text-green-800">強み・優れた点</h5>
+                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                      {formData.strengths}
+                    </p>
+                  </div>
+                )}
 
-              {formData.improvements && (
-                <div className="rounded-lg bg-orange-50 p-4">
-                  <h5 className="mb-2 font-medium text-orange-800">改善点・成長領域</h5>
-                  <p className="whitespace-pre-wrap text-sm text-gray-700">
-                    {formData.improvements}
-                  </p>
-                </div>
-              )}
+              {formData.improvements !== null &&
+                formData.improvements !== undefined &&
+                formData.improvements !== '' && (
+                  <div className="rounded-lg bg-orange-50 p-4">
+                    <h5 className="mb-2 font-medium text-orange-800">改善点・成長領域</h5>
+                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                      {formData.improvements}
+                    </p>
+                  </div>
+                )}
             </div>
           )}
         </CardContent>
