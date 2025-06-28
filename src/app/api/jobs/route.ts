@@ -1,0 +1,96 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withLogging } from '@/lib/api-logging';
+import { getAllQueueMetrics, addJob, emailQueue, notificationQueue } from '@/lib/jobs/queue';
+import { requireAuthWithOrganization } from '@/lib/auth/utils';
+
+// GET /api/jobs - Get job queue metrics
+async function getJobs(request: NextRequest) {
+  try {
+    const { dbUser } = await requireAuthWithOrganization();
+
+    // Only admins can view job metrics
+    if (dbUser.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const metrics = await getAllQueueMetrics();
+
+    return NextResponse.json({
+      metrics,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to get job metrics' }, { status: 500 });
+  }
+}
+
+// POST /api/jobs - Create a new job
+async function createJob(request: NextRequest) {
+  try {
+    const { dbUser } = await requireAuthWithOrganization();
+    const body = await request.json();
+
+    const { type, data, delay } = body;
+
+    // Validate job type
+    const allowedTypes = ['send-email', 'send-kudos-notification'];
+    if (!allowedTypes.includes(type)) {
+      return NextResponse.json({ error: 'Invalid job type' }, { status: 400 });
+    }
+
+    let job;
+
+    switch (type) {
+      case 'send-email':
+        // Only admins can send emails
+        if (dbUser.role !== 'ADMIN') {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
+
+        job = await addJob(
+          emailQueue,
+          'admin-email',
+          {
+            to: data.to,
+            subject: data.subject,
+            template: 'admin-notification',
+            data: {
+              ...data,
+              sentBy: dbUser.email,
+            },
+          },
+          { delay },
+        );
+        break;
+
+      case 'send-kudos-notification':
+        job = await addJob(
+          notificationQueue,
+          'kudos-notification',
+          {
+            kudosId: data.kudosId,
+            senderId: dbUser.id,
+            receiverId: data.receiverId,
+            message: data.message,
+          },
+          { delay },
+        );
+        break;
+    }
+
+    return NextResponse.json(
+      {
+        jobId: job?.id,
+        type,
+        status: 'queued',
+        createdAt: new Date().toISOString(),
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 });
+  }
+}
+
+export const GET = withLogging(getJobs, { routeName: 'jobs.list' });
+export const POST = withLogging(createJob, { routeName: 'jobs.create' });

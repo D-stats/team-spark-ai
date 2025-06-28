@@ -72,3 +72,20 @@ temp/
 # Development
 .dev-server.pid
 dev-server.log
+*storybook.log
+storybook-static
+
+# Build artifacts
+dist/
+.cache/
+.turbo/
+
+# Test outputs
+test-results/
+playwright-report/
+coverage-final.json
+.nyc_output/
+
+# Editor files
+.history/
+.vscode-server/
