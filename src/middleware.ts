@@ -1,6 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from '@/i18n/config';
+import {
+  applySecurityHeaders,
+  checkRateLimit,
+  getRateLimitIdentifier,
+  createRateLimitResponse,
+  addRateLimitHeaders,
+} from '@/middleware/security';
 
 // Create the internationalization middleware
 const intlMiddleware = createIntlMiddleware({
@@ -12,14 +19,56 @@ const intlMiddleware = createIntlMiddleware({
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  let response: NextResponse;
 
-  // Skip internationalization for API routes and static files
-  if (
-    pathname.startsWith('/api') ||
-    pathname.includes('/_next') ||
-    pathname.includes('/favicon.ico')
-  ) {
-    return NextResponse.next();
+  // Handle API routes with security features
+  if (pathname.startsWith('/api')) {
+    response = NextResponse.next();
+
+    // Apply security headers
+    applySecurityHeaders(response);
+
+    // Apply rate limiting (skip for certain endpoints)
+    const skipRateLimitPaths = ['/api/health', '/api/openapi.json'];
+    if (!skipRateLimitPaths.includes(pathname)) {
+      const identifier = await getRateLimitIdentifier(request);
+      const { allowed, remaining, resetTime } = checkRateLimit(identifier);
+
+      if (!allowed) {
+        return createRateLimitResponse(resetTime);
+      }
+
+      // Add rate limit headers to response
+      addRateLimitHeaders(response, remaining, resetTime);
+    }
+
+    // CORS configuration
+    const origin = request.headers.get('origin');
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ];
+
+    if (origin && allowedOrigins.includes(origin)) {
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    }
+
+    // Handle preflight requests
+    if (request.method === 'OPTIONS') {
+      return new NextResponse(null, { status: 200, headers: response.headers });
+    }
+
+    return response;
+  }
+
+  // Skip internationalization for static files
+  if (pathname.includes('/_next') || pathname.includes('/favicon.ico')) {
+    response = NextResponse.next();
+    applySecurityHeaders(response);
+    return response;
   }
 
   // Check if the pathname already includes a locale
@@ -41,7 +90,14 @@ export async function middleware(request: NextRequest) {
   }
 
   // Apply internationalization middleware for locale validation
-  return intlMiddleware(request);
+  response = intlMiddleware(request);
+
+  // Apply security headers to all responses
+  if (response instanceof NextResponse) {
+    applySecurityHeaders(response);
+  }
+
+  return response;
 }
 
 export const config = {

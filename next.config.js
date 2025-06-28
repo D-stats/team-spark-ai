@@ -6,6 +6,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/config.ts');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  experimental: {
+    instrumentationHook: true,
+  },
   images: {
     domains: ['localhost', 'avatars.slack-edge.com'],
   },

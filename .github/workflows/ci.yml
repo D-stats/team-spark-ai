@@ -16,15 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run linter
         run: npm run lint
 
@@ -33,18 +33,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate Prisma Client
         run: npx prisma generate
-        
+
       - name: Run type check
         run: npm run type-check
 
@@ -53,23 +53,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
       - name: Run unit tests
-        run: npm run test:unit || echo "No unit tests configured yet"
+        run: npm run test
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
 
   test-e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     services:
       postgres:
         image: postgres:15-alpine
@@ -87,18 +98,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-        
+
       - name: Setup test environment
         run: |
           cp .env.test .env
@@ -106,15 +117,15 @@ jobs:
           echo "NEXT_PUBLIC_APP_URL=http://localhost:3001" >> .env
           echo "PORT=3001" >> .env
           echo "NEXT_PUBLIC_DEFAULT_LOCALE=ja" >> .env
-          
+
       - name: Run database migrations
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:54322/team_spark_test
-          
+
       - name: Generate Prisma Client
         run: npx prisma generate
-        
+
       - name: Run E2E tests
         run: npm test
         env:
@@ -124,7 +135,7 @@ jobs:
           CI: true
           NEXT_PUBLIC_DEFAULT_LOCALE: ja
           NODE_ENV: test
-          
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -132,7 +143,7 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          
+
       - name: Upload test videos
         uses: actions/upload-artifact@v4
         if: always()
@@ -146,25 +157,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Generate Prisma Client
         run: npx prisma generate
-        
+
       - name: Build application
         run: npm run build
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dummy
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           NEXT_PUBLIC_DEFAULT_LOCALE: ja
-          
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -177,18 +188,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Validate user stories
         run: npm run validate:stories
-        
+
       - name: Upload story validation report
         uses: actions/upload-artifact@v4
         if: always()
@@ -201,7 +212,7 @@ jobs:
   ci-success:
     name: CI Success
     runs-on: ubuntu-latest
-    needs: [lint, type-check, test-e2e, build, validate-stories]
+    needs: [lint, type-check, test-unit, test-e2e, build, validate-stories]
     if: success()
     steps:
       - name: CI passed

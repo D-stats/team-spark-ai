@@ -326,6 +326,28 @@ git commit --no-verify -m "message"
 
 ## 🚨 Pre-Push Checklist
 
+### Using Safe Push (Recommended)
+
+```bash
+# Automatic quality checks before pushing
+npm run safe-push
+
+# Or use the script directly
+./safe-push.sh
+```
+
+This script automatically:
+
+- Checks for uncommitted changes
+- Runs TypeScript type check
+- Runs ESLint
+- Runs Prettier format check
+- Runs tests
+- Runs build check
+- Only pushes if all checks pass
+
+### Manual Checklist
+
 1. **Local Operation Check**
 
    - No errors with `npm run dev`
@@ -339,6 +361,20 @@ git commit --no-verify -m "message"
 3. **Database**
    - Migration files are committed
    - Seed data is updated if needed
+
+### Git Hooks
+
+Pre-push hooks are automatically configured to run:
+
+- TypeScript type check
+- ESLint
+- Unit tests
+
+To skip hooks in emergency (not recommended):
+
+```bash
+git push --no-verify
+```
 
 ## 🔄 CI/CD Confirmation
 
@@ -418,6 +454,7 @@ See [docs/guides/troubleshooting.md](./docs/guides/troubleshooting.md) for detai
 5. **Performance**: Avoid unnecessary rendering, proper caching
 6. **Accessibility**: Keyboard operation, screen reader support
 7. **Test-Driven**: Create tests based on acceptance criteria
+8. **Documentation Language**: Write all documentation, code comments, and commit messages in English for consistency and international collaboration
 
 ## 📞 Support
 
@@ -478,115 +515,155 @@ If issues aren't resolved, check:
 
 This approach ensures business value and implementation are always linked during development.
 
-## 🌐 多言語対応（i18n）ガイドライン
+## 📝 Documentation and Code Comment Guidelines
 
-### Cookie不使用ポリシー
+### Language Standards
 
-このプロジェクトはプライバシーファーストの方針により、言語設定の管理にCookieを使用しません。
+All documentation, code comments, commit messages, and technical content should be written in **English**. This ensures:
 
-- **言語設定の保存**: localStorageのみで管理
-- **サーバーサイド**: URLパスから言語を判定
-- **自動検出**: 初回訪問時のみ提案（強制リダイレクトなし）
+- Consistency across the codebase
+- International team collaboration
+- Better integration with tools and services
+- Easier open-source contribution
 
-### 開発時の必須事項
+**Exceptions**:
 
-1. **すべてのユーザー向け文字列は翻訳キーを使用**
+- User-facing strings in translation files (en.json, ja.json)
+- Example data that demonstrates i18n functionality
+- Specific Japanese business logic explanations when necessary
+
+### Comment Examples
+
+```typescript
+// ✅ Good: English comment
+// Calculate monthly kudos points for the team
+
+// ❌ Bad: Japanese comment
+// チームの月間クドスポイントを計算
+
+// ✅ Good: Clear function documentation
+/**
+ * Validates user input for kudos creation
+ * @param data - The kudos data to validate
+ * @returns Validation result with errors if any
+ */
+
+// ❌ Bad: Mixed languages
+/**
+ * ユーザー入力をvalidateする
+ * @param data - クドスデータ
+ */
+```
+
+## 🌐 Internationalization (i18n) Guidelines
+
+### No-Cookie Policy
+
+This project follows a privacy-first approach and does not use cookies for language preference management.
+
+- **Language preference storage**: Managed only with localStorage
+- **Server-side**: Language determined from URL path
+- **Auto-detection**: Suggested only on first visit (no forced redirects)
+
+### Development Requirements
+
+1. **All user-facing strings must use translation keys**
 
    ```typescript
-   // ❌ 悪い例
+   // ❌ Bad example
    <h1>ダッシュボード</h1>
    <p>Welcome to the dashboard</p>
 
-   // ✅ 良い例
+   // ✅ Good example
    const t = useTranslations('dashboard');
    <h1>{t('title')}</h1>
    <p>{t('welcome')}</p>
    ```
 
-2. **ハードコーディングされた日本語/英語は禁止**
+2. **No hardcoded Japanese/English strings**
 
-   - 開発時に直接文字列を書かず、必ず翻訳ファイルに追加
-   - コメントやconsole.logは例外
+   - Always add strings to translation files instead of writing directly in code
+   - Comments and console.log are exceptions
 
-3. **新機能は必ず両言語でテスト**
+3. **Test new features in both languages**
 
-   - 英語と日本語の両方で表示確認
-   - テキストの長さによるレイアウト崩れをチェック
+   - Verify display in both English and Japanese
+   - Check for layout issues due to text length differences
 
-4. **日付・数値は必ずロケール対応フォーマッターを使用**
+4. **Always use locale-aware formatters for dates and numbers**
 
    ```typescript
-   // ❌ 悪い例
+   // ❌ Bad example
    new Date().toLocaleDateString('ja-JP')`${price}円`;
 
-   // ✅ 良い例（クライアントサイド）
+   // ✅ Good example (client-side)
    import { useI18n } from '@/hooks/use-i18n';
    const { formatDate, formatCurrency } = useI18n();
    formatDate(new Date());
    formatCurrency(price, 'JPY');
 
-   // ✅ 良い例（サーバーサイド）
+   // ✅ Good example (server-side)
    import { serverFormatDate } from '@/lib/i18n-server';
    await serverFormatDate(new Date());
    ```
 
-### 翻訳キーの命名規則
+### Translation Key Naming Convention
 
 ```
 {section}.{subsection}.{element}.{state}
 ```
 
-例:
+Examples:
 
 - `dashboard.stats.monthlyKudos.title`
 - `auth.login.submitButton`
 - `errors.validation.required`
 
-### 翻訳ファイルの構造
+### Translation File Structure
 
 ```
 src/i18n/messages/
-├── en.json  # 英語（デフォルト）
-└── ja.json  # 日本語
+├── en.json  # English (default)
+└── ja.json  # Japanese
 ```
 
-新しい翻訳を追加する際は、必ず両方のファイルに追加してください。
+When adding new translations, always add them to both files.
 
-### 動的コンテンツの扱い
+### Handling Dynamic Content
 
-- **翻訳が必要**: システムメッセージ、ラベル、エラー、通知
-- **翻訳不要**: ユーザー生成コンテンツ（名前、投稿内容、コメント等）
+- **Requires translation**: System messages, labels, errors, notifications
+- **No translation needed**: User-generated content (names, posts, comments, etc.)
 
-### テキスト長の考慮事項
+### Text Length Considerations
 
-言語によってテキストの長さが大きく変わります：
+Text length varies significantly between languages:
 
-- 英語→日本語: 文字数が約半分になることがある
-- 日本語→英語: 文字数が2-3倍になることがある
+- English → Japanese: Character count may be reduced by half
+- Japanese → English: Character count may increase 2-3 times
 
-UIデザイン時は、これらの変動を考慮して柔軟なレイアウトを設計してください。
+Design flexible layouts that accommodate these variations.
 
-### 実装チェックリスト
+### Implementation Checklist
 
-新機能を実装する際は、以下を確認してください：
+When implementing new features, verify:
 
-- [ ] すべてのユーザー向け文字列が翻訳キーを使用している
-- [ ] 日付・時刻・数値が適切にフォーマットされている
-- [ ] エラーメッセージが翻訳されている
-- [ ] フォームバリデーションメッセージが翻訳されている
-- [ ] メタデータ（title, description）が翻訳されている
-- [ ] 両言語でのレイアウト崩れがない
-- [ ] 言語切り替え後も機能が正常に動作する
+- [ ] All user-facing strings use translation keys
+- [ ] Dates, times, and numbers are properly formatted
+- [ ] Error messages are translated
+- [ ] Form validation messages are translated
+- [ ] Metadata (title, description) is translated
+- [ ] No layout issues in either language
+- [ ] Features work correctly after language switching
 
-### よく使うフック・ユーティリティ
+### Common Hooks and Utilities
 
 ```typescript
-// クライアントサイド
+// Client-side
 import { useTranslations } from 'next-intl';
 import { useI18n } from '@/hooks/use-i18n';
 import { useLanguagePreference } from '@/hooks/use-language-preference';
 
-// サーバーサイド
+// Server-side
 import { getTranslations } from 'next-intl/server';
 import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
 ```
