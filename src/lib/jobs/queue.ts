@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
+import { Queue, QueueEvents } from 'bullmq';
 import { getRedisClient } from '@/lib/redis';
 import { log } from '@/lib/logger';
 
@@ -18,7 +18,7 @@ export interface SendEmailJobData {
   to: string;
   subject: string;
   template: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export interface SyncSlackJobData {
@@ -164,10 +164,10 @@ export function setupQueueMonitoring(queue: Queue) {
 }
 
 // Helper functions
-export async function addJob(
-  queue: Queue,
+export async function addJob<T>(
+  queue: Queue<T>,
   name: string,
-  data: any,
+  data: T,
   options?: {
     delay?: number;
     priority?: number;
@@ -179,7 +179,7 @@ export async function addJob(
   },
 ) {
   try {
-    const job = await queue.add(name, data, options);
+    const job = await (queue as any).add(name, data, options);
     log.info(`Job added to queue`, {
       queue: queue.name,
       jobId: job.id,
@@ -198,12 +198,12 @@ export async function addJob(
 
 export async function getQueueMetrics(queue: Queue) {
   const counts = await queue.getJobCounts();
-  const waiting = counts.waiting || 0;
-  const active = counts.active || 0;
-  const completed = counts.completed || 0;
-  const failed = counts.failed || 0;
-  const delayed = counts.delayed || 0;
-  const paused = counts.paused || 0;
+  const waiting = counts['waiting'] || 0;
+  const active = counts['active'] || 0;
+  const completed = counts['completed'] || 0;
+  const failed = counts['failed'] || 0;
+  const delayed = counts['delayed'] || 0;
+  const paused = counts['paused'] || 0;
 
   return {
     name: queue.name,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiRateLimit, authRateLimit, RateLimitResult } from './rate-limit';
+import { apiRateLimit, authRateLimit as _authRateLimit, RateLimitResult as _RateLimitResult } from './rate-limit';
 import { createErrorResponse } from './openapi/validator';
 import { logError } from './logger';
 
@@ -17,7 +17,7 @@ export function withRateLimit(
     const result = rateLimiter.check(request, limit);
 
     if (!result.success) {
-      return new NextResponse('Too Many Requests', {
+      return NextResponse.json({ error: 'Too Many Requests' }, {
         status: 429,
         headers: {
           'X-RateLimit-Limit': result.limit.toString(),
@@ -50,7 +50,7 @@ export function withAuth(handler: (request: NextRequest, userId: string) => Prom
     }
 
     // TODO: Verify JWT token and extract user ID
-    const token = authHeader.substring(7);
+    authHeader.substring(7); // TODO: Verify JWT token
     const userId = 'placeholder-user-id'; // This should be extracted from the token
 
     return handler(request, userId);
@@ -74,9 +74,12 @@ export function withErrorHandler(handler: (request: NextRequest) => Promise<Next
 }
 
 // Combine multiple middleware
+type RequestHandler = (request: NextRequest) => Promise<NextResponse>;
+type Middleware = (handler: RequestHandler) => RequestHandler;
+
 export function withMiddleware(
-  handler: (request: NextRequest) => Promise<NextResponse>,
-  ...middleware: Array<(handler: any) => any>
+  handler: RequestHandler,
+  ...middleware: Middleware[]
 ) {
   return middleware.reverse().reduce((acc, fn) => fn(acc), handler);
 }

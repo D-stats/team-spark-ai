@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
 
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
-    const _state = searchParams.get('state');
     const error = searchParams.get('error');
 
     if (error) {
@@ -35,10 +34,10 @@ export async function GET(request: NextRequest) {
 
     // Slack OAuthトークンを取得
     const oauthResponse = await slackApp.client.oauth.v2.access({
-      client_id: process.env.SLACK_CLIENT_ID!,
-      client_secret: process.env.SLACK_CLIENT_SECRET!,
+      client_id: process.env['SLACK_CLIENT_ID']!,
+      client_secret: process.env['SLACK_CLIENT_SECRET']!,
       code,
-      redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/slack/callback`,
+      redirect_uri: `${process.env['NEXT_PUBLIC_APP_URL']}/api/slack/callback`,
     });
 
     if (!oauthResponse.ok || !oauthResponse.access_token || !oauthResponse.team?.id) {

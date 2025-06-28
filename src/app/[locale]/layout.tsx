@@ -17,7 +17,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       default: 'TeamSpark AI',
     },
     description: 'AI-powered team communication and engagement platform',
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+    metadataBase: new URL(process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'),
     alternates: {
       languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])),
     },
@@ -55,13 +55,13 @@ export default async function LocaleLayout({
             key={l}
             rel="alternate"
             hrefLang={l}
-            href={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${l}`}
+            href={`${process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'}/${l}`}
           />
         ))}
         <link
           rel="alternate"
           hrefLang="x-default"
-          href={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/en`}
+          href={`${process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'}/en`}
         />
       </head>
       <body>

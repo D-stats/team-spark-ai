@@ -5,7 +5,7 @@ import SurveyNotificationEmail from './templates/survey-notification';
 import { ReactElement } from 'react';
 import { log, logError } from '@/lib/logger';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const resend = process.env['RESEND_API_KEY'] ? new Resend(process.env['RESEND_API_KEY']) : null;
 
 interface SendEmailOptions {
   to: string | string[];
@@ -48,7 +48,7 @@ interface KudosEmailData {
 }
 
 export async function sendKudosEmail(data: KudosEmailData) {
-  const kudosUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/kudos`;
+  const kudosUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/kudos`;
 
   return sendEmail({
     to: data.receiverEmail,
@@ -69,7 +69,7 @@ interface CheckInReminderData {
 }
 
 export async function sendCheckInReminderEmail(data: CheckInReminderData) {
-  const checkInUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/checkins`;
+  const checkInUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/checkins`;
 
   return sendEmail({
     to: data.userEmail,
@@ -88,7 +88,7 @@ interface SurveyNotificationData {
 }
 
 export async function sendSurveyNotificationEmail(data: SurveyNotificationData) {
-  const surveyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/surveys`;
+  const surveyUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/surveys`;
   const deadlineText = data.deadline
     ? `（締切: ${new Date(data.deadline).toLocaleDateString('ja-JP')}）`
     : '';

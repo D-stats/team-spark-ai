@@ -90,7 +90,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
                 type: 'plain_text',
                 text: 'View Kudos',
               },
-              url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/kudos`,
+              url: `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/kudos`,
               style: 'primary',
             },
           ],
@@ -152,7 +152,7 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
                 type: 'plain_text',
                 text: 'チェックインを開始',
               },
-              url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/checkins`,
+              url: `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/checkins`,
               style: 'primary',
             },
           ],
@@ -183,11 +183,14 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
       },
     });
 
-    if (users.length === 0 || !users[0].organization.slackWorkspaces[0]) {
+    if (users.length === 0 || !users[0]?.organization.slackWorkspaces[0]) {
       return;
     }
 
-    const slackWorkspace = users[0].organization.slackWorkspaces[0];
+    const slackWorkspace = users[0]?.organization.slackWorkspaces[0];
+    if (!slackWorkspace) {
+      return;
+    }
     const deadlineText = data.deadline
       ? `\n*締切:* ${new Date(data.deadline).toLocaleDateString('ja-JP')}`
       : '';
@@ -220,7 +223,7 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
                     type: 'plain_text',
                     text: 'サーベイに回答',
                   },
-                  url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/surveys`,
+                  url: `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/surveys`,
                   style: 'primary',
                 },
               ],

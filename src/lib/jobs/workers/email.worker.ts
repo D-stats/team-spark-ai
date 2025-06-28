@@ -4,7 +4,7 @@ import { log, logBusinessEvent } from '@/lib/logger';
 import { SendEmailJobData, JobType } from '../queue';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env['RESEND_API_KEY']);
 
 export const emailWorker = new Worker<SendEmailJobData>(
   JobType.SEND_EMAIL,
@@ -23,13 +23,13 @@ export const emailWorker = new Worker<SendEmailJobData>(
       await job.updateProgress(10);
 
       // TODO: Load and compile email template
-      const html = await compileEmailTemplate(template, data);
+      const html = await compileEmailTemplate(template, data as EmailTemplateData);
 
       await job.updateProgress(50);
 
       // Send email via Resend
       const result = await resend.emails.send({
-        from: process.env.EMAIL_FROM || 'noreply@teamspark.ai',
+        from: process.env['EMAIL_FROM'] || 'noreply@teamspark.ai',
         to,
         subject,
         html,
@@ -75,7 +75,13 @@ export const emailWorker = new Worker<SendEmailJobData>(
 );
 
 // Email template compiler (placeholder)
-async function compileEmailTemplate(template: string, data: Record<string, any>): Promise<string> {
+interface EmailTemplateData {
+  title?: string;
+  content?: string;
+  [key: string]: string | undefined;
+}
+
+async function compileEmailTemplate(_template: string, data: EmailTemplateData): Promise<string> {
   // TODO: Implement proper email template compilation
   // For now, return a simple HTML template
   return `

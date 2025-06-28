@@ -131,8 +131,10 @@ export class StoryValidator {
       '',
     ];
 
-    validation.details.forEach((detail, index) => {
+    for (let index = 0; index < validation.details.length; index++) {
+      const detail = validation.details[index];
       const story = stories[index];
+      if (!story || !detail) continue;
       const status = detail.isValid ? '✅' : '❌';
 
       report.push(`### ${status} ${story.id}: ${story.title}`);
@@ -155,7 +157,7 @@ export class StoryValidator {
       }
 
       report.push('');
-    });
+    }
 
     return report.join('\n');
   }

@@ -91,8 +91,6 @@ export function CreateObjectiveDialog({
     },
   });
 
-  const _selectedCycle = form.watch('cycle');
-  const _selectedYear = form.watch('year');
   const ownerType = form.watch('ownerType');
 
   const onSubmit = async (data: CreateObjectiveForm) => {

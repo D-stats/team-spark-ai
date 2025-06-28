@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
-import { teamCache } from '@/lib/redis';
-import { log, logBusinessEvent, logError } from '@/lib/logger';
-import { withLogging } from '@/lib/api-logging';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {

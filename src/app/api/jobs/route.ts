@@ -4,7 +4,7 @@ import { getAllQueueMetrics, addJob, emailQueue, notificationQueue } from '@/lib
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 
 // GET /api/jobs - Get job queue metrics
-async function getJobs(request: NextRequest) {
+async function getJobs(_request: NextRequest) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

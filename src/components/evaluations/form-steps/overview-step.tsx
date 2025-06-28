@@ -126,7 +126,7 @@ export function EvaluationOverviewStep({
           ))}
         </div>
 
-        {errors.overallRating && <p className="text-sm text-red-600">{errors.overallRating}</p>}
+        {errors?.['overallRating'] && <p className="text-sm text-red-600">{errors['overallRating']}</p>}
       </div>
 
       {/* 総合コメント */}
@@ -147,8 +147,8 @@ export function EvaluationOverviewStep({
         />
         <div className="flex items-center justify-between text-sm">
           <div>
-            {errors.overallComments && (
-              <span className="text-red-600">{errors.overallComments}</span>
+            {errors['overallComments'] && (
+              <span className="text-red-600">{errors['overallComments']}</span>
             )}
           </div>
           <span

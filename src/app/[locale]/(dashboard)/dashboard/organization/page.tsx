@@ -143,7 +143,7 @@ export default async function OrganizationPage() {
                     <div className="rounded-lg bg-muted p-4">
                       <p className="mb-1 text-sm font-medium">連携済みワークスペース</p>
                       <p className="text-sm text-muted-foreground">
-                        {organization.slackWorkspaces[0].teamName}
+                        {organization.slackWorkspaces[0]?.teamName ?? 'Unknown Workspace'}
                       </p>
                     </div>
                     <Button variant="outline" asChild>

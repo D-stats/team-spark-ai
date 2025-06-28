@@ -340,6 +340,9 @@ export class ErrorHandler {
     issues: Array<{ path: string[]; message: string }>;
   }): AppError {
     const firstIssue = error.issues[0];
+    if (!firstIssue) {
+      return new ValidationError('Validation failed', 'unknown');
+    }
     const field = firstIssue.path.join('.');
     return new ValidationError(firstIssue.message, field, { allIssues: error.issues });
   }

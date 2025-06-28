@@ -5,7 +5,7 @@ let redis: Redis | null = null;
 
 export function getRedisClient(): Redis {
   if (!redis) {
-    const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
+    const redisUrl = process.env['REDIS_URL'] || 'redis://localhost:6379';
 
     redis = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
@@ -80,7 +80,7 @@ export class Cache {
     }
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
       const ttlSeconds = ttl || this.defaultTTL;
@@ -152,12 +152,22 @@ export const kudosCache = new Cache('kudos', 60); // 1 minute
 export const sessionCache = new Cache('sessions', 3600); // 1 hour
 
 // Cache decorator for functions
-export function cacheable(cacheKey: (args: any[]) => string, ttl: number = 300) {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+export function cacheable<T extends (...args: any[]) => Promise<any>>(
+  cacheKey: (args: Parameters<T>) => string,
+  ttl: number = 300
+) {
+  return function (
+    _target: unknown,
+    propertyName: string,
+    descriptor: TypedPropertyDescriptor<T>
+  ) {
     const originalMethod = descriptor.value;
+    if (!originalMethod) {
+      throw new Error(`Method ${propertyName} not found`);
+    }
     const cache = new Cache(propertyName, ttl);
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (this: any, ...args: Parameters<T>) {
       const key = cacheKey(args);
 
       // Try to get from cache
@@ -175,7 +185,7 @@ export function cacheable(cacheKey: (args: any[]) => string, ttl: number = 300) 
       log.debug('Cache miss - stored', { method: propertyName, key });
 
       return result;
-    };
+    } as T;
 
     return descriptor;
   };
@@ -192,10 +202,10 @@ export class SessionManager {
     this.ttl = ttl;
   }
 
-  async get(sessionId: string): Promise<any | null> {
+  async get<T = unknown>(sessionId: string): Promise<T | null> {
     try {
       const data = await this.redis.get(`${this.prefix}${sessionId}`);
-      return data ? JSON.parse(data) : null;
+      return data ? (JSON.parse(data) as T) : null;
     } catch (error) {
       log.error('Session get error', {
         sessionId,
@@ -205,7 +215,7 @@ export class SessionManager {
     }
   }
 
-  async set(sessionId: string, data: any): Promise<void> {
+  async set<T>(sessionId: string, data: T): Promise<void> {
     try {
       await this.redis.setex(`${this.prefix}${sessionId}`, this.ttl, JSON.stringify(data));
     } catch (error) {

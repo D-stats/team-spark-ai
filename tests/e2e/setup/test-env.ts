@@ -7,16 +7,16 @@ export function loadTestEnv() {
   dotenv.config({ path: envPath });
 
   // Set default values
-  if (!process.env.DATABASE_URL) {
-    process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:54322/team_spark_test';
+  if (!process.env['DATABASE_URL']) {
+    process.env['DATABASE_URL'] = 'postgresql://postgres:postgres@localhost:54322/team_spark_test';
   }
 
-  if (!process.env.NEXT_PUBLIC_APP_URL) {
-    process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3001';
+  if (!process.env['NEXT_PUBLIC_APP_URL']) {
+    process.env['NEXT_PUBLIC_APP_URL'] = 'http://localhost:3001';
   }
 
   console.log('Environment loaded:', {
-    DATABASE_URL: process.env.DATABASE_URL ? 'Set' : 'Not set',
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    DATABASE_URL: process.env['DATABASE_URL'] ? 'Set' : 'Not set',
+    NEXT_PUBLIC_APP_URL: process.env['NEXT_PUBLIC_APP_URL'],
   });
 }

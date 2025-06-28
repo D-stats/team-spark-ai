@@ -13,11 +13,11 @@ export default defineConfig({
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: !!process.env['CI'],
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env['CI'] ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env['CI'] ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html'], ['json', { outputFile: 'test-results/results.json' }]],
   /* Global setup */
@@ -25,7 +25,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001',
+    baseURL: process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3001',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -53,11 +53,11 @@ export default defineConfig({
   webServer: {
     command: 'PORT=3001 npm run dev',
     url: 'http://localhost:3001',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env['CI'],
     timeout: 180 * 1000, // Increased to 3 minutes for safe startup
     env: {
       ...process.env,
-      DATABASE_URL: process.env.DATABASE_URL || '',
+      DATABASE_URL: process.env['DATABASE_URL'] || '',
       NODE_ENV: 'test',
     },
     stdout: 'pipe',

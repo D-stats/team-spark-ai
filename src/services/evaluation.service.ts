@@ -35,7 +35,7 @@ export async function createEvaluationCycle(data: {
 }
 
 // Generate default phases
-function getDefaultPhases(type: EvaluationCycleType, startDate: Date, endDate: Date) {
+function getDefaultPhases(_type: EvaluationCycleType, startDate: Date, endDate: Date) {
   const totalDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
 
   const phases = [
@@ -367,8 +367,8 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
       if (!acc[evaluation.type]) {
         acc[evaluation.type] = { sum: 0, count: 0 };
       }
-      acc[evaluation.type].sum += evaluation.overallRating;
-      acc[evaluation.type].count += 1;
+      acc[evaluation.type]!.sum += evaluation.overallRating;
+      acc[evaluation.type]!.count += 1;
 
       return acc;
     },

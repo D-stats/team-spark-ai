@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Basic Tests', () => {
   test('should redirect to locale URL', async ({ page }) => {
     // ロケールなしでアクセスすると、デフォルトロケールにリダイレクトされる
-    const response = await page.goto('/');
+    await page.goto('/');
     // リダイレクトまたは直接ロケールURLに到達
     await expect(page.url()).toMatch(/\/(en|ja)/);
   });

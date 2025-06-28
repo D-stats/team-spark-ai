@@ -14,7 +14,7 @@ interface Props {
   params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: Props) {
+export async function GET(_request: NextRequest, { params }: Props) {
   try {
     const user = await getUser();
     if (!user) {
@@ -94,7 +94,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: Props) {
+export async function DELETE(_request: NextRequest, { params }: Props) {
   try {
     const user = await getUser();
     if (!user || (user as UserWithOrgAndRole).role !== 'ADMIN') {

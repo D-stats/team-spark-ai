@@ -18,7 +18,7 @@ interface RouteParams {
 }
 
 // 特定の評価取得
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(_request: NextRequest, { params }: RouteParams) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -181,7 +181,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価削除
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(_request: NextRequest, { params }: RouteParams) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

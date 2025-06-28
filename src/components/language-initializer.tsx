@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useLanguagePreference } from '@/hooks/use-language-preference';
-import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { X, Globe } from 'lucide-react';
@@ -23,7 +22,6 @@ export function LanguageInitializer() {
     savePreference,
   } = useLanguagePreference();
 
-  const _t = useTranslations('common');
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [suggestedLocale, setSuggestedLocale] = useState<string | null>(null);
 

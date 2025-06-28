@@ -119,18 +119,18 @@ export function withLogging(
 }
 
 // Middleware to log request body (be careful with sensitive data)
-export function logRequestBody(
-  handler: (request: NextRequest, body: any) => Promise<NextResponse>,
+export function logRequestBody<T = unknown>(
+  handler: (request: NextRequest, body: T) => Promise<NextResponse>,
 ) {
   return withLogging(async (request: NextRequest) => {
-    let body: any = null;
+    let body: T | null = null;
 
     try {
       const contentType = request.headers.get('content-type');
 
       if (contentType?.includes('application/json')) {
         const text = await request.text();
-        body = JSON.parse(text);
+        body = JSON.parse(text) as T;
 
         // Redact sensitive fields
         const sanitizedBody = sanitizeRequestBody(body);
@@ -151,18 +151,23 @@ export function logRequestBody(
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    return handler(newRequest, body);
+    return handler(newRequest, body as T);
   });
 }
 
 // Helper to sanitize sensitive data from logs
-function sanitizeRequestBody(body: any): any {
+type SanitizableValue = string | number | boolean | null | undefined | SanitizableObject | SanitizableValue[];
+interface SanitizableObject {
+  [key: string]: SanitizableValue;
+}
+
+function sanitizeRequestBody<T>(body: T): T {
   if (!body || typeof body !== 'object') {
     return body;
   }
 
   const sensitiveFields = ['password', 'token', 'secret', 'apiKey', 'creditCard', 'ssn'];
-  const sanitized = { ...body };
+  const sanitized = { ...body } as Record<string, unknown>;
 
   for (const field of sensitiveFields) {
     if (field in sanitized) {
@@ -172,10 +177,10 @@ function sanitizeRequestBody(body: any): any {
 
   // Recursively sanitize nested objects
   for (const key in sanitized) {
-    if (typeof sanitized[key] === 'object') {
+    if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
       sanitized[key] = sanitizeRequestBody(sanitized[key]);
     }
   }
 
-  return sanitized;
+  return sanitized as T;
 }

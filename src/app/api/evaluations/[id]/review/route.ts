@@ -105,7 +105,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価共有（従業員に結果を公開）
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PATCH(_request: NextRequest, { params }: RouteParams) {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

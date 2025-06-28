@@ -1,6 +1,5 @@
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import {
   SEMRESATTRS_SERVICE_NAME,
@@ -14,19 +13,19 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Initialize OpenTelemetry
 export function initializeMonitoring() {
-  if (!isProduction && !process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+  if (!isProduction && !process.env['OTEL_EXPORTER_OTLP_ENDPOINT']) {
     log.info('Monitoring disabled in development (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)');
     return;
   }
 
   const resource = resourceFromAttributes({
     [SEMRESATTRS_SERVICE_NAME]: 'team-spark-ai',
-    [SEMRESATTRS_SERVICE_VERSION]: process.env.npm_package_version || '0.1.0',
+    [SEMRESATTRS_SERVICE_VERSION]: process.env['npm_package_version'] || '0.1.0',
     environment: process.env.NODE_ENV || 'development',
   });
 
   const traceExporter = new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces',
+    url: process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:4318/v1/traces',
   });
 
   const sdk = new NodeSDK({
@@ -84,7 +83,7 @@ export const dbConnectionsGauge = meter.createObservableGauge('db_connections', 
 });
 
 // Helper functions for tracing
-export function createSpan(name: string, fn: () => Promise<any>) {
+export function createSpan<T>(name: string, fn: () => Promise<T>): Promise<T> {
   const tracer = trace.getTracer('team-spark-ai');
   return tracer.startActiveSpan(name, async (span) => {
     try {
@@ -101,7 +100,7 @@ export function createSpan(name: string, fn: () => Promise<any>) {
   });
 }
 
-export function addSpanAttributes(attributes: Record<string, any>) {
+export function addSpanAttributes(attributes: Record<string, string | number | boolean>) {
   const span = trace.getActiveSpan();
   if (span) {
     Object.entries(attributes).forEach(([key, value]) => {
@@ -170,7 +169,7 @@ export class PerformanceMonitor {
     this.startTime = performance.now();
   }
 
-  end(metadata?: Record<string, any>) {
+  end(metadata?: Record<string, string | number | boolean>) {
     const duration = performance.now() - this.startTime;
     dbQueryDurationHistogram.record(duration, {
       operation: this.operation,

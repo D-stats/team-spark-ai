@@ -2,7 +2,7 @@
  * ユーザーストーリーベースのテストヘルパー
  */
 
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, type Page } from '@playwright/test';
 import { UserStory, AcceptanceCriteria } from '@/lib/user-stories/types';
 
 // カスタムテストフィクスチャ
@@ -28,7 +28,7 @@ export function describeStory(story: UserStory, testFn: () => void) {
     });
 
     // ストーリーのコンテキストを表示
-    storyTest(`ストーリー: As a ${story.asA}, I want to ${story.iWantTo}`, async ({ page }) => {
+    storyTest(`ストーリー: As a ${story.asA}, I want to ${story.iWantTo}`, async ({ page: _page }) => {
       // このテストは情報表示のみ
       console.log(`So that ${story.soThat}`);
       expect(true).toBe(true);
@@ -38,10 +38,9 @@ export function describeStory(story: UserStory, testFn: () => void) {
   });
 }
 
-// 受け入れ基準ベースのテスト
 export function testCriteria(
   criteria: AcceptanceCriteria,
-  testImplementation: (args: { page: any }) => Promise<void>,
+  testImplementation: (args: { page: Page }) => Promise<void>,
 ) {
   storyTest(`✓ Given: ${criteria.given}`, async ({ page }, testInfo) => {
     // テスト情報に基準IDを追加
@@ -82,9 +81,9 @@ export function markStoryImplemented(
 export class StoryReporter {
   private results: Map<string, boolean> = new Map();
 
-  onTestEnd(test: any, result: any) {
-    const storyAnnotation = test.annotations.find((a: any) => a.type === 'story');
-    const criteriaAnnotation = test.annotations.find((a: any) => a.type === 'criteria');
+  onTestEnd(test: { annotations: Array<{ type: string; description: string }> }, result: { status: string }) {
+    const storyAnnotation = test.annotations.find((a) => a.type === 'story');
+    const criteriaAnnotation = test.annotations.find((a) => a.type === 'criteria');
 
     if (storyAnnotation && criteriaAnnotation) {
       const key = `${storyAnnotation.description}:${criteriaAnnotation.description}`;
@@ -97,10 +96,12 @@ export class StoryReporter {
 
     this.results.forEach((passed, key) => {
       const [storyId, criteriaId] = key.split(':');
-      if (!report[storyId]) {
-        report[storyId] = {};
+      if (storyId && criteriaId) {
+        if (!report[storyId]) {
+          report[storyId] = {};
+        }
+        report[storyId][criteriaId] = passed;
       }
-      report[storyId][criteriaId] = passed;
     });
 
     return report;

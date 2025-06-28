@@ -11,11 +11,11 @@ import { formatDate, formatNumber, formatCurrency, formatRelativeTime } from '@/
  * Get current locale from headers
  */
 export async function getCurrentLocale(): Promise<string> {
-  const headersList = headers();
+  const headersList = await headers();
   const acceptLanguage = headersList.get('accept-language') || 'en';
 
   // Simple locale extraction - you might want to use a more sophisticated approach
-  const locale = acceptLanguage.split(',')[0].split('-')[0];
+  const locale = acceptLanguage.split(',')[0]?.split('-')[0] || 'en';
   return ['en', 'ja'].includes(locale) ? locale : 'en';
 }
 

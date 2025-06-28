@@ -54,11 +54,11 @@ export async function POST(request: NextRequest) {
     }
 
     const receiverMention = parts[0];
-    const category = parts[1].toUpperCase();
+    const category = parts[1]?.toUpperCase() ?? '';
     const message = parts.slice(2).join(' ');
 
     // メンションから@を削除してユーザーIDを取得
-    const receiverSlackId = receiverMention.replace(/^<@|>$/g, '');
+    const receiverSlackId = receiverMention?.replace(/^<@|>$/g, '') ?? '';
 
     // Slackワークスペース情報を取得
     const slackWorkspace = await prisma.slackWorkspace.findUnique({

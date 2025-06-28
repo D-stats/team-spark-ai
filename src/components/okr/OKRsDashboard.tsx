@@ -125,8 +125,6 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
     fetchSummary,
   ]);
 
-  const _canCreateCompanyObjective = user.role === 'ADMIN';
-  const _canCreateTeamObjective = user.role === 'ADMIN' || user.role === 'MANAGER';
 
   if (loading) {
     return (

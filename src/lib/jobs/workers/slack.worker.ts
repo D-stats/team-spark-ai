@@ -57,7 +57,13 @@ export const slackWorker = new Worker<SyncSlackJobData>(
   },
 );
 
-async function syncSlackUsers(slack: WebClient, organizationId: string, job: Job): Promise<any> {
+interface SyncUsersResult {
+  success: boolean;
+  totalUsers: number;
+  syncedUsers: number;
+}
+
+async function syncSlackUsers(slack: WebClient, organizationId: string, job: Job): Promise<SyncUsersResult> {
   await job.updateProgress(10);
 
   const result = await slack.users.list();
@@ -118,10 +124,15 @@ async function syncSlackUsers(slack: WebClient, organizationId: string, job: Job
   };
 }
 
-async function syncSlackChannels(slack: WebClient, organizationId: string, job: Job): Promise<any> {
+interface SyncChannelsResult {
+  success: boolean;
+  totalChannels: number;
+}
+
+async function syncSlackChannels(_slack: WebClient, _organizationId: string, job: Job): Promise<SyncChannelsResult> {
   await job.updateProgress(10);
 
-  const result = await slack.conversations.list({
+  const result = await _slack.conversations.list({
     types: 'public_channel,private_channel',
   });
 
@@ -135,7 +146,12 @@ async function syncSlackChannels(slack: WebClient, organizationId: string, job: 
   };
 }
 
-async function syncSlackMessages(slack: WebClient, organizationId: string, job: Job): Promise<any> {
+interface SyncMessagesResult {
+  success: boolean;
+  message: string;
+}
+
+async function syncSlackMessages(_slack: WebClient, _organizationId: string, job: Job): Promise<SyncMessagesResult> {
   // This would be implemented based on specific requirements
   // For now, return a placeholder
   await job.updateProgress(100);

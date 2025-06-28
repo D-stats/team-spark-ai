@@ -158,7 +158,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                         <Input
                           type="number"
                           {...field}
-                          onChange={(e) => {
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const value = parseFloat(e.target.value);
                             field.onChange(value);
 
@@ -196,7 +196,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                     <FormLabel>Milestone Status</FormLabel>
                     <Select
                       value={field.value}
-                      onValueChange={(value) => {
+                      onValueChange={(value: string) => {
                         field.onChange(value);
 
                         // Auto-calculate progress based on status
@@ -238,7 +238,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                   <FormControl>
                     <Slider
                       value={[field.value * 100]}
-                      onValueChange={([value]) => field.onChange(value / 100)}
+                      onValueChange={([value]) => field.onChange((value ?? 0) / 100)}
                       max={100}
                       step={5}
                       className="w-full"
@@ -263,7 +263,7 @@ export function CheckInDialog({ keyResult, onClose, onSuccess }: CheckInDialogPr
                   <FormControl>
                     <Slider
                       value={[(field.value || 0) * 100]}
-                      onValueChange={([value]) => field.onChange(value / 100)}
+                      onValueChange={([value]) => field.onChange((value ?? 0) / 100)}
                       max={100}
                       step={10}
                       className="w-full"

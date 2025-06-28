@@ -4,13 +4,16 @@ import { getRedisClient } from '@/lib/redis';
 import { log } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 
-interface ScheduledJob {
+interface ScheduledJob<T = unknown> {
   name: string;
-  queue: any;
+  queue: Queue<T>;
   pattern?: string;
   every?: number;
-  data: any;
-  options?: any;
+  data: T | (() => Promise<T | T[]>);
+  options?: {
+    delay?: number;
+    priority?: number;
+  };
 }
 
 // Define scheduled jobs
@@ -92,7 +95,7 @@ const scheduledJobs: ScheduledJob[] = [
           if (!acc[manager.organizationId]) {
             acc[manager.organizationId] = [];
           }
-          acc[manager.organizationId].push(manager.id);
+          acc[manager.organizationId]?.push(manager.id);
           return acc;
         },
         {} as Record<string, string[]>,
@@ -202,9 +205,9 @@ export async function unscheduleJobs() {
 }
 
 // Schedule a one-time job
-export async function scheduleOneTimeJob(
+export async function scheduleOneTimeJob<T>(
   jobType: JobType,
-  data: any,
+  data: T,
   delay: number, // Delay in milliseconds
 ) {
   // Create missing queues if needed

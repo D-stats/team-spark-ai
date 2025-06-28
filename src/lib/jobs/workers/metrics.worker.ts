@@ -75,11 +75,30 @@ function getDateRange(period: 'daily' | 'weekly' | 'monthly'): { start: Date; en
   }
 }
 
+interface EngagementMetrics {
+  kudosCount: number;
+  uniqueKudosGivers: number;
+  checkInsCount: number;
+  activeUsers: number;
+  totalUsers: number;
+  engagementRate: number;
+  kudosPerUser: number;
+}
+
+interface MetricsResult<T> {
+  success: boolean;
+  metrics: T;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
 async function calculateEngagementMetrics(
   organizationId: string,
   dateRange: { start: Date; end: Date },
   job: Job,
-): Promise<any> {
+): Promise<MetricsResult<EngagementMetrics>> {
   await job.updateProgress(10);
 
   // Calculate kudos metrics
@@ -178,11 +197,15 @@ async function calculateEngagementMetrics(
   };
 }
 
+interface PerformanceMetrics {
+  message: string;
+}
+
 async function calculatePerformanceMetrics(
-  organizationId: string,
-  dateRange: { start: Date; end: Date },
+  _organizationId: string,
+  _dateRange: { start: Date; end: Date },
   job: Job,
-): Promise<any> {
+): Promise<MetricsResult<PerformanceMetrics>> {
   await job.updateProgress(50);
 
   // TODO: Implement performance metrics based on OKRs
@@ -194,14 +217,24 @@ async function calculatePerformanceMetrics(
     metrics: {
       message: 'Performance metrics calculation not yet implemented',
     },
+    period: {
+      start: _dateRange.start.toISOString(),
+      end: _dateRange.end.toISOString(),
+    },
   };
+}
+
+interface SatisfactionMetrics {
+  avgMoodRating: string;
+  totalMoodCheckins: number;
+  surveyResponseRate: number;
 }
 
 async function calculateSatisfactionMetrics(
   organizationId: string,
   dateRange: { start: Date; end: Date },
   job: Job,
-): Promise<any> {
+): Promise<MetricsResult<SatisfactionMetrics>> {
   await job.updateProgress(10);
 
   // Calculate average mood rating

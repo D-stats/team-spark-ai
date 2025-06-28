@@ -143,6 +143,15 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
   const progress = getProgress();
   const isReadOnly = currentEvaluation.status !== 'DRAFT';
 
+  if (!currentStepData) {
+    return (
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>無効なステップです。</AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* ヘッダー */}

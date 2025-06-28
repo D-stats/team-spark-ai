@@ -12,7 +12,9 @@ const templateManagementStory = checkinStories.find((s) => s.id === 'CHECKIN-001
 
 describeStory(templateManagementStory, () => {
   // AC-C001-1: テンプレート管理画面へのアクセス
-  testCriteria(templateManagementStory.acceptanceCriteria[0], async ({ page }) => {
+  const criteria0 = templateManagementStory.acceptanceCriteria[0];
+  if (criteria0) {
+    testCriteria(criteria0, async ({ page }) => {
     // 管理者としてログイン
     await mockAuth(page, 'admin');
 
@@ -22,10 +24,13 @@ describeStory(templateManagementStory, () => {
     // テンプレート一覧と作成ボタンが表示される
     await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
     await expect(page.locator('button:has-text("新しいテンプレート")')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C001-2: テンプレート作成
-  testCriteria(templateManagementStory.acceptanceCriteria[1], async ({ page }) => {
+  const criteria1 = templateManagementStory.acceptanceCriteria[1];
+  if (criteria1) {
+    testCriteria(criteria1, async ({ page }) => {
     await mockAuth(page, 'admin');
     await page.goto('/dashboard/checkins/templates');
 
@@ -52,10 +57,13 @@ describeStory(templateManagementStory, () => {
 
     // 成功メッセージまたは一覧に戻ることを確認
     await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C001-3: デフォルトテンプレート作成
-  testCriteria(templateManagementStory.acceptanceCriteria[2], async ({ page }) => {
+  const criteria2 = templateManagementStory.acceptanceCriteria[2];
+  if (criteria2) {
+    testCriteria(criteria2, async ({ page }) => {
     await mockAuth(page, 'admin');
     await page.goto('/dashboard/checkins');
 
@@ -68,7 +76,8 @@ describeStory(templateManagementStory, () => {
     // ページがリロードされ、チェックインフォームが表示される
     await page.waitForLoadState('networkidle');
     await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
-  });
+    });
+  }
 });
 
 // ストーリー: CHECKIN-002 - テンプレートベースのチェックイン作成
@@ -76,7 +85,9 @@ const checkinCreationStory = checkinStories.find((s) => s.id === 'CHECKIN-002')!
 
 describeStory(checkinCreationStory, () => {
   // AC-C002-1: テンプレートフォーム表示
-  testCriteria(checkinCreationStory.acceptanceCriteria[0], async ({ page }) => {
+  const criteria3 = checkinCreationStory.acceptanceCriteria[0];
+  if (criteria3) {
+    testCriteria(criteria3, async ({ page }) => {
     // 一般従業員としてログイン
     await mockAuth(page, 'member');
 
@@ -86,10 +97,13 @@ describeStory(checkinCreationStory, () => {
     // テンプレート選択とフォームが表示される
     await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
     await expect(page.locator('text=テンプレート選択')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C002-2: チェックイン送信
-  testCriteria(checkinCreationStory.acceptanceCriteria[1], async ({ page }) => {
+  const criteria4 = checkinCreationStory.acceptanceCriteria[1];
+  if (criteria4) {
+    testCriteria(criteria4, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/dashboard/checkins');
 
@@ -109,10 +123,13 @@ describeStory(checkinCreationStory, () => {
 
     // 成功メッセージを確認
     await expect(page.locator('text=チェックインを完了しました')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C002-3: テンプレート切り替え
-  testCriteria(checkinCreationStory.acceptanceCriteria[2], async ({ page }) => {
+  const criteria5 = checkinCreationStory.acceptanceCriteria[2];
+  if (criteria5) {
+    testCriteria(criteria5, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/dashboard/checkins');
 
@@ -131,7 +148,8 @@ describeStory(checkinCreationStory, () => {
       const newQuestions = await page.locator('label').allTextContents();
       expect(newQuestions).not.toEqual(initialQuestions);
     }
-  });
+    });
+  }
 });
 
 // ストーリー: CHECKIN-003 - チェックイン履歴とインサイト
@@ -139,27 +157,35 @@ const historyStory = checkinStories.find((s) => s.id === 'CHECKIN-003')!;
 
 describeStory(historyStory, () => {
   // AC-C003-1: 履歴表示
-  testCriteria(historyStory.acceptanceCriteria[0], async ({ page }) => {
+  const criteria6 = historyStory.acceptanceCriteria[0];
+  if (criteria6) {
+    testCriteria(criteria6, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/dashboard/checkins');
 
     // 履歴セクションを確認
     await expect(page.locator('text=チェックイン履歴')).toBeVisible();
     await expect(page.locator('text=統計')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C003-2: 統計情報表示
-  testCriteria(historyStory.acceptanceCriteria[1], async ({ page }) => {
+  const criteria7 = historyStory.acceptanceCriteria[1];
+  if (criteria7) {
+    testCriteria(criteria7, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/dashboard/checkins');
 
     // 統計情報を確認
     await expect(page.locator('text=総チェックイン数')).toBeVisible();
     await expect(page.locator('text=平均気分スコア')).toBeVisible();
-  });
+    });
+  }
 
   // AC-C003-3: 履歴詳細表示
-  testCriteria(historyStory.acceptanceCriteria[2], async ({ page }) => {
+  const criteria8 = historyStory.acceptanceCriteria[2];
+  if (criteria8) {
+    testCriteria(criteria8, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/dashboard/checkins');
 
@@ -173,5 +199,6 @@ describeStory(historyStory, () => {
       await expect(firstItem.locator('text=スタンダード週次チェックイン')).toBeVisible();
       await expect(firstItem.locator('text=毎週')).toBeVisible();
     }
-  });
+    });
+  }
 });

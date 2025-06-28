@@ -23,7 +23,8 @@ export function getBestLocale(acceptLanguage: string | null): Locale {
 
   const languages = acceptLanguage
     .split(',')
-    .map((lang) => lang.trim().split(';')[0].split('-')[0])
+    .map((lang) => lang.trim().split(';')[0]?.split('-')[0])
+    .filter((lang): lang is string => lang !== undefined)
     .filter(isValidLocale);
 
   return languages[0] || defaultLocale;

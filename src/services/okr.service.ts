@@ -166,7 +166,7 @@ export class OkrService {
         if (!teamObjectivesByTeam[obj.ownerTeamId]) {
           teamObjectivesByTeam[obj.ownerTeamId] = [];
         }
-        teamObjectivesByTeam[obj.ownerTeamId].push(obj);
+        teamObjectivesByTeam[obj.ownerTeamId]!.push(obj);
       }
     });
 
@@ -176,7 +176,7 @@ export class OkrService {
         if (!individualObjectivesByUser[obj.ownerUserId]) {
           individualObjectivesByUser[obj.ownerUserId] = [];
         }
-        individualObjectivesByUser[obj.ownerUserId].push(obj);
+        individualObjectivesByUser[obj.ownerUserId]!.push(obj);
       }
     });
 

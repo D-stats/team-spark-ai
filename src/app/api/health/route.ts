@@ -4,14 +4,14 @@ import { withLogging } from '@/lib/api-logging';
 import { PerformanceMonitor } from '@/lib/monitoring';
 import { log } from '@/lib/logger';
 
-async function healthCheck(request: NextRequest) {
+async function healthCheck(_request: NextRequest) {
   const monitor = new PerformanceMonitor('health_check');
 
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
     service: 'team-spark-ai',
-    version: process.env.npm_package_version || '0.1.0',
+    version: process.env['npm_package_version'] || '0.1.0',
     checks: {
       server: true,
       database: false,

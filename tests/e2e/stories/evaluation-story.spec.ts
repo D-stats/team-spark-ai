@@ -12,7 +12,9 @@ const selfEvaluationStory = evaluationStories.find((s) => s.id === 'EVAL-001')!;
 
 describeStory(selfEvaluationStory, () => {
   // AC-001-1: アクティブな評価サイクルが存在する時、評価フォームが表示される
-  testCriteria(selfEvaluationStory.acceptanceCriteria[0], async ({ page }) => {
+  const criteria0 = selfEvaluationStory.acceptanceCriteria[0];
+  if (criteria0) {
+    testCriteria(criteria0, async ({ page }) => {
     // 従業員としてログイン
     await mockAuth(page, 'member');
 
@@ -24,10 +26,13 @@ describeStory(selfEvaluationStory, () => {
 
     // 自己評価ボタンが表示される
     await expect(page.locator('text=自己評価を開始')).toBeVisible();
-  });
+    });
+  }
 
   // AC-001-2: 入力内容が自動保存される
-  testCriteria(selfEvaluationStory.acceptanceCriteria[1], async ({ page }) => {
+  const criteria1 = selfEvaluationStory.acceptanceCriteria[1];
+  if (criteria1) {
+    testCriteria(criteria1, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/evaluations/test-eval-id');
 
@@ -42,10 +47,13 @@ describeStory(selfEvaluationStory, () => {
 
     // 保存インジケーターの確認
     await expect(page.locator('text=保存済み')).toBeVisible();
-  });
+    });
+  }
 
   // AC-001-3: 評価を送信できる
-  testCriteria(selfEvaluationStory.acceptanceCriteria[2], async ({ page }) => {
+  const criteria2 = selfEvaluationStory.acceptanceCriteria[2];
+  if (criteria2) {
+    testCriteria(criteria2, async ({ page }) => {
     await mockAuth(page, 'member');
     await page.goto('/evaluations/test-eval-id');
 
@@ -65,7 +73,8 @@ describeStory(selfEvaluationStory, () => {
 
     // 確認メッセージ
     await expect(page.locator('text=評価を送信しました')).toBeVisible();
-  });
+    });
+  }
 });
 
 // ストーリー: EVAL-002 - 部下の評価レビュー
@@ -73,7 +82,9 @@ const managerReviewStory = evaluationStories.find((s) => s.id === 'EVAL-002')!;
 
 describeStory(managerReviewStory, () => {
   // AC-002-1: レビュー待ちの評価が表示される
-  testCriteria(managerReviewStory.acceptanceCriteria[0], async ({ page }) => {
+  const criteria3 = managerReviewStory.acceptanceCriteria[0];
+  if (criteria3) {
+    testCriteria(criteria3, async ({ page }) => {
     // マネージャーとしてログイン
     await mockAuth(page, 'manager');
 
@@ -85,10 +96,13 @@ describeStory(managerReviewStory, () => {
 
     // 提出済み評価が表示される
     await expect(page.locator('[data-status="SUBMITTED"]')).toBeVisible();
-  });
+    });
+  }
 
   // AC-002-2: 評価を承認できる
-  testCriteria(managerReviewStory.acceptanceCriteria[1], async ({ page }) => {
+  const criteria4 = managerReviewStory.acceptanceCriteria[1];
+  if (criteria4) {
+    testCriteria(criteria4, async ({ page }) => {
     await mockAuth(page, 'manager');
     await page.goto('/evaluations/submitted-eval-id/results');
 
@@ -100,10 +114,13 @@ describeStory(managerReviewStory, () => {
 
     // ステータス更新の確認
     await expect(page.locator('[data-status="REVIEWED"]')).toBeVisible();
-  });
+    });
+  }
 
   // AC-002-3: 評価を差し戻しできる
-  testCriteria(managerReviewStory.acceptanceCriteria[2], async ({ page }) => {
+  const criteria5 = managerReviewStory.acceptanceCriteria[2];
+  if (criteria5) {
+    testCriteria(criteria5, async ({ page }) => {
     await mockAuth(page, 'manager');
     await page.goto('/evaluations/submitted-eval-id/results');
 
@@ -118,5 +135,6 @@ describeStory(managerReviewStory, () => {
 
     // ステータスがDRAFTに戻る
     await expect(page.locator('[data-status="DRAFT"]')).toBeVisible();
-  });
+    });
+  }
 });

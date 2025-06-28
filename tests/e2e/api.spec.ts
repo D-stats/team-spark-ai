@@ -214,13 +214,10 @@ test.describe('APIエンドポイントテスト', () => {
   });
 
   test('ページネーション', async ({ page }) => {
-    let currentPage = 1;
-
     // APIレスポンスをモック（ページ番号に応じて異なるデータを返す）
     await page.route('**/api/kudos*', async (route) => {
       const url = new URL(route.request().url());
-      const page = parseInt(url.searchParams.get('page') || '1');
-      currentPage = page;
+      const pageNum = parseInt(url.searchParams.get('page') || '1');
 
       await route.fulfill({
         status: 200,
@@ -228,10 +225,10 @@ test.describe('APIエンドポイントテスト', () => {
         body: JSON.stringify({
           kudos: [
             {
-              id: `page${page}-1`,
+              id: `page${pageNum}-1`,
               fromUserId: 'user1',
               toUserId: 'user2',
-              message: `ページ${page}のKudos`,
+              message: `ページ${pageNum}のKudos`,
               category: 'TEAMWORK',
               points: 10,
               isPublic: true,

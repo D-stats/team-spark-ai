@@ -1,4 +1,5 @@
 import SwaggerParser from '@apidevtools/swagger-parser';
+import { NextResponse } from 'next/server';
 import { openAPISpec } from './spec';
 import { log, logError } from '@/lib/logger';
 
@@ -18,23 +19,24 @@ export function createAPIResponse<T>(
   status: number = 200,
   headers: Record<string, string> = {},
 ) {
-  return new Response(JSON.stringify(data), {
+  const response = new Response(JSON.stringify(data), {
     status,
     headers: {
       'Content-Type': 'application/json',
       ...headers,
     },
   });
+  return response;
 }
 
 export function createErrorResponse(message: string, status: number = 400, error?: string) {
-  return createAPIResponse(
+  return NextResponse.json(
     {
       error: error || 'Error',
       message,
       statusCode: status,
     },
-    status,
+    { status }
   );
 }
 

@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
 
     // CORS configuration
     const origin = request.headers.get('origin');
-    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+    const allowedOrigins = process.env['ALLOWED_ORIGINS']?.split(',') || [
       'http://localhost:3000',
       'http://localhost:3001',
     ];
