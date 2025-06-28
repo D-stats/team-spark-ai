@@ -13,15 +13,17 @@ const createCheckInSchema = z.object({
   blockers: z.string().optional(),
 });
 
-export async function POST(request: NextRequest) {
+type CreateCheckInData = z.infer<typeof createCheckInSchema>;
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.id) {
+    if (result?.dbUser?.id === undefined || result.dbUser.id === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validatedData = createCheckInSchema.parse(body);
+    const body = (await request.json()) as unknown;
+    const validatedData: CreateCheckInData = createCheckInSchema.parse(body);
 
     const updatedKeyResult = await OkrService.createCheckIn(result.dbUser.id, validatedData);
 
@@ -39,18 +41,18 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const keyResultId = searchParams.get('keyResultId');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const limit = parseInt(searchParams.get('limit') ?? '10');
 
-    if (!keyResultId) {
+    if (keyResultId === null || keyResultId === '') {
       return NextResponse.json({ error: 'keyResultId is required' }, { status: 400 });
     }
 

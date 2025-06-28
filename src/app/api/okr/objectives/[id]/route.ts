@@ -20,10 +20,15 @@ const updateObjectiveSchema = z.object({
     .optional(),
 });
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+type UpdateObjectiveData = z.infer<typeof updateObjectiveSchema>;
+
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -45,15 +50,18 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validatedData = updateObjectiveSchema.parse(body);
+    const body = (await request.json()) as unknown;
+    const validatedData: UpdateObjectiveData = updateObjectiveSchema.parse(body);
 
     // Check if objective exists and user has access
     const objective = await OkrService.getObjectiveById(params.id);
@@ -92,10 +100,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

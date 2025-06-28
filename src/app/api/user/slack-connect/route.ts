@@ -4,19 +4,19 @@ import { prisma } from '@/lib/prisma';
 import { createSlackClient } from '@/lib/slack/client';
 import { logError } from '@/lib/logger';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
-    const body = await request.json();
+    const body = (await request.json()) as { slackEmail?: unknown };
     const { slackEmail } = body;
 
-    const emailToUse = slackEmail || dbUser.email;
+    const emailToUse: string = typeof slackEmail === 'string' ? slackEmail : dbUser.email;
 
     // Check Slack workspace
     const slackWorkspace = await prisma.slackWorkspace.findFirst({
       where: {
-        organizationId: dbUser.organizationId,
+        organizationId: dbUser.organizationId as string,
       },
     });
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         email: emailToUse,
       });
 
-      if (!slackUsers.ok || !slackUsers.user) {
+      if (!slackUsers.ok || slackUsers.user === null || slackUsers.user === undefined) {
         return NextResponse.json(
           { error: 'Slackワークスペースに該当するユーザーが見つかりません' },
           { status: 404 },
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(_request: NextRequest) {
+export async function DELETE(_request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

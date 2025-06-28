@@ -32,15 +32,17 @@ const createKeyResultSchema = z
     },
   );
 
-export async function POST(request: NextRequest) {
+type CreateKeyResultData = z.infer<typeof createKeyResultSchema>;
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validatedData = createKeyResultSchema.parse(body);
+    const body = (await request.json()) as unknown;
+    const validatedData: CreateKeyResultData = createKeyResultSchema.parse(body);
 
     // Check if user has access to the objective
     const objective = await OkrService.getObjectiveById(validatedData.objectiveId);

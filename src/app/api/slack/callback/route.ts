@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { slackApp } from '@/lib/slack/client';
 import { logError } from '@/lib/logger';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // Check if Slack is configured
     if (!slackApp) {
@@ -22,30 +22,36 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code');
     const error = searchParams.get('error');
 
-    if (error) {
+    if (error !== null && error !== '') {
       return NextResponse.redirect(
         new URL('/dashboard/settings?slack_error=cancelled', request.url),
       );
     }
 
-    if (!code) {
+    if (code === null || code === '') {
       return NextResponse.json({ error: '認証コードが見つかりません' }, { status: 400 });
     }
 
     // Slack OAuthトークンを取得
     const oauthResponse = await slackApp.client.oauth.v2.access({
-      client_id: process.env['SLACK_CLIENT_ID']!,
-      client_secret: process.env['SLACK_CLIENT_SECRET']!,
+      client_id: process.env['SLACK_CLIENT_ID'] as string,
+      client_secret: process.env['SLACK_CLIENT_SECRET'] as string,
       code,
       redirect_uri: `${process.env['NEXT_PUBLIC_APP_URL']}/api/slack/callback`,
     });
 
-    if (!oauthResponse.ok || !oauthResponse.access_token || !oauthResponse.team?.id) {
+    if (
+      !oauthResponse.ok ||
+      oauthResponse.access_token === undefined ||
+      oauthResponse.access_token === '' ||
+      oauthResponse.team?.id === undefined ||
+      oauthResponse.team?.id === ''
+    ) {
       throw new Error('Slack認証に失敗しました');
     }
 
     const teamId = oauthResponse.team.id;
-    const appId = oauthResponse.app_id || '';
+    const appId = oauthResponse.app_id ?? '';
 
     // Slackワークスペース情報を保存
     await prisma.slackWorkspace.upsert({
@@ -53,20 +59,20 @@ export async function GET(request: NextRequest) {
         teamId: teamId,
       },
       update: {
-        teamName: oauthResponse.team.name || '',
+        teamName: oauthResponse.team.name ?? '',
         botAccessToken: oauthResponse.access_token,
-        botUserId: oauthResponse.bot_user_id || '',
+        botUserId: oauthResponse.bot_user_id ?? '',
         appId: appId,
-        organizationId: dbUser.organizationId!,
+        organizationId: dbUser.organizationId as string,
         updatedAt: new Date(),
       },
       create: {
         teamId: teamId,
-        teamName: oauthResponse.team.name || '',
+        teamName: oauthResponse.team.name ?? '',
         botAccessToken: oauthResponse.access_token,
-        botUserId: oauthResponse.bot_user_id || '',
+        botUserId: oauthResponse.bot_user_id ?? '',
         appId: appId,
-        organizationId: dbUser.organizationId!,
+        organizationId: dbUser.organizationId as string,
       },
     });
 

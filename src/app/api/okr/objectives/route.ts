@@ -19,6 +19,8 @@ const createObjectiveSchema = z.object({
   endDate: z.string().transform((str) => new Date(str)),
 });
 
+type CreateObjectiveData = z.infer<typeof createObjectiveSchema>;
+
 const getObjectivesSchema = z.object({
   cycle: z.nativeEnum(OkrCycle).optional(),
   year: z.string().transform(Number).optional(),
@@ -28,10 +30,10 @@ const getObjectivesSchema = z.object({
   status: z.nativeEnum(ObjectiveStatus).optional(),
 });
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -52,15 +54,15 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validatedData = createObjectiveSchema.parse(body);
+    const body = (await request.json()) as unknown;
+    const validatedData: CreateObjectiveData = createObjectiveSchema.parse(body);
 
     // Check permissions
     if (validatedData.ownerType === ObjectiveOwner.COMPANY && result.dbUser.role !== 'ADMIN') {

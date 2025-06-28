@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { logError } from '@/lib/logger';
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: NextRequest): Promise<NextResponse> {
   try {
     await requireAuthWithOrganization();
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      emailNotifications?: unknown;
+      kudosNotifications?: unknown;
+      checkinReminders?: unknown;
+      surveyNotifications?: unknown;
+      teamUpdates?: unknown;
+    };
     const {
       emailNotifications,
       kudosNotifications,

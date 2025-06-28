@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logError } from '@/lib/logger';
 
-export async function POST(_request: NextRequest) {
+export async function POST(_request: NextRequest): Promise<NextResponse> {
   try {
     // TODO: Implement authentication without Supabase
     // For now, return unauthorized

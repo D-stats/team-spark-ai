@@ -3,14 +3,14 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
-    const body = await request.json();
+    const body = (await request.json()) as { name?: unknown };
     const { name } = body;
 
-    if (!name || name.trim().length === 0) {
+    if (typeof name !== 'string' || name.trim().length === 0) {
       return NextResponse.json({ error: '名前は必須です' }, { status: 400 });
     }
 

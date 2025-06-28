@@ -7,8 +7,8 @@ import { prisma } from '@/lib/prisma';
 export const GET = withRateLimit(
   withErrorHandler(async function GET(request: NextRequest): Promise<NextResponse> {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = parseInt(searchParams.get('page') ?? '1');
+    const limit = parseInt(searchParams.get('limit') ?? '20');
     const skip = (page - 1) * limit;
 
     // Get users from database

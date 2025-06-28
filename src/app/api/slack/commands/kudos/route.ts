@@ -18,7 +18,7 @@ interface SlackCommandPayload {
   trigger_id: string;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Verify Slack request
     const body = await request.text();
@@ -31,17 +31,17 @@ export async function POST(request: NextRequest) {
     // Parse form data
     const formData = new URLSearchParams(body);
     const payload: SlackCommandPayload = {
-      token: formData.get('token') || '',
-      team_id: formData.get('team_id') || '',
-      team_domain: formData.get('team_domain') || '',
-      channel_id: formData.get('channel_id') || '',
-      channel_name: formData.get('channel_name') || '',
-      user_id: formData.get('user_id') || '',
-      user_name: formData.get('user_name') || '',
-      command: formData.get('command') || '',
-      text: formData.get('text') || '',
-      response_url: formData.get('response_url') || '',
-      trigger_id: formData.get('trigger_id') || '',
+      token: formData.get('token') ?? '',
+      team_id: formData.get('team_id') ?? '',
+      team_domain: formData.get('team_domain') ?? '',
+      channel_id: formData.get('channel_id') ?? '',
+      channel_name: formData.get('channel_name') ?? '',
+      user_id: formData.get('user_id') ?? '',
+      user_name: formData.get('user_name') ?? '',
+      command: formData.get('command') ?? '',
+      text: formData.get('text') ?? '',
+      response_url: formData.get('response_url') ?? '',
+      trigger_id: formData.get('trigger_id') ?? '',
     };
 
     // コマンドテキストをパース（例: "@user カテゴリ メッセージ"）
@@ -180,5 +180,5 @@ function getCategoryLabel(category: string): string {
     LEARNING: '学習・成長',
     OTHER: 'その他',
   };
-  return labels[category] || category;
+  return labels[category] ?? category;
 }

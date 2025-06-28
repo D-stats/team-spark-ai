@@ -10,10 +10,10 @@ const getAlignmentSchema = z.object({
   year: z.string().transform(Number),
 });
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

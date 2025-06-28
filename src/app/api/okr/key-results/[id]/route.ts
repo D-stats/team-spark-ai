@@ -15,15 +15,20 @@ const updateKeyResultSchema = z.object({
   confidence: z.number().min(0).max(1).optional(),
 });
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+type UpdateKeyResultData = z.infer<typeof updateKeyResultSchema>;
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const validatedData = updateKeyResultSchema.parse(body);
+    const body = (await request.json()) as unknown;
+    const validatedData: UpdateKeyResultData = updateKeyResultSchema.parse(body);
 
     const updatedKeyResult = await OkrService.updateKeyResult(params.id, validatedData);
 
@@ -41,10 +46,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: { id: string } },
+): Promise<NextResponse> {
   try {
     const result = await getUserWithOrganization();
-    if (!result?.dbUser?.organizationId) {
+    if (result?.dbUser?.organizationId === undefined || result.dbUser.organizationId === '') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
