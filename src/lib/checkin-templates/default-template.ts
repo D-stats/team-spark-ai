@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/lib/logger';
 
 export async function createDefaultCheckInTemplate(organizationId: string) {
   // Note: These are the default English questions. The actual display text
@@ -59,7 +60,7 @@ export async function createDefaultCheckInTemplate(organizationId: string) {
 
     return template;
   } catch (error) {
-    console.error('Failed to create default template:', error);
+    logError(error as Error, 'createDefaultCheckInTemplate');
     throw error;
   }
 }

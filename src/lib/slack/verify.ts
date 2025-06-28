@@ -1,10 +1,11 @@
 import { createHmac } from 'crypto';
 import { NextRequest } from 'next/server';
+import { logError } from '@/lib/logger';
 
 export async function verifySlackRequest(request: NextRequest, body: string): Promise<boolean> {
   const signingSecret = process.env.SLACK_SIGNING_SECRET;
   if (!signingSecret) {
-    console.error('SLACK_SIGNING_SECRET is not set');
+    logError(new Error('SLACK_SIGNING_SECRET is not set'), 'verifySlackRequest');
     return false;
   }
 

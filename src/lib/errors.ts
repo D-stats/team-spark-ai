@@ -4,6 +4,7 @@
  */
 
 import { ApiError } from '@/types/api';
+import { log } from './logger';
 
 // ================
 // Error Category Definitions
@@ -245,17 +246,17 @@ export class ErrorHandler {
 
     switch (error.severity) {
       case ErrorSeverity.CRITICAL:
-        console.error('CRITICAL ERROR:', logData);
+        log.error('CRITICAL ERROR', logData);
         break;
       case ErrorSeverity.HIGH:
-        console.error('HIGH ERROR:', logData);
+        log.error('HIGH ERROR', logData);
         break;
       case ErrorSeverity.MEDIUM:
-        console.warn('MEDIUM ERROR:', logData);
+        log.warn('MEDIUM ERROR', logData);
         break;
       case ErrorSeverity.LOW:
         if (process.env.NODE_ENV === 'development') {
-          console.info('LOW ERROR:', logData);
+          log.info('LOW ERROR', logData);
         }
         break;
     }

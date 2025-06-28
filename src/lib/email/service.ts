@@ -3,6 +3,7 @@ import KudosNotificationEmail from './templates/kudos-notification';
 import CheckInReminderEmail from './templates/checkin-reminder';
 import SurveyNotificationEmail from './templates/survey-notification';
 import { ReactElement } from 'react';
+import { log, logError } from '@/lib/logger';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -14,7 +15,7 @@ interface SendEmailOptions {
 
 async function sendEmail({ to, subject, react }: SendEmailOptions) {
   if (!resend) {
-    console.warn('Email service not configured - RESEND_API_KEY is missing');
+    log.warn('Email service not configured - RESEND_API_KEY is missing');
     return null;
   }
 
@@ -27,13 +28,13 @@ async function sendEmail({ to, subject, react }: SendEmailOptions) {
     });
 
     if (error) {
-      console.error('Email send error:', error);
+      logError(new Error(`Email send error: ${error}`), 'sendEmail');
       throw error;
     }
 
     return data;
   } catch (error) {
-    console.error('Failed to send email:', error);
+    logError(error as Error, 'sendEmail');
     throw error;
   }
 }

@@ -8,13 +8,14 @@ import {
 } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { metrics, trace } from '@opentelemetry/api';
+import { log } from './logger';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Initialize OpenTelemetry
 export function initializeMonitoring() {
   if (!isProduction && !process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
-    console.log('Monitoring disabled in development (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)');
+    log.info('Monitoring disabled in development (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)');
     return;
   }
 
@@ -41,7 +42,7 @@ export function initializeMonitoring() {
   });
 
   sdk.start();
-  console.log('OpenTelemetry monitoring initialized');
+  log.info('OpenTelemetry monitoring initialized');
 }
 
 // Custom metrics

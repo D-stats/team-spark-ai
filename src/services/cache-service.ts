@@ -1,6 +1,7 @@
 import { Cache } from '@/lib/redis';
 import { prisma } from '@/lib/prisma';
 import { User, Team, Kudos } from '@prisma/client';
+import { log, logError } from '@/lib/logger';
 
 // User caching service
 export class UserCacheService {
@@ -163,8 +164,8 @@ export async function warmCache() {
       await teamCacheService.getTeamsByOrganization(org.id);
     }
 
-    console.log('Cache warming completed');
+    log.info('Cache warming completed');
   } catch (error) {
-    console.error('Cache warming failed:', error);
+    logError(error as Error, 'warmCache');
   }
 }

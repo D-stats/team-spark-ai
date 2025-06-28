@@ -1,13 +1,14 @@
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { openAPISpec } from './spec';
+import { log, logError } from '@/lib/logger';
 
 export async function validateOpenAPISpec() {
   try {
     await SwaggerParser.validate(openAPISpec);
-    console.log('API specification is valid!');
+    log.info('API specification is valid!');
     return true;
   } catch (error) {
-    console.error('API specification is invalid:', error);
+    logError(error as Error, 'validateOpenAPISpec - API specification is invalid');
     return false;
   }
 }

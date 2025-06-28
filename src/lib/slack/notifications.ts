@@ -1,5 +1,6 @@
 import { createSlackClient } from './client';
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/lib/logger';
 
 interface KudosNotificationData {
   receiverId: string;
@@ -97,7 +98,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
       ],
     });
   } catch (error) {
-    console.error('Failed to send Kudos notification:', error);
+    logError(error as Error, 'sendKudosNotification');
   }
 }
 
@@ -159,7 +160,7 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
       ],
     });
   } catch (error) {
-    console.error('Failed to send check-in reminder:', error);
+    logError(error as Error, 'sendCheckInReminder');
   }
 }
 
@@ -227,10 +228,12 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
           ],
         });
       } catch (error) {
-        console.error(`Failed to send survey notification to user ${user.id}:`, error);
+        logError(error as Error, 'sendSurveyNotifications - user notification', {
+          userId: user.id,
+        });
       }
     }
   } catch (error) {
-    console.error('Failed to send survey notifications:', error);
+    logError(error as Error, 'sendSurveyNotifications');
   }
 }
