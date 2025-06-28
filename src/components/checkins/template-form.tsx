@@ -134,7 +134,6 @@ export function TemplateForm({ template, onSubmit, onCancel }: TemplateFormProps
         alert(error.error || '保存に失敗しました');
       }
     } catch (error) {
-      console.error('Failed to save template:', error);
       alert('保存に失敗しました');
     } finally {
       setIsSubmitting(false);

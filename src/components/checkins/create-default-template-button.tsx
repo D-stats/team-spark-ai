@@ -23,7 +23,6 @@ export function CreateDefaultTemplateButton() {
         alert(error.error || 'デフォルトテンプレートの作成に失敗しました');
       }
     } catch (error) {
-      console.error('Failed to create default template:', error);
       alert('デフォルトテンプレートの作成に失敗しました');
     } finally {
       setIsLoading(false);

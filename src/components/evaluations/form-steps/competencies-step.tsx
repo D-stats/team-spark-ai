@@ -58,7 +58,7 @@ export function EvaluationCompetenciesStep({
           setCompetencies(result.data);
         }
       } catch (error) {
-        console.error('Failed to fetch competencies:', error);
+        // Error fetching competencies
       } finally {
         setLoading(false);
       }

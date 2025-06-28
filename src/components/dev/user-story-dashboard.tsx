@@ -54,7 +54,7 @@ export function UserStoryDashboard() {
       const result = validator.validateStories(allStories);
       setValidations(result.details);
     } catch (error) {
-      console.error('Failed to load stories:', error);
+      // Error loading stories
     } finally {
       setLoading(false);
     }

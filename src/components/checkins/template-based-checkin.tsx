@@ -61,7 +61,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch templates:', error);
+      // Error fetching templates
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +143,7 @@ export function TemplateBasedCheckIn({ onSubmit }: TemplateBasedCheckInProps) {
         alert(error.error || 'チェックインに失敗しました');
       }
     } catch (error) {
-      console.error('Failed to submit check-in:', error);
+      // Error submitting check-in
       alert('チェックインに失敗しました');
     } finally {
       setIsSubmitting(false);

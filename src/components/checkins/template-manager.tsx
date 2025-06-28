@@ -45,7 +45,7 @@ export function CheckInTemplateManager() {
         setTemplates(data);
       }
     } catch (error) {
-      console.error('Failed to fetch templates:', error);
+      // Error fetching templates
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +76,7 @@ export function CheckInTemplateManager() {
         alert(error.error || '削除に失敗しました');
       }
     } catch (error) {
-      console.error('Failed to delete template:', error);
+      // Error deleting template
       alert('削除に失敗しました');
     }
   };

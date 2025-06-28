@@ -87,7 +87,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       const data = await response.json();
       setAlignment(data);
     } catch (error) {
-      console.error('Failed to fetch alignment:', error);
+      // Error fetching alignment
     }
   }, [selectedCycle, selectedYear]);
 
@@ -104,7 +104,7 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
       const data = await response.json();
       setSummary(data);
     } catch (error) {
-      console.error('Failed to fetch summary:', error);
+      // Error fetching summary
     }
   }, [selectedCycle, selectedYear]);
 

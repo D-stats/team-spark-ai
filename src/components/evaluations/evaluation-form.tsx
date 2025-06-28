@@ -89,7 +89,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
   const handleSave = async () => {
     const result = await saveDraft();
     if (!result.success) {
-      console.error('Save failed:', result.error);
+      // Save failed
     }
   };
 
