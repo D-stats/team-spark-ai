@@ -162,21 +162,27 @@ export class OkrService {
     // Group by team/individual
     const teamObjectivesByTeam: Record<string, ObjectiveWithRelations[]> = {};
     teamObjectives.forEach((obj) => {
-      if (obj.ownerTeamId) {
+      if (obj.ownerTeamId !== null && obj.ownerTeamId !== undefined && obj.ownerTeamId.length > 0) {
         if (!teamObjectivesByTeam[obj.ownerTeamId]) {
           teamObjectivesByTeam[obj.ownerTeamId] = [];
         }
-        teamObjectivesByTeam[obj.ownerTeamId]!.push(obj);
+        const teamObjs = teamObjectivesByTeam[obj.ownerTeamId];
+        if (teamObjs) {
+          teamObjs.push(obj);
+        }
       }
     });
 
     const individualObjectivesByUser: Record<string, ObjectiveWithRelations[]> = {};
     individualObjectives.forEach((obj) => {
-      if (obj.ownerUserId) {
+      if (obj.ownerUserId !== null && obj.ownerUserId !== undefined && obj.ownerUserId.length > 0) {
         if (!individualObjectivesByUser[obj.ownerUserId]) {
           individualObjectivesByUser[obj.ownerUserId] = [];
         }
-        individualObjectivesByUser[obj.ownerUserId]!.push(obj);
+        const userObjs = individualObjectivesByUser[obj.ownerUserId];
+        if (userObjs) {
+          userObjs.push(obj);
+        }
       }
     });
 
@@ -219,10 +225,15 @@ export class OkrService {
         where: { id: keyResultId },
       });
 
-      if (keyResult && keyResult.type === KeyResultType.METRIC && keyResult.targetValue) {
-        const range = keyResult.targetValue - (keyResult.startValue || 0);
-        const current = data.currentValue - (keyResult.startValue || 0);
-        progress = Math.min(Math.max(current / range, 0), 1);
+      if (
+        keyResult &&
+        keyResult.type === KeyResultType.METRIC &&
+        keyResult.targetValue !== null &&
+        keyResult.targetValue !== undefined
+      ) {
+        const range = keyResult.targetValue - (keyResult.startValue ?? 0);
+        const current = data.currentValue - (keyResult.startValue ?? 0);
+        progress = range !== 0 ? Math.min(Math.max(current / range, 0), 1) : 0;
       }
     }
 
@@ -286,7 +297,10 @@ export class OkrService {
     return this.updateKeyResult(input.keyResultId, updateData);
   }
 
-  static async getCheckInHistory(keyResultId: string, limit: number = 10) {
+  static async getCheckInHistory(
+    keyResultId: string,
+    limit: number = 10,
+  ): Promise<Awaited<ReturnType<typeof prisma.okrCheckIn.findMany>>> {
     return prisma.okrCheckIn.findMany({
       where: { keyResultId },
       include: {
@@ -340,12 +354,27 @@ export class OkrService {
   ): KeyResultWithProgress {
     return {
       ...keyResult,
-      latestCheckIn: keyResult.checkIns?.[0] || null,
+      latestCheckIn: keyResult.checkIns?.[0] ?? null,
     };
   }
 
   // Analytics
-  static async getOkrSummary(organizationId: string, cycle: OkrCycle, year: number) {
+  static async getOkrSummary(
+    organizationId: string,
+    cycle: OkrCycle,
+    year: number,
+  ): Promise<{
+    totalObjectives: number;
+    activeObjectives: number;
+    completedObjectives: number;
+    averageProgress: number;
+    averageConfidence: number;
+    keyResultsByType: {
+      metric: number;
+      milestone: number;
+    };
+    objectivesByCycle: Record<OkrCycle, number>;
+  }> {
     const objectives = await this.getOrganizationObjectives(organizationId, {
       cycle,
       year,
@@ -366,7 +395,7 @@ export class OkrService {
         keyResults.filter((kr) => kr.confidence !== null).length > 0
           ? keyResults
               .filter((kr) => kr.confidence !== null)
-              .reduce((sum, kr) => sum + (kr.confidence || 0), 0) /
+              .reduce((sum, kr) => sum + (kr.confidence ?? 0), 0) /
             keyResults.filter((kr) => kr.confidence !== null).length
           : 0,
       keyResultsByType: {
@@ -375,7 +404,8 @@ export class OkrService {
       },
       objectivesByCycle: objectives.reduce(
         (acc, obj) => {
-          acc[obj.cycle] = (acc[obj.cycle] || 0) + 1;
+          const count = acc[obj.cycle];
+          acc[obj.cycle] = (count !== null && count !== undefined ? count : 0) + 1;
           return acc;
         },
         {} as Record<OkrCycle, number>,

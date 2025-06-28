@@ -15,7 +15,7 @@ export async function createEvaluationCycle(data: {
   type: EvaluationCycleType;
   startDate: Date;
   endDate: Date;
-}) {
+}): Promise<Awaited<ReturnType<typeof prisma.evaluationCycle.create>>> {
   // Default phase settings
   const defaultPhases = getDefaultPhases(data.type, data.startDate, data.endDate);
 
@@ -35,7 +35,18 @@ export async function createEvaluationCycle(data: {
 }
 
 // Generate default phases
-function getDefaultPhases(_type: EvaluationCycleType, startDate: Date, endDate: Date) {
+function getDefaultPhases(
+  _type: EvaluationCycleType,
+  startDate: Date,
+  endDate: Date,
+): Array<{
+  type: EvaluationPhaseType;
+  name: string;
+  description: string;
+  order: number;
+  startDate: Date;
+  endDate: Date;
+}> {
   const totalDays = Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
 
   const phases = [
@@ -89,7 +100,10 @@ function getDefaultPhases(_type: EvaluationCycleType, startDate: Date, endDate: 
 }
 
 // Automatically generate evaluation subjects
-export async function generateEvaluations(cycleId: string, organizationId: string) {
+export async function generateEvaluations(
+  cycleId: string,
+  organizationId: string,
+): Promise<number> {
   const cycle = await prisma.evaluationCycle.findUnique({
     where: { id: cycleId },
     include: { phases: true },
@@ -144,7 +158,12 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
     });
 
     for (const team of managedTeams) {
-      if (team.managerId && team.managerId !== user.id) {
+      if (
+        team.managerId !== null &&
+        team.managerId !== undefined &&
+        team.managerId.length > 0 &&
+        team.managerId !== user.id
+      ) {
         evaluations.push({
           cycleId,
           evaluateeId: user.id,
@@ -175,7 +194,7 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
     }
   }
 
-  // 重複を除去してデータベースに保存
+  // Remove duplicates and save to database
   const uniqueEvaluations = evaluations.filter(
     (evaluation, index, self) =>
       index ===
@@ -195,7 +214,7 @@ export async function generateEvaluations(cycleId: string, organizationId: strin
   return uniqueEvaluations.length;
 }
 
-// 評価の権限チェック
+// Check evaluation permissions
 export function canViewEvaluation(
   viewer: { id: string; role: Role },
   evaluation: {
@@ -206,21 +225,21 @@ export function canViewEvaluation(
     isVisible: boolean;
   },
 ): boolean {
-  // 管理者は全て閲覧可能
+  // Admins can view all
   if (viewer.role === 'ADMIN') return true;
 
-  // 自分が被評価者の場合
+  // If viewer is evaluatee
   if (viewer.id === evaluation.evaluateeId) {
-    // 公開されている評価のみ
+    // Only visible evaluations
     return evaluation.isVisible || evaluation.status === 'SHARED';
   }
 
-  // 自分が評価者の場合
+  // If viewer is evaluator
   if (viewer.id === evaluation.evaluatorId) {
     return true;
   }
 
-  // マネージャーの場合、部下の評価を見れる（実装簡略化のため、ここでは省略）
+  // Managers can view subordinates' evaluations (simplified implementation omitted)
 
   return false;
 }
@@ -232,70 +251,73 @@ export function canEditEvaluation(
     status: EvaluationStatus;
   },
 ): boolean {
-  // 提出済みの評価は編集不可
+  // Cannot edit submitted evaluations
   if (evaluation.status !== 'DRAFT') return false;
 
-  // 評価者本人のみ編集可能
+  // Only evaluator can edit
   return editor.id === evaluation.evaluatorId;
 }
 
-// コンピテンシーのデフォルト作成
-export async function createDefaultCompetencies(organizationId: string) {
+// Default competencies creation
+export async function createDefaultCompetencies(
+  organizationId: string,
+): Promise<Awaited<ReturnType<typeof prisma.competency.createMany>>> {
   const defaultCompetencies = [
-    // コアコンピテンシー
+    // Core competencies
     {
-      name: 'コミュニケーション',
-      description: '明確で効果的なコミュニケーションを行い、他者と協力する能力',
+      name: 'Communication',
+      description: 'Ability to communicate clearly and effectively, and collaborate with others',
       category: CompetencyCategory.CORE,
       behaviors: [
-        '明確で簡潔な情報伝達ができる',
-        '積極的に傾聴し、フィードバックを求める',
-        '異なる意見を尊重し、建設的な議論ができる',
+        'Can communicate information clearly and concisely',
+        'Actively listens and seeks feedback',
+        'Respects different opinions and engages in constructive discussions',
       ],
       order: 1,
     },
     {
-      name: 'チームワーク',
-      description: 'チームの一員として協力し、共通の目標達成に貢献する能力',
+      name: 'Teamwork',
+      description:
+        'Ability to collaborate as a team member and contribute to achieving common goals',
       category: CompetencyCategory.CORE,
       behaviors: [
-        'チームの目標を理解し、積極的に貢献する',
-        '他のメンバーをサポートし、知識を共有する',
-        '対立を建設的に解決する',
+        'Understands team goals and actively contributes',
+        'Supports other members and shares knowledge',
+        'Resolves conflicts constructively',
       ],
       order: 2,
     },
     {
-      name: '問題解決',
-      description: '課題を特定し、効果的な解決策を見つけて実行する能力',
+      name: 'Problem Solving',
+      description: 'Ability to identify issues, find effective solutions, and execute them',
       category: CompetencyCategory.CORE,
       behaviors: [
-        '問題の根本原因を分析できる',
-        '創造的な解決策を提案する',
-        '解決策を実行し、結果を評価する',
+        'Can analyze root causes of problems',
+        'Proposes creative solutions',
+        'Executes solutions and evaluates results',
       ],
       order: 3,
     },
-    // リーダーシップコンピテンシー
+    // Leadership competencies
     {
-      name: 'ビジョン設定',
-      description: '明確なビジョンを設定し、チームを導く能力',
+      name: 'Vision Setting',
+      description: 'Ability to set clear vision and lead the team',
       category: CompetencyCategory.LEADERSHIP,
       behaviors: [
-        '将来の方向性を明確に示す',
-        'チームメンバーを巻き込み、動機付ける',
-        '変化に対して柔軟に対応する',
+        'Clearly shows future direction',
+        'Engages and motivates team members',
+        'Responds flexibly to changes',
       ],
       order: 4,
     },
     {
-      name: '人材育成',
-      description: 'チームメンバーの成長と発展を支援する能力',
+      name: 'Talent Development',
+      description: 'Ability to support team members growth and development',
       category: CompetencyCategory.LEADERSHIP,
       behaviors: [
-        'メンバーの強みと改善点を把握する',
-        '建設的なフィードバックを提供する',
-        '成長機会を創出する',
+        'Understands members strengths and areas for improvement',
+        'Provides constructive feedback',
+        'Creates growth opportunities',
       ],
       order: 5,
     },
@@ -311,8 +333,11 @@ export async function createDefaultCompetencies(organizationId: string) {
   return competencies;
 }
 
-// 評価の提出
-export async function submitEvaluation(evaluationId: string, userId: string) {
+// Submit evaluation
+export async function submitEvaluation(
+  evaluationId: string,
+  userId: string,
+): Promise<Awaited<ReturnType<typeof prisma.evaluation.update>>> {
   const evaluation = await prisma.evaluation.findUnique({
     where: { id: evaluationId },
     include: {
@@ -321,16 +346,20 @@ export async function submitEvaluation(evaluationId: string, userId: string) {
   });
 
   if (!evaluation || evaluation.evaluatorId !== userId) {
-    throw new Error('評価が見つからないか、権限がありません');
+    throw new Error('Evaluation not found or no permission');
   }
 
   if (evaluation.status !== 'DRAFT') {
-    throw new Error('すでに提出済みの評価です');
+    throw new Error('Evaluation already submitted');
   }
 
-  // 必須項目のチェック
-  if (!evaluation.overallRating || evaluation.competencyRatings.length === 0) {
-    throw new Error('必須項目を入力してください');
+  // Check required fields
+  if (
+    evaluation.overallRating === null ||
+    evaluation.overallRating === undefined ||
+    evaluation.competencyRatings.length === 0
+  ) {
+    throw new Error('Please fill in required fields');
   }
 
   return prisma.evaluation.update({
@@ -342,8 +371,20 @@ export async function submitEvaluation(evaluationId: string, userId: string) {
   });
 }
 
-// 評価結果の集計
-export async function aggregateEvaluationResults(cycleId: string, evaluateeId: string) {
+// Aggregate evaluation results
+export async function aggregateEvaluationResults(
+  cycleId: string,
+  evaluateeId: string,
+): Promise<{
+  evaluationCount: number;
+  averagesByType: Record<string, number>;
+  competencyResults: Array<{
+    competency: unknown;
+    averageRating: number;
+    ratingCount: number;
+  }>;
+  overallAverage: number;
+}> {
   const evaluations = await prisma.evaluation.findMany({
     where: {
       cycleId,
@@ -362,13 +403,16 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
   // タイプ別の平均評価
   const ratingsByType = evaluations.reduce(
     (acc, evaluation) => {
-      if (!evaluation.overallRating) return acc;
+      if (evaluation.overallRating === null || evaluation.overallRating === undefined) return acc;
 
       if (!acc[evaluation.type]) {
         acc[evaluation.type] = { sum: 0, count: 0 };
       }
-      acc[evaluation.type]!.sum += evaluation.overallRating;
-      acc[evaluation.type]!.count += 1;
+      const typeData = acc[evaluation.type];
+      if (typeData) {
+        typeData.sum += evaluation.overallRating;
+        typeData.count += 1;
+      }
 
       return acc;
     },
@@ -413,7 +457,7 @@ export async function aggregateEvaluationResults(cycleId: string, evaluateeId: s
     averagesByType,
     competencyResults,
     overallAverage:
-      evaluations.reduce((sum, evaluation) => sum + (evaluation.overallRating || 0), 0) /
-      evaluations.length,
+      evaluations.reduce((sum, evaluation) => sum + (evaluation.overallRating ?? 0), 0) /
+      (evaluations.length > 0 ? evaluations.length : 1),
   };
 }

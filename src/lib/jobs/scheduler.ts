@@ -95,7 +95,10 @@ const scheduledJobs: ScheduledJob[] = [
           if (!acc[manager.organizationId]) {
             acc[manager.organizationId] = [];
           }
-          acc[manager.organizationId]?.push(manager.id);
+          const orgManagers = acc[manager.organizationId];
+          if (orgManagers) {
+            orgManagers.push(manager.id);
+          }
           return acc;
         },
         {} as Record<string, string[]>,
@@ -133,13 +136,16 @@ const scheduledJobs: ScheduledJob[] = [
 ];
 
 // Schedule all jobs
-export async function scheduleJobs() {
+export async function scheduleJobs(): Promise<void> {
   log.info('Scheduling recurring jobs...');
 
   for (const job of scheduledJobs) {
     try {
       // Get job data
-      const jobData = typeof job.data === 'function' ? await job.data() : job.data;
+      const jobData: unknown =
+        job.data !== null && job.data !== undefined && typeof job.data === 'function'
+          ? await job.data()
+          : job.data;
 
       if (Array.isArray(jobData)) {
         // Schedule multiple jobs
@@ -178,7 +184,7 @@ export async function scheduleJobs() {
 }
 
 // Remove all scheduled jobs
-export async function unscheduleJobs() {
+export async function unscheduleJobs(): Promise<void> {
   log.info('Removing scheduled jobs...');
 
   const queues = [emailQueue, metricsQueue, maintenanceQueue, reportQueue];
@@ -209,7 +215,7 @@ export async function scheduleOneTimeJob<T>(
   jobType: JobType,
   data: T,
   delay: number, // Delay in milliseconds
-) {
+): Promise<Awaited<ReturnType<typeof addJob>>> {
   // Create missing queues if needed
   const redis = getRedisClient();
   const slackSyncQueue = new Queue('slack-sync', { connection: redis });
@@ -227,7 +233,7 @@ export async function scheduleOneTimeJob<T>(
   };
 
   const queue = queueMap[jobType];
-  if (!queue) {
+  if (queue === null || queue === undefined) {
     throw new Error(`No queue found for job type: ${jobType}`);
   }
 

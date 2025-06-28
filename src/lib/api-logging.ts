@@ -8,22 +8,22 @@ export function withLogging(
     routeName?: string;
     skipLogging?: boolean;
   },
-) {
-  return async (request: NextRequest) => {
-    if (options?.skipLogging) {
+): (request: NextRequest) => Promise<NextResponse> {
+  return async (request: NextRequest): Promise<NextResponse> => {
+    if (options?.skipLogging === true) {
       return handler(request);
     }
 
     const startTime = Date.now();
     const method = request.method;
     const url = new URL(request.url);
-    const routeName = options?.routeName || url.pathname;
+    const routeName = options?.routeName ?? url.pathname;
 
     // Extract request metadata
-    const userId = request.headers.get('x-user-id') || undefined;
-    const requestId = request.headers.get('x-request-id') || crypto.randomUUID();
-    const userAgent = request.headers.get('user-agent') || 'unknown';
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+    const userId = request.headers.get('x-user-id') ?? undefined;
+    const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
+    const userAgent = request.headers.get('user-agent') ?? 'unknown';
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown';
 
     // Log request start
     log.debug(`API Request Start: ${method} ${routeName}`, {
@@ -43,7 +43,7 @@ export function withLogging(
           'http.request_id': requestId,
           'http.user_agent': userAgent,
           'http.client_ip': ip,
-          'user.id': userId || 'anonymous',
+          'user.id': userId ?? 'anonymous',
         });
 
         return handler(request);
@@ -121,14 +121,14 @@ export function withLogging(
 // Middleware to log request body (be careful with sensitive data)
 export function logRequestBody<T = unknown>(
   handler: (request: NextRequest, body: T) => Promise<NextResponse>,
-) {
+): (request: NextRequest) => Promise<NextResponse> {
   return withLogging(async (request: NextRequest) => {
     let body: T | null = null;
 
     try {
       const contentType = request.headers.get('content-type');
 
-      if (contentType?.includes('application/json')) {
+      if (contentType !== null && contentType.includes('application/json')) {
         const text = await request.text();
         body = JSON.parse(text) as T;
 
@@ -148,7 +148,7 @@ export function logRequestBody<T = unknown>(
     const newRequest = new NextRequest(request.url, {
       method: request.method,
       headers: request.headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body !== null ? JSON.stringify(body) : undefined,
     });
 
     return handler(newRequest, body as T);
@@ -169,7 +169,11 @@ interface SanitizableObject {
 }
 
 function sanitizeRequestBody<T>(body: T): T {
-  if (!body || typeof body !== 'object') {
+  // Type guard for objects
+  const isObject = (val: unknown): val is Record<string, unknown> => {
+    return val !== null && typeof val === 'object' && !Array.isArray(val);
+  };
+  if (body === null || body === undefined || !isObject(body)) {
     return body;
   }
 

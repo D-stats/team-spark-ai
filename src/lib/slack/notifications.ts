@@ -21,7 +21,7 @@ interface SurveyNotificationData {
 }
 
 // Send Kudos reception notification
-export async function sendKudosNotification(data: KudosNotificationData) {
+export async function sendKudosNotification(data: KudosNotificationData): Promise<void> {
   try {
     // Get receiver information
     const receiver = await prisma.user.findUnique({
@@ -35,7 +35,12 @@ export async function sendKudosNotification(data: KudosNotificationData) {
       },
     });
 
-    if (!receiver?.slackUserId || !receiver.organization.slackWorkspaces[0]) {
+    if (
+      receiver?.slackUserId === null ||
+      receiver?.slackUserId === undefined ||
+      receiver.slackUserId.length === 0 ||
+      !receiver.organization.slackWorkspaces[0]
+    ) {
       // Slack notification skipped: user or workspace not connected
       return;
     }
@@ -73,7 +78,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
           fields: [
             {
               type: 'mrkdwn',
-              text: `*Category:*\n${categoryLabels[data.category] || data.category}`,
+              text: `*Category:*\n${categoryLabels[data.category] ?? data.category}`,
             },
             {
               type: 'mrkdwn',
@@ -103,7 +108,7 @@ export async function sendKudosNotification(data: KudosNotificationData) {
 }
 
 // Send check-in reminder
-export async function sendCheckInReminder(data: CheckInReminderData) {
+export async function sendCheckInReminder(data: CheckInReminderData): Promise<void> {
   try {
     const user = await prisma.user.findUnique({
       where: { id: data.userId },
@@ -116,7 +121,12 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
       },
     });
 
-    if (!user?.slackUserId || !user.organization.slackWorkspaces[0]) {
+    if (
+      user?.slackUserId === null ||
+      user?.slackUserId === undefined ||
+      user.slackUserId.length === 0 ||
+      !user.organization.slackWorkspaces[0]
+    ) {
       return;
     }
 
@@ -164,10 +174,10 @@ export async function sendCheckInReminder(data: CheckInReminderData) {
   }
 }
 
-// サーベイ通知を送信
-export async function sendSurveyNotification(data: SurveyNotificationData) {
+// Send survey notification
+export async function sendSurveyNotification(data: SurveyNotificationData): Promise<void> {
   try {
-    // 組織の全ユーザーを取得
+    // Get all users in organization
     const users = await prisma.user.findMany({
       where: {
         organizationId: data.organizationId,
@@ -188,7 +198,7 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
     }
 
     const slackWorkspace = users[0]?.organization.slackWorkspaces[0];
-    if (!slackWorkspace) {
+    if (slackWorkspace === null || slackWorkspace === undefined) {
       return;
     }
     const deadlineText = data.deadline
@@ -198,9 +208,14 @@ export async function sendSurveyNotification(data: SurveyNotificationData) {
     // Create Slack client with workspace-specific token
     const slackClient = createSlackClient(slackWorkspace.botAccessToken);
 
-    // 各ユーザーに通知を送信
+    // Send notification to each user
     for (const user of users) {
-      if (!user.slackUserId) continue;
+      if (
+        user.slackUserId === null ||
+        user.slackUserId === undefined ||
+        user.slackUserId.length === 0
+      )
+        continue;
 
       try {
         await slackClient.chat.postMessage({

@@ -3,9 +3,11 @@ import { log } from './logger';
 
 let redis: Redis | null = null;
 
-export function getRedisClient(): Redis {
+type RedisType = Redis;
+
+export function getRedisClient(): RedisType {
   if (!redis) {
-    const redisUrl = process.env['REDIS_URL'] || 'redis://localhost:6379';
+    const redisUrl = process.env['REDIS_URL'] ?? 'redis://localhost:6379';
 
     redis = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
@@ -13,7 +15,7 @@ export function getRedisClient(): Redis {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
-      reconnectOnError: (err) => {
+      reconnectOnError: (err): boolean => {
         const targetError = 'READONLY';
         if (err.message.includes(targetError)) {
           return true;
@@ -42,7 +44,7 @@ export function getRedisClient(): Redis {
   return redis;
 }
 
-export async function closeRedis() {
+export async function closeRedis(): Promise<void> {
   if (redis) {
     await redis.quit();
     redis = null;
@@ -68,7 +70,7 @@ export class Cache {
   async get<T>(key: string): Promise<T | null> {
     try {
       const value = await this.redis.get(this.getKey(key));
-      if (!value) return null;
+      if (value === null) return null;
 
       return JSON.parse(value) as T;
     } catch (error) {
@@ -83,7 +85,7 @@ export class Cache {
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
-      const ttlSeconds = ttl || this.defaultTTL;
+      const ttlSeconds = ttl ?? this.defaultTTL;
 
       await this.redis.setex(this.getKey(key), ttlSeconds, serialized);
     } catch (error) {
@@ -152,10 +154,16 @@ export const kudosCache = new Cache('kudos', 60); // 1 minute
 export const sessionCache = new Cache('sessions', 3600); // 1 hour
 
 // Cache decorator for functions
-export function cacheable<T extends (...args: any[]) => Promise<any>>(
+type CacheableFunction = (...args: unknown[]) => Promise<unknown>;
+
+export function cacheable<T extends CacheableFunction>(
   cacheKey: (args: Parameters<T>) => string,
   ttl: number = 300,
-) {
+): (
+  target: unknown,
+  propertyName: string,
+  descriptor: TypedPropertyDescriptor<T>,
+) => TypedPropertyDescriptor<T> | void {
   return function (_target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<T>) {
     const originalMethod = descriptor.value;
     if (!originalMethod) {
@@ -163,18 +171,21 @@ export function cacheable<T extends (...args: any[]) => Promise<any>>(
     }
     const cache = new Cache(propertyName, ttl);
 
-    descriptor.value = async function (this: any, ...args: Parameters<T>) {
+    // Type assertion to satisfy TypeScript
+    const typedMethod = originalMethod as T;
+
+    descriptor.value = async function (this: unknown, ...args: Parameters<T>) {
       const key = cacheKey(args);
 
       // Try to get from cache
-      const cached = await cache.get(key);
+      const cached = await cache.get<ReturnType<T>>(key);
       if (cached !== null) {
         log.debug('Cache hit', { method: propertyName, key });
         return cached;
       }
 
       // Execute original method
-      const result = await originalMethod.apply(this, args);
+      const result = await typedMethod.apply(this, args);
 
       // Store in cache
       await cache.set(key, result, ttl);
@@ -201,7 +212,7 @@ export class SessionManager {
   async get<T = unknown>(sessionId: string): Promise<T | null> {
     try {
       const data = await this.redis.get(`${this.prefix}${sessionId}`);
-      return data ? (JSON.parse(data) as T) : null;
+      return data !== null ? (JSON.parse(data) as T) : null;
     } catch (error) {
       log.error('Session get error', {
         sessionId,

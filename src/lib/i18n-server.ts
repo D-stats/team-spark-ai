@@ -12,24 +12,29 @@ import { formatDate, formatNumber, formatCurrency, formatRelativeTime } from '@/
  */
 export async function getCurrentLocale(): Promise<string> {
   const headersList = await headers();
-  const acceptLanguage = headersList.get('accept-language') || 'en';
+  const acceptLanguage = headersList.get('accept-language') ?? 'en';
 
   // Simple locale extraction - you might want to use a more sophisticated approach
-  const locale = acceptLanguage.split(',')[0]?.split('-')[0] || 'en';
+  const locale = acceptLanguage.split(',')[0]?.split('-')[0] ?? 'en';
   return ['en', 'ja'].includes(locale) ? locale : 'en';
 }
 
 /**
  * Get translated messages for a specific namespace
  */
-export async function getServerTranslations(namespace: string) {
+export async function getServerTranslations(
+  namespace: string,
+): Promise<Awaited<ReturnType<typeof getTranslations>>> {
   return getTranslations(namespace);
 }
 
 /**
  * Format date on server side with automatic locale detection
  */
-export async function serverFormatDate(date: Date, options?: Intl.DateTimeFormatOptions) {
+export async function serverFormatDate(
+  date: Date,
+  options?: Intl.DateTimeFormatOptions,
+): Promise<string> {
   const locale = await getCurrentLocale();
   return formatDate(date, locale, options);
 }
@@ -37,7 +42,10 @@ export async function serverFormatDate(date: Date, options?: Intl.DateTimeFormat
 /**
  * Format number on server side with automatic locale detection
  */
-export async function serverFormatNumber(number: number, options?: Intl.NumberFormatOptions) {
+export async function serverFormatNumber(
+  number: number,
+  options?: Intl.NumberFormatOptions,
+): Promise<string> {
   const locale = await getCurrentLocale();
   return formatNumber(number, locale, options);
 }
@@ -45,7 +53,7 @@ export async function serverFormatNumber(number: number, options?: Intl.NumberFo
 /**
  * Format currency on server side with automatic locale detection
  */
-export async function serverFormatCurrency(amount: number, currency = 'USD') {
+export async function serverFormatCurrency(amount: number, currency = 'USD'): Promise<string> {
   const locale = await getCurrentLocale();
   return formatCurrency(amount, locale, currency);
 }
@@ -53,7 +61,7 @@ export async function serverFormatCurrency(amount: number, currency = 'USD') {
 /**
  * Format relative time on server side with automatic locale detection
  */
-export async function serverFormatRelativeTime(date: Date) {
+export async function serverFormatRelativeTime(date: Date): Promise<string> {
   const locale = await getCurrentLocale();
   return formatRelativeTime(date, locale);
 }
@@ -61,7 +69,11 @@ export async function serverFormatRelativeTime(date: Date) {
 /**
  * Get localized status labels
  */
-export async function getStatusLabels() {
+export async function getStatusLabels(): Promise<{
+  cycleStatus: Record<string, string>;
+  evaluationStatus: Record<string, string>;
+  evaluationType: Record<string, string>;
+}> {
   const t = await getTranslations('evaluations');
 
   return {
@@ -91,7 +103,7 @@ export async function getStatusLabels() {
 /**
  * Get localized role labels
  */
-export async function getRoleLabels() {
+export async function getRoleLabels(): Promise<Record<string, string>> {
   const t = await getTranslations('organization.members.role');
 
   return {
@@ -104,7 +116,7 @@ export async function getRoleLabels() {
 /**
  * Get localized frequency labels
  */
-export async function getFrequencyLabels() {
+export async function getFrequencyLabels(): Promise<Record<string, string>> {
   const t = await getTranslations('checkins.templates.frequency');
 
   return {

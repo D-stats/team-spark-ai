@@ -62,7 +62,7 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.isOperational = isOperational;
     this.context = context;
-    this.userMessage = userMessage || this.getDefaultUserMessage();
+    this.userMessage = userMessage !== undefined ? userMessage : this.getDefaultUserMessage();
 
     // Preserve stack trace
     Error.captureStackTrace(this, AppError);
@@ -103,7 +103,7 @@ export class AppError extends Error {
     };
   }
 
-  toJSON() {
+  toJSON(): Record<string, unknown> {
     return {
       name: this.name,
       message: this.message,
@@ -132,7 +132,7 @@ export class ValidationError extends AppError {
       400,
       true,
       { field, ...context },
-      field ? `${field}: ${message}` : message,
+      field !== undefined ? `${field}: ${message}` : message,
     );
   }
 }
@@ -154,9 +154,10 @@ export class AuthenticationError extends AppError {
 
 export class AuthorizationError extends AppError {
   constructor(action: string, resource?: string) {
-    const message = resource
-      ? `You do not have ${action} permission for ${resource}`
-      : `You do not have ${action} permission`;
+    const message =
+      resource !== undefined
+        ? `You do not have ${action} permission for ${resource}`
+        : `You do not have ${action} permission`;
 
     super(
       message,
@@ -173,7 +174,8 @@ export class AuthorizationError extends AppError {
 
 export class NotFoundError extends AppError {
   constructor(resource: string, id?: string) {
-    const message = id ? `${resource} (ID: ${id}) not found` : `${resource} not found`;
+    const message =
+      id !== undefined ? `${resource} (ID: ${id}) not found` : `${resource} not found`;
 
     super(
       message,
@@ -270,7 +272,7 @@ export class ErrorHandler {
     }
 
     // Prisma error
-    if (error && typeof error === 'object' && 'code' in error) {
+    if (error !== null && error !== undefined && typeof error === 'object' && 'code' in error) {
       const prismaError = error as {
         code: string;
         message: string;
@@ -280,7 +282,7 @@ export class ErrorHandler {
     }
 
     // Zod error
-    if (error && typeof error === 'object' && 'issues' in error) {
+    if (error !== null && error !== undefined && typeof error === 'object' && 'issues' in error) {
       return this.handleZodError(error as { issues: Array<{ path: string[]; message: string }> });
     }
 
@@ -340,7 +342,7 @@ export class ErrorHandler {
     issues: Array<{ path: string[]; message: string }>;
   }): AppError {
     const firstIssue = error.issues[0];
-    if (!firstIssue) {
+    if (firstIssue === undefined) {
       return new ValidationError('Validation failed', 'unknown');
     }
     const field = firstIssue.path.join('.');
@@ -374,17 +376,31 @@ export function getErrorCode(error: unknown): string {
 }
 
 // API Response Helpers
-export function createErrorResponse(error: unknown, statusCode?: number) {
+export function createErrorResponse(
+  error: unknown,
+  statusCode?: number,
+): {
+  success: false;
+  error: ApiError;
+  statusCode: number;
+} {
   const appError = ErrorHandler.handle(error);
 
   return {
     success: false,
     error: appError.toApiError(),
-    statusCode: statusCode || appError.statusCode,
+    statusCode: statusCode ?? appError.statusCode,
   };
 }
 
-export function createSuccessResponse<T>(data: T, meta?: Record<string, unknown>) {
+export function createSuccessResponse<T>(
+  data: T,
+  meta?: Record<string, unknown>,
+): {
+  success: true;
+  data: T;
+  meta?: Record<string, unknown>;
+} {
   return {
     success: true,
     data,

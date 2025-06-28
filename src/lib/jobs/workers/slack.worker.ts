@@ -71,13 +71,18 @@ async function syncSlackUsers(
   await job.updateProgress(10);
 
   const result = await slack.users.list();
-  const users = result.members || [];
+  const users = result.members ?? [];
 
   await job.updateProgress(50);
 
   let synced = 0;
   for (const slackUser of users) {
-    if (!slackUser.deleted && !slackUser.is_bot && slackUser.id && slackUser.profile?.email) {
+    if (
+      slackUser.deleted !== true &&
+      slackUser.is_bot !== true &&
+      slackUser.id !== undefined &&
+      slackUser.profile?.email !== undefined
+    ) {
       // Check if user exists
       const existingUser = await prisma.user.findFirst({
         where: {
@@ -92,8 +97,8 @@ async function syncSlackUsers(
           where: { id: existingUser.id },
           data: {
             slackUserId: slackUser.id,
-            name: slackUser.real_name || slackUser.name || existingUser.name,
-            avatarUrl: slackUser.profile.image_512 || slackUser.profile.image_192,
+            name: slackUser.real_name ?? slackUser.name ?? existingUser.name,
+            avatarUrl: slackUser.profile.image_512 ?? slackUser.profile.image_192,
           },
         });
       } else {
@@ -101,9 +106,9 @@ async function syncSlackUsers(
         await prisma.user.create({
           data: {
             email: slackUser.profile.email,
-            name: slackUser.real_name || slackUser.name || 'Unknown',
+            name: slackUser.real_name ?? slackUser.name ?? 'Unknown',
             slackUserId: slackUser.id,
-            avatarUrl: slackUser.profile.image_512 || slackUser.profile.image_192,
+            avatarUrl: slackUser.profile.image_512 ?? slackUser.profile.image_192,
             organizationId,
             role: 'MEMBER',
           },
@@ -144,7 +149,7 @@ async function syncSlackChannels(
     types: 'public_channel,private_channel',
   });
 
-  const channels = result.channels || [];
+  const channels = result.channels ?? [];
 
   await job.updateProgress(100);
 
@@ -175,11 +180,11 @@ async function syncSlackMessages(
 }
 
 // Worker event handlers
-slackWorker.on('completed', (job) => {
+slackWorker.on('completed', (job): void => {
   log.debug('Slack worker completed job', { jobId: job.id });
 });
 
-slackWorker.on('failed', (job, error) => {
+slackWorker.on('failed', (job, error): void => {
   log.error('Slack worker job failed', {
     jobId: job?.id,
     error: error.message,
@@ -187,7 +192,7 @@ slackWorker.on('failed', (job, error) => {
 });
 
 // Graceful shutdown
-export async function stopSlackWorker() {
+export async function stopSlackWorker(): Promise<void> {
   await slackWorker.close();
   log.info('Slack worker stopped');
 }

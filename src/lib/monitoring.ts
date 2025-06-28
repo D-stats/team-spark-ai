@@ -12,20 +12,25 @@ import { log } from './logger';
 const isProduction = process.env.NODE_ENV === 'production';
 
 // Initialize OpenTelemetry
-export function initializeMonitoring() {
-  if (!isProduction && !process.env['OTEL_EXPORTER_OTLP_ENDPOINT']) {
+export function initializeMonitoring(): void {
+  if (
+    !isProduction &&
+    (process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] === null ||
+      process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] === undefined ||
+      process.env['OTEL_EXPORTER_OTLP_ENDPOINT'].length === 0)
+  ) {
     log.info('Monitoring disabled in development (set OTEL_EXPORTER_OTLP_ENDPOINT to enable)');
     return;
   }
 
   const resource = resourceFromAttributes({
     [SEMRESATTRS_SERVICE_NAME]: 'team-spark-ai',
-    [SEMRESATTRS_SERVICE_VERSION]: process.env['npm_package_version'] || '0.1.0',
-    environment: process.env.NODE_ENV || 'development',
+    [SEMRESATTRS_SERVICE_VERSION]: process.env['npm_package_version'] ?? '0.1.0',
+    environment: process.env.NODE_ENV ?? 'development',
   });
 
   const traceExporter = new OTLPTraceExporter({
-    url: process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] || 'http://localhost:4318/v1/traces',
+    url: process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] ?? 'http://localhost:4318/v1/traces',
   });
 
   const sdk = new NodeSDK({
@@ -100,7 +105,7 @@ export function createSpan<T>(name: string, fn: () => Promise<T>): Promise<T> {
   });
 }
 
-export function addSpanAttributes(attributes: Record<string, string | number | boolean>) {
+export function addSpanAttributes(attributes: Record<string, string | number | boolean>): void {
   const span = trace.getActiveSpan();
   if (span) {
     Object.entries(attributes).forEach(([key, value]) => {
@@ -110,7 +115,7 @@ export function addSpanAttributes(attributes: Record<string, string | number | b
 }
 
 // Monitoring middleware for API routes
-export function monitorApiRoute(routeName: string) {
+export function monitorApiRoute(routeName: string): (request: Request) => Promise<Response> {
   return async (request: Request) => {
     const startTime = Date.now();
     const method = request.method;
@@ -144,7 +149,7 @@ export function monitorApiRoute(routeName: string) {
 
         addSpanAttributes({
           'http.status_code': statusCode,
-          'http.response_content_length': response.headers.get('content-length') || 0,
+          'http.response_content_length': response.headers.get('content-length') ?? '0',
         });
 
         return response;
@@ -169,7 +174,7 @@ export class PerformanceMonitor {
     this.startTime = performance.now();
   }
 
-  end(metadata?: Record<string, string | number | boolean>) {
+  end(metadata?: Record<string, string | number | boolean>): number {
     const duration = performance.now() - this.startTime;
     dbQueryDurationHistogram.record(duration, {
       operation: this.operation,

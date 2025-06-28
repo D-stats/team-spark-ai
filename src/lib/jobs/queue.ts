@@ -1,4 +1,4 @@
-import { Queue, QueueEvents } from 'bullmq';
+import { Queue, QueueEvents, Job } from 'bullmq';
 import { getRedisClient } from '@/lib/redis';
 import { log } from '@/lib/logger';
 
@@ -124,7 +124,7 @@ export const metricsQueue = new Queue<CalculateMetricsJobData>(JobType.CALCULATE
 });
 
 // Queue event monitoring
-export function setupQueueMonitoring(queue: Queue) {
+export function setupQueueMonitoring(queue: Queue): QueueEvents {
   const queueEvents = new QueueEvents(queue.name, {
     connection: getRedisClient(),
   });
@@ -164,6 +164,7 @@ export function setupQueueMonitoring(queue: Queue) {
 }
 
 // Helper functions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addJob<T>(
   queue: Queue<T>,
   name: string,
@@ -177,8 +178,11 @@ export async function addJob<T>(
       limit?: number;
     };
   },
-) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<Job<T, any, string>> {
   try {
+    // Use any cast for BullMQ compatibility - the library's generics are complex
+    /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
     const job = await (queue as any).add(name, data, options);
     log.info(`Job added to queue`, {
       queue: queue.name,
@@ -186,6 +190,7 @@ export async function addJob<T>(
       name,
     });
     return job;
+    /* eslint-enable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
   } catch (error) {
     log.error(`Failed to add job to queue`, {
       queue: queue.name,
@@ -196,14 +201,25 @@ export async function addJob<T>(
   }
 }
 
-export async function getQueueMetrics(queue: Queue) {
+export async function getQueueMetrics(queue: Queue): Promise<{
+  name: string;
+  counts: {
+    waiting: number;
+    active: number;
+    completed: number;
+    failed: number;
+    delayed: number;
+    paused: number;
+  };
+  total: number;
+}> {
   const counts = await queue.getJobCounts();
-  const waiting = counts['waiting'] || 0;
-  const active = counts['active'] || 0;
-  const completed = counts['completed'] || 0;
-  const failed = counts['failed'] || 0;
-  const delayed = counts['delayed'] || 0;
-  const paused = counts['paused'] || 0;
+  const waiting = counts['waiting'] ?? 0;
+  const active = counts['active'] ?? 0;
+  const completed = counts['completed'] ?? 0;
+  const failed = counts['failed'] ?? 0;
+  const delayed = counts['delayed'] ?? 0;
+  const paused = counts['paused'] ?? 0;
 
   return {
     name: queue.name,
@@ -219,7 +235,20 @@ export async function getQueueMetrics(queue: Queue) {
   };
 }
 
-export async function getAllQueueMetrics() {
+export async function getAllQueueMetrics(): Promise<
+  Array<{
+    name: string;
+    counts: {
+      waiting: number;
+      active: number;
+      completed: number;
+      failed: number;
+      delayed: number;
+      paused: number;
+    };
+    total: number;
+  }>
+> {
   const queues = [
     emailQueue,
     slackQueue,
@@ -235,7 +264,7 @@ export async function getAllQueueMetrics() {
 }
 
 // Graceful shutdown
-export async function closeQueues() {
+export async function closeQueues(): Promise<void> {
   const queues = [
     emailQueue,
     slackQueue,

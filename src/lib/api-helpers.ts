@@ -13,10 +13,10 @@ export function withRateLimit(
     limit?: number;
     rateLimiter?: typeof apiRateLimit;
   },
-) {
+): (request: NextRequest) => Promise<NextResponse> {
   return async (request: NextRequest) => {
-    const rateLimiter = options?.rateLimiter || apiRateLimit;
-    const limit = options?.limit || 30;
+    const rateLimiter = options?.rateLimiter ?? apiRateLimit;
+    const limit = options?.limit ?? 30;
 
     const result = rateLimiter.check(request, limit);
 
@@ -46,13 +46,20 @@ export function withRateLimit(
   };
 }
 
-export function withAuth(handler: (request: NextRequest, userId: string) => Promise<NextResponse>) {
+export function withAuth(
+  handler: (request: NextRequest, userId: string) => Promise<NextResponse>,
+): (request: NextRequest) => Promise<NextResponse> {
   return async (request: NextRequest) => {
     // TODO: Implement proper authentication check
     // For now, this is a placeholder
     const authHeader = request.headers.get('authorization');
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (
+      authHeader === null ||
+      authHeader === undefined ||
+      authHeader.length === 0 ||
+      !authHeader.startsWith('Bearer ')
+    ) {
       return createErrorResponse('Unauthorized', 401);
     }
 
@@ -64,7 +71,9 @@ export function withAuth(handler: (request: NextRequest, userId: string) => Prom
   };
 }
 
-export function withErrorHandler(handler: (request: NextRequest) => Promise<NextResponse>) {
+export function withErrorHandler(
+  handler: (request: NextRequest) => Promise<NextResponse>,
+): (request: NextRequest) => Promise<NextResponse> {
   return async (request: NextRequest) => {
     try {
       return await handler(request);
@@ -84,6 +93,9 @@ export function withErrorHandler(handler: (request: NextRequest) => Promise<Next
 type RequestHandler = (request: NextRequest) => Promise<NextResponse>;
 type Middleware = (handler: RequestHandler) => RequestHandler;
 
-export function withMiddleware(handler: RequestHandler, ...middleware: Middleware[]) {
+export function withMiddleware(
+  handler: RequestHandler,
+  ...middleware: Middleware[]
+): RequestHandler {
   return middleware.reverse().reduce((acc, fn) => fn(acc), handler);
 }

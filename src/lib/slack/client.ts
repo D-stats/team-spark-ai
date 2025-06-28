@@ -2,17 +2,23 @@ import { WebClient } from '@slack/web-api';
 import { App } from '@slack/bolt';
 
 // Slack Web API Client factory - creates a client with workspace-specific token
-export function createSlackClient(botAccessToken: string) {
+export function createSlackClient(botAccessToken: string): WebClient {
   return new WebClient(botAccessToken);
 }
 
 // Slack Bolt App for handling events and commands
 // For multi-workspace apps, we use OAuth installer instead of a single token
 // Only initialize if Slack environment variables are configured
-export const slackApp =
-  process.env['SLACK_SIGNING_SECRET'] &&
-  process.env['SLACK_CLIENT_ID'] &&
-  process.env['SLACK_CLIENT_SECRET']
+export const slackApp: App | null =
+  process.env['SLACK_SIGNING_SECRET'] !== null &&
+  process.env['SLACK_SIGNING_SECRET'] !== undefined &&
+  process.env['SLACK_SIGNING_SECRET'].length > 0 &&
+  process.env['SLACK_CLIENT_ID'] !== null &&
+  process.env['SLACK_CLIENT_ID'] !== undefined &&
+  process.env['SLACK_CLIENT_ID'].length > 0 &&
+  process.env['SLACK_CLIENT_SECRET'] !== null &&
+  process.env['SLACK_CLIENT_SECRET'] !== undefined &&
+  process.env['SLACK_CLIENT_SECRET'].length > 0
     ? new App({
         signingSecret: process.env['SLACK_SIGNING_SECRET'],
         clientId: process.env['SLACK_CLIENT_ID'],
@@ -35,9 +41,13 @@ export const slackApp =
       })
     : null;
 
-// Slack OAuth用のURL生成
-export function getSlackAuthUrl(state: string) {
-  if (!process.env['SLACK_CLIENT_ID']) {
+// Generate Slack OAuth URL
+export function getSlackAuthUrl(state: string): string {
+  if (
+    process.env['SLACK_CLIENT_ID'] === null ||
+    process.env['SLACK_CLIENT_ID'] === undefined ||
+    process.env['SLACK_CLIENT_ID'].length === 0
+  ) {
     throw new Error('Slack integration is not configured');
   }
 

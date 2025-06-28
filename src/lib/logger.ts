@@ -1,8 +1,8 @@
 import winston from 'winston';
 import { trace } from '@opentelemetry/api';
 
-const isDevelopment = process.env.NODE_ENV === 'development';
-const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env['NODE_ENV'] === 'development';
+const isProduction = process.env['NODE_ENV'] === 'production';
 
 // Define log levels
 const levels = {
@@ -41,7 +41,9 @@ if (!isProduction) {
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize({ all: true }),
-        winston.format.printf((info) => `${info['timestamp']} ${info.level}: ${info.message}`),
+        winston.format.printf(
+          (info): string => `${info['timestamp']} ${info.level}: ${info.message}`,
+        ),
       ),
     }),
   );
@@ -76,7 +78,7 @@ const logger = winston.createLogger({
 
 // Extend logger with OpenTelemetry context
 export const log = {
-  error: (message: string, meta?: Record<string, unknown>) => {
+  error: (message: string, meta?: Record<string, unknown>): void => {
     const span = trace.getActiveSpan();
     const spanContext = span?.spanContext();
     logger.error(message, {
@@ -85,7 +87,7 @@ export const log = {
       spanId: spanContext?.spanId,
     });
   },
-  warn: (message: string, meta?: Record<string, unknown>) => {
+  warn: (message: string, meta?: Record<string, unknown>): void => {
     const span = trace.getActiveSpan();
     const spanContext = span?.spanContext();
     logger.warn(message, {
@@ -94,7 +96,7 @@ export const log = {
       spanId: spanContext?.spanId,
     });
   },
-  info: (message: string, meta?: Record<string, unknown>) => {
+  info: (message: string, meta?: Record<string, unknown>): void => {
     const span = trace.getActiveSpan();
     const spanContext = span?.spanContext();
     logger.info(message, {
@@ -103,7 +105,7 @@ export const log = {
       spanId: spanContext?.spanId,
     });
   },
-  http: (message: string, meta?: Record<string, unknown>) => {
+  http: (message: string, meta?: Record<string, unknown>): void => {
     const span = trace.getActiveSpan();
     const spanContext = span?.spanContext();
     logger.http(message, {
@@ -112,7 +114,7 @@ export const log = {
       spanId: spanContext?.spanId,
     });
   },
-  debug: (message: string, meta?: Record<string, unknown>) => {
+  debug: (message: string, meta?: Record<string, unknown>): void => {
     const span = trace.getActiveSpan();
     const spanContext = span?.spanContext();
     logger.debug(message, {
@@ -130,7 +132,7 @@ export function logApiRequest(
   statusCode: number,
   duration: number,
   userId?: string,
-) {
+): void {
   log.http('API Request', {
     method,
     path,
@@ -141,7 +143,11 @@ export function logApiRequest(
   });
 }
 
-export function logError(error: Error, context: string, additionalData?: Record<string, unknown>) {
+export function logError(
+  error: Error,
+  context: string,
+  additionalData?: Record<string, unknown>,
+): void {
   log.error(`Error in ${context}: ${error.message}`, {
     error: {
       name: error.name,
@@ -158,7 +164,7 @@ export function logSecurityEvent(
   event: string,
   severity: 'low' | 'medium' | 'high',
   details: Record<string, unknown>,
-) {
+): void {
   log.warn(`Security Event: ${event}`, {
     event,
     severity,
@@ -171,7 +177,7 @@ export function logPerformance(
   operation: string,
   duration: number,
   metadata?: Record<string, unknown>,
-) {
+): void {
   const level = duration > 1000 ? 'warn' : 'info';
   log[level](`Performance: ${operation}`, {
     operation,
@@ -185,7 +191,7 @@ export function logBusinessEvent(
   event: string,
   userId: string,
   metadata?: Record<string, unknown>,
-) {
+): void {
   log.info(`Business Event: ${event}`, {
     event,
     userId,
