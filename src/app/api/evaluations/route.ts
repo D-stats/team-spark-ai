@@ -11,6 +11,11 @@ export async function GET(request: NextRequest) {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
 
+    // Pagination parameters
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20')), 100);
+    const skip = (page - 1) * limit;
+
     const cycleId = searchParams.get('cycleId');
     const evaluateeId = searchParams.get('evaluateeId');
     const evaluatorId = searchParams.get('evaluatorId');
@@ -56,6 +61,9 @@ export async function GET(request: NextRequest) {
       where.status = status as EvaluationStatus;
     }
 
+    // Get total count for pagination
+    const totalCount = await prisma.evaluation.count({ where });
+
     const evaluations = await prisma.evaluation.findMany({
       where,
       include: {
@@ -96,6 +104,8 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
     });
 
     // 権限チェック - 閲覧可能な評価のみフィルタリング
@@ -103,7 +113,18 @@ export async function GET(request: NextRequest) {
       canViewEvaluation(dbUser, evaluation),
     );
 
-    return NextResponse.json(filteredEvaluations);
+    // Return paginated response
+    return NextResponse.json({
+      data: filteredEvaluations,
+      pagination: {
+        page,
+        limit,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+        hasNextPage: page * limit < totalCount,
+        hasPreviousPage: page > 1,
+      },
+    });
   } catch (error) {
     logError(error as Error, 'GET /api/evaluations');
     return NextResponse.json({ error: '評価の取得に失敗しました' }, { status: 500 });
