@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { CompetencyCategory } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 interface RouteParams {
   params: {
@@ -57,7 +58,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json(competency);
   } catch (error) {
-    console.error('Error fetching competency:', error);
+    logError(error as Error, 'GET /api/competencies/[id]', { competencyId: params.id });
     return NextResponse.json({ error: 'コンピテンシーの取得に失敗しました' }, { status: 500 });
   }
 }
@@ -127,7 +128,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json(updatedCompetency);
   } catch (error) {
-    console.error('Error updating competency:', error);
+    logError(error as Error, 'PUT /api/competencies/[id]', { competencyId: params.id });
     return NextResponse.json({ error: 'コンピテンシーの更新に失敗しました' }, { status: 500 });
   }
 }
@@ -180,7 +181,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting competency:', error);
+    logError(error as Error, 'DELETE /api/competencies/[id]', { competencyId: params.id });
     return NextResponse.json({ error: 'コンピテンシーの削除に失敗しました' }, { status: 500 });
   }
 }

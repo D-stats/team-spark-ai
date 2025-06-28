@@ -3,6 +3,7 @@ import { getUserWithOrganization } from '@/lib/auth/utils';
 import { OkrService } from '@/services/okr.service';
 import { OkrCycle } from '@prisma/client';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const getAlignmentSchema = z.object({
   cycle: z.nativeEnum(OkrCycle),
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.error('Error fetching OKR alignment:', error);
+    logError(error as Error, 'GET /api/okr/alignment');
     return NextResponse.json({ error: 'Failed to fetch OKR alignment' }, { status: 500 });
   }
 }

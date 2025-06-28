@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/lib/logger';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -30,7 +31,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error('Error updating user profile:', error);
+    logError(error as Error, 'PUT /api/user/profile');
     return NextResponse.json({ error: 'プロフィールの更新に失敗しました' }, { status: 500 });
   }
 }

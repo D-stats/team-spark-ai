@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { CompetencyCategory } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 // Get competencies list
 export async function GET(request: NextRequest) {
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(competencies);
   } catch (error) {
-    console.error('Error fetching competencies:', error);
+    logError(error as Error, 'GET /api/competencies');
     return NextResponse.json({ error: 'コンピテンシーの取得に失敗しました' }, { status: 500 });
   }
 }
@@ -94,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(competency, { status: 201 });
   } catch (error) {
-    console.error('Error creating competency:', error);
+    logError(error as Error, 'POST /api/competencies');
     return NextResponse.json({ error: 'コンピテンシーの作成に失敗しました' }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { aggregateEvaluationResults } from '@/services/evaluation.service';
+import { logError } from '@/lib/logger';
 
 interface RouteParams {
   params: {
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error('Error fetching evaluation results:', error);
+    logError(error as Error, 'GET /api/evaluations/[id]/results', { cycleId: params.id });
     return NextResponse.json({ error: '評価結果の取得に失敗しました' }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySlackRequest } from '@/lib/slack/verify';
 import { KudosCategory } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 interface SlackCommandPayload {
   token: string;
@@ -161,7 +162,7 @@ export async function POST(request: NextRequest) {
       ],
     });
   } catch (error) {
-    console.error('Kudos command error:', error);
+    logError(error as Error, 'POST /api/slack/commands/kudos');
     return NextResponse.json({
       response_type: 'ephemeral',
       text: 'エラーが発生しました。しばらくしてからもう一度お試しください。',

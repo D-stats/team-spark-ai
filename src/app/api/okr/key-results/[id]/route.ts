@@ -3,6 +3,7 @@ import { getUserWithOrganization } from '@/lib/auth/utils';
 import { OkrService } from '@/services/okr.service';
 import { z } from 'zod';
 import { MilestoneStatus } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 const updateKeyResultSchema = z.object({
   title: z.string().min(1).max(200).optional(),
@@ -35,7 +36,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       );
     }
 
-    console.error('Error updating key result:', error);
+    logError(error as Error, 'PATCH /api/okr/key-results/[id]', { keyResultId: params.id });
     return NextResponse.json({ error: 'Failed to update key result' }, { status: 500 });
   }
 }
@@ -51,7 +52,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting key result:', error);
+    logError(error as Error, 'DELETE /api/okr/key-results/[id]', { keyResultId: params.id });
     return NextResponse.json({ error: 'Failed to delete key result' }, { status: 500 });
   }
 }

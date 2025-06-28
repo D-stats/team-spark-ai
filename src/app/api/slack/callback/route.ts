@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { slackApp } from '@/lib/slack/client';
+import { logError } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
     // 成功時は設定ページにリダイレクト
     return NextResponse.redirect(new URL('/dashboard/settings?slack_connected=true', request.url));
   } catch (error) {
-    console.error('Slack OAuth error:', error);
+    logError(error as Error, 'GET /api/slack/callback');
     return NextResponse.redirect(new URL('/dashboard/settings?slack_error=failed', request.url));
   }
 }

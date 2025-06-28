@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth/utils';
+import { logError } from '@/lib/logger';
 
 interface UserWithOrgAndRole {
   id: string;
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest, { params }: Props) {
 
     return NextResponse.json(template);
   } catch (error) {
-    console.error('Failed to fetch check-in template:', error);
+    logError(error as Error, 'GET /api/checkin-templates/[id]', { templateId: params.id });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -88,7 +89,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
 
     return NextResponse.json(template);
   } catch (error) {
-    console.error('Failed to update check-in template:', error);
+    logError(error as Error, 'PUT /api/checkin-templates/[id]', { templateId: params.id });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -135,7 +136,7 @@ export async function DELETE(request: NextRequest, { params }: Props) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Failed to delete check-in template:', error);
+    logError(error as Error, 'DELETE /api/checkin-templates/[id]', { templateId: params.id });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

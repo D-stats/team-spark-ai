@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(survey, { status: 201 });
   } catch (error) {
-    console.error('Error creating survey:', error);
+    logError(error as Error, 'POST /api/surveys');
     return NextResponse.json({ error: 'サーベイの作成に失敗しました' }, { status: 500 });
   }
 }

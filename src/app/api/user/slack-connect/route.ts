@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { createSlackClient } from '@/lib/slack/client';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,14 +59,14 @@ export async function POST(request: NextRequest) {
         slackUserId: slackUsers.user.id,
       });
     } catch (slackError: unknown) {
-      console.error('Slack API error:', slackError);
+      logError(slackError as Error, 'POST /api/user/slack-connect - Slack API error');
       return NextResponse.json(
         { error: 'An error occurred while searching for Slack user' },
         { status: 500 },
       );
     }
   } catch (error) {
-    console.error('Error connecting Slack:', error);
+    logError(error as Error, 'POST /api/user/slack-connect');
     return NextResponse.json({ error: 'Failed to connect Slack' }, { status: 500 });
   }
 }
@@ -84,7 +85,7 @@ export async function DELETE(_request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error disconnecting Slack:', error);
+    logError(error as Error, 'DELETE /api/user/slack-connect');
     return NextResponse.json({ error: 'Failed to disconnect Slack' }, { status: 500 });
   }
 }

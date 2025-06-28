@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
+import { logError } from '@/lib/logger';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -46,7 +47,7 @@ export async function PUT(request: NextRequest) {
       settings: notificationSettings,
     });
   } catch (error) {
-    console.error('Error updating notification settings:', error);
+    logError(error as Error, 'PUT /api/user/notifications');
     return NextResponse.json({ error: '通知設定の更新に失敗しました' }, { status: 500 });
   }
 }

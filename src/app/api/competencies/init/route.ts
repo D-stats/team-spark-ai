@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { createDefaultCompetencies } from '@/services/evaluation.service';
 import { prisma } from '@/lib/prisma';
+import { logError } from '@/lib/logger';
 
 // Initialize default competencies
 export async function POST(_request: NextRequest) {
@@ -51,7 +52,7 @@ export async function POST(_request: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
-    console.error('Error initializing default competencies:', error);
+    logError(error as Error, 'POST /api/competencies/init');
     return NextResponse.json(
       { error: 'Failed to initialize default competencies' },
       { status: 500 },

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
+import { teamCache } from '@/lib/redis';
+import { log, logBusinessEvent } from '@/lib/logger';
+import { withLogging } from '@/lib/api-logging';
 
 export async function POST(request: NextRequest) {
   try {
@@ -82,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(team, { status: 201 });
   } catch (error) {
-    console.error('Error creating team:', error);
+    logError(error as Error, 'POST /api/teams');
     return NextResponse.json({ error: 'チームの作成に失敗しました' }, { status: 500 });
   }
 }

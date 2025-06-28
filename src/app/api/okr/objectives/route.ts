@@ -3,6 +3,7 @@ import { getUserWithOrganization } from '@/lib/auth/utils';
 import { OkrService } from '@/services/okr.service';
 import { ObjectiveOwner, OkrCycle, ObjectiveStatus } from '@prisma/client';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 // Validation schemas
 const createObjectiveSchema = z.object({
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(objectives);
   } catch (error) {
-    console.error('Error fetching objectives:', error);
+    logError(error as Error, 'GET /api/okr/objectives');
     return NextResponse.json({ error: 'Failed to fetch objectives' }, { status: 500 });
   }
 }
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error creating objective:', error);
+    logError(error as Error, 'POST /api/okr/objectives');
     return NextResponse.json({ error: 'Failed to create objective' }, { status: 500 });
   }
 }

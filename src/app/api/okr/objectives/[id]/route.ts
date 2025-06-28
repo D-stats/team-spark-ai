@@ -4,6 +4,7 @@ import { OkrService } from '@/services/okr.service';
 import { z } from 'zod';
 import { ObjectiveOwner, ObjectiveStatus } from '@prisma/client';
 import type { CreateObjectiveInput } from '@/types/okr';
+import { logError } from '@/lib/logger';
 
 const updateObjectiveSchema = z.object({
   title: z.string().min(1).max(200).optional(),
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     return NextResponse.json(objective);
   } catch (error) {
-    console.error('Error fetching objective:', error);
+    logError(error as Error, 'GET /api/okr/objectives/[id]', { objectiveId: params.id });
     return NextResponse.json({ error: 'Failed to fetch objective' }, { status: 500 });
   }
 }
@@ -86,7 +87,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       );
     }
 
-    console.error('Error updating objective:', error);
+    logError(error as Error, 'PATCH /api/okr/objectives/[id]', { objectiveId: params.id });
     return NextResponse.json({ error: 'Failed to update objective' }, { status: 500 });
   }
 }
@@ -117,7 +118,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting objective:', error);
+    logError(error as Error, 'DELETE /api/okr/objectives/[id]', { objectiveId: params.id });
     return NextResponse.json({ error: 'Failed to delete objective' }, { status: 500 });
   }
 }

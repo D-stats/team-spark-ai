@@ -8,6 +8,7 @@ import {
   NotFoundError,
   AuthorizationError,
 } from '@/lib/errors';
+import { logError } from '@/lib/logger';
 import { SaveEvaluationSchema } from '@/types/api';
 
 interface RouteParams {
@@ -220,7 +221,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting evaluation:', error);
+    logError(error as Error, 'DELETE /api/evaluations/[id]', { evaluationId: params.id });
     return NextResponse.json({ error: '評価の削除に失敗しました' }, { status: 500 });
   }
 }

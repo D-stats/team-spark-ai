@@ -3,6 +3,7 @@ import { getUserWithOrganization } from '@/lib/auth/utils';
 import { OkrService } from '@/services/okr.service';
 import { KeyResultType, MilestoneStatus } from '@prisma/client';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const createKeyResultSchema = z
   .object({
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.error('Error creating key result:', error);
+    logError(error as Error, 'POST /api/okr/key-results');
     return NextResponse.json({ error: 'Failed to create key result' }, { status: 500 });
   }
 }

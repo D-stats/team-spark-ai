@@ -3,6 +3,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { createEvaluationCycle, generateEvaluations } from '@/services/evaluation.service';
 import { EvaluationCycleType } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 // Get evaluation cycles list
 export async function GET(_request: NextRequest) {
@@ -28,7 +29,7 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json(cycles);
   } catch (error) {
-    console.error('Error fetching evaluation cycles:', error);
+    logError(error as Error, 'GET /api/evaluations/cycles');
     return NextResponse.json({ error: '評価サイクルの取得に失敗しました' }, { status: 500 });
   }
 }
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(cycle, { status: 201 });
   } catch (error) {
-    console.error('Error creating evaluation cycle:', error);
+    logError(error as Error, 'POST /api/evaluations/cycles');
     return NextResponse.json({ error: '評価サイクルの作成に失敗しました' }, { status: 500 });
   }
 }

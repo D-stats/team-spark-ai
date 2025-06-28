@@ -3,6 +3,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { canViewEvaluation } from '@/services/evaluation.service';
 import { EvaluationType, EvaluationStatus } from '@prisma/client';
+import { logError } from '@/lib/logger';
 
 // Get evaluations list
 export async function GET(request: NextRequest) {
@@ -104,7 +105,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(filteredEvaluations);
   } catch (error) {
-    console.error('Error fetching evaluations:', error);
+    logError(error as Error, 'GET /api/evaluations');
     return NextResponse.json({ error: '評価の取得に失敗しました' }, { status: 500 });
   }
 }
@@ -208,7 +209,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(evaluation, { status: 201 });
   } catch (error) {
-    console.error('Error creating evaluation:', error);
+    logError(error as Error, 'POST /api/evaluations');
     return NextResponse.json({ error: '評価の作成に失敗しました' }, { status: 500 });
   }
 }

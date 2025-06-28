@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth/utils';
+import { logError } from '@/lib/logger';
 
 interface UserWithOrgAndRole {
   id: string;
@@ -26,7 +27,7 @@ export async function GET(_request: NextRequest) {
 
     return NextResponse.json(templates);
   } catch (error) {
-    console.error('Failed to fetch check-in templates:', error);
+    logError(error as Error, 'GET /api/checkin-templates');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(template, { status: 201 });
   } catch (error) {
-    console.error('Failed to create check-in template:', error);
+    logError(error as Error, 'POST /api/checkin-templates');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -3,6 +3,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { sendKudosNotification } from '@/lib/slack/notifications';
 import { sendKudosEmail } from '@/lib/email/service';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
       category: kudos.category,
       message: kudos.message,
     }).catch((error) => {
-      console.error('Failed to send Slack notification:', error);
+      logError(error as Error, 'POST /api/kudos - Slack notification failed');
     });
 
     // メール通知を送信（非同期で実行）
@@ -91,12 +92,12 @@ export async function POST(request: NextRequest) {
       category: kudos.category,
       message: kudos.message,
     }).catch((error) => {
-      console.error('Failed to send email notification:', error);
+      logError(error as Error, 'POST /api/kudos - Email notification failed');
     });
 
     return NextResponse.json(kudos, { status: 201 });
   } catch (error) {
-    console.error('Error creating kudos:', error);
+    logError(error as Error, 'POST /api/kudos');
     return NextResponse.json({ error: 'Kudosの作成に失敗しました' }, { status: 500 });
   }
 }
