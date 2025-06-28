@@ -104,6 +104,7 @@ export default function CompetenciesPage() {
         toast.error('コンピテンシーの読み込みに失敗しました');
       }
     } catch (error) {
+      // Keep console.error for client-side debugging until proper error tracking is implemented
       console.error('コンピテンシー読み込みエラー:', error);
       toast.error('コンピテンシーの読み込みに失敗しました');
     } finally {
@@ -126,6 +127,7 @@ export default function CompetenciesPage() {
         toast.error(error.error || 'デフォルトコンピテンシーの初期化に失敗しました');
       }
     } catch (error) {
+      // Keep console.error for client-side debugging until proper error tracking is implemented
       console.error('デフォルトコンピテンシー初期化エラー:', error);
       toast.error('デフォルトコンピテンシーの初期化に失敗しました');
     }
@@ -193,6 +195,7 @@ export default function CompetenciesPage() {
         toast.error(error.error || 'コンピテンシーの保存に失敗しました');
       }
     } catch (error) {
+      // Keep console.error for client-side debugging until proper error tracking is implemented
       console.error('コンピテンシー保存エラー:', error);
       toast.error('コンピテンシーの保存に失敗しました');
     }
@@ -213,6 +216,7 @@ export default function CompetenciesPage() {
         toast.error(error.error || 'コンピテンシーの削除に失敗しました');
       }
     } catch (error) {
+      // Keep console.error for client-side debugging until proper error tracking is implemented
       console.error('コンピテンシー削除エラー:', error);
       toast.error('コンピテンシーの削除に失敗しました');
     }
@@ -254,7 +258,7 @@ export default function CompetenciesPage() {
       if (!acc[competency.category]) {
         acc[competency.category] = [];
       }
-      acc[competency.category].push(competency);
+      acc[competency.category]!.push(competency);
       return acc;
     },
     {} as Record<string, Competency[]>,

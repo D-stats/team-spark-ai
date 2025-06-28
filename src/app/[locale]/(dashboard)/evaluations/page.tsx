@@ -112,7 +112,9 @@ export default function EvaluationsPage() {
         setMyEvaluations(evaluationsData);
       }
     } catch (error) {
+      // Keep console.error for client-side debugging until proper error tracking is implemented
       console.error('データ取得エラー:', error);
+      // TODO: Add user-friendly error notification when toast system is implemented
     } finally {
       setLoading(false);
     }

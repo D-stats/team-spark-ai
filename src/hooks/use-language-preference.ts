@@ -44,7 +44,8 @@ export function useLanguagePreference() {
       }
     } catch (error) {
       // Invalid JSON or other error, clear the storage
-      console.error('Error loading language preference:', error);
+      // Use console.warn since this is expected behavior for corrupted storage
+      console.warn('Invalid language preference in storage, clearing:', error);
       localStorage.removeItem(LANGUAGE_PREFERENCE_KEY);
     }
   }, [isClient]);
@@ -66,7 +67,7 @@ export function useLanguagePreference() {
         localStorage.setItem(LANGUAGE_PREFERENCE_KEY, JSON.stringify(preference));
         setPreference(preference);
       } catch (error) {
-        console.error('Error saving language preference:', error);
+        console.warn('Error saving language preference:', error);
       }
     },
     [isClient],
@@ -82,7 +83,7 @@ export function useLanguagePreference() {
       localStorage.removeItem(LANGUAGE_PREFERENCE_KEY);
       setPreference(null);
     } catch (error) {
-      console.error('Error clearing language preference:', error);
+      console.warn('Error clearing language preference:', error);
     }
   }, [isClient]);
 
@@ -124,7 +125,7 @@ export function useLanguagePreference() {
     const segments = pathname.split('/');
     const urlLocale = segments[1];
 
-    if (isValidLocale(urlLocale)) {
+    if (urlLocale && isValidLocale(urlLocale)) {
       return urlLocale;
     }
 
@@ -159,9 +160,11 @@ export function useLanguagePreference() {
 
     // Check for language family match (e.g., en-US matches en)
     const langFamily = browserLang.split('-')[0];
-    for (const locale of locales) {
-      if (locale.startsWith(langFamily)) {
-        return locale;
+    if (langFamily) {
+      for (const locale of locales) {
+        if (locale.startsWith(langFamily)) {
+          return locale;
+        }
       }
     }
 

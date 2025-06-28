@@ -278,8 +278,8 @@ export const useEvaluationStore = create<EvaluationStore>()(
           set((state) => {
             state.formData.overallRating = rating;
             state.isDirty = true;
-            if (state.errors.overallRating) {
-              delete state.errors.overallRating;
+            if (state.errors['overallRating']) {
+              delete state.errors['overallRating'];
             }
           });
         },
@@ -288,8 +288,8 @@ export const useEvaluationStore = create<EvaluationStore>()(
           set((state) => {
             state.formData.overallComments = comments;
             state.isDirty = true;
-            if (state.errors.overallComments) {
-              delete state.errors.overallComments;
+            if (state.errors['overallComments']) {
+              delete state.errors['overallComments'];
             }
           });
         },
@@ -372,6 +372,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
         validateCurrentStep: () => {
           const state = get();
           const currentStepData = state.steps[state.currentStep];
+          if (!currentStepData) return false;
 
           if (!currentStepData.isRequired) return true;
 
@@ -602,7 +603,9 @@ export const useEvaluationStore = create<EvaluationStore>()(
                 body: JSON.stringify(saveData),
               });
             } catch (error) {
+              // Keep console.error for client-side error tracking
               console.error('Failed to sync save:', error);
+              // TODO: Consider integrating with error tracking service (e.g., Sentry)
             }
           }
 
