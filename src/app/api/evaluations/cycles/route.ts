@@ -103,7 +103,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // 自動生成が有効な場合、評価を生成
-    if (autoGenerate) {
+    if (autoGenerate === true) {
       const evaluationCount = await generateEvaluations(cycle.id, dbUser.organizationId);
 
       return NextResponse.json(

@@ -4,15 +4,21 @@ import { prisma } from '@/lib/prisma';
 import { sendKudosNotification } from '@/lib/slack/notifications';
 import { sendKudosEmail } from '@/lib/email/service';
 import { logError } from '@/lib/logger';
+import type { Kudos, User, KudosCategory } from '@prisma/client';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      receiverId?: string;
+      message?: string;
+      category?: string;
+      isPublic?: boolean;
+    };
     const { receiverId, message, category, isPublic } = body;
 
-    if (!receiverId || !message || !category) {
+    if (receiverId === undefined || message === undefined || category === undefined) {
       return NextResponse.json({ error: 'Required fields are missing' }, { status: 400 });
     }
 
@@ -48,12 +54,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Kudosを作成
-    const kudos = await prisma.kudos.create({
+    const kudos = (await prisma.kudos.create({
       data: {
         senderId: dbUser.id,
         receiverId,
         message,
-        category,
+        category: category as KudosCategory,
         isPublic: Boolean(isPublic),
       },
       include: {
@@ -72,10 +78,13 @@ export async function POST(request: NextRequest) {
           },
         },
       },
-    });
+    })) as Kudos & {
+      sender: Pick<User, 'name' | 'email' | 'avatarUrl'>;
+      receiver: Pick<User, 'name' | 'email' | 'avatarUrl'>;
+    };
 
     // Slack通知を送信（非同期で実行）
-    sendKudosNotification({
+    void sendKudosNotification({
       receiverId: kudos.receiverId,
       senderName: kudos.sender.name,
       category: kudos.category,
@@ -85,7 +94,7 @@ export async function POST(request: NextRequest) {
     });
 
     // メール通知を送信（非同期で実行）
-    sendKudosEmail({
+    void sendKudosEmail({
       receiverEmail: kudos.receiver.email,
       receiverName: kudos.receiver.name,
       senderName: kudos.sender.name,

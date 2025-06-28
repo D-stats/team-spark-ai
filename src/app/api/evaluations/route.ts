@@ -6,14 +6,14 @@ import { EvaluationType, EvaluationStatus } from '@prisma/client';
 import { logError } from '@/lib/logger';
 
 // Get evaluations list
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
 
     // Pagination parameters
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
-    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20')), 100);
+    const page = Math.max(1, parseInt(searchParams.get('page') ?? '1', 10));
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') ?? '20', 10)), 100);
     const skip = (page - 1) * limit;
 
     const cycleId = searchParams.get('cycleId');
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     } = {};
 
     // Cycle filter
-    if (cycleId) {
+    if (cycleId !== null) {
       where.cycleId = cycleId;
     } else {
       // If no cycle is specified, only cycles within the organization
@@ -42,22 +42,22 @@ export async function GET(request: NextRequest) {
     }
 
     // Evaluatee filter
-    if (evaluateeId) {
+    if (evaluateeId !== null) {
       where.evaluateeId = evaluateeId;
     }
 
     // 評価者フィルター
-    if (evaluatorId) {
+    if (evaluatorId !== null) {
       where.evaluatorId = evaluatorId;
     }
 
     // タイプフィルター
-    if (type) {
+    if (type !== null) {
       where.type = type as EvaluationType;
     }
 
     // ステータスフィルター
-    if (status) {
+    if (status !== null) {
       where.status = status as EvaluationStatus;
     }
 
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
 }
 
 // 評価作成（通常は自動生成されるが、手動追加用）
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -141,11 +141,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '評価の作成権限がありません' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      cycleId?: string;
+      evaluateeId?: string;
+      evaluatorId?: string;
+      type?: string;
+    };
     const { cycleId, evaluateeId, evaluatorId, type } = body;
 
     // バリデーション
-    if (!cycleId || !evaluateeId || !evaluatorId || !type) {
+    if (
+      cycleId === undefined ||
+      evaluateeId === undefined ||
+      evaluatorId === undefined ||
+      type === undefined
+    ) {
       return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 
@@ -187,7 +197,7 @@ export async function POST(request: NextRequest) {
           cycleId,
           evaluateeId,
           evaluatorId,
-          type,
+          type: type as EvaluationType,
         },
       },
     });
@@ -201,7 +211,7 @@ export async function POST(request: NextRequest) {
         cycleId,
         evaluateeId,
         evaluatorId,
-        type,
+        type: type as EvaluationType,
       },
       include: {
         cycle: {
