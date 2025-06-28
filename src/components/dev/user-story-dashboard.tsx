@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -88,24 +88,39 @@ export function UserStoryDashboard() {
     return <Badge variant={variants[priority]}>{priority}</Badge>;
   };
 
-  const validStories = validations.filter((v) => v.isValid).length;
-  const totalStories = stories.length;
-  const overallProgress = totalStories > 0 ? (validStories / totalStories) * 100 : 0;
+  // Statistics calculations - optimized with useMemo
+  const { validStories, totalStories, overallProgress } = useMemo(() => {
+    const validCount = validations.filter((v) => v.isValid).length;
+    const total = stories.length;
+    const progress = total > 0 ? (validCount / total) * 100 : 0;
+    return {
+      validStories: validCount,
+      totalStories: total,
+      overallProgress: progress,
+    };
+  }, [validations, stories]);
 
-  // Epic別にグループ化
-  const storiesByEpic = stories.reduce(
-    (acc, story) => {
-      const epic = story.epicId || 'その他';
-      if (!acc[epic]) acc[epic] = [];
-      acc[epic].push(story);
-      return acc;
-    },
-    {} as Record<string, UserStory[]>,
+  // Epic別にグループ化 - optimized with useMemo
+  const storiesByEpic = useMemo(
+    () =>
+      stories.reduce(
+        (acc, story) => {
+          const epic = story.epicId || 'その他';
+          if (!acc[epic]) acc[epic] = [];
+          acc[epic].push(story);
+          return acc;
+        },
+        {} as Record<string, UserStory[]>,
+      ),
+    [stories],
   );
 
-  const filteredStories = selectedEpic
-    ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic)
-    : stories;
+  // Filtered stories - optimized with useMemo
+  const filteredStories = useMemo(
+    () =>
+      selectedEpic ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic) : stories,
+    [stories, selectedEpic],
+  );
 
   if (loading) {
     return (
@@ -190,7 +205,7 @@ export function UserStoryDashboard() {
             size="sm"
             onClick={() => setSelectedEpic(epic)}
           >
-            {epic} ({storiesByEpic[epic].length})
+            {epic} ({storiesByEpic[epic]?.length ?? 0})
           </Button>
         ))}
       </div>

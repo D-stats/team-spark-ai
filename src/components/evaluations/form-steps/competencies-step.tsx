@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, memo } from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,7 +37,7 @@ const categoryLabels = {
   BEHAVIORAL: 'Behavioral',
 };
 
-export function EvaluationCompetenciesStep({
+export const EvaluationCompetenciesStep = memo(function EvaluationCompetenciesStep({
   evaluation: _evaluation,
   isReadOnly = false,
 }: EvaluationCompetenciesStepProps) {
@@ -124,15 +124,19 @@ export function EvaluationCompetenciesStep({
     );
   }
 
-  // カテゴリ別にグループ化
-  const competenciesByCategory = competencies.reduce(
-    (acc, competency) => {
-      const category = competency.category;
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(competency);
-      return acc;
-    },
-    {} as Record<string, CompetencyWithStats[]>,
+  // カテゴリ別にグループ化 - useMemoで最適化
+  const competenciesByCategory = useMemo(
+    () =>
+      competencies.reduce(
+        (acc, competency) => {
+          const category = competency.category;
+          if (!acc[category]) acc[category] = [];
+          acc[category].push(competency);
+          return acc;
+        },
+        {} as Record<string, CompetencyWithStats[]>,
+      ),
+    [competencies],
   );
 
   return (
@@ -357,4 +361,4 @@ export function EvaluationCompetenciesStep({
       </div>
     </div>
   );
-}
+});
