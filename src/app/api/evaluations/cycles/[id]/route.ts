@@ -11,7 +11,7 @@ interface RouteParams {
 }
 
 // Get specific evaluation cycle
-export async function GET(_request: NextRequest, { params }: RouteParams) {
+export async function GET(_request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -62,7 +62,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価サイクル更新
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -71,7 +71,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: '評価サイクルの更新権限がありません' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      name?: string;
+      startDate?: string;
+      endDate?: string;
+      status?: string;
+    };
     const { name, startDate, endDate, status } = body;
 
     const cycle = await prisma.evaluationCycle.findFirst({
@@ -91,10 +96,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       endDate: Date;
       status: CycleStatus;
     }> = {};
-    if (name) updateData.name = name;
-    if (startDate) updateData.startDate = new Date(startDate);
-    if (endDate) updateData.endDate = new Date(endDate);
-    if (status) updateData.status = status as CycleStatus;
+    if (name !== undefined) updateData.name = name;
+    if (startDate !== undefined) updateData.startDate = new Date(startDate);
+    if (endDate !== undefined) updateData.endDate = new Date(endDate);
+    if (status !== undefined) updateData.status = status as CycleStatus;
 
     const updatedCycle = await prisma.evaluationCycle.update({
       where: { id: params.id },
@@ -114,7 +119,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価サイクル削除
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: RouteParams,
+): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

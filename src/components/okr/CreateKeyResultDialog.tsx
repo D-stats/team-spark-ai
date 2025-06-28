@@ -89,7 +89,6 @@ export function CreateKeyResultDialog({
     },
   });
 
-
   const onSubmit = async (data: CreateKeyResultForm) => {
     setIsSubmitting(true);
 

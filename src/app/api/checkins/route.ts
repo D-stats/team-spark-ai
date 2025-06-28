@@ -3,13 +3,13 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
     const searchParams = request.nextUrl.searchParams;
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const limit = parseInt(searchParams.get('limit') ?? '10');
+    const offset = parseInt(searchParams.get('offset') ?? '0');
 
     const checkIns = await prisma.checkIn.findMany({
       where: {
@@ -39,19 +39,23 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      templateId?: string;
+      answers?: unknown;
+      moodRating?: number | null;
+    };
     const { templateId, answers, moodRating } = body;
 
     // バリデーション
-    if (!templateId) {
+    if (templateId === undefined) {
       return NextResponse.json({ error: 'テンプレートIDが必要です' }, { status: 400 });
     }
 
-    if (!answers || typeof answers !== 'object') {
+    if (answers === undefined || typeof answers !== 'object' || answers === null) {
       return NextResponse.json({ error: '回答が正しい形式ではありません' }, { status: 400 });
     }
 
@@ -74,7 +78,7 @@ export async function POST(request: NextRequest) {
         userId: dbUser.id,
         templateId,
         answers,
-        moodRating: moodRating || null,
+        moodRating: moodRating ?? null,
       },
       include: {
         template: {

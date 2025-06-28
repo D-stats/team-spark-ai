@@ -4,11 +4,21 @@ import { notFound } from 'next/navigation';
 import { locales, type Locale } from '@/i18n/config';
 import { LanguageInitializer } from '@/components/language-initializer';
 
-export function generateStaticParams() {
+export function generateStaticParams(): Array<{ locale: string }> {
   return locales.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<{
+  title: { template: string; default: string };
+  description: string;
+  metadataBase: URL;
+  alternates: { languages: Record<string, string> };
+  openGraph: { locale: string; alternateLocale: string[] };
+}> {
   const validatedLocale = locale as Locale;
 
   return {
@@ -17,7 +27,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
       default: 'TeamSpark AI',
     },
     description: 'AI-powered team communication and engagement platform',
-    metadataBase: new URL(process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'),
+    metadataBase: new URL(process.env['NEXT_PUBLIC_APP_URL'] ?? 'http://localhost:3000'),
     alternates: {
       languages: Object.fromEntries(locales.map((l) => [l, `/${l}`])),
     },
@@ -34,7 +44,7 @@ export default async function LocaleLayout({
 }: {
   children: React.ReactNode;
   params: { locale: string };
-}) {
+}): Promise<JSX.Element> {
   // Validate that the incoming locale is supported
   if (!locales.includes(locale as Locale)) {
     notFound();
@@ -55,13 +65,13 @@ export default async function LocaleLayout({
             key={l}
             rel="alternate"
             hrefLang={l}
-            href={`${process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'}/${l}`}
+            href={`${process.env['NEXT_PUBLIC_APP_URL'] ?? 'http://localhost:3000'}/${l}`}
           />
         ))}
         <link
           rel="alternate"
           hrefLang="x-default"
-          href={`${process.env['NEXT_PUBLIC_APP_URL'] || 'http://localhost:3000'}/en`}
+          href={`${process.env['NEXT_PUBLIC_APP_URL'] ?? 'http://localhost:3000'}/en`}
         />
       </head>
       <body>

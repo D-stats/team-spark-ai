@@ -8,7 +8,7 @@ import { Settings } from 'lucide-react';
 import Link from 'next/link';
 import { CreateDefaultTemplateButton } from '@/components/checkins/create-default-template-button';
 
-export default async function CheckInsPage() {
+export default async function CheckInsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // Get default template (prompt creation if it doesn't exist)
@@ -51,7 +51,7 @@ export default async function CheckInsPage() {
           type: string;
           text: string;
           required: boolean;
-        }[]) || [],
+        }[]) ?? [],
     },
   }));
 

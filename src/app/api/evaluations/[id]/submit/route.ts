@@ -18,7 +18,7 @@ interface RouteParams {
 }
 
 // 評価送信
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       throw new ConflictError('この評価は既に送信済みです');
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as unknown;
     const validatedData = SubmitEvaluationSchema.parse(body);
 
     // トランザクションで評価とコンピテンシー評価を更新・送信
@@ -79,7 +79,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       });
 
       // コンピテンシー評価の更新
-      if (validatedData.competencyRatings && validatedData.competencyRatings.length > 0) {
+      if (
+        validatedData.competencyRatings !== undefined &&
+        validatedData.competencyRatings.length > 0
+      ) {
         // 既存のコンピテンシー評価を削除
         await tx.competencyRating.deleteMany({
           where: { evaluationId: params.id },

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
-export default function DevPage() {
+export default function DevPage(): JSX.Element {
   // 本番環境では404にリダイレクト
   if (process.env.NODE_ENV === 'production') {
     redirect('/404');

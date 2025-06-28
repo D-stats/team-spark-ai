@@ -28,11 +28,14 @@ export function describeStory(story: UserStory, testFn: () => void) {
     });
 
     // ストーリーのコンテキストを表示
-    storyTest(`ストーリー: As a ${story.asA}, I want to ${story.iWantTo}`, async ({ page: _page }) => {
-      // このテストは情報表示のみ
-      console.log(`So that ${story.soThat}`);
-      expect(true).toBe(true);
-    });
+    storyTest(
+      `ストーリー: As a ${story.asA}, I want to ${story.iWantTo}`,
+      async ({ page: _page }) => {
+        // このテストは情報表示のみ
+        console.log(`So that ${story.soThat}`);
+        expect(true).toBe(true);
+      },
+    );
 
     testFn();
   });
@@ -81,7 +84,10 @@ export function markStoryImplemented(
 export class StoryReporter {
   private results: Map<string, boolean> = new Map();
 
-  onTestEnd(test: { annotations: Array<{ type: string; description: string }> }, result: { status: string }) {
+  onTestEnd(
+    test: { annotations: Array<{ type: string; description: string }> },
+    result: { status: string },
+  ) {
     const storyAnnotation = test.annotations.find((a) => a.type === 'story');
     const criteriaAnnotation = test.annotations.find((a) => a.type === 'criteria');
 

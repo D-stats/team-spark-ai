@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/card';
 import { useTranslations, useLocale } from 'next-intl';
 
-export default function LoginPage() {
+export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,9 @@ export default function LoginPage() {
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
-            {error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+            {error !== null && (
+              <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="email">{t('emailLabel')}</Label>
               <Input

@@ -126,7 +126,9 @@ export function EvaluationOverviewStep({
           ))}
         </div>
 
-        {errors?.['overallRating'] && <p className="text-sm text-red-600">{errors['overallRating']}</p>}
+        {errors?.['overallRating'] && (
+          <p className="text-sm text-red-600">{errors['overallRating']}</p>
+        )}
       </div>
 
       {/* 総合コメント */}

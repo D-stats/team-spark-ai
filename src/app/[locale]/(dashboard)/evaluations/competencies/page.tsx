@@ -72,7 +72,7 @@ const categoryIcons = {
   FUNCTIONAL: Lightbulb,
 };
 
-export default function CompetenciesPage() {
+export default function CompetenciesPage(): JSX.Element {
   const [competencies, setCompetencies] = useState<Competency[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -98,7 +98,7 @@ export default function CompetenciesPage() {
       setLoading(true);
       const response = await fetch('/api/competencies');
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as Competency[];
         setCompetencies(data);
       } else {
         toast.error('コンピテンシーの読み込みに失敗しました');
@@ -119,12 +119,12 @@ export default function CompetenciesPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as { message: string };
         toast.success(data.message);
         loadCompetencies();
       } else {
-        const error = await response.json();
-        toast.error(error.error || 'デフォルトコンピテンシーの初期化に失敗しました');
+        const error = (await response.json()) as { error?: string };
+        toast.error(error.error ?? 'デフォルトコンピテンシーの初期化に失敗しました');
       }
     } catch (error) {
       // Keep console.error for client-side debugging until proper error tracking is implemented
@@ -191,8 +191,8 @@ export default function CompetenciesPage() {
         resetForm();
         loadCompetencies();
       } else {
-        const error = await response.json();
-        toast.error(error.error || 'コンピテンシーの保存に失敗しました');
+        const error = (await response.json()) as { error?: string };
+        toast.error(error.error ?? 'コンピテンシーの保存に失敗しました');
       }
     } catch (error) {
       // Keep console.error for client-side debugging until proper error tracking is implemented
@@ -208,12 +208,12 @@ export default function CompetenciesPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        toast.success(data.message || 'コンピテンシーを削除しました');
+        const data = (await response.json()) as { message?: string };
+        toast.success(data.message ?? 'コンピテンシーを削除しました');
         loadCompetencies();
       } else {
-        const error = await response.json();
-        toast.error(error.error || 'コンピテンシーの削除に失敗しました');
+        const error = (await response.json()) as { error?: string };
+        toast.error(error.error ?? 'コンピテンシーの削除に失敗しました');
       }
     } catch (error) {
       // Keep console.error for client-side debugging until proper error tracking is implemented
@@ -270,7 +270,7 @@ export default function CompetenciesPage() {
         <div className="animate-pulse space-y-6">
           <div className="h-8 w-1/4 rounded bg-gray-200"></div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[...Array(6)].map((_, i) => (
+            {[...(Array(6) as unknown[])].map((_, i) => (
               <div key={i} className="h-48 rounded bg-gray-200"></div>
             ))}
           </div>

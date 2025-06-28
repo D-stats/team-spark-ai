@@ -11,7 +11,7 @@ interface RouteParams {
 }
 
 // 特定のコンピテンシー取得
-export async function GET(_request: NextRequest, { params }: RouteParams) {
+export async function GET(_request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -64,7 +64,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 // コンピテンシー更新
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -84,11 +84,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'コンピテンシーが見つかりません' }, { status: 404 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      name?: string;
+      description?: string;
+      category?: string;
+      behaviors?: string[];
+      order?: number;
+      isActive?: boolean;
+    };
     const { name, description, category, behaviors, order, isActive } = body;
 
     // 名前の重複チェック（自分以外）
-    if (name && name !== competency.name) {
+    if (name !== undefined && name !== competency.name) {
       const existingCompetency = await prisma.competency.findFirst({
         where: {
           organizationId: dbUser.organizationId,
@@ -134,7 +141,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // コンピテンシー削除
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: RouteParams,
+): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Globe, Database, Cookie, Info } from 'lucide-react';
 
-export default function PrivacyPage() {
+export default function PrivacyPage(): JSX.Element {
   const t = useTranslations('privacy');
 
   return (

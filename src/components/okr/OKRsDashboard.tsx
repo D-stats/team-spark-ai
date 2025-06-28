@@ -125,7 +125,6 @@ export function OKRsDashboard({ user, organization }: OKRsDashboardProps) {
     fetchSummary,
   ]);
 
-
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">

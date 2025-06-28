@@ -59,7 +59,7 @@ interface Evaluation {
 
 // Status labels will be translated dynamically
 
-export default function EvaluationsPage() {
+export default function EvaluationsPage(): JSX.Element {
   const [cycles, setCycles] = useState<EvaluationCycle[]>([]);
   const [myEvaluations, setMyEvaluations] = useState<Evaluation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,14 +101,14 @@ export default function EvaluationsPage() {
       // サイクル一覧を取得
       const cyclesResponse = await fetch('/api/evaluations/cycles');
       if (cyclesResponse.ok) {
-        const cyclesData = await cyclesResponse.json();
+        const cyclesData = (await cyclesResponse.json()) as EvaluationCycle[];
         setCycles(cyclesData);
       }
 
       // 自分の評価一覧を取得
       const evaluationsResponse = await fetch('/api/evaluations');
       if (evaluationsResponse.ok) {
-        const evaluationsData = await evaluationsResponse.json();
+        const evaluationsData = (await evaluationsResponse.json()) as Evaluation[];
         setMyEvaluations(evaluationsData);
       }
     } catch (error) {
@@ -156,7 +156,7 @@ export default function EvaluationsPage() {
         <div className="animate-pulse space-y-6">
           <div className="h-8 w-1/4 rounded bg-gray-200"></div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[...Array(3)].map((_, i) => (
+            {[...(Array(3) as unknown[])].map((_, i) => (
               <div key={i} className="h-32 rounded bg-gray-200"></div>
             ))}
           </div>
@@ -399,7 +399,7 @@ export default function EvaluationsPage() {
                         </div>
                         <div className="text-sm text-muted-foreground">
                           {evaluation.cycle.name}
-                          {evaluation.submittedAt && (
+                          {evaluation.submittedAt !== undefined && (
                             <span>
                               {' '}
                               •{' '}
@@ -413,7 +413,7 @@ export default function EvaluationsPage() {
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {evaluation.overallRating && (
+                      {evaluation.overallRating !== undefined && (
                         <div className="text-sm font-medium">{evaluation.overallRating}/5</div>
                       )}
                       <Badge variant={getEvaluationStatusBadgeVariant(evaluation.status)}>

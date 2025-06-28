@@ -36,7 +36,7 @@ export function createErrorResponse(message: string, status: number = 400, error
       message,
       statusCode: status,
     },
-    { status }
+    { status },
   );
 }
 

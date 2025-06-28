@@ -117,8 +117,7 @@ export function UserStoryDashboard() {
 
   // Filtered stories - optimized with useMemo
   const filteredStories = useMemo(
-    () =>
-      selectedEpic ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic) : stories,
+    () => (selectedEpic ? stories.filter((s) => (s.epicId || 'その他') === selectedEpic) : stories),
     [stories, selectedEpic],
   );
 

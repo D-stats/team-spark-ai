@@ -181,7 +181,11 @@ export function logPerformance(
   });
 }
 
-export function logBusinessEvent(event: string, userId: string, metadata?: Record<string, unknown>) {
+export function logBusinessEvent(
+  event: string,
+  userId: string,
+  metadata?: Record<string, unknown>,
+) {
   log.info(`Business Event: ${event}`, {
     event,
     userId,

@@ -154,13 +154,9 @@ export const sessionCache = new Cache('sessions', 3600); // 1 hour
 // Cache decorator for functions
 export function cacheable<T extends (...args: any[]) => Promise<any>>(
   cacheKey: (args: Parameters<T>) => string,
-  ttl: number = 300
+  ttl: number = 300,
 ) {
-  return function (
-    _target: unknown,
-    propertyName: string,
-    descriptor: TypedPropertyDescriptor<T>
-  ) {
+  return function (_target: unknown, propertyName: string, descriptor: TypedPropertyDescriptor<T>) {
     const originalMethod = descriptor.value;
     if (!originalMethod) {
       throw new Error(`Method ${propertyName} not found`);

@@ -4,7 +4,7 @@ import { KudosForm } from '@/components/kudos/kudos-form';
 import { KudosFeed } from '@/components/kudos/kudos-feed';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default async function KudosPage() {
+export default async function KudosPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // 組織内のユーザーを取得（自分以外）

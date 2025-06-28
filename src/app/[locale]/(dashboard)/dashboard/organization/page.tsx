@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Building2, Users, Calendar, Slack, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function OrganizationPage() {
+export default async function OrganizationPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // 管理者のみアクセス可能

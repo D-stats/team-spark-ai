@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function SetupPage() {
+export default function SetupPage(): JSX.Element {
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,8 +48,8 @@ export default function SetupPage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create organization');
+        const errorData = (await response.json()) as { error?: string };
+        throw new Error(errorData.error ?? 'Failed to create organization');
       }
 
       await response.json();
@@ -73,7 +73,7 @@ export default function SetupPage() {
         </CardHeader>
         <form onSubmit={handleSetup}>
           <CardContent className="space-y-4">
-            {error && (
+            {error !== null && (
               <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
                 {error}
               </div>

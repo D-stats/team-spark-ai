@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Users } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
-export default async function TeamsPage() {
+export default async function TeamsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
   const t = await getTranslations('teams.manage');
 
@@ -92,7 +92,9 @@ export default async function TeamsPage() {
                       {team._count.members}
                     </div>
                   </div>
-                  {team.description && <CardDescription>{team.description}</CardDescription>}
+                  {team.description !== null && (
+                    <CardDescription>{team.description}</CardDescription>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">

@@ -6,7 +6,7 @@ import { EvaluationCycleType } from '@prisma/client';
 import { logError } from '@/lib/logger';
 
 // Get evaluation cycles list
-export async function GET(_request: NextRequest) {
+export async function GET(_request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -35,7 +35,7 @@ export async function GET(_request: NextRequest) {
 }
 
 // 評価サイクル作成
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -44,11 +44,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '評価サイクルの作成権限がありません' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      name?: string;
+      type?: string;
+      startDate?: string;
+      endDate?: string;
+      autoGenerate?: boolean;
+    };
     const { name, type, startDate, endDate, autoGenerate } = body;
 
     // バリデーション
-    if (!name || !type || !startDate || !endDate) {
+    if (
+      name === undefined ||
+      type === undefined ||
+      startDate === undefined ||
+      endDate === undefined
+    ) {
       return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 

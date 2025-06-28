@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { BarChart3, Calendar, Users } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function SurveysPage() {
+export default async function SurveysPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // 組織のサーベイを取得
@@ -68,7 +68,7 @@ export default async function SurveysPage() {
               totalUsers > 0 ? Math.round((survey._count.responses / totalUsers) * 100) : 0;
 
             const isActive = survey.isActive;
-            const hasDeadline = survey.endDate;
+            const hasDeadline = survey.endDate !== null;
             const isExpired = hasDeadline && new Date(survey.endDate!) < new Date();
 
             return (
@@ -79,10 +79,20 @@ export default async function SurveysPage() {
                       <CardTitle className="line-clamp-2 text-lg">{survey.title}</CardTitle>
                       <div className="mt-2 flex items-center gap-2">
                         <Badge
-                          variant={isActive && !isExpired ? 'default' : 'secondary'}
-                          className={isActive && !isExpired ? 'bg-green-100 text-green-800' : ''}
+                          variant={
+                            isActive === true && isExpired === false ? 'default' : 'secondary'
+                          }
+                          className={
+                            isActive === true && isExpired === false
+                              ? 'bg-green-100 text-green-800'
+                              : ''
+                          }
                         >
-                          {isExpired ? '期限切れ' : isActive ? 'アクティブ' : '下書き'}
+                          {isExpired === true
+                            ? '期限切れ'
+                            : isActive === true
+                              ? 'アクティブ'
+                              : '下書き'}
                         </Badge>
                         {hasDeadline && (
                           <Badge variant="outline" className="text-xs">
@@ -93,7 +103,7 @@ export default async function SurveysPage() {
                       </div>
                     </div>
                   </div>
-                  {survey.description && (
+                  {survey.description !== null && (
                     <CardDescription className="line-clamp-2">{survey.description}</CardDescription>
                   )}
                 </CardHeader>

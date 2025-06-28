@@ -9,26 +9,30 @@
 ### 1. process.env インデックスアクセス (TS4111)
 
 **問題:**
+
 ```typescript
 // ❌ エラー
-process.env.NEXT_PUBLIC_APP_URL
+process.env.NEXT_PUBLIC_APP_URL;
 ```
 
 **修正:**
+
 ```typescript
 // ✅ 正しい
-process.env['NEXT_PUBLIC_APP_URL']
+process.env['NEXT_PUBLIC_APP_URL'];
 ```
 
 ### 2. Object is possibly 'undefined' (TS2532, TS18048)
 
 **問題:**
+
 ```typescript
 // ❌ エラー
 const value = obj.property; // obj が undefined の可能性
 ```
 
 **修正:**
+
 ```typescript
 // ✅ 正しい - Optional chaining
 const value = obj?.property;
@@ -45,6 +49,7 @@ if (obj) {
 ### 3. 未使用パラメータ (TS6133)
 
 **問題:**
+
 ```typescript
 // ❌ エラー
 async function handler(request: NextRequest) {
@@ -53,6 +58,7 @@ async function handler(request: NextRequest) {
 ```
 
 **修正:**
+
 ```typescript
 // ✅ 正しい - アンダースコアプレフィックス
 async function handler(_request: NextRequest) {
@@ -63,6 +69,7 @@ async function handler(_request: NextRequest) {
 ### 4. any 型の排除
 
 **問題:**
+
 ```typescript
 // ❌ エラー
 function process(data: any) {
@@ -71,6 +78,7 @@ function process(data: any) {
 ```
 
 **修正:**
+
 ```typescript
 // ✅ 正しい - 適切な型定義
 interface ProcessData {
@@ -95,16 +103,19 @@ function isProcessData(data: unknown): data is ProcessData {
 ## 段階的移行計画
 
 ### Phase 1: Critical Errors (優先度: 高)
+
 - [ ] API routes の未使用パラメータを修正
 - [ ] process.env のアクセス方法を修正
 - [ ] null/undefined チェックを追加
 
 ### Phase 2: Type Safety (優先度: 中)
+
 - [ ] any 型を適切な型に置き換え
 - [ ] 型ガードを実装
 - [ ] ジェネリック型を活用
 
 ### Phase 3: Optimization (優先度: 低)
+
 - [ ] 未使用の import を削除
 - [ ] 型定義の最適化
 - [ ] 共通型の抽出

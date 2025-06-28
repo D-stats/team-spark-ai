@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { createSuccessResponse, createErrorResponse } from '@/lib/errors';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

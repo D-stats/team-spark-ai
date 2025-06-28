@@ -11,14 +11,14 @@ interface RouteParams {
 }
 
 // 評価結果の集計取得
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
 
     const evaluateeId = searchParams.get('evaluateeId');
 
-    if (!evaluateeId) {
+    if (evaluateeId === null) {
       return NextResponse.json({ error: '被評価者IDが必要です' }, { status: 400 });
     }
 

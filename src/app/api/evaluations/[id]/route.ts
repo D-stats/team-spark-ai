@@ -18,7 +18,7 @@ interface RouteParams {
 }
 
 // 特定の評価取得
-export async function GET(_request: NextRequest, { params }: RouteParams) {
+export async function GET(_request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -102,7 +102,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価下書き保存 (PATCH)
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
+export async function PATCH(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -131,7 +131,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       throw new AuthorizationError('編集', '評価');
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as unknown;
     const validatedData = SaveEvaluationSchema.parse(body);
 
     // トランザクションで評価とコンピテンシー評価を更新
@@ -150,7 +150,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       });
 
       // コンピテンシー評価の更新
-      if (validatedData.competencyRatings && validatedData.competencyRatings.length > 0) {
+      if (
+        validatedData.competencyRatings !== undefined &&
+        validatedData.competencyRatings.length > 0
+      ) {
         // 既存のコンピテンシー評価を削除
         await tx.competencyRating.deleteMany({
           where: { evaluationId: params.id },
@@ -181,7 +184,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価削除
-export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: RouteParams,
+): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

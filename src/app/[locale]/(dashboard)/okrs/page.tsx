@@ -2,7 +2,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { OKRsDashboard } from '@/components/okr/OKRsDashboard';
 import { prisma } from '@/lib/prisma';
 
-export default async function OKRsPage() {
+export default async function OKRsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // Get full user and organization data
@@ -13,5 +13,5 @@ export default async function OKRsPage() {
     },
   });
 
-  return <OKRsDashboard user={fullUser} organization={fullUser.organization!} />;
+  return <OKRsDashboard user={fullUser} organization={fullUser.organization ?? undefined} />;
 }

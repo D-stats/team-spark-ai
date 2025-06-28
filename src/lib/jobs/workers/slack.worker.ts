@@ -63,7 +63,11 @@ interface SyncUsersResult {
   syncedUsers: number;
 }
 
-async function syncSlackUsers(slack: WebClient, organizationId: string, job: Job): Promise<SyncUsersResult> {
+async function syncSlackUsers(
+  slack: WebClient,
+  organizationId: string,
+  job: Job,
+): Promise<SyncUsersResult> {
   await job.updateProgress(10);
 
   const result = await slack.users.list();
@@ -129,7 +133,11 @@ interface SyncChannelsResult {
   totalChannels: number;
 }
 
-async function syncSlackChannels(_slack: WebClient, _organizationId: string, job: Job): Promise<SyncChannelsResult> {
+async function syncSlackChannels(
+  _slack: WebClient,
+  _organizationId: string,
+  job: Job,
+): Promise<SyncChannelsResult> {
   await job.updateProgress(10);
 
   const result = await _slack.conversations.list({
@@ -151,7 +159,11 @@ interface SyncMessagesResult {
   message: string;
 }
 
-async function syncSlackMessages(_slack: WebClient, _organizationId: string, job: Job): Promise<SyncMessagesResult> {
+async function syncSlackMessages(
+  _slack: WebClient,
+  _organizationId: string,
+  job: Job,
+): Promise<SyncMessagesResult> {
   // This would be implemented based on specific requirements
   // For now, return a placeholder
   await job.updateProgress(100);

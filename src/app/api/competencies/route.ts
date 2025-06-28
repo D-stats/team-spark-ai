@@ -5,7 +5,7 @@ import { CompetencyCategory } from '@prisma/client';
 import { logError } from '@/lib/logger';
 
 // Get competencies list
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
     const { searchParams } = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       organizationId: dbUser.organizationId,
     };
 
-    if (category) {
+    if (category !== null) {
       where.category = category as CompetencyCategory;
     }
 
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 }
 
 // コンピテンシー作成
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -58,11 +58,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'コンピテンシーの作成権限がありません' }, { status: 403 });
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as {
+      name?: string;
+      description?: string;
+      category?: string;
+      behaviors?: string[];
+      order?: number;
+    };
     const { name, description, category, behaviors, order } = body;
 
     // バリデーション
-    if (!name || !description || !category) {
+    if (name === undefined || description === undefined || category === undefined) {
       return NextResponse.json({ error: '必要な項目が入力されていません' }, { status: 400 });
     }
 
@@ -88,8 +94,8 @@ export async function POST(request: NextRequest) {
         name,
         description,
         category: category as CompetencyCategory,
-        behaviors: behaviors || [],
-        order: order || 0,
+        behaviors: behaviors ?? [],
+        order: order ?? 0,
       },
     });
 

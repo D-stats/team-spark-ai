@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { CheckInTemplateManager } from '@/components/checkins/template-manager';
 
-export default function CheckInTemplatesPage() {
+export default function CheckInTemplatesPage(): JSX.Element {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">

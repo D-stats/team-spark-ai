@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Slack, Check, AlertCircle } from 'lucide-react';
 
-export default async function SlackSettingsPage() {
+export default async function SlackSettingsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // 管理者のみアクセス可能
@@ -95,7 +95,7 @@ export default async function SlackSettingsPage() {
 
               <div className="border-t pt-4">
                 <Button variant="outline" asChild>
-                  <a href={slackAuthUrl!}>
+                  <a href={slackAuthUrl ?? '#'}>
                     <Slack className="mr-2 h-4 w-4" />
                     連携を更新
                   </a>

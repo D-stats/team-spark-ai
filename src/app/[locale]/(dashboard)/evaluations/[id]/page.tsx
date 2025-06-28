@@ -10,7 +10,7 @@ interface PageProps {
   };
 }
 
-export default function EvaluationDetailPage({ params }: PageProps) {
+export default function EvaluationDetailPage({ params }: PageProps): JSX.Element {
   return (
     <div className="container mx-auto py-6">
       <EvaluationForm evaluationId={params.id} />
@@ -18,7 +18,7 @@ export default function EvaluationDetailPage({ params }: PageProps) {
   );
 }
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<{ title: string; description: string }> {
   return {
     title: '評価入力 - TeamSpark AI',
     description: '従業員評価の入力・編集を行います',

@@ -27,7 +27,7 @@ const ReviewEvaluationSchema = z.object({
 });
 
 // 評価承認・却下
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       throw new ConflictError('提出済みの評価のみレビューできます');
     }
 
-    const body = await request.json();
+    const body = (await request.json()) as unknown;
     const validatedData = ReviewEvaluationSchema.parse(body);
 
     // レビュー実行
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 }
 
 // 評価共有（従業員に結果を公開）
-export async function PATCH(_request: NextRequest, { params }: RouteParams) {
+export async function PATCH(_request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

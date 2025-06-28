@@ -6,7 +6,7 @@ import { KudosFeed } from '@/components/kudos/kudos-feed';
 import { cn } from '@/lib/utils';
 import { getTranslations } from 'next-intl/server';
 
-export default async function DashboardPage() {
+export default async function DashboardPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
   const t = await getTranslations('dashboard');
 
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
   const averageMoodScore =
     recentCheckIns.length > 0
       ? (
-          recentCheckIns.reduce((sum, checkin) => sum + (checkin.moodRating || 0), 0) /
+          recentCheckIns.reduce((sum, checkin) => sum + (checkin.moodRating ?? 0), 0) /
           recentCheckIns.length
         ).toFixed(1)
       : 'N/A';
@@ -234,7 +234,7 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
       {recentCheckIns.map((checkIn) => {
         // Display the answer to the first question (usually achievements or reflections)
         const answers = checkIn.answers as Record<string, unknown>;
-        const firstAnswer = answers ? Object.values(answers)[0] : null;
+        const firstAnswer = answers !== null ? Object.values(answers)[0] : null;
         const displayText =
           typeof firstAnswer === 'string' ? firstAnswer : t('recentCheckins.noResponse');
 
@@ -252,7 +252,7 @@ async function RecentCheckIns({ organizationId }: { organizationId: string }) {
                   <span
                     key={star}
                     className={`text-xs ${
-                      star <= (checkIn.moodRating || 0) ? 'text-yellow-400' : 'text-gray-300'
+                      star <= (checkIn.moodRating ?? 0) ? 'text-yellow-400' : 'text-gray-300'
                     }`}
                   >
                     ★

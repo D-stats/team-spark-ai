@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiRateLimit, authRateLimit as _authRateLimit, RateLimitResult as _RateLimitResult } from './rate-limit';
+import {
+  apiRateLimit,
+  authRateLimit as _authRateLimit,
+  RateLimitResult as _RateLimitResult,
+} from './rate-limit';
 import { createErrorResponse } from './openapi/validator';
 import { logError } from './logger';
 
@@ -17,15 +21,18 @@ export function withRateLimit(
     const result = rateLimiter.check(request, limit);
 
     if (!result.success) {
-      return NextResponse.json({ error: 'Too Many Requests' }, {
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': result.limit.toString(),
-          'X-RateLimit-Remaining': result.remaining.toString(),
-          'X-RateLimit-Reset': new Date(result.reset).toISOString(),
-          'Retry-After': Math.ceil((result.reset - Date.now()) / 1000).toString(),
+      return NextResponse.json(
+        { error: 'Too Many Requests' },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': result.limit.toString(),
+            'X-RateLimit-Remaining': result.remaining.toString(),
+            'X-RateLimit-Reset': new Date(result.reset).toISOString(),
+            'Retry-After': Math.ceil((result.reset - Date.now()) / 1000).toString(),
+          },
         },
-      });
+      );
     }
 
     const response = await handler(request);
@@ -77,9 +84,6 @@ export function withErrorHandler(handler: (request: NextRequest) => Promise<Next
 type RequestHandler = (request: NextRequest) => Promise<NextResponse>;
 type Middleware = (handler: RequestHandler) => RequestHandler;
 
-export function withMiddleware(
-  handler: RequestHandler,
-  ...middleware: Middleware[]
-) {
+export function withMiddleware(handler: RequestHandler, ...middleware: Middleware[]) {
   return middleware.reverse().reduce((acc, fn) => fn(acc), handler);
 }

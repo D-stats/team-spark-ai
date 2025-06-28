@@ -15,15 +15,15 @@ describeStory(templateManagementStory, () => {
   const criteria0 = templateManagementStory.acceptanceCriteria[0];
   if (criteria0) {
     testCriteria(criteria0, async ({ page }) => {
-    // 管理者としてログイン
-    await mockAuth(page, 'admin');
+      // 管理者としてログイン
+      await mockAuth(page, 'admin');
 
-    // チェックインテンプレート管理画面にアクセス
-    await page.goto('/dashboard/checkins/templates');
+      // チェックインテンプレート管理画面にアクセス
+      await page.goto('/dashboard/checkins/templates');
 
-    // テンプレート一覧と作成ボタンが表示される
-    await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
-    await expect(page.locator('button:has-text("新しいテンプレート")')).toBeVisible();
+      // テンプレート一覧と作成ボタンが表示される
+      await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
+      await expect(page.locator('button:has-text("新しいテンプレート")')).toBeVisible();
     });
   }
 
@@ -31,32 +31,32 @@ describeStory(templateManagementStory, () => {
   const criteria1 = templateManagementStory.acceptanceCriteria[1];
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
-    await mockAuth(page, 'admin');
-    await page.goto('/dashboard/checkins/templates');
+      await mockAuth(page, 'admin');
+      await page.goto('/dashboard/checkins/templates');
 
-    // 新しいテンプレートボタンをクリック
-    await page.locator('button:has-text("新しいテンプレート")').click();
+      // 新しいテンプレートボタンをクリック
+      await page.locator('button:has-text("新しいテンプレート")').click();
 
-    // テンプレート作成フォームが表示される
-    await expect(page.locator('h2:has-text("新しいテンプレート")')).toBeVisible();
+      // テンプレート作成フォームが表示される
+      await expect(page.locator('h2:has-text("新しいテンプレート")')).toBeVisible();
 
-    // 基本情報を入力
-    await page.fill('#name', 'カスタムテストテンプレート');
-    await page.fill('#description', 'テスト用のカスタムテンプレート');
+      // 基本情報を入力
+      await page.fill('#name', 'カスタムテストテンプレート');
+      await page.fill('#description', 'テスト用のカスタムテンプレート');
 
-    // 頻度を選択
-    await page.locator('[role="combobox"]').first().click();
-    await page.locator('text=毎週').click();
+      // 頻度を選択
+      await page.locator('[role="combobox"]').first().click();
+      await page.locator('text=毎週').click();
 
-    // 質問を追加
-    await page.locator('button:has-text("質問を追加")').click();
-    await page.fill('input[placeholder="質問を入力してください"]', 'テスト質問');
+      // 質問を追加
+      await page.locator('button:has-text("質問を追加")').click();
+      await page.fill('input[placeholder="質問を入力してください"]', 'テスト質問');
 
-    // 保存
-    await page.locator('button:has-text("保存")').click();
+      // 保存
+      await page.locator('button:has-text("保存")').click();
 
-    // 成功メッセージまたは一覧に戻ることを確認
-    await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
+      // 成功メッセージまたは一覧に戻ることを確認
+      await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
     });
   }
 
@@ -64,18 +64,18 @@ describeStory(templateManagementStory, () => {
   const criteria2 = templateManagementStory.acceptanceCriteria[2];
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
-    await mockAuth(page, 'admin');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'admin');
+      await page.goto('/dashboard/checkins');
 
-    // テンプレートが存在しない場合のメッセージを確認
-    await expect(page.locator('text=テンプレートが設定されていません')).toBeVisible();
+      // テンプレートが存在しない場合のメッセージを確認
+      await expect(page.locator('text=テンプレートが設定されていません')).toBeVisible();
 
-    // デフォルトテンプレート作成ボタンをクリック
-    await page.locator('button:has-text("デフォルトテンプレートを作成")').click();
+      // デフォルトテンプレート作成ボタンをクリック
+      await page.locator('button:has-text("デフォルトテンプレートを作成")').click();
 
-    // ページがリロードされ、チェックインフォームが表示される
-    await page.waitForLoadState('networkidle');
-    await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
+      // ページがリロードされ、チェックインフォームが表示される
+      await page.waitForLoadState('networkidle');
+      await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
     });
   }
 });
@@ -88,15 +88,15 @@ describeStory(checkinCreationStory, () => {
   const criteria3 = checkinCreationStory.acceptanceCriteria[0];
   if (criteria3) {
     testCriteria(criteria3, async ({ page }) => {
-    // 一般従業員としてログイン
-    await mockAuth(page, 'member');
+      // 一般従業員としてログイン
+      await mockAuth(page, 'member');
 
-    // チェックインページにアクセス
-    await page.goto('/dashboard/checkins');
+      // チェックインページにアクセス
+      await page.goto('/dashboard/checkins');
 
-    // テンプレート選択とフォームが表示される
-    await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
-    await expect(page.locator('text=テンプレート選択')).toBeVisible();
+      // テンプレート選択とフォームが表示される
+      await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
+      await expect(page.locator('text=テンプレート選択')).toBeVisible();
     });
   }
 
@@ -104,25 +104,25 @@ describeStory(checkinCreationStory, () => {
   const criteria4 = checkinCreationStory.acceptanceCriteria[1];
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'member');
+      await page.goto('/dashboard/checkins');
 
-    // テンプレートが選択されていることを確認
-    await expect(page.locator('[role="combobox"]')).toBeVisible();
+      // テンプレートが選択されていることを確認
+      await expect(page.locator('[role="combobox"]')).toBeVisible();
 
-    // 質問に回答
-    const textareas = page.locator('textarea');
-    await textareas.first().fill('今週は新機能の開発を完了しました');
-    await textareas.nth(1).fill('来週はテストケースの強化に取り組みます');
+      // 質問に回答
+      const textareas = page.locator('textarea');
+      await textareas.first().fill('今週は新機能の開発を完了しました');
+      await textareas.nth(1).fill('来週はテストケースの強化に取り組みます');
 
-    // 気分評価を選択
-    await page.locator('input[value="4"]').check();
+      // 気分評価を選択
+      await page.locator('input[value="4"]').check();
 
-    // 送信
-    await page.locator('button:has-text("チェックイン完了")').click();
+      // 送信
+      await page.locator('button:has-text("チェックイン完了")').click();
 
-    // 成功メッセージを確認
-    await expect(page.locator('text=チェックインを完了しました')).toBeVisible();
+      // 成功メッセージを確認
+      await expect(page.locator('text=チェックインを完了しました')).toBeVisible();
     });
   }
 
@@ -130,24 +130,24 @@ describeStory(checkinCreationStory, () => {
   const criteria5 = checkinCreationStory.acceptanceCriteria[2];
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'member');
+      await page.goto('/dashboard/checkins');
 
-    // 初期テンプレートの質問を確認
-    const initialQuestions = await page.locator('label').allTextContents();
+      // 初期テンプレートの質問を確認
+      const initialQuestions = await page.locator('label').allTextContents();
 
-    // 別のテンプレートを選択（複数ある場合）
-    await page.locator('[role="combobox"]').click();
-    const options = page.locator('[role="option"]');
-    const optionCount = await options.count();
+      // 別のテンプレートを選択（複数ある場合）
+      await page.locator('[role="combobox"]').click();
+      const options = page.locator('[role="option"]');
+      const optionCount = await options.count();
 
-    if (optionCount > 1) {
-      await options.nth(1).click();
+      if (optionCount > 1) {
+        await options.nth(1).click();
 
-      // 質問が変更されたことを確認
-      const newQuestions = await page.locator('label').allTextContents();
-      expect(newQuestions).not.toEqual(initialQuestions);
-    }
+        // 質問が変更されたことを確認
+        const newQuestions = await page.locator('label').allTextContents();
+        expect(newQuestions).not.toEqual(initialQuestions);
+      }
     });
   }
 });
@@ -160,12 +160,12 @@ describeStory(historyStory, () => {
   const criteria6 = historyStory.acceptanceCriteria[0];
   if (criteria6) {
     testCriteria(criteria6, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'member');
+      await page.goto('/dashboard/checkins');
 
-    // 履歴セクションを確認
-    await expect(page.locator('text=チェックイン履歴')).toBeVisible();
-    await expect(page.locator('text=統計')).toBeVisible();
+      // 履歴セクションを確認
+      await expect(page.locator('text=チェックイン履歴')).toBeVisible();
+      await expect(page.locator('text=統計')).toBeVisible();
     });
   }
 
@@ -173,12 +173,12 @@ describeStory(historyStory, () => {
   const criteria7 = historyStory.acceptanceCriteria[1];
   if (criteria7) {
     testCriteria(criteria7, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'member');
+      await page.goto('/dashboard/checkins');
 
-    // 統計情報を確認
-    await expect(page.locator('text=総チェックイン数')).toBeVisible();
-    await expect(page.locator('text=平均気分スコア')).toBeVisible();
+      // 統計情報を確認
+      await expect(page.locator('text=総チェックイン数')).toBeVisible();
+      await expect(page.locator('text=平均気分スコア')).toBeVisible();
     });
   }
 
@@ -186,19 +186,19 @@ describeStory(historyStory, () => {
   const criteria8 = historyStory.acceptanceCriteria[2];
   if (criteria8) {
     testCriteria(criteria8, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/dashboard/checkins');
+      await mockAuth(page, 'member');
+      await page.goto('/dashboard/checkins');
 
-    // 履歴エントリが存在する場合
-    const historyItems = page.locator('[data-testid="checkin-history-item"]');
-    const itemCount = await historyItems.count();
+      // 履歴エントリが存在する場合
+      const historyItems = page.locator('[data-testid="checkin-history-item"]');
+      const itemCount = await historyItems.count();
 
-    if (itemCount > 0) {
-      // 最初のエントリでテンプレート情報と回答が表示されることを確認
-      const firstItem = historyItems.first();
-      await expect(firstItem.locator('text=スタンダード週次チェックイン')).toBeVisible();
-      await expect(firstItem.locator('text=毎週')).toBeVisible();
-    }
+      if (itemCount > 0) {
+        // 最初のエントリでテンプレート情報と回答が表示されることを確認
+        const firstItem = historyItems.first();
+        await expect(firstItem.locator('text=スタンダード週次チェックイン')).toBeVisible();
+        await expect(firstItem.locator('text=毎週')).toBeVisible();
+      }
     });
   }
 });

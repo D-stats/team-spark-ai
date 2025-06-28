@@ -3,7 +3,7 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { ensureDefaultTemplate } from '@/lib/checkin-templates/default-template';
 import { logError } from '@/lib/logger';
 
-export async function POST(_request: NextRequest) {
+export async function POST(_request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 

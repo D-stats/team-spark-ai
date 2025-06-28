@@ -15,17 +15,17 @@ describeStory(selfEvaluationStory, () => {
   const criteria0 = selfEvaluationStory.acceptanceCriteria[0];
   if (criteria0) {
     testCriteria(criteria0, async ({ page }) => {
-    // 従業員としてログイン
-    await mockAuth(page, 'member');
+      // 従業員としてログイン
+      await mockAuth(page, 'member');
 
-    // 評価ページにアクセス
-    await page.goto('/evaluations');
+      // 評価ページにアクセス
+      await page.goto('/evaluations');
 
-    // アクティブな評価サイクルの確認
-    await expect(page.locator('[data-testid="active-cycle-card"]')).toBeVisible();
+      // アクティブな評価サイクルの確認
+      await expect(page.locator('[data-testid="active-cycle-card"]')).toBeVisible();
 
-    // 自己評価ボタンが表示される
-    await expect(page.locator('text=自己評価を開始')).toBeVisible();
+      // 自己評価ボタンが表示される
+      await expect(page.locator('text=自己評価を開始')).toBeVisible();
     });
   }
 
@@ -33,20 +33,20 @@ describeStory(selfEvaluationStory, () => {
   const criteria1 = selfEvaluationStory.acceptanceCriteria[1];
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/evaluations/test-eval-id');
+      await mockAuth(page, 'member');
+      await page.goto('/evaluations/test-eval-id');
 
-    // 総合評価を入力
-    await page.locator('[data-rating="4"]').click();
+      // 総合評価を入力
+      await page.locator('[data-rating="4"]').click();
 
-    // コメントを入力
-    await page.fill('#overallComments', 'テスト評価コメント');
+      // コメントを入力
+      await page.fill('#overallComments', 'テスト評価コメント');
 
-    // 5秒待機（自動保存のタイミング）
-    await page.waitForTimeout(5500);
+      // 5秒待機（自動保存のタイミング）
+      await page.waitForTimeout(5500);
 
-    // 保存インジケーターの確認
-    await expect(page.locator('text=保存済み')).toBeVisible();
+      // 保存インジケーターの確認
+      await expect(page.locator('text=保存済み')).toBeVisible();
     });
   }
 
@@ -54,25 +54,25 @@ describeStory(selfEvaluationStory, () => {
   const criteria2 = selfEvaluationStory.acceptanceCriteria[2];
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
-    await mockAuth(page, 'member');
-    await page.goto('/evaluations/test-eval-id');
+      await mockAuth(page, 'member');
+      await page.goto('/evaluations/test-eval-id');
 
-    // 必須項目を入力
-    await page.locator('[data-rating="4"]').click();
-    await page.fill('#overallComments', 'この期間の成果について...');
+      // 必須項目を入力
+      await page.locator('[data-rating="4"]').click();
+      await page.fill('#overallComments', 'この期間の成果について...');
 
-    // コンピテンシー評価も入力
-    await page.locator('text=コンピテンシー評価').click();
-    await page.locator('[data-competency-rating="1"]').first().click();
+      // コンピテンシー評価も入力
+      await page.locator('text=コンピテンシー評価').click();
+      await page.locator('[data-competency-rating="1"]').first().click();
 
-    // 確認画面へ
-    await page.locator('text=確認・送信').click();
+      // 確認画面へ
+      await page.locator('text=確認・送信').click();
 
-    // 送信ボタンをクリック
-    await page.locator('button:has-text("評価を送信")').click();
+      // 送信ボタンをクリック
+      await page.locator('button:has-text("評価を送信")').click();
 
-    // 確認メッセージ
-    await expect(page.locator('text=評価を送信しました')).toBeVisible();
+      // 確認メッセージ
+      await expect(page.locator('text=評価を送信しました')).toBeVisible();
     });
   }
 });
@@ -85,17 +85,17 @@ describeStory(managerReviewStory, () => {
   const criteria3 = managerReviewStory.acceptanceCriteria[0];
   if (criteria3) {
     testCriteria(criteria3, async ({ page }) => {
-    // マネージャーとしてログイン
-    await mockAuth(page, 'manager');
+      // マネージャーとしてログイン
+      await mockAuth(page, 'manager');
 
-    // 評価一覧ページへ
-    await page.goto('/evaluations');
+      // 評価一覧ページへ
+      await page.goto('/evaluations');
 
-    // レビュー待ちタブをクリック
-    await page.locator('text=レビュー待ち').click();
+      // レビュー待ちタブをクリック
+      await page.locator('text=レビュー待ち').click();
 
-    // 提出済み評価が表示される
-    await expect(page.locator('[data-status="SUBMITTED"]')).toBeVisible();
+      // 提出済み評価が表示される
+      await expect(page.locator('[data-status="SUBMITTED"]')).toBeVisible();
     });
   }
 
@@ -103,17 +103,17 @@ describeStory(managerReviewStory, () => {
   const criteria4 = managerReviewStory.acceptanceCriteria[1];
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
-    await mockAuth(page, 'manager');
-    await page.goto('/evaluations/submitted-eval-id/results');
+      await mockAuth(page, 'manager');
+      await page.goto('/evaluations/submitted-eval-id/results');
 
-    // レビューボタンをクリック
-    await page.locator('button:has-text("レビュー")').click();
+      // レビューボタンをクリック
+      await page.locator('button:has-text("レビュー")').click();
 
-    // 承認ボタンをクリック
-    await page.locator('button:has-text("承認")').click();
+      // 承認ボタンをクリック
+      await page.locator('button:has-text("承認")').click();
 
-    // ステータス更新の確認
-    await expect(page.locator('[data-status="REVIEWED"]')).toBeVisible();
+      // ステータス更新の確認
+      await expect(page.locator('[data-status="REVIEWED"]')).toBeVisible();
     });
   }
 
@@ -121,20 +121,20 @@ describeStory(managerReviewStory, () => {
   const criteria5 = managerReviewStory.acceptanceCriteria[2];
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
-    await mockAuth(page, 'manager');
-    await page.goto('/evaluations/submitted-eval-id/results');
+      await mockAuth(page, 'manager');
+      await page.goto('/evaluations/submitted-eval-id/results');
 
-    // レビューボタンをクリック
-    await page.locator('button:has-text("レビュー")').click();
+      // レビューボタンをクリック
+      await page.locator('button:has-text("レビュー")').click();
 
-    // コメントを入力
-    await page.fill('textarea[placeholder*="理由"]', '具体例をもう少し追加してください');
+      // コメントを入力
+      await page.fill('textarea[placeholder*="理由"]', '具体例をもう少し追加してください');
 
-    // 差し戻しボタンをクリック
-    await page.locator('button:has-text("差し戻し")').click();
+      // 差し戻しボタンをクリック
+      await page.locator('button:has-text("差し戻し")').click();
 
-    // ステータスがDRAFTに戻る
-    await expect(page.locator('[data-status="DRAFT"]')).toBeVisible();
+      // ステータスがDRAFTに戻る
+      await expect(page.locator('[data-status="DRAFT"]')).toBeVisible();
     });
   }
 });

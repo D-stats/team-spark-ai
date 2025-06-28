@@ -6,7 +6,7 @@ import { SlackUserSettings } from '@/components/settings/slack-user-settings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default async function SettingsPage() {
+export default async function SettingsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
 
   // ユーザーの詳細情報を取得

@@ -10,7 +10,9 @@ export function createSlackClient(botAccessToken: string) {
 // For multi-workspace apps, we use OAuth installer instead of a single token
 // Only initialize if Slack environment variables are configured
 export const slackApp =
-  process.env['SLACK_SIGNING_SECRET'] && process.env['SLACK_CLIENT_ID'] && process.env['SLACK_CLIENT_SECRET']
+  process.env['SLACK_SIGNING_SECRET'] &&
+  process.env['SLACK_CLIENT_ID'] &&
+  process.env['SLACK_CLIENT_SECRET']
     ? new App({
         signingSecret: process.env['SLACK_SIGNING_SECRET'],
         clientId: process.env['SLACK_CLIENT_ID'],

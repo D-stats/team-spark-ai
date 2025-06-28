@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
 
 // Initialize default competencies
-export async function POST(_request: NextRequest) {
+export async function POST(_request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
 
