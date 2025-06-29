@@ -20,7 +20,7 @@ describeStory(templateManagementStory, () => {
       await mockAuth(page, 'admin');
 
       // チェックインテンプレート管理画面にアクセス
-      await page.goto('/ja/dashboard/checkins/templates');
+      await page.goto('/en/dashboard/checkins/templates');
 
       // テンプレート一覧と作成ボタンが表示される
       await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
@@ -33,7 +33,7 @@ describeStory(templateManagementStory, () => {
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
       await mockAuth(page, 'admin');
-      await page.goto('/ja/dashboard/checkins/templates');
+      await page.goto('/en/dashboard/checkins/templates');
 
       // 新しいテンプレートボタンをクリック
       await page.locator('button:has-text("新しいテンプレート")').click();
@@ -66,7 +66,7 @@ describeStory(templateManagementStory, () => {
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
       await mockAuth(page, 'admin');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // テンプレートが存在しない場合のメッセージを確認
       await expect(page.locator('text=テンプレートが設定されていません')).toBeVisible();
@@ -94,7 +94,7 @@ describeStory(checkinCreationStory, () => {
       await mockAuth(page, 'member');
 
       // チェックインページにアクセス
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // テンプレート選択とフォームが表示される
       await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
@@ -107,7 +107,7 @@ describeStory(checkinCreationStory, () => {
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // テンプレートが選択されていることを確認
       await expect(page.locator('[role="combobox"]')).toBeVisible();
@@ -133,7 +133,7 @@ describeStory(checkinCreationStory, () => {
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // 初期テンプレートの質問を確認
       const initialQuestions = await page.locator('label').allTextContents();
@@ -164,7 +164,7 @@ describeStory(historyStory, () => {
   if (criteria6) {
     testCriteria(criteria6, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // 履歴セクションを確認
       await expect(page.locator('text=チェックイン履歴')).toBeVisible();
@@ -177,7 +177,7 @@ describeStory(historyStory, () => {
   if (criteria7) {
     testCriteria(criteria7, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // 統計情報を確認
       await expect(page.locator('text=総チェックイン数')).toBeVisible();
@@ -190,7 +190,7 @@ describeStory(historyStory, () => {
   if (criteria8) {
     testCriteria(criteria8, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/dashboard/checkins');
+      await page.goto('/en/dashboard/checkins');
 
       // 履歴エントリが存在する場合
       const historyItems = page.locator('[data-testid="checkin-history-item"]');

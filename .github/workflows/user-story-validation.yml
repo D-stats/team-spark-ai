@@ -127,6 +127,11 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
+      - name: Build application
+        run: npm run build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:54322/team_spark_test
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
@@ -135,6 +140,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:54322/team_spark_test
           NODE_ENV: test
+          NEXT_PUBLIC_DEFAULT_LOCALE: en
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

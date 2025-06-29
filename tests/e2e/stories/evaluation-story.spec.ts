@@ -20,7 +20,7 @@ describeStory(selfEvaluationStory, () => {
       await mockAuth(page, 'member');
 
       // 評価ページにアクセス
-      await page.goto('/ja/evaluations');
+      await page.goto('/en/evaluations');
 
       // アクティブな評価サイクルの確認
       await expect(page.locator('[data-testid="active-cycle-card"]')).toBeVisible();
@@ -35,7 +35,7 @@ describeStory(selfEvaluationStory, () => {
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/evaluations/test-eval-id');
+      await page.goto('/en/evaluations/test-eval-id');
 
       // 総合評価を入力
       await page.locator('[data-rating="4"]').click();
@@ -56,7 +56,7 @@ describeStory(selfEvaluationStory, () => {
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/ja/evaluations/test-eval-id');
+      await page.goto('/en/evaluations/test-eval-id');
 
       // 必須項目を入力
       await page.locator('[data-rating="4"]').click();
@@ -91,7 +91,7 @@ describeStory(managerReviewStory, () => {
       await mockAuth(page, 'manager');
 
       // 評価一覧ページへ
-      await page.goto('/ja/evaluations');
+      await page.goto('/en/evaluations');
 
       // レビュー待ちタブをクリック
       await page.locator('text=レビュー待ち').click();
@@ -106,7 +106,7 @@ describeStory(managerReviewStory, () => {
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
       await mockAuth(page, 'manager');
-      await page.goto('/ja/evaluations/submitted-eval-id/results');
+      await page.goto('/en/evaluations/submitted-eval-id/results');
 
       // レビューボタンをクリック
       await page.locator('button:has-text("レビュー")').click();
@@ -124,7 +124,7 @@ describeStory(managerReviewStory, () => {
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
       await mockAuth(page, 'manager');
-      await page.goto('/ja/evaluations/submitted-eval-id/results');
+      await page.goto('/en/evaluations/submitted-eval-id/results');
 
       // レビューボタンをクリック
       await page.locator('button:has-text("レビュー")').click();
