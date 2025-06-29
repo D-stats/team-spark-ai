@@ -1,7 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { locales, type Locale } from '@/i18n/config';
+import { redirect } from 'next/navigation';
+import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import { LanguageInitializer } from '@/components/language-initializer';
 
 export function generateStaticParams(): Array<{ locale: string }> {
@@ -45,9 +45,9 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: { locale: string };
 }): Promise<JSX.Element> {
-  // Validate that the incoming locale is supported
+  // Validate that the incoming locale is supported, redirect to default if not
   if (!locales.includes(locale as Locale)) {
-    notFound();
+    redirect(`/${defaultLocale}`);
   }
 
   const validatedLocale = locale as Locale;
