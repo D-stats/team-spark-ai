@@ -12,7 +12,7 @@ import {
   CompetencyRating,
   SaveEvaluationRequest,
   Result,
-  ApiError as _ApiError,
+  ApiResponse,
 } from '@/types/api';
 import { EvaluationStatus } from '@prisma/client';
 
@@ -196,16 +196,16 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
           try {
             const response = await fetch(`/api/evaluations/${evaluationId}`);
-            const result = await response.json() as { success: boolean; error?: string; data?: unknown };
+            const result = await response.json() as ApiResponse<EvaluationWithDetails>;
 
-            if (result.success !== true) {
+            if (!result.success) {
               set((state) => {
                 state.isLoading = false;
               });
-              return { success: false, error: result.error ?? 'Unknown error' };
+              return { success: false as const, error: result.error };
             }
 
-            const evaluation = result.data as EvaluationWithDetails;
+            const evaluation = result.data;
 
             set((state) => {
               state.currentEvaluation = evaluation;
@@ -223,7 +223,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
                   (acc, rating) => {
                     acc[rating.competencyId] = {
                       competencyId: rating.competencyId,
-                      rating: rating.rating,
+                      rating: rating.rating ?? undefined,
                       comments: rating.comments ?? '',
                       behaviors: rating.behaviors,
                       examples: rating.examples ?? '',
@@ -235,11 +235,11 @@ export const useEvaluationStore = create<EvaluationStore>()(
                     string,
                     {
                       competencyId: string;
-                      rating: number;
-                      comments: string;
+                      rating?: number;
+                      comments?: string;
                       behaviors: string[];
-                      examples: string;
-                      improvementAreas: string;
+                      examples?: string;
+                      improvementAreas?: string;
                     }
                   >,
                 ),
@@ -256,7 +256,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
             return {
               success: false,
               error: { code: 'LOAD_ERROR', message: '評価データの読み込みに失敗しました' },
-            };
+            } as Result<EvaluationWithDetails>;
           }
         },
 
@@ -327,7 +327,11 @@ export const useEvaluationStore = create<EvaluationStore>()(
             if (!state.formData.competencyRatings[competencyId]) {
               state.formData.competencyRatings[competencyId] = {
                 competencyId,
+                rating: undefined,
+                comments: undefined,
                 behaviors: [],
+                examples: undefined,
+                improvementAreas: undefined,
               };
             }
 
@@ -424,7 +428,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
                 .filter((rating) => rating.rating !== undefined)
                 .map((rating) => ({
                   ...rating,
-                  rating: rating.rating!,
+                  rating: rating.rating as number,
                 })),
               isDraft: true,
             };
@@ -437,7 +441,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
                 draft.isDirty = false;
                 draft.lastSavedAt = new Date();
               });
-              return { success: true };
+              return { success: true as const, data: undefined };
             }
 
             const response = await fetch(`/api/evaluations/${state.currentEvaluation.id}`, {
@@ -446,7 +450,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(saveData),
             });
 
-            const result = await response.json() as { success: boolean; error?: string; data?: unknown };
+            const result = await response.json() as ApiResponse<void>;
 
             set((draft) => {
               draft.isSaving = false;
@@ -457,7 +461,11 @@ export const useEvaluationStore = create<EvaluationStore>()(
               }
             });
 
-            return result;
+            if (result.success) {
+              return { success: true as const, data: undefined };
+            } else {
+              return { success: false as const, error: result.error ?? { code: 'SAVE_ERROR', message: '保存に失敗しました' } };
+            }
           } catch (error) {
             set((draft) => {
               draft.isSaving = false;
@@ -495,7 +503,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(submitData),
             });
 
-            const result = await response.json() as { success: boolean; error?: { message?: string } };
+            const result = await response.json() as ApiResponse<void>;
 
             set((draft) => {
               draft.isSubmitting = false;
@@ -511,7 +519,11 @@ export const useEvaluationStore = create<EvaluationStore>()(
               }
             });
 
-            return result;
+            if (result.success) {
+              return { success: true as const, data: undefined };
+            } else {
+              return { success: false as const, error: result.error ?? { code: 'SUBMIT_ERROR', message: '送信に失敗しました' } };
+            }
           } catch (error) {
             set((draft) => {
               draft.isSubmitting = false;
@@ -635,7 +647,6 @@ export const useEvaluationStore = create<EvaluationStore>()(
 // ================
 
 export function useAutoSave(): void {
-  const store = useEvaluationStore();
 
   // isDirtyとautoSaveEnabledの変更を監視
   useEvaluationStore.subscribe(
@@ -656,5 +667,5 @@ export function useAutoSave(): void {
     },
   );
 
-  return store;
+  // No return value needed for this hook
 }

@@ -35,9 +35,12 @@ export default getRequestConfig(async ({ locale }) => {
   const typedLocale = locale as string;
   if (!typedLocale || !locales.includes(typedLocale as Locale)) notFound();
 
+  const messagesModule = await import(`./messages/${typedLocale}.json`) as { default: Record<string, unknown> };
+  const messages = messagesModule.default;
+
   return {
     locale: typedLocale,
-    messages: (await import(`./messages/${typedLocale}.json`) as { default: unknown }).default,
+    messages,
     timeZone: 'Asia/Tokyo', // You can make this dynamic based on locale
     now: new Date(),
   };

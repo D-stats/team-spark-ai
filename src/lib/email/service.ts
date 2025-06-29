@@ -47,7 +47,7 @@ interface KudosEmailData {
   message: string;
 }
 
-export async function sendKudosEmail(data: KudosEmailData): Promise<{ id: string }> {
+export async function sendKudosEmail(data: KudosEmailData): Promise<unknown> {
   const kudosUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/kudos`;
 
   return sendEmail({
@@ -68,7 +68,7 @@ interface CheckInReminderData {
   userName: string;
 }
 
-export async function sendCheckInReminderEmail(data: CheckInReminderData): Promise<{ id: string }> {
+export async function sendCheckInReminderEmail(data: CheckInReminderData): Promise<unknown> {
   const checkInUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/checkins`;
 
   return sendEmail({
@@ -87,7 +87,7 @@ interface SurveyNotificationData {
   deadline?: Date | null;
 }
 
-export async function sendSurveyNotificationEmail(data: SurveyNotificationData): Promise<{ id: string }> {
+export async function sendSurveyNotificationEmail(data: SurveyNotificationData): Promise<unknown> {
   const surveyUrl = `${process.env['NEXT_PUBLIC_APP_URL']}/dashboard/surveys`;
   const deadlineText = data.deadline
     ? `（締切: ${new Date(data.deadline).toLocaleDateString('ja-JP')}）`

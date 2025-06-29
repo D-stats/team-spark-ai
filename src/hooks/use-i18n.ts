@@ -172,22 +172,5 @@ export function useErrorMessages(): {
 
   return {
     getErrorMessage,
-    validation: {
-      default: t('validation.default'),
-      required: t('validation.required'),
-      email: t('validation.email'),
-      passwordMismatch: t('validation.passwordMismatch'),
-      invalidCredentials: t('validation.invalidCredentials'),
-    },
-    authentication: {
-      default: t('authentication.default'),
-      sessionExpired: t('authentication.sessionExpired'),
-      unauthorized: t('authentication.unauthorized'),
-    },
-    authorization: {
-      default: t('authorization.default'),
-      insufficientPermissions: t('authorization.insufficientPermissions'),
-      adminOnly: t('authorization.adminOnly'),
-    },
   };
 }

@@ -54,11 +54,12 @@ export async function createDefaultCheckInTemplate(organizationId: string): Prom
   };
 
   try {
-    const template = await prisma.checkInTemplate.create({
+    await prisma.checkInTemplate.create({
       data: defaultTemplate,
     });
 
-    return template;
+    // Return void as specified in the function signature
+    return;
   } catch (error) {
     logError(error as Error, 'createDefaultCheckInTemplate');
     throw error;
@@ -76,9 +77,9 @@ export async function ensureDefaultTemplate(organizationId: string): Promise<voi
   });
 
   if (existingDefault) {
-    return existingDefault;
+    return;
   }
 
   // Create default template if it doesn't exist
-  return createDefaultCheckInTemplate(organizationId);
+  await createDefaultCheckInTemplate(organizationId);
 }

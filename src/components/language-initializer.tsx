@@ -11,7 +11,7 @@ import { type Locale } from '@/i18n/config';
  * Component to initialize language preference on client side
  * Handles language suggestion based on browser settings
  */
-export function LanguageInitializer(): JSX.Element {
+export function LanguageInitializer(): JSX.Element | null {
   const {
     preference,
     isClient,
@@ -23,7 +23,7 @@ export function LanguageInitializer(): JSX.Element {
   } = useLanguagePreference();
 
   const [showSuggestion, setShowSuggestion] = useState(false);
-  const [suggestedLocale, setSuggestedLocale] = useState<string | null>(null);
+  const [suggestedLocale, setSuggestedLocale] = useState<Locale | null>(null);
 
   useEffect(() => {
     if (!isClient) return;
@@ -45,7 +45,7 @@ export function LanguageInitializer(): JSX.Element {
       suggested !== currentLocale && // Different from current
       currentLocale !== '' // We have a current locale
     ) {
-      setSuggestedLocale(suggested);
+      setSuggestedLocale(suggested as Locale);
       setShowSuggestion(true);
     }
   }, [
@@ -59,7 +59,7 @@ export function LanguageInitializer(): JSX.Element {
 
   const handleAcceptSuggestion = () => {
     if (suggestedLocale !== null) {
-      changeLanguage(suggestedLocale as Locale);
+      changeLanguage(suggestedLocale);
     }
     setShowSuggestion(false);
   };
@@ -68,7 +68,7 @@ export function LanguageInitializer(): JSX.Element {
     // Save current locale as preference to avoid showing suggestion again
     const currentLocale = getCurrentLocale();
     if (currentLocale) {
-      savePreference(currentLocale, 'user');
+      savePreference(currentLocale as Locale, 'user');
     }
     setShowSuggestion(false);
   };
@@ -78,7 +78,7 @@ export function LanguageInitializer(): JSX.Element {
     return null;
   }
 
-  const languageNames: Record<string, string> = {
+  const languageNames: Record<Locale, string> = {
     en: 'English',
     ja: '日本語',
   };
