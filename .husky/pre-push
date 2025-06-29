@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Run quality checks before push
 echo "🚀 Running pre-push checks..."
 
