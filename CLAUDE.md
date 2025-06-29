@@ -1,6 +1,8 @@
-# AI Developer Guide - TeamSpark AI
+# TeamSpark AI - Project Guide
 
-This document provides guidelines for AI assistants (such as Claude) to efficiently develop within this project.
+This document provides project-specific guidelines for AI assistants working on TeamSpark AI. This project follows the [D-Stats organization standards](../CLAUDE.md) - refer to the root documentation for shared principles and standards.
+
+> **Note**: This guide inherits from and extends the [D-Stats organization standards](../CLAUDE.md). For general development principles, security guidelines, and cross-project standards, refer to the root documentation.
 
 ## 🚀 Project Overview
 
@@ -336,7 +338,7 @@ npm run safe-push
 ./safe-push.sh
 ```
 
-This script automatically:
+This script follows the [D-Stats quality assurance workflow](../CLAUDE.md#common-development-workflows) and automatically:
 
 - Checks for uncommitted changes
 - Runs TypeScript type check
@@ -346,35 +348,26 @@ This script automatically:
 - Runs build check
 - Only pushes if all checks pass
 
-### Manual Checklist
+### TeamSpark AI Specific Checklist
 
-1. **Local Operation Check**
+1. **User Story Validation**
 
-   - No errors with `npm run dev`
-   - Major features work normally
+   - `npm run validate:stories` passes
+   - All acceptance criteria are met
 
-2. **Code Quality**
+2. **i18n Compliance**
 
-   - `npm run validate` passes completely
-   - No errors or warnings in console
+   - Features work in both English and Japanese
+   - No hardcoded strings in components
 
-3. **Database**
+3. **Slack Integration**
+
+   - Slack features tested with test workspace
+   - No broken webhook integrations
+
+4. **Database Migrations**
    - Migration files are committed
-   - Seed data is updated if needed
-
-### Git Hooks
-
-Pre-push hooks are automatically configured to run:
-
-- TypeScript type check
-- ESLint
-- Unit tests
-
-To skip hooks in emergency (not recommended):
-
-```bash
-git push --no-verify
-```
+   - Prisma schema is up to date
 
 ## 🔄 CI/CD Confirmation
 
@@ -445,16 +438,14 @@ See [docs/guides/troubleshooting.md](./docs/guides/troubleshooting.md) for detai
     └── user-stories/    # Story documentation
 ```
 
-## 🔑 Important Development Principles
+## 🔑 Project-Specific Development Principles
 
-1. **User Story-Driven**: All features start from user stories
-2. **Type Safety**: Maximize TypeScript type usage
-3. **Error Handling**: Proper error handling and user feedback
-4. **Security**: Proper environment variable management, authentication/authorization checks
-5. **Performance**: Avoid unnecessary rendering, proper caching
-6. **Accessibility**: Keyboard operation, screen reader support
-7. **Test-Driven**: Create tests based on acceptance criteria
-8. **Documentation Language**: Write all documentation, code comments, and commit messages in English for consistency and international collaboration
+1. **User Story-Driven**: All features start from user stories (see User Story Management below)
+2. **Team Engagement Focus**: Design features that enhance team communication and collaboration
+3. **Real-time Updates**: Implement real-time features using appropriate technologies
+4. **Slack Integration**: Maintain tight integration with Slack workspace features
+5. **Multilingual Support**: Full i18n support for English and Japanese users
+6. **Performance Optimization**: Target <200ms API response times for engagement features
 
 ## 📞 Support
 
@@ -515,45 +506,23 @@ If issues aren't resolved, check:
 
 This approach ensures business value and implementation are always linked during development.
 
-## 📝 Documentation and Code Comment Guidelines
+## 📝 TeamSpark AI Specific Guidelines
 
-### Language Standards
+Refer to [D-Stats Coding Standards](../docs/standards/coding-standards.md) for general coding guidelines. The following are specific to TeamSpark AI:
 
-All documentation, code comments, commit messages, and technical content should be written in **English**. This ensures:
+### Component Development
 
-- Consistency across the codebase
-- International team collaboration
-- Better integration with tools and services
-- Easier open-source contribution
+- **Component Structure**: Follow the established pattern in `/src/components/`
+- **Story-driven**: Each component should relate to specific user stories
+- **Accessibility**: Ensure keyboard navigation and screen reader support
+- **Real-time Features**: Use WebSocket patterns for live updates
 
-**Exceptions**:
+### API Development
 
-- User-facing strings in translation files (en.json, ja.json)
-- Example data that demonstrates i18n functionality
-- Specific Japanese business logic explanations when necessary
-
-### Comment Examples
-
-```typescript
-// ✅ Good: English comment
-// Calculate monthly kudos points for the team
-
-// ❌ Bad: Japanese comment
-// チームの月間クドスポイントを計算
-
-// ✅ Good: Clear function documentation
-/**
- * Validates user input for kudos creation
- * @param data - The kudos data to validate
- * @returns Validation result with errors if any
- */
-
-// ❌ Bad: Mixed languages
-/**
- * ユーザー入力をvalidateする
- * @param data - クドスデータ
- */
-```
+- **Response Format**: Follow the established `ApiResponse<T>` pattern
+- **Error Handling**: Use structured error responses with i18n keys
+- **Authentication**: Implement proper auth checks on protected endpoints
+- **Rate Limiting**: Apply appropriate rate limits for user-facing endpoints
 
 ## 🌐 Internationalization (i18n) Guidelines
 
@@ -670,369 +639,76 @@ import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
 
 ## 🔧 MCP Atlassian Integration
 
-### Setup Instructions
+TeamSpark AI uses the [D-Stats organization MCP setup](../CLAUDE.md#mcp-model-context-protocol-integration). Project-specific configuration:
 
-1. **Install mcp-atlassian**:
+### JIRA Project Details
 
-   ```bash
-   uv tool install mcp-atlassian
-   ```
+- **Project Key**: TSA
+- **Issue Types**: Task, Bug, Story (no Epic type available)
+- **Epic Pattern**: Use "Epic: [Name]" prefix for parent tasks
+- **Custom Fields**: `customfield_10008` (Epic Link), `parent` (modern approach)
 
-2. **Configure Atlassian credentials**:
-
-   ```bash
-   # Add JIRA credentials to your .env file
-   echo "JIRA_URL=https://d-stats.atlassian.net" >> .env
-   echo "JIRA_USERNAME=your-email@example.com" >> .env
-   echo "JIRA_API_TOKEN=your-api-token" >> .env
-   ```
-
-3. **Ensure direnv is active**:
-
-   ```bash
-   direnv allow .       # In project directory
-   direnv status        # Verify it's loaded
-   ```
-
-4. **Restart Claude Code** to load MCP server
-
-### JIRA Workflow
-
-When working with JIRA tickets:
-
-1. **Use the slash command**:
-
-   ```
-   /resolve-jira-issue TSA-XXX
-   ```
-
-2. **JIRA Format Requirements**:
-
-   - Use JIRA format for ticket updates: `h1.`, `*bold*`, `{code}`, etc.
-   - Keep comments concise and structured
-   - Always link to relevant PRs
-
-3. **Status Transitions**:
-   - Move to "In Progress" when starting work
-   - Add progress comments regularly
-   - Only move to "Done" after PR is merged
-
-### Git Commit Convention with JIRA
-
-Always include JIRA ticket ID in commits:
+### TeamSpark AI JIRA Workflow
 
 ```bash
-feat(TSA-123): Add user authentication feature
-fix(TSA-456): Resolve login timeout issue
+# Use standard slash commands
+/resolve-jira-issue TSA-XXX
+
+# Git commits with project prefix
+feat(TSA-123): Add kudos notification feature
+fix(TSA-456): Resolve Slack integration timeout
 ```
 
-## 📋 JIRA Issue Management Guidelines
+### Project-Specific JIRA Practices
 
-### Creating Epics and Tasks
+- **Feature Epics**: Use "Epic: [Feature]" naming for complex features
+- **User Story Linking**: Link JIRA tasks to user story IDs in comments
+- **Slack Integration**: Include Slack channel mentions in task descriptions
+- **i18n Tasks**: Tag with "i18n" label for internationalization work
 
-1. **Check Issue Types Available**:
+Refer to [D-Stats MCP Integration](../CLAUDE.md#mcp-model-context-protocol-integration) for detailed JIRA setup and commands.
 
-   - Not all JIRA projects have Epic issue type enabled
-   - In TeamSpark AI project, "Epics" are created as regular Tasks with "Epic:" prefix in title
-   - Use parent-child relationships to organize hierarchy
+## 🚫 ESLint Compliance
 
-2. **Creating Epic-like Tasks**:
+**Critical**: This project follows strict TypeScript and ESLint rules. Refer to [D-Stats Coding Standards](../docs/standards/coding-standards.md) for detailed guidelines and examples.
 
-   ```
-   Title: "Epic: [Epic Name]"
-   Description: Include sections for Overview, Objectives, Feature Categories, Success Criteria
-   ```
+### TeamSpark AI Specific ESLint Rules
 
-3. **Linking Child Tasks to Epic**:
+- **React Hooks**: Proper dependency arrays for all hooks
+- **i18n compliance**: No hardcoded strings in JSX
+- **API type safety**: All API responses must be properly typed
+- **Prisma null handling**: Explicit null checks for all Prisma queries
 
-   - Use the `parent` field (modern approach) or `customfield_10008` (Epic Link)
-   - Always verify the correct field by checking existing issue structures
-   - Link tasks immediately when creating related issues
-
-4. **Best Practices**:
-   - Create all related tasks at once and link them immediately
-   - Add a comment to the Epic listing all child tasks
-   - Use consistent naming: "Epic: " prefix for parent, clear action verbs for tasks
-   - Include implementation order in Epic description
-
-### JIRA Field Investigation
-
-When unsure about JIRA fields:
-
-```bash
-# Search for specific field types
-mcp__mcp-atlassian__jira_search_fields --keyword "epic"
-
-# Get all fields for an issue
-mcp__mcp-atlassian__jira_get_issue --issue_key "TSA-XXX" --fields "*all"
-
-# Check issue type structure
-mcp__mcp-atlassian__jira_search --jql "project = TSA" --fields "issuetype,parent"
-```
-
-### Common JIRA Custom Fields
-
-- `customfield_10008`: Epic Link (legacy)
-- `customfield_10009`: Epic Name
-- `parent`: Modern parent-child relationship field
-- `customfield_10100`: Rank (for prioritization)
-
-### Error Prevention
-
-1. **Before Creating Issues**:
-
-   - Check if Epic issue type exists in the project
-   - Verify custom field IDs for the specific JIRA instance
-   - Plan the entire issue hierarchy before creation
-
-2. **When Updating Issues**:
-
-   - Use batch operations when updating multiple related issues
-   - Always add a comment explaining structural changes
-   - Verify updates with a follow-up search query
-
-3. **Language Consistency**:
-   - Use English for all JIRA content in international teams
-   - Keep technical terms consistent across issues
-   - Follow the project's established naming conventions
-
-## 🚫 ESLint Compliance and Technical Debt Prevention
-
-### Critical: Preventing ESLint Errors
-
-This codebase uses strict TypeScript and ESLint rules to maintain high code quality. **ALL code must pass ESLint checks without errors.** Based on analysis of 485 ESLint errors that accumulated, here are the most common issues and how to prevent them:
-
-### Most Common ESLint Errors (Top 5)
-
-1. **`@typescript-eslint/strict-boolean-expressions` (229 errors - 47%)**
-
-   - This rule requires explicit handling of nullish/falsy values in conditionals
-   - **Never** use implicit boolean coercion for nullable values
-
-2. **`@typescript-eslint/explicit-module-boundary-types` (110 errors - 23%)**
-
-   - All exported functions must have explicit return type annotations
-   - This includes React components and API route handlers
-
-3. **`@typescript-eslint/no-unsafe-assignment` (73 errors - 15%)**
-
-   - Avoid assigning `any` typed values without proper type assertions
-   - Common in API responses and dynamic imports
-
-4. **`@typescript-eslint/no-unsafe-member-access` (52 errors - 11%)**
-
-   - Don't access properties on `any` typed values
-   - Always type API responses and external data
-
-5. **`@typescript-eslint/no-unsafe-call` (12 errors - 2%)**
-   - Don't call functions typed as `any`
-   - Ensure all function imports have proper types
-
-### ESLint Compliance Examples
-
-#### 1. Strict Boolean Expressions
+### Common TeamSpark AI Patterns
 
 ```typescript
-// ❌ BAD: Implicit boolean coercion
-if (userId) { ... }
-if (message) { ... }
-if (!error) { ... }
+// ✅ GOOD: i18n compliance
+const t = useTranslations('dashboard');
+return <h1>{t('title')}</h1>;
 
-// ✅ GOOD: Explicit null/undefined checks
-if (userId !== null && userId !== undefined) { ... }
-if (message !== '') { ... }
-if (error === null) { ... }
-
-// ✅ GOOD: For optional chaining results
-if (user?.email != null) { ... }
-
-// ✅ GOOD: For arrays
-if (items.length > 0) { ... }
-
-// ✅ GOOD: For booleans (already boolean, no coercion)
-if (isEnabled) { ... }
-```
-
-#### 2. Explicit Module Boundary Types
-
-```typescript
-// ❌ BAD: Missing return type
-export default function LoginPage() {
-  return <div>Login</div>;
+// ✅ GOOD: API response typing
+interface KudosResponse {
+  kudos: Kudos[];
+  total: number;
 }
 
-export async function GET(request: Request) {
-  return Response.json({ data });
-}
-
-// ✅ GOOD: Explicit return types
-export default function LoginPage(): JSX.Element {
-  return <div>Login</div>;
-}
-
-export async function GET(request: Request): Promise<Response> {
-  return Response.json({ data });
-}
-
-// ✅ GOOD: For React components with props
-interface DashboardPageProps {
-  params: { locale: string };
-}
-
-export default function DashboardPage({
-  params
-}: DashboardPageProps): JSX.Element {
-  return <div>Dashboard</div>;
-}
-```
-
-#### 3. Type Safety with API Responses
-
-```typescript
-// ❌ BAD: Unsafe any assignments
-const response = await fetch('/api/users');
-const data = await response.json();
-const userId = data.id; // Error: unsafe member access
-const userName = data.name; // Error: unsafe member access
-
-// ✅ GOOD: Properly typed API responses
-interface ApiResponse<T> {
-  data: T;
-  error?: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-const response = await fetch('/api/users');
-const result = (await response.json()) as ApiResponse<User>;
-
-if (result.error) {
-  throw new Error(result.error);
-}
-
-const userId = result.data.id; // Type safe!
-const userName = result.data.name; // Type safe!
-```
-
-#### 4. Prisma Query Results
-
-```typescript
-// ❌ BAD: Assuming nullable fields exist
+// ✅ GOOD: Prisma null handling
 const user = await prisma.user.findUnique({ where: { id } });
-if (user.email) { ... }  // Error: user might be null
-
-// ✅ GOOD: Proper null checking
-const user = await prisma.user.findUnique({ where: { id } });
-if (user && user.email !== null) {
-  // Now TypeScript knows user exists and email is not null
-}
-
-// ✅ GOOD: Using non-null assertion when you're certain
-const user = await prisma.user.findUniqueOrThrow({ where: { id } });
-// Now user is guaranteed to exist
-if (user.email !== null) { ... }
-```
-
-#### 5. Form Data and Request Parsing
-
-```typescript
-// ❌ BAD: Unsafe form data access
-export async function POST(request: Request) {
-  const formData = await request.formData();
-  const email = formData.get('email'); // Type: FormDataEntryValue | null
-  if (email) {
-    // Error: implicit boolean coercion
-    sendEmail(email); // Error: type mismatch
-  }
-}
-
-// ✅ GOOD: Proper type narrowing
-export async function POST(request: Request): Promise<Response> {
-  const formData = await request.formData();
-  const email = formData.get('email');
-
-  if (typeof email === 'string' && email !== '') {
-    await sendEmail(email); // Now TypeScript knows it's a non-empty string
-    return Response.json({ success: true });
-  }
-
-  return Response.json({ error: 'Email is required' }, { status: 400 });
+if (user !== null) {
+  // Safe to use user
 }
 ```
 
-### Pre-Implementation ESLint Checklist
+### Zero-Tolerance Policy
 
-Before writing any code, ensure you:
+- **No new ESLint errors** should be introduced
+- **Fix existing errors** in files you modify
+- **Run `npm run validate`** before all commits
 
-- [ ] **Add explicit return types** to all exported functions
-- [ ] **Never use implicit boolean coercion** for nullable values
-- [ ] **Type all API responses** and external data sources
-- [ ] **Handle all nullable cases explicitly** in conditionals
-- [ ] **Avoid `any` type** - use `unknown` and type guards instead
-- [ ] **Run `npm run lint`** before making any commits
+See [D-Stats coding standards](../docs/standards/coding-standards.md) for comprehensive examples and patterns.
 
-### During Implementation
+---
 
-1. **Enable ESLint in your editor** to catch errors as you type
-2. **Fix errors immediately** - don't accumulate technical debt
-3. **Run `npm run lint` frequently** during development
-4. **Never disable ESLint rules** without team consensus
-
-### Common Patterns to Memorize
-
-```typescript
-// String checks
-if (str !== '' && str !== null && str !== undefined) { ... }
-// Or use a helper
-if (str?.trim()) { ... }  // Only for strings where empty is falsy
-
-// Number checks
-if (num !== 0 && num != null) { ... }
-if (typeof num === 'number' && !isNaN(num)) { ... }
-
-// Array checks
-if (Array.isArray(arr) && arr.length > 0) { ... }
-
-// Object checks
-if (obj !== null && obj !== undefined) { ... }
-if (obj != null) { ... }  // Checks both null and undefined
-
-// Optional chaining with explicit checks
-if (user?.profile?.email != null) { ... }
-
-// Type guards for unknown types
-function isUser(value: unknown): value is User {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'email' in value
-  );
-}
-
-if (isUser(data)) {
-  console.log(data.email);  // Type safe!
-}
-```
-
-### Zero-Tolerance Policy for New ESLint Errors
-
-**IMPORTANT**: When implementing new features or modifying existing code:
-
-1. **No new ESLint errors** should be introduced
-2. **Fix existing errors** in files you modify
-3. **Run full validation** before committing: `npm run validate`
-4. **Document type decisions** when they're not obvious
-
-Remember: Clean code is not optional - it's a requirement for maintaining a scalable, maintainable codebase.
-
-# important-instruction-reminders
-
-Do what has been asked; nothing more, nothing less.
-NEVER create files unless they're absolutely necessary for achieving your goal.
-ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User.
+**Inherits from**: [D-Stats Organization Standards](../CLAUDE.md)  
+**Shared Documentation**: [D-Stats docs/](../docs/)  
+**Project Version**: 1.0 | **Last Updated**: 2025-06-29
