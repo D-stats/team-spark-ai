@@ -8,7 +8,8 @@ import { expect } from '@playwright/test';
 import { mockAuth } from '../auth/mock-auth';
 
 // ストーリー: CHECKIN-001 - カスタマイズ可能なチェックインテンプレート
-const templateManagementStory = checkinStories.find((s) => s.id === 'CHECKIN-001')!;
+const templateManagementStory = checkinStories.find((s) => s.id === 'CHECKIN-001');
+if (!templateManagementStory) throw new Error('Story CHECKIN-001 not found');
 
 describeStory(templateManagementStory, () => {
   // AC-C001-1: テンプレート管理画面へのアクセス
@@ -19,7 +20,7 @@ describeStory(templateManagementStory, () => {
       await mockAuth(page, 'admin');
 
       // チェックインテンプレート管理画面にアクセス
-      await page.goto('/dashboard/checkins/templates');
+      await page.goto('/ja/dashboard/checkins/templates');
 
       // テンプレート一覧と作成ボタンが表示される
       await expect(page.locator('h1:has-text("チェックインテンプレート管理")')).toBeVisible();
@@ -32,7 +33,7 @@ describeStory(templateManagementStory, () => {
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
       await mockAuth(page, 'admin');
-      await page.goto('/dashboard/checkins/templates');
+      await page.goto('/ja/dashboard/checkins/templates');
 
       // 新しいテンプレートボタンをクリック
       await page.locator('button:has-text("新しいテンプレート")').click();
@@ -65,7 +66,7 @@ describeStory(templateManagementStory, () => {
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
       await mockAuth(page, 'admin');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // テンプレートが存在しない場合のメッセージを確認
       await expect(page.locator('text=テンプレートが設定されていません')).toBeVisible();
@@ -81,7 +82,8 @@ describeStory(templateManagementStory, () => {
 });
 
 // ストーリー: CHECKIN-002 - テンプレートベースのチェックイン作成
-const checkinCreationStory = checkinStories.find((s) => s.id === 'CHECKIN-002')!;
+const checkinCreationStory = checkinStories.find((s) => s.id === 'CHECKIN-002');
+if (!checkinCreationStory) throw new Error('Story CHECKIN-002 not found');
 
 describeStory(checkinCreationStory, () => {
   // AC-C002-1: テンプレートフォーム表示
@@ -92,7 +94,7 @@ describeStory(checkinCreationStory, () => {
       await mockAuth(page, 'member');
 
       // チェックインページにアクセス
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // テンプレート選択とフォームが表示される
       await expect(page.locator('text=カスタムチェックイン')).toBeVisible();
@@ -105,7 +107,7 @@ describeStory(checkinCreationStory, () => {
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // テンプレートが選択されていることを確認
       await expect(page.locator('[role="combobox"]')).toBeVisible();
@@ -131,7 +133,7 @@ describeStory(checkinCreationStory, () => {
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // 初期テンプレートの質問を確認
       const initialQuestions = await page.locator('label').allTextContents();
@@ -153,7 +155,8 @@ describeStory(checkinCreationStory, () => {
 });
 
 // ストーリー: CHECKIN-003 - チェックイン履歴とインサイト
-const historyStory = checkinStories.find((s) => s.id === 'CHECKIN-003')!;
+const historyStory = checkinStories.find((s) => s.id === 'CHECKIN-003');
+if (!historyStory) throw new Error('Story CHECKIN-003 not found');
 
 describeStory(historyStory, () => {
   // AC-C003-1: 履歴表示
@@ -161,7 +164,7 @@ describeStory(historyStory, () => {
   if (criteria6) {
     testCriteria(criteria6, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // 履歴セクションを確認
       await expect(page.locator('text=チェックイン履歴')).toBeVisible();
@@ -174,7 +177,7 @@ describeStory(historyStory, () => {
   if (criteria7) {
     testCriteria(criteria7, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // 統計情報を確認
       await expect(page.locator('text=総チェックイン数')).toBeVisible();
@@ -187,7 +190,7 @@ describeStory(historyStory, () => {
   if (criteria8) {
     testCriteria(criteria8, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/dashboard/checkins');
+      await page.goto('/ja/dashboard/checkins');
 
       // 履歴エントリが存在する場合
       const historyItems = page.locator('[data-testid="checkin-history-item"]');

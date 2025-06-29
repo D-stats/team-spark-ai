@@ -4,6 +4,7 @@
 
 import { test as base, expect, type Page } from '@playwright/test';
 import { UserStory, AcceptanceCriteria } from '@/lib/user-stories/types';
+import { withLocale } from './i18n-test-helpers';
 
 // カスタムテストフィクスチャ
 export const storyTest = base.extend<{
@@ -15,11 +16,11 @@ export const storyTest = base.extend<{
 });
 
 // ストーリーベースのテストを定義
-export function describeStory(story: UserStory, testFn: () => void) {
+export function describeStory(story: UserStory, testFn: () => void): void {
   storyTest.describe(`[${story.id}] ${story.title}`, () => {
     storyTest.describe.configure({ mode: 'serial' });
 
-    storyTest.beforeEach(async ({}, testInfo) => {
+    storyTest.beforeEach(async (_, testInfo) => {
       // テスト情報にストーリーIDを追加
       testInfo.annotations.push({
         type: 'story',
@@ -32,7 +33,7 @@ export function describeStory(story: UserStory, testFn: () => void) {
       `ストーリー: As a ${story.asA}, I want to ${story.iWantTo}`,
       async ({ page: _page }) => {
         // このテストは情報表示のみ
-        console.log(`So that ${story.soThat}`);
+        // Story context is captured in test metadata
         expect(true).toBe(true);
       },
     );
@@ -43,8 +44,8 @@ export function describeStory(story: UserStory, testFn: () => void) {
 
 export function testCriteria(
   criteria: AcceptanceCriteria,
-  testImplementation: (args: { page: Page }) => Promise<void>,
-) {
+  testImplementation: (args: { page: Page; withLocale: typeof withLocale }) => Promise<void>,
+): void {
   storyTest(`✓ Given: ${criteria.given}`, async ({ page }, testInfo) => {
     // テスト情報に基準IDを追加
     testInfo.annotations.push({
@@ -52,10 +53,9 @@ export function testCriteria(
       description: criteria.id,
     });
 
-    console.log(`When: ${criteria.when}`);
-    console.log(`Then: ${criteria.then}`);
+    // Criteria details are captured in test metadata
 
-    await testImplementation({ page });
+    await testImplementation({ page, withLocale });
   });
 }
 
@@ -67,8 +67,8 @@ export function markStoryImplemented(
     api?: string;
     test?: string;
   },
-) {
-  return storyTest(`Implementation: ${storyId}`, async ({}, testInfo) => {
+): void {
+  storyTest(`Implementation: ${storyId}`, async (_, testInfo) => {
     testInfo.annotations.push({
       type: 'implementation',
       description: JSON.stringify({
@@ -87,7 +87,7 @@ export class StoryReporter {
   onTestEnd(
     test: { annotations: Array<{ type: string; description: string }> },
     result: { status: string },
-  ) {
+  ): void {
     const storyAnnotation = test.annotations.find((a) => a.type === 'story');
     const criteriaAnnotation = test.annotations.find((a) => a.type === 'criteria');
 
@@ -102,7 +102,12 @@ export class StoryReporter {
 
     this.results.forEach((passed, key) => {
       const [storyId, criteriaId] = key.split(':');
-      if (storyId && criteriaId) {
+      if (
+        storyId !== undefined &&
+        criteriaId !== undefined &&
+        storyId !== '' &&
+        criteriaId !== ''
+      ) {
         if (!report[storyId]) {
           report[storyId] = {};
         }

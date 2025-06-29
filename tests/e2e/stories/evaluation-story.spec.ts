@@ -8,7 +8,8 @@ import { expect } from '@playwright/test';
 import { mockAuth } from '../auth/mock-auth';
 
 // ストーリー: EVAL-001 - 自己評価の入力
-const selfEvaluationStory = evaluationStories.find((s) => s.id === 'EVAL-001')!;
+const selfEvaluationStory = evaluationStories.find((s) => s.id === 'EVAL-001');
+if (!selfEvaluationStory) throw new Error('Story EVAL-001 not found');
 
 describeStory(selfEvaluationStory, () => {
   // AC-001-1: アクティブな評価サイクルが存在する時、評価フォームが表示される
@@ -19,7 +20,7 @@ describeStory(selfEvaluationStory, () => {
       await mockAuth(page, 'member');
 
       // 評価ページにアクセス
-      await page.goto('/evaluations');
+      await page.goto('/ja/evaluations');
 
       // アクティブな評価サイクルの確認
       await expect(page.locator('[data-testid="active-cycle-card"]')).toBeVisible();
@@ -34,7 +35,7 @@ describeStory(selfEvaluationStory, () => {
   if (criteria1) {
     testCriteria(criteria1, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/evaluations/test-eval-id');
+      await page.goto('/ja/evaluations/test-eval-id');
 
       // 総合評価を入力
       await page.locator('[data-rating="4"]').click();
@@ -55,7 +56,7 @@ describeStory(selfEvaluationStory, () => {
   if (criteria2) {
     testCriteria(criteria2, async ({ page }) => {
       await mockAuth(page, 'member');
-      await page.goto('/evaluations/test-eval-id');
+      await page.goto('/ja/evaluations/test-eval-id');
 
       // 必須項目を入力
       await page.locator('[data-rating="4"]').click();
@@ -78,7 +79,8 @@ describeStory(selfEvaluationStory, () => {
 });
 
 // ストーリー: EVAL-002 - 部下の評価レビュー
-const managerReviewStory = evaluationStories.find((s) => s.id === 'EVAL-002')!;
+const managerReviewStory = evaluationStories.find((s) => s.id === 'EVAL-002');
+if (!managerReviewStory) throw new Error('Story EVAL-002 not found');
 
 describeStory(managerReviewStory, () => {
   // AC-002-1: レビュー待ちの評価が表示される
@@ -89,7 +91,7 @@ describeStory(managerReviewStory, () => {
       await mockAuth(page, 'manager');
 
       // 評価一覧ページへ
-      await page.goto('/evaluations');
+      await page.goto('/ja/evaluations');
 
       // レビュー待ちタブをクリック
       await page.locator('text=レビュー待ち').click();
@@ -104,7 +106,7 @@ describeStory(managerReviewStory, () => {
   if (criteria4) {
     testCriteria(criteria4, async ({ page }) => {
       await mockAuth(page, 'manager');
-      await page.goto('/evaluations/submitted-eval-id/results');
+      await page.goto('/ja/evaluations/submitted-eval-id/results');
 
       // レビューボタンをクリック
       await page.locator('button:has-text("レビュー")').click();
@@ -122,7 +124,7 @@ describeStory(managerReviewStory, () => {
   if (criteria5) {
     testCriteria(criteria5, async ({ page }) => {
       await mockAuth(page, 'manager');
-      await page.goto('/evaluations/submitted-eval-id/results');
+      await page.goto('/ja/evaluations/submitted-eval-id/results');
 
       // レビューボタンをクリック
       await page.locator('button:has-text("レビュー")').click();
