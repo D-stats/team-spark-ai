@@ -196,13 +196,16 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
           try {
             const response = await fetch(`/api/evaluations/${evaluationId}`);
-            const result = await response.json() as ApiResponse<EvaluationWithDetails>;
+            const result = (await response.json()) as ApiResponse<EvaluationWithDetails>;
 
-            if (!result.success) {
+            if (!result.success || !result.data) {
               set((state) => {
                 state.isLoading = false;
               });
-              return { success: false as const, error: result.error };
+              return {
+                success: false as const,
+                error: result.error ?? { code: 'NO_DATA', message: 'No data returned' },
+              };
             }
 
             const evaluation = result.data;
@@ -382,13 +385,22 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
           switch (currentStepData.id) {
             case 'overview':
-              return state.formData.overallRating !== undefined && state.formData.overallRating !== null && state.formData.overallComments !== undefined && state.formData.overallComments.trim() !== '';
+              return (
+                state.formData.overallRating !== undefined &&
+                state.formData.overallRating !== null &&
+                state.formData.overallComments !== undefined &&
+                state.formData.overallComments.trim() !== ''
+              );
             case 'competencies':
               return (
                 Object.keys(state.formData.competencyRatings).length > 0 &&
                 Object.values(state.formData.competencyRatings).every(
                   (rating) =>
-                    rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
+                    rating.rating !== undefined &&
+                    rating.rating !== null &&
+                    rating.comments !== undefined &&
+                    rating.comments.trim() !== '' &&
+                    rating.behaviors.length > 0,
                 )
               );
             case 'review':
@@ -450,7 +462,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(saveData),
             });
 
-            const result = await response.json() as ApiResponse<void>;
+            const result = (await response.json()) as ApiResponse<void>;
 
             set((draft) => {
               draft.isSaving = false;
@@ -464,7 +476,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
             if (result.success) {
               return { success: true as const, data: undefined };
             } else {
-              return { success: false as const, error: result.error ?? { code: 'SAVE_ERROR', message: '保存に失敗しました' } };
+              return {
+                success: false as const,
+                error: result.error ?? { code: 'SAVE_ERROR', message: '保存に失敗しました' },
+              };
             }
           } catch (error) {
             set((draft) => {
@@ -492,7 +507,12 @@ export const useEvaluationStore = create<EvaluationStore>()(
             const submitData = {
               ...state.formData,
               competencyRatings: Object.values(state.formData.competencyRatings).filter(
-                (rating) => rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
+                (rating) =>
+                  rating.rating !== undefined &&
+                  rating.rating !== null &&
+                  rating.comments !== undefined &&
+                  rating.comments.trim() !== '' &&
+                  rating.behaviors.length > 0,
               ),
               isDraft: false,
             };
@@ -503,7 +523,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(submitData),
             });
 
-            const result = await response.json() as ApiResponse<void>;
+            const result = (await response.json()) as ApiResponse<void>;
 
             set((draft) => {
               draft.isSubmitting = false;
@@ -522,7 +542,10 @@ export const useEvaluationStore = create<EvaluationStore>()(
             if (result.success) {
               return { success: true as const, data: undefined };
             } else {
-              return { success: false as const, error: result.error ?? { code: 'SUBMIT_ERROR', message: '送信に失敗しました' } };
+              return {
+                success: false as const,
+                error: result.error ?? { code: 'SUBMIT_ERROR', message: '送信に失敗しました' },
+              };
             }
           } catch (error) {
             set((draft) => {
@@ -582,11 +605,18 @@ export const useEvaluationStore = create<EvaluationStore>()(
         canSubmit: () => {
           const state = get();
           return (
-            state.formData.overallRating !== undefined && state.formData.overallRating !== null &&
-            state.formData.overallComments !== undefined && state.formData.overallComments.trim() !== '' &&
+            state.formData.overallRating !== undefined &&
+            state.formData.overallRating !== null &&
+            state.formData.overallComments !== undefined &&
+            state.formData.overallComments.trim() !== '' &&
             Object.keys(state.formData.competencyRatings).length > 0 &&
             Object.values(state.formData.competencyRatings).every(
-              (rating) => rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
+              (rating) =>
+                rating.rating !== undefined &&
+                rating.rating !== null &&
+                rating.comments !== undefined &&
+                rating.comments.trim() !== '' &&
+                rating.behaviors.length > 0,
             )
           );
         },
@@ -647,7 +677,6 @@ export const useEvaluationStore = create<EvaluationStore>()(
 // ================
 
 export function useAutoSave(): void {
-
   // isDirtyとautoSaveEnabledの変更を監視
   useEvaluationStore.subscribe(
     (state) => ({ isDirty: state.isDirty, autoSaveEnabled: state.autoSaveEnabled }),

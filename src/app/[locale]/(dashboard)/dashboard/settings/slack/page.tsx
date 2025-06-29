@@ -123,12 +123,14 @@ export default async function SlackSettingsPage(): Promise<JSX.Element> {
                 </AlertDescription>
               </Alert>
 
-              <Button asChild>
-                <a href={slackAuthUrl!}>
-                  <Slack className="mr-2 h-4 w-4" />
-                  Slackと連携する
-                </a>
-              </Button>
+              {slackAuthUrl !== null && slackAuthUrl !== '' && (
+                <Button asChild>
+                  <a href={slackAuthUrl}>
+                    <Slack className="mr-2 h-4 w-4" />
+                    Slackと連携する
+                  </a>
+                </Button>
+              )}
             </div>
           )}
         </CardContent>

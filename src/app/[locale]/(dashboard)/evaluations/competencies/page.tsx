@@ -258,7 +258,10 @@ export default function CompetenciesPage(): JSX.Element {
       if (!acc[competency.category]) {
         acc[competency.category] = [];
       }
-      acc[competency.category]!.push(competency);
+      const categoryArray = acc[competency.category];
+      if (categoryArray) {
+        categoryArray.push(competency);
+      }
       return acc;
     },
     {} as Record<string, Competency[]>,

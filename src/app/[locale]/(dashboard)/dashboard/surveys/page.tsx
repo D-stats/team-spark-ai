@@ -69,7 +69,8 @@ export default async function SurveysPage(): Promise<JSX.Element> {
 
             const isActive = survey.isActive;
             const hasDeadline = survey.endDate !== null;
-            const isExpired = hasDeadline && new Date(survey.endDate!) < new Date();
+            const isExpired =
+              hasDeadline && survey.endDate && new Date(survey.endDate) < new Date();
 
             return (
               <Card key={survey.id} className="transition-shadow hover:shadow-md">
@@ -94,10 +95,10 @@ export default async function SurveysPage(): Promise<JSX.Element> {
                               ? 'アクティブ'
                               : '下書き'}
                         </Badge>
-                        {hasDeadline && (
+                        {hasDeadline && survey.endDate && (
                           <Badge variant="outline" className="text-xs">
                             <Calendar className="mr-1 h-3 w-3" />
-                            {new Date(survey.endDate!).toLocaleDateString('ja-JP')}
+                            {new Date(survey.endDate).toLocaleDateString('ja-JP')}
                           </Badge>
                         )}
                       </div>
@@ -132,7 +133,7 @@ export default async function SurveysPage(): Promise<JSX.Element> {
                           詳細を見る
                         </Button>
                       </Link>
-                      {isActive && !isExpired && (
+                      {isActive === true && isExpired === false && (
                         <Link href={`/dashboard/surveys/${survey.id}/respond`} className="flex-1">
                           <Button size="sm" className="w-full">
                             回答する
