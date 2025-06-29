@@ -247,7 +247,16 @@ npm run test:stories
 
 ## 📝 Required Checks After Feature Development
 
-### ⚠️ Important: Always Run Tests and Quality Checks After Feature Development
+### ⚠️ Critical: NEVER Skip Quality Checks
+
+**IMPORTANT**: Always run ALL quality checks before committing or pushing, even if:
+
+- Your changes seem unrelated to failing tests
+- You only modified documentation
+- The errors were "already there"
+- You're in a hurry
+
+**Zero tolerance policy**: If tests or lint checks fail, they MUST be fixed before proceeding. This maintains code quality across the entire codebase.
 
 After completing new feature implementation or changes to existing features, **always run the following checks**:
 
@@ -275,10 +284,16 @@ npm run validate
 
 ### Handling Errors and Warnings
 
-- **TypeScript Errors**: Type definition fixes are required
-- **ESLint Errors**: Code quality issue fixes are required
-- **Test Failures**: Confirm existing features aren't broken and fix
-- **ESLint Warnings**: Fix when possible (can commit if not critical)
+- **TypeScript Errors**: Type definition fixes are required - NO EXCEPTIONS
+- **ESLint Errors**: Code quality issue fixes are required - NO EXCEPTIONS
+- **Test Failures**: Must be fixed even if "unrelated" to your changes
+- **ESLint Warnings**: Should be fixed (exceptions only with team consensus)
+
+**Remember**: If the codebase has existing issues when you start working:
+
+1. Fix them as part of your work
+2. Or create a separate PR to fix them first
+3. Never add more technical debt on top of existing issues
 
 ## 📝 Pre-Commit Requirements
 
@@ -320,11 +335,22 @@ This project automatically runs code quality checks on commit:
 - Prettier --write (all target files)
 ```
 
-To manually skip (not recommended):
+### ⚠️ NEVER Skip Checks
+
+**DO NOT USE** `--no-verify` flag:
 
 ```bash
+# ❌ NEVER DO THIS
 git commit --no-verify -m "message"
+git push --no-verify
 ```
+
+**Why**: Even if your changes seem unrelated to failing tests/lint errors:
+
+- Broken tests block everyone on the team
+- Lint errors accumulate into technical debt
+- Your "unrelated" change might have unexpected side effects
+- Maintaining a clean codebase is everyone's responsibility
 
 ## 🚨 Pre-Push Checklist
 
@@ -704,8 +730,61 @@ if (user !== null) {
 - **No new ESLint errors** should be introduced
 - **Fix existing errors** in files you modify
 - **Run `npm run validate`** before all commits
+- **NEVER use --no-verify** to skip checks
 
 See [D-Stats coding standards](../docs/standards/coding-standards.md) for comprehensive examples and patterns.
+
+## 🚫 Quality Check Enforcement
+
+### Why We Never Skip Checks
+
+1. **Collective Code Ownership**: Everyone is responsible for the entire codebase health
+2. **Preventing Technical Debt**: Small issues compound into major problems
+3. **Team Productivity**: Broken tests/builds block everyone's work
+4. **Quality Standards**: Maintaining high code quality benefits everyone
+
+### What To Do When You Encounter Existing Issues
+
+**Option 1: Fix as Part of Your Work**
+
+```bash
+# Fix the issues, then commit everything together
+npm run lint:fix  # Auto-fix what's possible
+npm test         # Fix failing tests
+git add .
+git commit -m "feat: your feature + fix: resolve existing lint/test issues"
+```
+
+**Option 2: Fix in a Separate PR First**
+
+```bash
+# Create a cleanup branch
+git checkout -b fix/cleanup-lint-tests
+# Fix all issues
+npm run validate
+# Commit and push the fixes
+git commit -m "fix: resolve existing lint errors and failing tests"
+git push
+# Then continue with your feature
+```
+
+**NEVER Option 3: Skip the Checks**
+
+```bash
+# ❌ ABSOLUTELY FORBIDDEN
+git commit --no-verify
+git push --no-verify
+npm test -- --passWithNoTests  # Don't disable tests!
+```
+
+### Remember
+
+- **Your "small" documentation change** might break the build
+- **That "unrelated" test failure** might be caused by your changes
+- **Existing lint errors** are not an excuse to add more
+- **Time pressure** is not a valid reason to skip quality checks
+
+**The codebase quality is a shared responsibility. Leave it better than you found it.**
 
 ---
 
