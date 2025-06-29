@@ -40,8 +40,6 @@
     "prepare": "husky install",
     "prisma:seed": "tsx prisma/seed.ts",
     "validate:stories": "tsx src/lib/user-stories/validate-cli.ts",
-    "test:stories": "playwright test tests/e2e/stories",
-    "report:stories": "npm run validate:stories && npm run test:stories -- --reporter=html",
     "pre-flight": "bash scripts/pre-flight-check.sh",
     "dev:safe": "npm run pre-flight && npm run dev",
     "api:validate": "tsx scripts/validate-openapi.ts",
