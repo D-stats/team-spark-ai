@@ -38,7 +38,7 @@ const kudosCategories = {
   OTHER: { label: 'その他', color: 'bg-gray-100 text-gray-800' },
 };
 
-export function KudosFeed({ kudos }: KudosFeedProps) {
+export function KudosFeed({ kudos }: KudosFeedProps): JSX.Element {
   if (kudos.length === 0) {
     return (
       <div className="py-8 text-center text-muted-foreground">
@@ -52,8 +52,8 @@ export function KudosFeed({ kudos }: KudosFeedProps) {
   return (
     <div className="space-y-4">
       {kudos.map((kudo) => {
-        const category =
-          kudosCategories[kudo.category as keyof typeof kudosCategories] || kudosCategories.OTHER;
+        const categoryKey = kudo.category as keyof typeof kudosCategories;
+        const category = categoryKey in kudosCategories ? kudosCategories[categoryKey] : kudosCategories.OTHER;
 
         return (
           <Card key={kudo.id} className="border-l-4 border-l-primary/30">

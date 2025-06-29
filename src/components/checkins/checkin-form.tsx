@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 
-export function CheckInForm() {
+export function CheckInForm(): JSX.Element {
   const [achievements, setAchievements] = useState('');
   const [challenges, setChallenges] = useState('');
   const [nextWeekGoals, setNextWeekGoals] = useState('');
@@ -36,8 +36,8 @@ export function CheckInForm() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create check-in');
+        const errorData = await response.json() as { error?: string };
+        throw new Error(errorData.error ?? 'Failed to create check-in');
       }
 
       // Refresh page to display new check-in
@@ -52,7 +52,7 @@ export function CheckInForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
+      {error !== null && (
         <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
       )}
 

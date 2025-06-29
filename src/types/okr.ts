@@ -118,7 +118,7 @@ export function calculateConfidence(objective: ObjectiveWithRelations): number {
   if (keyResultsWithConfidence.length === 0) return 0;
 
   const totalConfidence = keyResultsWithConfidence.reduce(
-    (sum, kr) => sum + (kr.confidence || 0),
+    (sum, kr) => sum + (kr.confidence ?? 0),
     0,
   );
   return totalConfidence / keyResultsWithConfidence.length;

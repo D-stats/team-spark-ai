@@ -7,7 +7,7 @@ import { log } from '@/lib/logger';
 export { emailWorker, slackWorker, metricsWorker };
 
 // Start all workers
-export function startWorkers() {
+export function startWorkers(): void {
   log.info('Starting background job workers...');
 
   // Workers are automatically started when imported
@@ -19,7 +19,7 @@ export function startWorkers() {
 }
 
 // Stop all workers gracefully
-export async function stopWorkers() {
+export async function stopWorkers(): Promise<void> {
   log.info('Stopping background job workers...');
 
   await Promise.all([stopEmailWorker(), stopSlackWorker(), stopMetricsWorker()]);

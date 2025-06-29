@@ -70,7 +70,7 @@ export function CreateObjectiveDialog({
   companyObjectives = [],
   onClose,
   onSuccess,
-}: CreateObjectiveDialogProps) {
+}: CreateObjectiveDialogProps): JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -110,8 +110,8 @@ export function CreateObjectiveDialog({
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create objective');
+        const error = await response.json() as { error?: string };
+        throw new Error(error.error ?? 'Failed to create objective');
       }
 
       toast({

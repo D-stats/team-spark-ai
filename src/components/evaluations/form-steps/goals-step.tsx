@@ -17,7 +17,7 @@ interface EvaluationGoalsStepProps {
   isReadOnly?: boolean;
 }
 
-export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: EvaluationGoalsStepProps) {
+export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: EvaluationGoalsStepProps): JSX.Element {
   const { formData, updateCareerGoals, updateDevelopmentPlan } = useEvaluationStore();
 
   return (
@@ -56,7 +56,7 @@ export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: Evaluati
             </p>
             <Textarea
               id="careerGoals"
-              value={formData.careerGoals || ''}
+              value={formData.careerGoals ?? ''}
               onChange={(e) => updateCareerGoals(e.target.value)}
               placeholder="例：
 • 短期目標：フロントエンド開発のスキルを向上し、チームリーダーとしての経験を積む
@@ -100,7 +100,7 @@ export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: Evaluati
             </p>
             <Textarea
               id="developmentPlan"
-              value={formData.developmentPlan || ''}
+              value={formData.developmentPlan ?? ''}
               onChange={(e) => updateDevelopmentPlan(e.target.value)}
               placeholder="例：
 【技術スキル向上】
@@ -198,8 +198,8 @@ export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: Evaluati
 
       {/* 文字数カウンター */}
       <div className="flex justify-between text-sm text-gray-500">
-        <span>キャリア目標: {formData.careerGoals?.length || 0}文字</span>
-        <span>開発計画: {formData.developmentPlan?.length || 0}文字</span>
+        <span>キャリア目標: {formData.careerGoals?.length ?? 0}文字</span>
+        <span>開発計画: {formData.developmentPlan?.length ?? 0}文字</span>
       </div>
     </div>
   );

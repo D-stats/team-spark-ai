@@ -196,13 +196,13 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
           try {
             const response = await fetch(`/api/evaluations/${evaluationId}`);
-            const result = await response.json();
+            const result = await response.json() as { success: boolean; error?: string; data?: unknown };
 
-            if (!result.success) {
+            if (result.success !== true) {
               set((state) => {
                 state.isLoading = false;
               });
-              return { success: false, error: result.error };
+              return { success: false, error: result.error ?? 'Unknown error' };
             }
 
             const evaluation = result.data as EvaluationWithDetails;
@@ -213,21 +213,21 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
               // フォームデータを評価データで初期化
               state.formData = {
-                overallRating: evaluation.overallRating || undefined,
-                overallComments: evaluation.overallComments || '',
-                strengths: evaluation.strengths || '',
-                improvements: evaluation.improvements || '',
-                careerGoals: evaluation.careerGoals || '',
-                developmentPlan: evaluation.developmentPlan || '',
+                overallRating: evaluation.overallRating ?? undefined,
+                overallComments: evaluation.overallComments ?? '',
+                strengths: evaluation.strengths ?? '',
+                improvements: evaluation.improvements ?? '',
+                careerGoals: evaluation.careerGoals ?? '',
+                developmentPlan: evaluation.developmentPlan ?? '',
                 competencyRatings: evaluation.competencyRatings.reduce(
                   (acc, rating) => {
                     acc[rating.competencyId] = {
                       competencyId: rating.competencyId,
                       rating: rating.rating,
-                      comments: rating.comments || '',
+                      comments: rating.comments ?? '',
                       behaviors: rating.behaviors,
-                      examples: rating.examples || '',
-                      improvementAreas: rating.improvementAreas || '',
+                      examples: rating.examples ?? '',
+                      improvementAreas: rating.improvementAreas ?? '',
                     };
                     return acc;
                   },
@@ -278,7 +278,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
           set((state) => {
             state.formData.overallRating = rating;
             state.isDirty = true;
-            if (state.errors['overallRating']) {
+            if (state.errors['overallRating'] !== undefined) {
               delete state.errors['overallRating'];
             }
           });
@@ -288,7 +288,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
           set((state) => {
             state.formData.overallComments = comments;
             state.isDirty = true;
-            if (state.errors['overallComments']) {
+            if (state.errors['overallComments'] !== undefined) {
               delete state.errors['overallComments'];
             }
           });
@@ -335,7 +335,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
             state.isDirty = true;
 
             // エラーをクリア
-            if (state.errors[`competency_${competencyId}`]) {
+            if (state.errors[`competency_${competencyId}`] !== undefined) {
               delete state.errors[`competency_${competencyId}`];
             }
           });
@@ -378,13 +378,13 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
           switch (currentStepData.id) {
             case 'overview':
-              return !!state.formData.overallRating && !!state.formData.overallComments?.trim();
+              return state.formData.overallRating !== undefined && state.formData.overallRating !== null && state.formData.overallComments !== undefined && state.formData.overallComments.trim() !== '';
             case 'competencies':
               return (
                 Object.keys(state.formData.competencyRatings).length > 0 &&
                 Object.values(state.formData.competencyRatings).every(
                   (rating) =>
-                    rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
+                    rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
                 )
               );
             case 'review':
@@ -446,12 +446,12 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(saveData),
             });
 
-            const result = await response.json();
+            const result = await response.json() as { success: boolean; error?: string; data?: unknown };
 
             set((draft) => {
               draft.isSaving = false;
 
-              if (result.success) {
+              if (result.success === true) {
                 draft.isDirty = false;
                 draft.lastSavedAt = new Date();
               }
@@ -484,7 +484,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
             const submitData = {
               ...state.formData,
               competencyRatings: Object.values(state.formData.competencyRatings).filter(
-                (rating) => rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
+                (rating) => rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
               ),
               isDraft: false,
             };
@@ -495,19 +495,19 @@ export const useEvaluationStore = create<EvaluationStore>()(
               body: JSON.stringify(submitData),
             });
 
-            const result = await response.json();
+            const result = await response.json() as { success: boolean; error?: { message?: string } };
 
             set((draft) => {
               draft.isSubmitting = false;
 
-              if (result.success) {
+              if (result.success === true) {
                 draft.isDirty = false;
                 draft.lastSavedAt = new Date();
                 if (draft.currentEvaluation) {
                   draft.currentEvaluation.status = EvaluationStatus.SUBMITTED;
                 }
               } else {
-                draft.submitError = result.error?.message || '送信に失敗しました';
+                draft.submitError = result.error?.message ?? '送信に失敗しました';
               }
             });
 
@@ -569,12 +569,12 @@ export const useEvaluationStore = create<EvaluationStore>()(
 
         canSubmit: () => {
           const state = get();
-          return !!(
-            state.formData.overallRating &&
-            state.formData.overallComments?.trim() &&
+          return (
+            state.formData.overallRating !== undefined && state.formData.overallRating !== null &&
+            state.formData.overallComments !== undefined && state.formData.overallComments.trim() !== '' &&
             Object.keys(state.formData.competencyRatings).length > 0 &&
             Object.values(state.formData.competencyRatings).every(
-              (rating) => rating.rating && rating.comments?.trim() && rating.behaviors.length > 0,
+              (rating) => rating.rating !== undefined && rating.rating !== null && rating.comments !== undefined && rating.comments.trim() !== '' && rating.behaviors.length > 0,
             )
           );
         },
@@ -634,7 +634,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
 // オートセーブフック
 // ================
 
-export function useAutoSave() {
+export function useAutoSave(): void {
   const store = useEvaluationStore();
 
   // isDirtyとautoSaveEnabledの変更を監視

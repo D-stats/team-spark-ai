@@ -17,7 +17,7 @@ const intlMiddleware = createIntlMiddleware({
   localeDetection: false, // We handle detection manually without cookies
 });
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   const pathname = request.nextUrl.pathname;
   let response: NextResponse;
 
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
       'http://localhost:3001',
     ];
 
-    if (origin && allowedOrigins.includes(origin)) {
+    if (origin !== null && origin !== '' && allowedOrigins.includes(origin)) {
       response.headers.set('Access-Control-Allow-Origin', origin);
       response.headers.set('Access-Control-Allow-Credentials', 'true');
       response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

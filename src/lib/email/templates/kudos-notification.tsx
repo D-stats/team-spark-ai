@@ -36,8 +36,8 @@ export default function KudosNotificationEmail({
   category,
   message,
   kudosUrl,
-}: KudosNotificationEmailProps) {
-  const categoryLabel = categoryLabels[category] || category;
+}: KudosNotificationEmailProps): JSX.Element {
+  const categoryLabel = categoryLabels[category] ?? category;
 
   return (
     <Html>

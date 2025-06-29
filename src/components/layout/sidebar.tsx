@@ -32,7 +32,7 @@ const navigationItems: NavigationItem[] = [
   { key: 'settings', href: '/dashboard/settings', icon: Settings },
 ];
 
-export function Sidebar() {
+export function Sidebar(): JSX.Element {
   const pathname = usePathname();
   const t = useTranslations('navigation');
 

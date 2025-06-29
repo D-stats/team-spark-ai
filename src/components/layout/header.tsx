@@ -27,7 +27,7 @@ interface HeaderProps {
   };
 }
 
-export function Header({ user, organization }: HeaderProps) {
+export function Header({ user, organization }: HeaderProps): JSX.Element {
   const router = useRouter();
   const t = useTranslations();
 
@@ -57,7 +57,7 @@ export function Header({ user, organization }: HeaderProps) {
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium">
-                  {user.user_metadata?.name || t('common.user')}
+                  {user.user_metadata?.name ?? t('common.user')}
                 </p>
                 <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>

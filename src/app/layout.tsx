@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Activate team communication and enhance engagement with AI-powered insights',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <html>
       <body className={inter.className}>{children}</body>

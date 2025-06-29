@@ -12,11 +12,11 @@ import { Globe } from 'lucide-react';
 import { useLanguagePreference } from '@/hooks/use-language-preference';
 import { type Locale, localeNames } from '@/i18n/config';
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher(): JSX.Element {
   const locale = useLocale();
   const { changeLanguage, isClient } = useLanguagePreference();
 
-  const handleLocaleChange = (newLocale: string) => {
+  const handleLocaleChange = (newLocale: string): void => {
     changeLanguage(newLocale as Locale);
   };
 

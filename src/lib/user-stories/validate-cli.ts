@@ -4,6 +4,8 @@
  * ユーザーストーリー検証CLIツール
  */
 
+/* eslint-disable no-console */
+
 import { validateAllStories } from './validator';
 
 console.log('🚀 ユーザーストーリー検証を開始します...\n');

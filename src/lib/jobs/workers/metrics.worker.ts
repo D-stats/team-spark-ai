@@ -260,7 +260,7 @@ async function calculateSatisfactionMetrics(
 
   const avgMoodRating =
     moodRatings.length > 0
-      ? moodRatings.reduce((sum, c) => sum + (c.moodRating || 0), 0) / moodRatings.length
+      ? moodRatings.reduce((sum, c) => sum + (c.moodRating ?? 0), 0) / moodRatings.length
       : 0;
 
   // Calculate survey response rate
@@ -326,7 +326,7 @@ metricsWorker.on('failed', (job, error) => {
 });
 
 // Graceful shutdown
-export async function stopMetricsWorker() {
+export async function stopMetricsWorker(): Promise<void> {
   await metricsWorker.close();
   log.info('Metrics worker stopped');
 }

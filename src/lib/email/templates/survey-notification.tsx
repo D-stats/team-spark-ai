@@ -21,7 +21,7 @@ export const SurveyNotificationEmail = ({
   surveyTitle,
   surveyUrl,
   deadline,
-}: SurveyNotificationEmailProps) => {
+}: SurveyNotificationEmailProps): JSX.Element => {
   const deadlineText = deadline
     ? `（締切: ${new Date(deadline).toLocaleDateString('ja-JP')}）`
     : '';

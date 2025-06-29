@@ -17,7 +17,7 @@ interface CheckInReminderEmailProps {
   checkInUrl: string;
 }
 
-export default function CheckInReminderEmail({ userName, checkInUrl }: CheckInReminderEmailProps) {
+export default function CheckInReminderEmail({ userName, checkInUrl }: CheckInReminderEmailProps): JSX.Element {
   return (
     <Html>
       <Head />

@@ -72,7 +72,7 @@ export function CreateKeyResultDialog({
   objectiveId,
   onClose,
   onSuccess,
-}: CreateKeyResultDialogProps) {
+}: CreateKeyResultDialogProps): JSX.Element {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -103,8 +103,8 @@ export function CreateKeyResultDialog({
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create key result');
+        const error = await response.json() as { error?: string };
+        throw new Error(error.error ?? 'Failed to create key result');
       }
 
       toast({

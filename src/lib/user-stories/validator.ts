@@ -65,11 +65,11 @@ export class StoryValidator {
 
     // Calculate test coverage
     const totalTests = story.acceptanceCriteria.reduce(
-      (sum, criteria) => sum + (criteria.testIds?.length || 0),
+      (sum, criteria) => sum + (criteria.testIds?.length ?? 0),
       0,
     );
     const verifiedTests = story.acceptanceCriteria.reduce(
-      (sum, criteria) => sum + ((criteria.verified && criteria.testIds?.length) || 0),
+      (sum, criteria) => sum + ((criteria.verified === true ? criteria.testIds?.length : 0) ?? 0),
       0,
     );
     validation.testCoverage = totalTests > 0 ? (verifiedTests / totalTests) * 100 : 0;
@@ -172,7 +172,8 @@ export async function validateAllStories(): Promise<void> {
   const allStories = [...evaluationStories, ...kudosStories];
 
   const report = validator.generateReport(allStories);
-  console.log(report);
+  // Use process.stdout for CLI output instead of console.log
+  process.stdout.write(report + '\n');
 
   // Save as report file
   const fs = await import('fs/promises');

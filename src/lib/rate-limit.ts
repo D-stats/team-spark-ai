@@ -13,7 +13,9 @@ export type RateLimitResult = {
   reset: number;
 };
 
-export function rateLimit(options: RateLimitOptions) {
+export function rateLimit(options: RateLimitOptions): {
+  check: (request: NextRequest, limit: number) => RateLimitResult;
+} {
   const tokenCache = new LRUCache<string, number[]>({
     max: options.uniqueTokenPerInterval || 500,
     ttl: options.interval || 60000,
@@ -52,7 +54,7 @@ export function rateLimit(options: RateLimitOptions) {
 
 function getIdentifier(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0] || 'unknown' : 'unknown';
+  const ip = forwarded !== null && forwarded !== '' ? forwarded.split(',')[0] ?? 'unknown' : 'unknown';
   return ip;
 }
 

@@ -22,7 +22,7 @@ export function ErrorDisplay({
   onRetry,
   showHomeButton = false,
   className,
-}: ErrorDisplayProps) {
+}: ErrorDisplayProps): JSX.Element {
   const router = useRouter();
   const errorMessage = getErrorMessage(error);
   const errorCode = getErrorCode(error);

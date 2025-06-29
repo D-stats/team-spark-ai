@@ -35,7 +35,7 @@ interface EvaluationFormProps {
   evaluationId: string;
 }
 
-export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
+export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Element {
   const router = useRouter();
   const store = useEvaluationStore();
   useAutoSave(); // オートセーブ機能を有効化
@@ -281,7 +281,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps) {
       </Card>
 
       {/* エラー表示 */}
-      {submitError && (
+      {submitError !== null && submitError !== undefined && submitError !== '' && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>{submitError}</AlertDescription>

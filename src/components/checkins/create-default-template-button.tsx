@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 
-export function CreateDefaultTemplateButton() {
+export function CreateDefaultTemplateButton(): JSX.Element {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateDefault = async () => {
@@ -19,8 +19,8 @@ export function CreateDefaultTemplateButton() {
         // ページをリロードしてテンプレートを表示
         window.location.reload();
       } else {
-        const error = await response.json();
-        alert(error.error || 'デフォルトテンプレートの作成に失敗しました');
+        const error = await response.json() as { error?: string };
+        alert(error.error ?? 'デフォルトテンプレートの作成に失敗しました');
       }
     } catch (error) {
       alert('デフォルトテンプレートの作成に失敗しました');

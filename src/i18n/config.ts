@@ -19,7 +19,7 @@ export function isValidLocale(locale: string): locale is Locale {
 
 // Get the best matching locale from Accept-Language header
 export function getBestLocale(acceptLanguage: string | null): Locale {
-  if (!acceptLanguage) return defaultLocale;
+  if (acceptLanguage === null || acceptLanguage === undefined || acceptLanguage === '') return defaultLocale;
 
   const languages = acceptLanguage
     .split(',')
@@ -37,7 +37,7 @@ export default getRequestConfig(async ({ locale }) => {
 
   return {
     locale: typedLocale,
-    messages: (await import(`./messages/${typedLocale}.json`)).default,
+    messages: (await import(`./messages/${typedLocale}.json`) as { default: unknown }).default,
     timeZone: 'Asia/Tokyo', // You can make this dynamic based on locale
     now: new Date(),
   };

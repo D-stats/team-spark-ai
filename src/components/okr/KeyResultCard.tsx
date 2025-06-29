@@ -16,7 +16,7 @@ interface KeyResultCardProps {
   onUpdate?: () => void;
 }
 
-export function KeyResultCard({ keyResult, onUpdate }: KeyResultCardProps) {
+export function KeyResultCard({ keyResult, onUpdate }: KeyResultCardProps): JSX.Element {
   const [showCheckIn, setShowCheckIn] = useState(false);
 
   const getMilestoneIcon = () => {
@@ -66,7 +66,7 @@ export function KeyResultCard({ keyResult, onUpdate }: KeyResultCardProps) {
                   )}
                   <h4 className="font-medium">{keyResult.title}</h4>
                 </div>
-                {keyResult.description && (
+                {keyResult.description !== null && keyResult.description !== undefined && keyResult.description !== '' && (
                   <p className="mt-1 text-sm text-muted-foreground">{keyResult.description}</p>
                 )}
               </div>
@@ -79,7 +79,7 @@ export function KeyResultCard({ keyResult, onUpdate }: KeyResultCardProps) {
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span>
-                    {keyResult.currentValue || keyResult.startValue || 0} / {keyResult.targetValue}{' '}
+                    {keyResult.currentValue ?? keyResult.startValue ?? 0} / {keyResult.targetValue}{' '}
                     {keyResult.unit}
                   </span>
                   <span className={getProgressColor(keyResult.progress)}>

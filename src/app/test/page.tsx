@@ -1,4 +1,4 @@
-export default function TestPage() {
+export default function TestPage(): JSX.Element {
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
       <h1>TeamSpark AI - Test Page</h1>

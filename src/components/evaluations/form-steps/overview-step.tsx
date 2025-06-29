@@ -30,7 +30,7 @@ const ratingOptions = [
 export function EvaluationOverviewStep({
   evaluation,
   isReadOnly = false,
-}: EvaluationOverviewStepProps) {
+}: EvaluationOverviewStepProps): JSX.Element {
   const {
     formData,
     errors,
@@ -103,7 +103,7 @@ export function EvaluationOverviewStep({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
+                      {[...(Array(5) as unknown[])].map((_, i) => (
                         <Star
                           key={i}
                           className={cn(
@@ -126,7 +126,7 @@ export function EvaluationOverviewStep({
           ))}
         </div>
 
-        {errors?.['overallRating'] && (
+        {errors?.['overallRating'] !== undefined && errors['overallRating'] !== null && errors['overallRating'] !== '' && (
           <p className="text-sm text-red-600">{errors['overallRating']}</p>
         )}
       </div>
@@ -141,7 +141,7 @@ export function EvaluationOverviewStep({
         </p>
         <Textarea
           id="overallComments"
-          value={formData.overallComments || ''}
+          value={formData.overallComments ?? ''}
           onChange={(e) => updateOverallComments(e.target.value)}
           placeholder="評価の理由や根拠を具体的に記述してください..."
           className="min-h-[120px]"
@@ -149,17 +149,17 @@ export function EvaluationOverviewStep({
         />
         <div className="flex items-center justify-between text-sm">
           <div>
-            {errors['overallComments'] && (
+            {errors['overallComments'] !== undefined && errors['overallComments'] !== null && errors['overallComments'] !== '' && (
               <span className="text-red-600">{errors['overallComments']}</span>
             )}
           </div>
           <span
             className={cn(
               'text-gray-500',
-              (formData.overallComments?.length || 0) < 100 && 'text-orange-600',
+              (formData.overallComments?.length ?? 0) < 100 && 'text-orange-600',
             )}
           >
-            {formData.overallComments?.length || 0}/100文字以上
+            {formData.overallComments?.length ?? 0}/100文字以上
           </span>
         </div>
       </div>
@@ -172,7 +172,7 @@ export function EvaluationOverviewStep({
         <p className="text-sm text-gray-600">特に優れていた点や強みを記述してください</p>
         <Textarea
           id="strengths"
-          value={formData.strengths || ''}
+          value={formData.strengths ?? ''}
           onChange={(e) => updateStrengths(e.target.value)}
           placeholder="特に優れていた点や強みを記述してください..."
           className="min-h-[100px]"
@@ -188,7 +188,7 @@ export function EvaluationOverviewStep({
         <p className="text-sm text-gray-600">今後改善や成長が期待される領域を記述してください</p>
         <Textarea
           id="improvements"
-          value={formData.improvements || ''}
+          value={formData.improvements ?? ''}
           onChange={(e) => updateImprovements(e.target.value)}
           placeholder="今後改善や成長が期待される領域を記述してください..."
           className="min-h-[100px]"

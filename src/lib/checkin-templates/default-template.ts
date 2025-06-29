@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
 
-export async function createDefaultCheckInTemplate(organizationId: string) {
+export async function createDefaultCheckInTemplate(organizationId: string): Promise<void> {
   // Note: These are the default English questions. The actual display text
   // should be handled by the i18n system using the question IDs as keys.
   const defaultTemplate = {
@@ -65,7 +65,7 @@ export async function createDefaultCheckInTemplate(organizationId: string) {
   }
 }
 
-export async function ensureDefaultTemplate(organizationId: string) {
+export async function ensureDefaultTemplate(organizationId: string): Promise<void> {
   // Check if default template already exists
   const existingDefault = await prisma.checkInTemplate.findFirst({
     where: {

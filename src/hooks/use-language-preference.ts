@@ -16,7 +16,16 @@ interface LanguagePreference {
  * Hook for managing language preferences in localStorage
  * This is a client-side only hook that won't run during SSR
  */
-export function useLanguagePreference() {
+export function useLanguagePreference(): {
+  isClient: boolean;
+  preference: LanguagePreference | null;
+  savePreference: (locale: Locale, source?: 'user' | 'auto') => void;
+  clearPreference: () => void;
+  changeLanguage: (locale: Locale) => void;
+  getCurrentLocale: () => string;
+  isPreferenceMatched: () => boolean;
+  getSuggestedLocale: () => string | null;
+} {
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -33,7 +42,7 @@ export function useLanguagePreference() {
 
     try {
       const stored = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
-      if (stored) {
+      if (stored !== null) {
         const parsed = JSON.parse(stored) as LanguagePreference;
         if (isValidLocale(parsed.locale)) {
           setPreference(parsed);
@@ -121,15 +130,15 @@ export function useLanguagePreference() {
   /**
    * Get the current locale from the URL
    */
-  const getCurrentLocale = useCallback((): Locale | null => {
+  const getCurrentLocale = useCallback((): string => {
     const segments = pathname.split('/');
     const urlLocale = segments[1];
 
-    if (urlLocale && isValidLocale(urlLocale)) {
+    if (urlLocale !== undefined && urlLocale !== '' && isValidLocale(urlLocale)) {
       return urlLocale;
     }
 
-    return null;
+    return '';
   }, [pathname]);
 
   /**
@@ -160,7 +169,7 @@ export function useLanguagePreference() {
 
     // Check for language family match (e.g., en-US matches en)
     const langFamily = browserLang.split('-')[0];
-    if (langFamily) {
+    if (langFamily !== undefined && langFamily !== '') {
       for (const locale of locales) {
         if (locale.startsWith(langFamily)) {
           return locale;

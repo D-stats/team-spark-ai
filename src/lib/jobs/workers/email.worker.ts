@@ -29,7 +29,7 @@ export const emailWorker = new Worker<SendEmailJobData>(
 
       // Send email via Resend
       const result = await resend.emails.send({
-        from: process.env['EMAIL_FROM'] || 'noreply@teamspark.ai',
+        from: process.env['EMAIL_FROM'] ?? 'noreply@teamspark.ai',
         to,
         subject,
         html,
@@ -89,11 +89,11 @@ async function compileEmailTemplate(_template: string, data: EmailTemplateData):
     <html>
       <head>
         <meta charset="utf-8">
-        <title>${data.title || 'TeamSpark AI'}</title>
+        <title>${data.title ?? 'TeamSpark AI'}</title>
       </head>
       <body>
         <h1>TeamSpark AI</h1>
-        <p>${data.content || 'Email content'}</p>
+        <p>${data.content ?? 'Email content'}</p>
         <hr>
         <p>© ${new Date().getFullYear()} TeamSpark AI. All rights reserved.</p>
       </body>
@@ -118,7 +118,7 @@ emailWorker.on('error', (error) => {
 });
 
 // Graceful shutdown
-export async function stopEmailWorker() {
+export async function stopEmailWorker(): Promise<void> {
   await emailWorker.close();
   log.info('Email worker stopped');
 }

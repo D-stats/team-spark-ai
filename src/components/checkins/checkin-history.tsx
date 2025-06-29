@@ -31,7 +31,7 @@ interface CheckInHistoryProps {
   checkIns: CheckIn[];
 }
 
-export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
+export function CheckInHistory({ checkIns }: CheckInHistoryProps): JSX.Element {
   if (checkIns.length === 0) {
     return (
       <div className="py-8 text-center text-muted-foreground">
@@ -49,7 +49,7 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
   const averageMood =
     checkInsWithMood.length > 0
       ? (
-          checkInsWithMood.reduce((sum, checkIn) => sum + (checkIn.moodRating || 0), 0) /
+          checkInsWithMood.reduce((sum, checkIn) => sum + (checkIn.moodRating ?? 0), 0) /
           checkInsWithMood.length
         ).toFixed(1)
       : null;
@@ -63,7 +63,7 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
       QUARTERLY: 'Quarterly',
       CUSTOM: 'Custom',
     };
-    return labels[frequency] || frequency;
+    return labels[frequency] ?? frequency;
   };
 
   const renderAnswerValue = (question: Question, answer: unknown) => {
@@ -109,7 +109,7 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
             </div>
             <div>
               <div className="text-muted-foreground">Average Mood Score</div>
-              <div className="font-semibold">{averageMood ? `${averageMood}/5` : '---'}</div>
+              <div className="font-semibold">{averageMood !== null ? `${averageMood}/5` : '---'}</div>
             </div>
           </div>
         </CardContent>
@@ -128,7 +128,7 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps) {
                   </div>
                 </div>
                 <div className="space-y-1 text-right">
-                  {checkIn.moodRating && (
+                  {checkIn.moodRating !== null && checkIn.moodRating !== undefined && (
                     <div className="flex items-center space-x-1">
                       <div className="flex">
                         {[1, 2, 3, 4, 5].map((star) => (

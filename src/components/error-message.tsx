@@ -8,11 +8,11 @@ interface ErrorMessageProps {
   className?: string;
 }
 
-export function ErrorMessage({ error, className }: ErrorMessageProps) {
+export function ErrorMessage({ error, className }: ErrorMessageProps): JSX.Element | null {
   const t = useTranslations();
 
   const getMessage = (): string => {
-    if (!error) return '';
+    if (error === null || error === undefined) return '';
 
     if (isAppError(error)) {
       // If the error message is a translation key (starts with 'errors.'), translate it

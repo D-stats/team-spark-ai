@@ -15,7 +15,12 @@ interface User {
   avatar?: string;
 }
 
-export function useUser() {
+export function useUser(): {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  refetch: () => void;
+} {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

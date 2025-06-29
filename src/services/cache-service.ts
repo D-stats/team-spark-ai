@@ -150,7 +150,7 @@ export const teamCacheService = new TeamCacheService();
 export const kudosCacheService = new KudosCacheService();
 
 // Cache warming utility
-export async function warmCache() {
+export async function warmCache(): Promise<void> {
   try {
     // Warm up recent kudos
     await kudosCacheService.getRecentKudos();

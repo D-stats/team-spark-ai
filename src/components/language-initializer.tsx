@@ -11,7 +11,7 @@ import { type Locale } from '@/i18n/config';
  * Component to initialize language preference on client side
  * Handles language suggestion based on browser settings
  */
-export function LanguageInitializer() {
+export function LanguageInitializer(): JSX.Element {
   const {
     preference,
     isClient,
@@ -40,10 +40,10 @@ export function LanguageInitializer() {
     const suggested = getSuggestedLocale();
 
     if (
-      !preference && // No saved preference
-      suggested && // Browser suggests a language
+      preference === null && // No saved preference
+      suggested !== null && // Browser suggests a language
       suggested !== currentLocale && // Different from current
-      currentLocale // We have a current locale
+      currentLocale !== '' // We have a current locale
     ) {
       setSuggestedLocale(suggested);
       setShowSuggestion(true);
@@ -58,7 +58,7 @@ export function LanguageInitializer() {
   ]);
 
   const handleAcceptSuggestion = () => {
-    if (suggestedLocale) {
+    if (suggestedLocale !== null) {
       changeLanguage(suggestedLocale as Locale);
     }
     setShowSuggestion(false);
@@ -74,7 +74,7 @@ export function LanguageInitializer() {
   };
 
   // Don't render anything during SSR or if no suggestion
-  if (!isClient || !showSuggestion || !suggestedLocale) {
+  if (!isClient || !showSuggestion || suggestedLocale === null) {
     return null;
   }
 

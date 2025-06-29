@@ -4,7 +4,7 @@ import { logError } from '@/lib/logger';
 
 export async function verifySlackRequest(request: NextRequest, body: string): Promise<boolean> {
   const signingSecret = process.env['SLACK_SIGNING_SECRET'];
-  if (!signingSecret) {
+  if (signingSecret === undefined || signingSecret === '') {
     logError(new Error('SLACK_SIGNING_SECRET is not set'), 'verifySlackRequest');
     return false;
   }
@@ -12,7 +12,7 @@ export async function verifySlackRequest(request: NextRequest, body: string): Pr
   const timestamp = request.headers.get('x-slack-request-timestamp');
   const slackSignature = request.headers.get('x-slack-signature');
 
-  if (!timestamp || !slackSignature) {
+  if (timestamp === null || timestamp === '' || slackSignature === null || slackSignature === '') {
     return false;
   }
 

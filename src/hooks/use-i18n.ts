@@ -7,7 +7,15 @@ import { formatDate as formatDateUtil } from '@/i18n/utils';
  * Custom hook for i18n utilities
  * Provides common i18n functionality in a reusable way
  */
-export function useI18n() {
+export function useI18n(): {
+  locale: string;
+  formatDate: (date: Date, options?: Intl.DateTimeFormatOptions) => string;
+  formatRelativeTime: (date: Date) => string;
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
+  formatCurrency: (value: number, currency?: string, options?: Intl.NumberFormatOptions) => string;
+  getDateFormat: () => string;
+  isRTL: () => boolean;
+} {
   const locale = useLocale();
 
   /**
@@ -98,7 +106,19 @@ export function useI18n() {
 /**
  * Hook to get translated validation messages
  */
-export function useValidationMessages() {
+export function useValidationMessages(): {
+  required: () => string;
+  email: () => string;
+  minLength: (min: number) => string;
+  maxLength: (max: number) => string;
+  url: () => string;
+  number: () => string;
+  integer: () => string;
+  positive: () => string;
+  date: () => string;
+  time: () => string;
+  match: () => string;
+} {
   const t = useTranslations('forms.validation');
 
   return {
@@ -119,7 +139,9 @@ export function useValidationMessages() {
 /**
  * Hook to get translated error messages
  */
-export function useErrorMessages() {
+export function useErrorMessages(): {
+  getErrorMessage: (error: unknown) => string;
+} {
   const t = useTranslations('errors');
 
   const getErrorMessage = (error: unknown): string => {
