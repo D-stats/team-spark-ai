@@ -19,7 +19,7 @@ export function CreateDefaultTemplateButton(): JSX.Element {
         // ページをリロードしてテンプレートを表示
         window.location.reload();
       } else {
-        const error = await response.json() as { error?: string };
+        const error = (await response.json()) as { error?: string };
         alert(error.error ?? 'デフォルトテンプレートの作成に失敗しました');
       }
     } catch (error) {

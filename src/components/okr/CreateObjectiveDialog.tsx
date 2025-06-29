@@ -110,7 +110,7 @@ export function CreateObjectiveDialog({
       });
 
       if (!response.ok) {
-        const error = await response.json() as { error?: string };
+        const error = (await response.json()) as { error?: string };
         throw new Error(error.error ?? 'Failed to create objective');
       }
 

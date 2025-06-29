@@ -109,7 +109,9 @@ export function CheckInHistory({ checkIns }: CheckInHistoryProps): JSX.Element {
             </div>
             <div>
               <div className="text-muted-foreground">Average Mood Score</div>
-              <div className="font-semibold">{averageMood !== null ? `${averageMood}/5` : '---'}</div>
+              <div className="font-semibold">
+                {averageMood !== null ? `${averageMood}/5` : '---'}
+              </div>
             </div>
           </div>
         </CardContent>

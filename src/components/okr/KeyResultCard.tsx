@@ -66,9 +66,11 @@ export function KeyResultCard({ keyResult, onUpdate }: KeyResultCardProps): JSX.
                   )}
                   <h4 className="font-medium">{keyResult.title}</h4>
                 </div>
-                {keyResult.description !== null && keyResult.description !== undefined && keyResult.description !== '' && (
-                  <p className="mt-1 text-sm text-muted-foreground">{keyResult.description}</p>
-                )}
+                {keyResult.description !== null &&
+                  keyResult.description !== undefined &&
+                  keyResult.description !== '' && (
+                    <p className="mt-1 text-sm text-muted-foreground">{keyResult.description}</p>
+                  )}
               </div>
               <Button variant="outline" size="sm" onClick={() => setShowCheckIn(true)}>
                 Check In

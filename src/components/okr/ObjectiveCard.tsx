@@ -22,7 +22,11 @@ interface ObjectiveCardProps {
   showActions?: boolean;
 }
 
-export function ObjectiveCard({ objective, onUpdate, showActions = true }: ObjectiveCardProps): JSX.Element {
+export function ObjectiveCard({
+  objective,
+  onUpdate,
+  showActions = true,
+}: ObjectiveCardProps): JSX.Element {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showCreateKeyResult, setShowCreateKeyResult] = useState(false);
 
@@ -67,9 +71,11 @@ export function ObjectiveCard({ objective, onUpdate, showActions = true }: Objec
                 {getStatusBadge()}
               </div>
               <CardTitle className="text-lg">{objective.title}</CardTitle>
-              {objective.description !== null && objective.description !== undefined && objective.description !== '' && (
-                <CardDescription className="mt-2">{objective.description}</CardDescription>
-              )}
+              {objective.description !== null &&
+                objective.description !== undefined &&
+                objective.description !== '' && (
+                  <CardDescription className="mt-2">{objective.description}</CardDescription>
+                )}
             </div>
             <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? <ChevronUp /> : <ChevronDown />}

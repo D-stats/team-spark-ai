@@ -56,7 +56,8 @@ export async function getRateLimitIdentifier(request: NextRequest): Promise<stri
   // For now, use IP-based rate limiting
   // TODO: Add user-based rate limiting when auth is implemented
   const forwarded = request.headers.get('x-forwarded-for');
-  const ip = forwarded !== null && forwarded !== '' ? forwarded.split(',')[0] ?? 'unknown' : 'unknown';
+  const ip =
+    forwarded !== null && forwarded !== '' ? (forwarded.split(',')[0] ?? 'unknown') : 'unknown';
   return `ip:${ip}`;
 }
 
@@ -109,7 +110,11 @@ export function createRateLimitResponse(resetTime: number): NextResponse {
   });
 }
 
-export function addRateLimitHeaders(response: NextResponse, remaining: number, resetTime: number): NextResponse {
+export function addRateLimitHeaders(
+  response: NextResponse,
+  remaining: number,
+  resetTime: number,
+): NextResponse {
   response.headers.set('X-RateLimit-Limit', '100');
   response.headers.set('X-RateLimit-Remaining', remaining.toString());
   response.headers.set('X-RateLimit-Reset', resetTime.toString());

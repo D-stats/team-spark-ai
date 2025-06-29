@@ -36,7 +36,7 @@ export function CheckInForm(): JSX.Element {
       });
 
       if (!response.ok) {
-        const errorData = await response.json() as { error?: string };
+        const errorData = (await response.json()) as { error?: string };
         throw new Error(errorData.error ?? 'Failed to create check-in');
       }
 

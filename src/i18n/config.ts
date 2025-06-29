@@ -19,7 +19,8 @@ export function isValidLocale(locale: string): locale is Locale {
 
 // Get the best matching locale from Accept-Language header
 export function getBestLocale(acceptLanguage: string | null): Locale {
-  if (acceptLanguage === null || acceptLanguage === undefined || acceptLanguage === '') return defaultLocale;
+  if (acceptLanguage === null || acceptLanguage === undefined || acceptLanguage === '')
+    return defaultLocale;
 
   const languages = acceptLanguage
     .split(',')
@@ -35,7 +36,9 @@ export default getRequestConfig(async ({ locale }) => {
   const typedLocale = locale as string;
   if (!typedLocale || !locales.includes(typedLocale as Locale)) notFound();
 
-  const messagesModule = await import(`./messages/${typedLocale}.json`) as { default: Record<string, unknown> };
+  const messagesModule = (await import(`./messages/${typedLocale}.json`)) as {
+    default: Record<string, unknown>;
+  };
   const messages = messagesModule.default;
 
   return {

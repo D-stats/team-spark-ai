@@ -53,7 +53,8 @@ export function KudosFeed({ kudos }: KudosFeedProps): JSX.Element {
     <div className="space-y-4">
       {kudos.map((kudo) => {
         const categoryKey = kudo.category as keyof typeof kudosCategories;
-        const category = categoryKey in kudosCategories ? kudosCategories[categoryKey] : kudosCategories.OTHER;
+        const category =
+          categoryKey in kudosCategories ? kudosCategories[categoryKey] : kudosCategories.OTHER;
 
         return (
           <Card key={kudo.id} className="border-l-4 border-l-primary/30">

@@ -17,7 +17,10 @@ interface EvaluationGoalsStepProps {
   isReadOnly?: boolean;
 }
 
-export function EvaluationGoalsStep({ evaluation, isReadOnly = false }: EvaluationGoalsStepProps): JSX.Element {
+export function EvaluationGoalsStep({
+  evaluation,
+  isReadOnly = false,
+}: EvaluationGoalsStepProps): JSX.Element {
   const { formData, updateCareerGoals, updateDevelopmentPlan } = useEvaluationStore();
 
   return (

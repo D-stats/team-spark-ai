@@ -126,9 +126,11 @@ export function EvaluationOverviewStep({
           ))}
         </div>
 
-        {errors?.['overallRating'] !== undefined && errors['overallRating'] !== null && errors['overallRating'] !== '' && (
-          <p className="text-sm text-red-600">{errors['overallRating']}</p>
-        )}
+        {errors?.['overallRating'] !== undefined &&
+          errors['overallRating'] !== null &&
+          errors['overallRating'] !== '' && (
+            <p className="text-sm text-red-600">{errors['overallRating']}</p>
+          )}
       </div>
 
       {/* 総合コメント */}
@@ -149,9 +151,11 @@ export function EvaluationOverviewStep({
         />
         <div className="flex items-center justify-between text-sm">
           <div>
-            {errors['overallComments'] !== undefined && errors['overallComments'] !== null && errors['overallComments'] !== '' && (
-              <span className="text-red-600">{errors['overallComments']}</span>
-            )}
+            {errors['overallComments'] !== undefined &&
+              errors['overallComments'] !== null &&
+              errors['overallComments'] !== '' && (
+                <span className="text-red-600">{errors['overallComments']}</span>
+              )}
           </div>
           <span
             className={cn(

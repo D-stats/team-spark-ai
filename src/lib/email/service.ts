@@ -5,7 +5,10 @@ import SurveyNotificationEmail from './templates/survey-notification';
 import { ReactElement } from 'react';
 import { log, logError } from '@/lib/logger';
 
-const resend = process.env['RESEND_API_KEY'] !== undefined && process.env['RESEND_API_KEY'] !== '' ? new Resend(process.env['RESEND_API_KEY']) : null;
+const resend =
+  process.env['RESEND_API_KEY'] !== undefined && process.env['RESEND_API_KEY'] !== ''
+    ? new Resend(process.env['RESEND_API_KEY'])
+    : null;
 
 interface SendEmailOptions {
   to: string | string[];
