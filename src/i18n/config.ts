@@ -32,9 +32,17 @@ export function getBestLocale(acceptLanguage: string | null): Locale {
 }
 
 export default getRequestConfig(async ({ locale }) => {
-  // Ensure locale is a string and validate it
-  const typedLocale = locale as string;
-  if (!typedLocale || !locales.includes(typedLocale as Locale)) notFound();
+  // If locale is undefined, use default
+  let typedLocale = locale as string;
+  
+  if (!typedLocale) {
+    typedLocale = defaultLocale;
+  }
+  
+  // Validate locale is supported
+  if (!locales.includes(typedLocale as Locale)) {
+    notFound();
+  }
 
   const messagesModule = (await import(`./messages/${typedLocale}.json`)) as {
     default: Record<string, unknown>;

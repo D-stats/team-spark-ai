@@ -47,6 +47,25 @@ export async function getUserWithOrganization(): Promise<{
     });
 
     if (!dbUser) {
+      // Try to find by ID first (in case email changed)
+      const existingUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        include: { organization: true },
+      });
+
+      if (existingUser) {
+        // Update email if it changed
+        if (existingUser.email !== user.email) {
+          const updatedUser = await prisma.user.update({
+            where: { id: user.id },
+            data: { email: user.email },
+            include: { organization: true },
+          });
+          return { user, dbUser: updatedUser };
+        }
+        return { user, dbUser: existingUser };
+      }
+
       // Create a development user if it doesn't exist
       const newUser = await prisma.user.create({
         data: {
