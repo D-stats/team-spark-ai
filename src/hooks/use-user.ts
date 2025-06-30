@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface User {
   id: string;
@@ -21,35 +21,25 @@ export function useUser(): {
   error: string | null;
   refetch: () => void;
 } {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: session, status, update } = useSession();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // TODO: Implement authentication check without Supabase
-        // For now, return null user
-        setUser(null);
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+  const user = session?.user
+    ? {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        role: session.user.role as 'ADMIN' | 'MANAGER' | 'MEMBER',
+        organizationId: session.user.organizationId,
+        avatar: session.user.avatarUrl,
       }
-    };
-
-    fetchUser();
-  }, []);
+    : null;
 
   return {
     user,
-    loading,
-    error,
+    loading: status === 'loading',
+    error: null,
     refetch: () => {
-      setLoading(true);
-      setError(null);
-      // TODO: Implement refetch logic
+      update();
     },
   };
 }

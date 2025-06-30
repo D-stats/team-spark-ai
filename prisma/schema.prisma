@@ -32,6 +32,8 @@ model User {
   avatarUrl              String?
   role                   Role             @default(MEMBER)
   slackUserId            String?
+  password               String?
+  emailVerified          DateTime?
   isActive               Boolean          @default(true)
   lastActiveAt           DateTime?
   createdAt              DateTime         @default(now())

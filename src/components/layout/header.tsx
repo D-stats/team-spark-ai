@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { useTranslations } from '@/i18n/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,10 +17,12 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface HeaderProps {
   user: {
-    email?: string;
-    user_metadata?: {
-      name?: string;
-    };
+    id: string;
+    email: string;
+    name: string;
+    organizationId: string;
+    role: string;
+    avatarUrl?: string;
   };
   organization: {
     name: string;
@@ -32,9 +35,10 @@ export function Header({ user, organization }: HeaderProps): JSX.Element {
   const t = useTranslations();
 
   const handleSignOut = async () => {
-    // TODO: Implement sign out without Supabase
-    router.push('/login');
-    router.refresh();
+    await signOut({
+      callbackUrl: '/login',
+      redirect: true,
+    });
   };
 
   return (
@@ -56,9 +60,7 @@ export function Header({ user, organization }: HeaderProps): JSX.Element {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">
-                  {user.user_metadata?.name ?? t('common.user')}
-                </p>
+                <p className="text-sm font-medium">{user.name}</p>
                 <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
