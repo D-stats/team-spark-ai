@@ -62,7 +62,12 @@
       "minLength": "Must be at least {min} characters",
       "maxLength": "Must be no more than {max} characters",
       "passwordMismatch": "Passwords do not match",
-      "invalidCredentials": "Invalid email or password"
+      "invalidCredentials": "Invalid email or password",
+      "passwordMinLength": "Password must be at least 8 characters long",
+      "passwordUppercase": "Password must contain at least one uppercase letter",
+      "passwordLowercase": "Password must contain at least one lowercase letter",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordSpecialChar": "Password must contain at least one special character"
     },
     "authentication": {
       "default": "Login required. Please log in again.",
@@ -709,6 +714,7 @@
       "title": "Login",
       "subtitle": "Sign in to your account to access the dashboard",
       "emailLabel": "Email Address",
+      "passwordLabel": "Password",
       "submitButton": "Login",
       "submitting": "Logging in...",
       "noAccount": "Don't have an account?",
@@ -721,7 +727,10 @@
       "nameLabel": "Full Name",
       "namePlaceholder": "John Doe",
       "emailLabel": "Email Address",
-      "passwordHelp": "Enter a password with at least 6 characters",
+      "passwordLabel": "Password",
+      "passwordHelp": "Password must be at least 8 characters with uppercase, lowercase, number, and special character",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
       "submitButton": "Create Account",
       "submitting": "Creating account...",
       "hasAccount": "Already have an account?",

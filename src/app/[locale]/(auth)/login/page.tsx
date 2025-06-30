@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +24,7 @@ export default function LoginPage(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations('auth.login');
   const locale = useLocale();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +32,17 @@ export default function LoginPage(): JSX.Element {
     setError(null);
 
     try {
-      // TODO: Implement authentication without Supabase
-      setError(t('error'));
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error != null) {
+        setError(t('error'));
+      } else if (result?.ok === true) {
+        router.push(`/${locale}/dashboard`);
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('error');
       setError(errorMessage);

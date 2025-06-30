@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 import createIntlMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from '@/i18n/config';
 import {
@@ -16,6 +17,25 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: 'always', // Always show locale in URL for clarity and SEO
   localeDetection: false, // We handle detection manually without cookies
 });
+
+// Helper to check if route requires authentication
+function requiresAuth(pathname: string): boolean {
+  // Extract locale from pathname to get the actual route
+  const pathWithoutLocale = pathname.replace(/^\/(en|ja)/, '') || '/';
+
+  // Protected routes that require authentication
+  const protectedRoutes = ['/dashboard'];
+
+  return protectedRoutes.some((route) => pathWithoutLocale.startsWith(route));
+}
+
+// Helper to check if route is auth-related
+function isAuthRoute(pathname: string): boolean {
+  const pathWithoutLocale = pathname.replace(/^\/(en|ja)/, '') || '/';
+  const authRoutes = ['/login', '/signup'];
+
+  return authRoutes.some((route) => pathWithoutLocale.startsWith(route));
+}
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const pathname = request.nextUrl.pathname;
@@ -91,6 +111,41 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
   // Apply internationalization middleware for locale validation
   response = intlMiddleware(request);
+
+  // Authentication check for protected routes
+  if (requiresAuth(pathname)) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    if (token == null) {
+      // Extract locale from pathname for proper redirect
+      const locale = pathname.split('/')[1] ?? defaultLocale;
+      const loginUrl = new URL(`/${locale}/login`, request.url);
+
+      // Add return URL as query parameter
+      loginUrl.searchParams.set('callbackUrl', request.url);
+
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (isAuthRoute(pathname)) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    if (token != null) {
+      // Extract locale from pathname for proper redirect
+      const locale = pathname.split('/')[1] ?? defaultLocale;
+      const dashboardUrl = new URL(`/${locale}/dashboard`, request.url);
+
+      return NextResponse.redirect(dashboardUrl);
+    }
+  }
 
   // Apply security headers to all responses
   if (response instanceof NextResponse) {

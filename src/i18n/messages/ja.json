@@ -62,7 +62,12 @@
       "minLength": "{min}文字以上で入力してください",
       "maxLength": "{max}文字以下で入力してください",
       "passwordMismatch": "パスワードが一致しません",
-      "invalidCredentials": "メールアドレスまたはパスワードが正しくありません"
+      "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
+      "passwordMinLength": "パスワードは8文字以上である必要があります",
+      "passwordUppercase": "パスワードに大文字を1文字以上含める必要があります",
+      "passwordLowercase": "パスワードに小文字を1文字以上含める必要があります",
+      "passwordNumber": "パスワードに数字を1文字以上含める必要があります",
+      "passwordSpecialChar": "パスワードに特殊文字を1文字以上含める必要があります"
     },
     "authentication": {
       "default": "ログインが必要です。もう一度ログインしてください。",
@@ -709,6 +714,7 @@
       "title": "ログイン",
       "subtitle": "アカウントにログインして、ダッシュボードにアクセスしてください",
       "emailLabel": "メールアドレス",
+      "passwordLabel": "パスワード",
       "submitButton": "ログイン",
       "submitting": "ログイン中...",
       "noAccount": "アカウントをお持ちでない方は",
@@ -721,7 +727,10 @@
       "nameLabel": "お名前",
       "namePlaceholder": "山田 太郎",
       "emailLabel": "メールアドレス",
-      "passwordHelp": "6文字以上のパスワードを入力してください",
+      "passwordLabel": "パスワード",
+      "passwordHelp": "8文字以上で大文字・小文字・数字・特殊文字を含むパスワードを入力してください",
+      "confirmPasswordLabel": "パスワード確認",
+      "confirmPasswordPlaceholder": "パスワードを再入力してください",
       "submitButton": "アカウントを作成",
       "submitting": "アカウント作成中...",
       "hasAccount": "すでにアカウントをお持ちですか？",
