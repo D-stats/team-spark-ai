@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
 export const locales = ['en', 'ja'] as const;
@@ -32,17 +31,20 @@ export function getBestLocale(acceptLanguage: string | null): Locale {
 }
 
 export default getRequestConfig(async ({ locale }) => {
-  // Ensure locale is a string and validate it
+  // Ensure locale is a string and validate it, fallback to default locale if invalid
   const typedLocale = locale as string;
-  if (!typedLocale || !locales.includes(typedLocale as Locale)) notFound();
+  const validLocale =
+    !typedLocale || !locales.includes(typedLocale as Locale)
+      ? defaultLocale
+      : (typedLocale as Locale);
 
-  const messagesModule = (await import(`./messages/${typedLocale}.json`)) as {
+  const messagesModule = (await import(`./messages/${validLocale}.json`)) as {
     default: Record<string, unknown>;
   };
   const messages = messagesModule.default;
 
   return {
-    locale: typedLocale,
+    locale: validLocale,
     messages,
     timeZone: 'Asia/Tokyo', // You can make this dynamic based on locale
     now: new Date(),

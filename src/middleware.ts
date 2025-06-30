@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
-import { locales, defaultLocale } from '@/i18n/config';
+import { locales, defaultLocale, type Locale } from '@/i18n/config';
 import {
   applySecurityHeaders,
   checkRateLimit,
@@ -71,17 +71,28 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return response;
   }
 
-  // Check if the pathname already includes a locale
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
-  );
+  // Parse the path to check for locale
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const firstSegment = pathSegments[0];
 
-  if (!pathnameHasLocale) {
-    // No locale in URL, redirect to URL with locale
+  // Check if the first segment is a valid locale
+  if (firstSegment !== undefined && locales.includes(firstSegment as Locale)) {
+    // Valid locale found, proceed with normal processing
+    // The intlMiddleware will handle the rest
+  } else if (firstSegment !== undefined && firstSegment.length === 2) {
+    // Looks like a locale code (2 characters) but not valid, redirect to default locale with rest of path
+    const restOfPath = pathSegments.slice(1).join('/');
+    const newUrl = new URL(`/${defaultLocale}${restOfPath ? `/${restOfPath}` : ''}`, request.url);
+
+    // Preserve query parameters
+    newUrl.search = request.nextUrl.search;
+
+    return NextResponse.redirect(newUrl);
+  } else {
+    // No valid locale at start, redirect to URL with default locale
     // We don't auto-detect from Accept-Language header to avoid automatic redirects
     // The client-side LanguageInitializer will handle suggestions
-    const locale = defaultLocale;
-    const newUrl = new URL(`/${locale}${pathname}`, request.url);
+    const newUrl = new URL(`/${defaultLocale}${pathname}`, request.url);
 
     // Preserve query parameters
     newUrl.search = request.nextUrl.search;
