@@ -135,7 +135,8 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
+      // If user is provided (during login), update token with user data
       if (user != null) {
         token.id = user.id;
         token.organizationId = user.organizationId;
@@ -155,6 +156,59 @@ export const authOptions: NextAuthOptions = {
         token.locale = user.locale;
         token.notificationSettings = user.notificationSettings;
       }
+      
+      // If session is being updated (refreshUser called), fetch fresh data from database
+      if (trigger === 'update' && token.id) {
+        try {
+          const freshUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              role: true,
+              avatarUrl: true,
+              jobTitle: true,
+              department: true,
+              bio: true,
+              skills: true,
+              timezone: true,
+              phoneNumber: true,
+              linkedinUrl: true,
+              twitterUrl: true,
+              githubUrl: true,
+              personalWebsite: true,
+              startDate: true,
+              locale: true,
+              notificationSettings: true,
+              organizationId: true,
+            },
+          });
+          
+          if (freshUser) {
+            token.name = freshUser.name;
+            token.email = freshUser.email;
+            token.role = freshUser.role;
+            token.avatarUrl = freshUser.avatarUrl ?? undefined;
+            token.jobTitle = freshUser.jobTitle ?? undefined;
+            token.department = freshUser.department ?? undefined;
+            token.bio = freshUser.bio ?? undefined;
+            token.skills = freshUser.skills ?? undefined;
+            token.timezone = freshUser.timezone ?? undefined;
+            token.phoneNumber = freshUser.phoneNumber ?? undefined;
+            token.linkedinUrl = freshUser.linkedinUrl ?? undefined;
+            token.twitterUrl = freshUser.twitterUrl ?? undefined;
+            token.githubUrl = freshUser.githubUrl ?? undefined;
+            token.personalWebsite = freshUser.personalWebsite ?? undefined;
+            token.startDate = freshUser.startDate?.toISOString() ?? undefined;
+            token.locale = freshUser.locale ?? undefined;
+            token.notificationSettings = freshUser.notificationSettings ?? undefined;
+          }
+        } catch (error) {
+          console.error('Error refreshing user data in JWT callback:', error);
+        }
+      }
+      
       return token;
     },
     async session({ session, token }) {
