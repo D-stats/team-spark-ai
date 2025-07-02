@@ -40,9 +40,7 @@ export default async function SettingsPage(): Promise<JSX.Element> {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">{t('title')}</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage your profile, account settings, and preferences
-        </p>
+        <p className="mt-2 text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
