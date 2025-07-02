@@ -2,6 +2,8 @@ import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { ProfileForm } from '@/components/settings/profile-form';
 import { NotificationSettings } from '@/components/settings/notification-settings';
+import { PasswordSettings } from '@/components/settings/password-settings';
+import { SessionManagement } from '@/components/settings/session-management';
 import { SlackUserSettings } from '@/components/settings/slack-user-settings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,7 +14,29 @@ export default async function SettingsPage(): Promise<JSX.Element> {
   // ユーザーの詳細情報を取得
   const userWithDetails = await prisma.user.findUnique({
     where: { id: dbUser.id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      avatarUrl: true,
+      bio: true,
+      skills: true,
+      timezone: true,
+      locale: true,
+      phoneNumber: true,
+      linkedinUrl: true,
+      githubUrl: true,
+      twitterUrl: true,
+      twoFactorEnabled: true,
+      lastPasswordChange: true,
+      emailNotifications: true,
+      kudosNotifications: true,
+      checkinReminders: true,
+      surveyNotifications: true,
+      teamUpdates: true,
+      digestFrequency: true,
+      isActive: true,
       organization: {
         select: {
           name: true,
@@ -44,6 +68,8 @@ export default async function SettingsPage(): Promise<JSX.Element> {
         <TabsList>
           <TabsTrigger value="profile">プロフィール</TabsTrigger>
           <TabsTrigger value="notifications">通知設定</TabsTrigger>
+          <TabsTrigger value="security">セキュリティ</TabsTrigger>
+          <TabsTrigger value="sessions">セッション管理</TabsTrigger>
           {slackWorkspace && <TabsTrigger value="slack">Slack連携</TabsTrigger>}
         </TabsList>
 
@@ -69,6 +95,14 @@ export default async function SettingsPage(): Promise<JSX.Element> {
               <NotificationSettings user={userWithDetails} />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="security">
+          <PasswordSettings user={userWithDetails} />
+        </TabsContent>
+
+        <TabsContent value="sessions">
+          <SessionManagement />
         </TabsContent>
 
         {slackWorkspace && (

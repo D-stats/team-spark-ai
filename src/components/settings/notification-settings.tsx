@@ -1,11 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Bell, Mail, MessageSquare } from 'lucide-react';
 
 interface User {
@@ -18,17 +25,51 @@ interface NotificationSettingsProps {
   user: User;
 }
 
-export function NotificationSettings(_props: NotificationSettingsProps): JSX.Element {
-  // デフォルト設定（実際のプロジェクトでは DB から取得）
+export function NotificationSettings({ user: _user }: NotificationSettingsProps): JSX.Element {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [kudosNotifications, setKudosNotifications] = useState(true);
   const [checkinReminders, setCheckinReminders] = useState(true);
   const [surveyNotifications, setSurveyNotifications] = useState(true);
   const [teamUpdates, setTeamUpdates] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [digestFrequency, setDigestFrequency] = useState<'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY'>(
+    'WEEKLY',
+  );
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+
+  // 通知設定を読み込む
+  const loadNotificationSettings = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/user/notifications');
+      if (response.ok) {
+        const settings = (await response.json()) as {
+          emailNotifications: boolean;
+          kudosNotifications: boolean;
+          checkinReminders: boolean;
+          surveyNotifications: boolean;
+          teamUpdates: boolean;
+          digestFrequency: 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
+        };
+        setEmailNotifications(settings.emailNotifications);
+        setKudosNotifications(settings.kudosNotifications);
+        setCheckinReminders(settings.checkinReminders);
+        setSurveyNotifications(settings.surveyNotifications);
+        setTeamUpdates(settings.teamUpdates);
+        setDigestFrequency(settings.digestFrequency);
+      }
+    } catch (error) {
+      console.error('Failed to load notification settings:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 初回読み込み
+  React.useEffect(() => {
+    void loadNotificationSettings();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -48,6 +89,7 @@ export function NotificationSettings(_props: NotificationSettingsProps): JSX.Ele
           checkinReminders,
           surveyNotifications,
           teamUpdates,
+          digestFrequency,
         }),
       });
 
@@ -178,6 +220,41 @@ export function NotificationSettings(_props: NotificationSettingsProps): JSX.Ele
                 onCheckedChange={setTeamUpdates}
                 disabled={loading || !emailNotifications}
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center text-base">
+              <Mail className="mr-2 h-4 w-4" />
+              通知頻度設定
+            </CardTitle>
+            <CardDescription>通知ダイジェストの配信頻度を設定します</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="digest-frequency">ダイジェスト配信頻度</Label>
+              <Select
+                value={digestFrequency}
+                onValueChange={(value: 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY') =>
+                  setDigestFrequency(value)
+                }
+                disabled={loading || !emailNotifications}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NEVER">配信しない</SelectItem>
+                  <SelectItem value="DAILY">毎日</SelectItem>
+                  <SelectItem value="WEEKLY">毎週</SelectItem>
+                  <SelectItem value="MONTHLY">毎月</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground">
+                活動の要約をメールで定期的に受け取ります
+              </p>
             </div>
           </CardContent>
         </Card>
