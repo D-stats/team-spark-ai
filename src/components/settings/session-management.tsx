@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Monitor, Smartphone, Tablet, Globe, LogOut, AlertTriangle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { ja, enUS } from 'date-fns/locale';
 
 interface Session {
   id: string;
@@ -29,6 +30,8 @@ interface LoginHistoryItem {
 }
 
 export function SessionManagement(): JSX.Element {
+  const t = useTranslations('settings.sessions');
+  const locale = useLocale();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loginHistory, setLoginHistory] = useState<LoginHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,13 +67,13 @@ export function SessionManagement(): JSX.Element {
       try {
         await Promise.all([loadSessions(), loadLoginHistory()]);
       } catch (error) {
-        setError('データの読み込みに失敗しました');
+        setError(t('error'));
       } finally {
         setLoading(false);
       }
     };
     void loadData();
-  }, []);
+  }, [t]);
 
   const revokeSession = async (sessionId: string): Promise<void> => {
     try {
@@ -79,13 +82,13 @@ export function SessionManagement(): JSX.Element {
       });
 
       if (response.ok) {
-        await loadSessions(); // セッションリストを再読み込み
+        await loadSessions(); // Reload session list
       } else {
         const errorData = (await response.json()) as { error?: string };
-        setError(errorData.error ?? 'セッションの終了に失敗しました');
+        setError(errorData.error ?? t('active.revokeError'));
       }
     } catch (error) {
-      setError('セッションの終了に失敗しました');
+      setError(t('active.revokeError'));
     }
   };
 
@@ -105,18 +108,19 @@ export function SessionManagement(): JSX.Element {
 
   const getDeviceInfo = (userAgent?: string | null, deviceInfo?: string | null): string => {
     if (deviceInfo !== null && deviceInfo !== undefined && deviceInfo !== '') return deviceInfo;
-    if (userAgent === null || userAgent === undefined || userAgent === '') return '不明なデバイス';
+    if (userAgent === null || userAgent === undefined || userAgent === '')
+      return t('unknownDevice');
 
     const agent = userAgent.toLowerCase();
 
-    // ブラウザ検出
-    let browser = '不明なブラウザ';
+    // Browser detection
+    let browser = t('unknownBrowser');
     if (agent.includes('chrome')) browser = 'Chrome';
     else if (agent.includes('firefox')) browser = 'Firefox';
     else if (agent.includes('safari')) browser = 'Safari';
     else if (agent.includes('edge')) browser = 'Edge';
 
-    // OS検出
+    // OS detection
     let os = '';
     if (agent.includes('windows')) os = 'Windows';
     else if (agent.includes('mac')) os = 'macOS';
@@ -125,13 +129,13 @@ export function SessionManagement(): JSX.Element {
     else if (agent.includes('ios') || agent.includes('iphone') || agent.includes('ipad'))
       os = 'iOS';
 
-    return os !== '' ? `${browser} on ${os}` : browser;
+    return os !== '' ? `${browser}${t('deviceInfoConnector')}${os}` : browser;
   };
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="py-8 text-center">読み込み中...</div>
+        <div className="py-8 text-center">{t('loading')}</div>
       </div>
     );
   }
@@ -146,15 +150,13 @@ export function SessionManagement(): JSX.Element {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Globe className="mr-2 h-5 w-5" />
-            アクティブセッション
+            {t('active.title')}
           </CardTitle>
-          <CardDescription>現在ログインしているデバイスとセッションの一覧です</CardDescription>
+          <CardDescription>{t('active.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {sessions.length === 0 ? (
-            <p className="py-4 text-center text-muted-foreground">
-              アクティブなセッションがありません
-            </p>
+            <p className="py-4 text-center text-muted-foreground">{t('active.noSessions')}</p>
           ) : (
             <div className="space-y-4">
               {sessions.map((session) => (
@@ -169,26 +171,29 @@ export function SessionManagement(): JSX.Element {
                         {getDeviceInfo(session.userAgent, session.deviceInfo)}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        IP: {session.ipAddress ?? '不明'} • 最終利用:{' '}
-                        {formatDistanceToNow(new Date(session.lastUsedAt), {
-                          addSuffix: true,
-                          locale: ja,
+                        IP: {session.ipAddress ?? t('unknown')} •{' '}
+                        {t('active.lastUsed', {
+                          time: formatDistanceToNow(new Date(session.lastUsedAt), {
+                            addSuffix: true,
+                            locale: locale === 'ja' ? ja : enUS,
+                          }),
                         })}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        セッション開始:{' '}
-                        {formatDistanceToNow(new Date(session.createdAt), {
-                          addSuffix: true,
-                          locale: ja,
+                        {t('active.sessionStarted', {
+                          time: formatDistanceToNow(new Date(session.createdAt), {
+                            addSuffix: true,
+                            locale: locale === 'ja' ? ja : enUS,
+                          }),
                         })}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">アクティブ</Badge>
+                    <Badge variant="secondary">{t('active.statusActive')}</Badge>
                     <Button variant="outline" size="sm" onClick={() => revokeSession(session.id)}>
                       <LogOut className="mr-1 h-3 w-3" />
-                      終了
+                      {t('active.revokeButton')}
                     </Button>
                   </div>
                 </div>
@@ -202,13 +207,13 @@ export function SessionManagement(): JSX.Element {
         <CardHeader>
           <CardTitle className="flex items-center">
             <AlertTriangle className="mr-2 h-5 w-5" />
-            ログイン履歴
+            {t('history.title')}
           </CardTitle>
-          <CardDescription>最近のログイン活動を確認できます</CardDescription>
+          <CardDescription>{t('history.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {loginHistory.length === 0 ? (
-            <p className="py-4 text-center text-muted-foreground">ログイン履歴がありません</p>
+            <p className="py-4 text-center text-muted-foreground">{t('history.noHistory')}</p>
           ) : (
             <div className="space-y-3">
               {loginHistory.map((item) => (
@@ -227,10 +232,10 @@ export function SessionManagement(): JSX.Element {
                         {getDeviceInfo(item.userAgent, item.deviceInfo)}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        IP: {item.ipAddress ?? '不明'} •
+                        IP: {item.ipAddress ?? t('unknown')} •{' '}
                         {formatDistanceToNow(new Date(item.loginAt), {
                           addSuffix: true,
-                          locale: ja,
+                          locale: locale === 'ja' ? ja : enUS,
                         })}
                       </div>
                       {!item.success &&
@@ -238,13 +243,13 @@ export function SessionManagement(): JSX.Element {
                         item.failReason !== undefined &&
                         item.failReason !== '' && (
                           <div className="text-xs text-destructive">
-                            失敗理由: {item.failReason}
+                            {t('history.failReason', { reason: item.failReason })}
                           </div>
                         )}
                     </div>
                   </div>
                   <Badge variant={item.success ? 'default' : 'destructive'}>
-                    {item.success ? '成功' : '失敗'}
+                    {item.success ? t('history.success') : t('history.failed')}
                   </Badge>
                 </div>
               ))}

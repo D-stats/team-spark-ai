@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,6 +27,7 @@ interface NotificationSettingsProps {
 }
 
 export function NotificationSettings({ user: _user }: NotificationSettingsProps): JSX.Element {
+  const t = useTranslations('settings.notifications');
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [kudosNotifications, setKudosNotifications] = useState(true);
   const [checkinReminders, setCheckinReminders] = useState(true);
@@ -95,7 +97,7 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
 
       if (!response.ok) {
         const errorData = (await response.json()) as { error?: string };
-        throw new Error(errorData.error ?? '通知設定の更新に失敗しました');
+        throw new Error(errorData.error ?? t('error'));
       }
 
       setSuccess(true);
@@ -114,9 +116,7 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
       ) : null}
 
       {success ? (
-        <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
-          通知設定が正常に更新されました
-        </div>
+        <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">{t('success')}</div>
       ) : null}
 
       <div className="space-y-4">
@@ -124,17 +124,15 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-base">
               <Mail className="mr-2 h-4 w-4" />
-              メール通知
+              {t('email.title')}
             </CardTitle>
-            <CardDescription>メールで通知を受信するかどうかを設定します</CardDescription>
+            <CardDescription>{t('email.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="email-notifications">メール通知を有効にする</Label>
-                <p className="text-sm text-muted-foreground">
-                  すべてのメール通知の送信を制御します
-                </p>
+                <Label htmlFor="email-notifications">{t('email.enableLabel')}</Label>
+                <p className="text-sm text-muted-foreground">{t('email.enableDescription')}</p>
               </div>
               <Switch
                 id="email-notifications"
@@ -150,15 +148,15 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-base">
               <Bell className="mr-2 h-4 w-4" />
-              活動通知
+              {t('activity.title')}
             </CardTitle>
-            <CardDescription>アプリ内の活動に関する通知設定</CardDescription>
+            <CardDescription>{t('activity.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="kudos-notifications">Kudos通知</Label>
-                <p className="text-sm text-muted-foreground">Kudosを受け取った時の通知</p>
+                <Label htmlFor="kudos-notifications">{t('activity.kudosLabel')}</Label>
+                <p className="text-sm text-muted-foreground">{t('activity.kudosDescription')}</p>
               </div>
               <Switch
                 id="kudos-notifications"
@@ -170,10 +168,8 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="checkin-reminders">チェックインリマインダー</Label>
-                <p className="text-sm text-muted-foreground">
-                  週次チェックインの締切が近い時の通知
-                </p>
+                <Label htmlFor="checkin-reminders">{t('activity.checkinLabel')}</Label>
+                <p className="text-sm text-muted-foreground">{t('activity.checkinDescription')}</p>
               </div>
               <Switch
                 id="checkin-reminders"
@@ -185,8 +181,8 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="survey-notifications">サーベイ通知</Label>
-                <p className="text-sm text-muted-foreground">新しいサーベイが作成された時の通知</p>
+                <Label htmlFor="survey-notifications">{t('activity.surveyLabel')}</Label>
+                <p className="text-sm text-muted-foreground">{t('activity.surveyDescription')}</p>
               </div>
               <Switch
                 id="survey-notifications"
@@ -202,17 +198,15 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-base">
               <MessageSquare className="mr-2 h-4 w-4" />
-              チーム通知
+              {t('team.title')}
             </CardTitle>
-            <CardDescription>チームに関する通知設定</CardDescription>
+            <CardDescription>{t('team.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="team-updates">チーム更新通知</Label>
-                <p className="text-sm text-muted-foreground">
-                  チームメンバーの追加・削除などの更新通知
-                </p>
+                <Label htmlFor="team-updates">{t('team.updatesLabel')}</Label>
+                <p className="text-sm text-muted-foreground">{t('team.updatesDescription')}</p>
               </div>
               <Switch
                 id="team-updates"
@@ -228,13 +222,13 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center text-base">
               <Mail className="mr-2 h-4 w-4" />
-              通知頻度設定
+              {t('digest.title')}
             </CardTitle>
-            <CardDescription>通知ダイジェストの配信頻度を設定します</CardDescription>
+            <CardDescription>{t('digest.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="digest-frequency">ダイジェスト配信頻度</Label>
+              <Label htmlFor="digest-frequency">{t('digest.frequencyLabel')}</Label>
               <Select
                 value={digestFrequency}
                 onValueChange={(value: 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY') =>
@@ -246,15 +240,13 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NEVER">配信しない</SelectItem>
-                  <SelectItem value="DAILY">毎日</SelectItem>
-                  <SelectItem value="WEEKLY">毎週</SelectItem>
-                  <SelectItem value="MONTHLY">毎月</SelectItem>
+                  <SelectItem value="NEVER">{t('digest.never')}</SelectItem>
+                  <SelectItem value="DAILY">{t('digest.daily')}</SelectItem>
+                  <SelectItem value="WEEKLY">{t('digest.weekly')}</SelectItem>
+                  <SelectItem value="MONTHLY">{t('digest.monthly')}</SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-sm text-muted-foreground">
-                活動の要約をメールで定期的に受け取ります
-              </p>
+              <p className="text-sm text-muted-foreground">{t('digest.frequencyDescription')}</p>
             </div>
           </CardContent>
         </Card>
@@ -262,7 +254,7 @@ export function NotificationSettings({ user: _user }: NotificationSettingsProps)
 
       <div className="flex justify-end">
         <Button type="submit" disabled={loading}>
-          {loading ? '更新中...' : '通知設定を更新'}
+          {loading ? t('updating') : t('updateButton')}
         </Button>
       </div>
     </form>

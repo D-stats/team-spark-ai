@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import { prisma } from '@/lib/prisma';
 import { ProfileForm } from '@/components/settings/profile-form';
@@ -10,8 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default async function SettingsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
+  const t = await getTranslations('settings');
 
-  // ユーザーの詳細情報を取得
+  // Get user detailed information
   const userWithDetails = await prisma.user.findUnique({
     where: { id: dbUser.id },
     select: {
@@ -46,7 +48,7 @@ export default async function SettingsPage(): Promise<JSX.Element> {
     },
   });
 
-  // Slackワークスペースの連携状態を確認
+  // Check Slack workspace integration status
   const slackWorkspace = await prisma.slackWorkspace.findFirst({
     where: {
       organizationId: dbUser.organizationId,
@@ -54,30 +56,30 @@ export default async function SettingsPage(): Promise<JSX.Element> {
   });
 
   if (!userWithDetails) {
-    throw new Error('ユーザー情報が見つかりません');
+    throw new Error('User information not found');
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">個人設定</h1>
-        <p className="mt-2 text-muted-foreground">プロフィールや通知設定を管理します</p>
+        <h1 className="text-3xl font-bold">{t('title')}</h1>
+        <p className="mt-2 text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="profile">プロフィール</TabsTrigger>
-          <TabsTrigger value="notifications">通知設定</TabsTrigger>
-          <TabsTrigger value="security">セキュリティ</TabsTrigger>
-          <TabsTrigger value="sessions">セッション管理</TabsTrigger>
-          {slackWorkspace && <TabsTrigger value="slack">Slack連携</TabsTrigger>}
+          <TabsTrigger value="profile">{t('tabs.profile')}</TabsTrigger>
+          <TabsTrigger value="notifications">{t('tabs.notifications')}</TabsTrigger>
+          <TabsTrigger value="security">{t('tabs.security')}</TabsTrigger>
+          <TabsTrigger value="sessions">{t('tabs.sessions')}</TabsTrigger>
+          {slackWorkspace && <TabsTrigger value="slack">{t('tabs.slack')}</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>プロフィール情報</CardTitle>
-              <CardDescription>あなたの基本情報を更新します</CardDescription>
+              <CardTitle>{t('profile.title')}</CardTitle>
+              <CardDescription>{t('profile.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               <ProfileForm user={userWithDetails} />
@@ -88,8 +90,8 @@ export default async function SettingsPage(): Promise<JSX.Element> {
         <TabsContent value="notifications">
           <Card>
             <CardHeader>
-              <CardTitle>通知設定</CardTitle>
-              <CardDescription>受信したい通知の種類を設定します</CardDescription>
+              <CardTitle>{t('notifications.title')}</CardTitle>
+              <CardDescription>{t('notifications.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               <NotificationSettings user={userWithDetails} />
@@ -109,10 +111,8 @@ export default async function SettingsPage(): Promise<JSX.Element> {
           <TabsContent value="slack">
             <Card>
               <CardHeader>
-                <CardTitle>Slack連携設定</CardTitle>
-                <CardDescription>
-                  SlackアカウントとTeamSpark AIアカウントを連携します
-                </CardDescription>
+                <CardTitle>{t('slack.title')}</CardTitle>
+                <CardDescription>{t('slack.description')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <SlackUserSettings user={userWithDetails} slackWorkspace={slackWorkspace} />

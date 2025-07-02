@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -42,6 +43,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
+  const t = useTranslations('settings.profile');
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio ?? '');
   const [skills, setSkills] = useState<string[]>(user.skills ?? []);
@@ -105,7 +107,7 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
 
       if (!response.ok) {
         const errorData = (await response.json()) as { error?: string };
-        throw new Error(errorData.error ?? 'プロフィールの更新に失敗しました');
+        throw new Error(errorData.error ?? t('error'));
       }
 
       setSuccess(true);
@@ -124,17 +126,15 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
       ) : null}
 
       {success ? (
-        <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
-          プロフィールが正常に更新されました
-        </div>
+        <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">{t('success')}</div>
       ) : null}
 
-      {/* 基本情報 */}
+      {/* Basic Information */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">基本情報</h3>
+        <h3 className="text-lg font-medium">{t('basicInfo')}</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="name">氏名 *</Label>
+            <Label htmlFor="name">{t('nameLabel')} *</Label>
             <Input
               id="name"
               value={name}
@@ -145,65 +145,67 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
+            <Label htmlFor="email">{t('emailLabel')}</Label>
             <Input id="email" type="email" value={user.email} disabled className="bg-muted" />
-            <p className="text-xs text-muted-foreground">メールアドレスは変更できません</p>
+            <p className="text-xs text-muted-foreground">{t('emailNotEditable')}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phoneNumber">電話番号</Label>
+            <Label htmlFor="phoneNumber">{t('phoneLabel')}</Label>
             <Input
               id="phoneNumber"
               type="tel"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               disabled={loading}
-              placeholder="090-1234-5678"
+              placeholder={t('phonePlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="role">権限</Label>
+            <Label htmlFor="role">{t('roleLabel')}</Label>
             <Input
               id="role"
               value={
                 user.role === 'ADMIN'
-                  ? '管理者'
+                  ? t('roleAdmin')
                   : user.role === 'MANAGER'
-                    ? 'マネージャー'
-                    : 'メンバー'
+                    ? t('roleManager')
+                    : t('roleMember')
               }
               disabled
               className="bg-muted"
             />
-            <p className="text-xs text-muted-foreground">権限は管理者によって設定されます</p>
+            <p className="text-xs text-muted-foreground">{t('roleNotEditable')}</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">自己紹介</Label>
+          <Label htmlFor="bio">{t('bioLabel')}</Label>
           <Textarea
             id="bio"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             disabled={loading}
-            placeholder="あなたについて簡単に紹介してください..."
+            placeholder={t('bioPlaceholder')}
             rows={4}
             maxLength={500}
           />
-          <p className="text-xs text-muted-foreground">{bio.length}/500文字</p>
+          <p className="text-xs text-muted-foreground">
+            {t('bioCharCount', { current: bio.length, max: 500 })}
+          </p>
         </div>
       </div>
 
-      {/* スキル */}
+      {/* Skills */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">スキル</h3>
+        <h3 className="text-lg font-medium">{t('skillsLabel')}</h3>
         <div className="space-y-3">
           <div className="flex gap-2">
             <Input
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
-              placeholder="スキルを追加..."
+              placeholder={t('addSkillPlaceholder')}
               disabled={loading || skills.length >= 20}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -238,29 +240,31 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
               </Badge>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">{skills.length}/20個のスキル</p>
+          <p className="text-xs text-muted-foreground">
+            {t('skillsCount', { current: skills.length, max: 20 })}
+          </p>
         </div>
       </div>
 
-      {/* 言語・地域設定 */}
+      {/* Language & Region Settings */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">言語・地域設定</h3>
+        <h3 className="text-lg font-medium">{t('localeSettings')}</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="locale">言語</Label>
+            <Label htmlFor="locale">{t('localeLabel')}</Label>
             <Select value={locale} onValueChange={setLocale} disabled={loading}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ja">日本語</SelectItem>
-                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="ja">{t('languageJa')}</SelectItem>
+                <SelectItem value="en">{t('languageEn')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="timezone">タイムゾーン</Label>
+            <Label htmlFor="timezone">{t('timezoneLabel')}</Label>
             <Select value={timezone} onValueChange={setTimezone} disabled={loading}>
               <SelectTrigger>
                 <SelectValue />
@@ -277,60 +281,60 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
         </div>
       </div>
 
-      {/* ソーシャルリンク */}
+      {/* Social Links */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">ソーシャルリンク</h3>
+        <h3 className="text-lg font-medium">{t('socialLinks')}</h3>
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="linkedinUrl">LinkedIn</Label>
+            <Label htmlFor="linkedinUrl">{t('linkedinLabel')}</Label>
             <Input
               id="linkedinUrl"
               type="url"
               value={linkedinUrl}
               onChange={(e) => setLinkedinUrl(e.target.value)}
               disabled={loading}
-              placeholder="https://linkedin.com/in/yourprofile"
+              placeholder={t('linkedinPlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="githubUrl">GitHub</Label>
+            <Label htmlFor="githubUrl">{t('githubLabel')}</Label>
             <Input
               id="githubUrl"
               type="url"
               value={githubUrl}
               onChange={(e) => setGithubUrl(e.target.value)}
               disabled={loading}
-              placeholder="https://github.com/yourusername"
+              placeholder={t('githubPlaceholder')}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="twitterUrl">Twitter</Label>
+            <Label htmlFor="twitterUrl">{t('twitterLabel')}</Label>
             <Input
               id="twitterUrl"
               type="url"
               value={twitterUrl}
               onChange={(e) => setTwitterUrl(e.target.value)}
               disabled={loading}
-              placeholder="https://twitter.com/yourusername"
+              placeholder={t('twitterPlaceholder')}
             />
           </div>
         </div>
       </div>
 
-      {/* 組織情報 */}
+      {/* Organization Information */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">組織情報</h3>
+        <h3 className="text-lg font-medium">{t('organizationInfo')}</h3>
         <div className="space-y-2">
-          <Label htmlFor="organization">所属組織</Label>
+          <Label htmlFor="organization">{t('organizationLabel')}</Label>
           <Input id="organization" value={user.organization.name} disabled className="bg-muted" />
         </div>
       </div>
 
       <div className="flex justify-end">
         <Button type="submit" disabled={loading || !name}>
-          {loading ? '更新中...' : 'プロフィールを更新'}
+          {loading ? t('updating') : t('updateButton')}
         </Button>
       </div>
     </form>

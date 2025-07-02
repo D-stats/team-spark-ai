@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,6 +19,8 @@ interface PasswordSettingsProps {
 }
 
 export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
+  const t = useTranslations('settings.security.password');
+  const tInfo = useTranslations('settings.security.info');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -49,7 +52,7 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
 
       if (!response.ok) {
         const errorData = (await response.json()) as { error?: string };
-        throw new Error(errorData.error ?? 'パスワードの更新に失敗しました');
+        throw new Error(errorData.error ?? t('error'));
       }
 
       setSuccess(true);
@@ -73,10 +76,10 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
     if (/\d/.test(password)) score++;
     if (/[^a-zA-Z\d]/.test(password)) score++;
 
-    if (score <= 2) return { score, label: '弱い', color: 'bg-red-500' };
-    if (score <= 3) return { score, label: '普通', color: 'bg-yellow-500' };
-    if (score <= 4) return { score, label: '強い', color: 'bg-green-500' };
-    return { score, label: '非常に強い', color: 'bg-green-600' };
+    if (score <= 2) return { score, label: t('strengthWeak'), color: 'bg-red-500' };
+    if (score <= 3) return { score, label: t('strengthFair'), color: 'bg-yellow-500' };
+    if (score <= 4) return { score, label: t('strengthGood'), color: 'bg-green-500' };
+    return { score, label: t('strengthStrong'), color: 'bg-green-600' };
   };
 
   const passwordStrength = getPasswordStrength(newPassword);
@@ -87,16 +90,14 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Lock className="mr-2 h-5 w-5" />
-            パスワード変更
+            {t('title')}
           </CardTitle>
-          <CardDescription>
-            セキュリティを保つため定期的にパスワードを変更してください
-          </CardDescription>
+          <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {user.lastPasswordChange && (
             <div className="mb-4 rounded-md bg-muted p-3 text-sm">
-              前回のパスワード変更: {new Date(user.lastPasswordChange).toLocaleDateString('ja-JP')}
+              {t('lastChanged', { date: new Date(user.lastPasswordChange).toLocaleDateString() })}
             </div>
           )}
 
@@ -109,12 +110,12 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
 
             {success ? (
               <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
-                パスワードが正常に更新されました
+                {t('success')}
               </div>
             ) : null}
 
             <div className="space-y-2">
-              <Label htmlFor="current-password">現在のパスワード</Label>
+              <Label htmlFor="current-password">{t('currentLabel')}</Label>
               <div className="relative">
                 <Input
                   id="current-password"
@@ -142,7 +143,7 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="new-password">新しいパスワード</Label>
+              <Label htmlFor="new-password">{t('newLabel')}</Label>
               <div className="relative">
                 <Input
                   id="new-password"
@@ -175,16 +176,18 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
                     <span className="text-xs text-muted-foreground">{passwordStrength.label}</span>
                   </div>
                   <ul className="space-y-1 text-xs text-muted-foreground">
-                    <li>• 8文字以上</li>
-                    <li>• 大文字・小文字・数字を含む</li>
-                    <li>• 特殊文字を含むとより安全</li>
+                    {t('requirements')
+                      .split('\n')
+                      .map((req, i) => (
+                        <li key={i}>{req}</li>
+                      ))}
                   </ul>
                 </div>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">新しいパスワード（確認）</Label>
+              <Label htmlFor="confirm-password">{t('confirmLabel')}</Label>
               <div className="relative">
                 <Input
                   id="confirm-password"
@@ -210,7 +213,7 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
                 </Button>
               </div>
               {confirmPassword && newPassword !== confirmPassword && (
-                <p className="text-xs text-destructive">パスワードが一致しません</p>
+                <p className="text-xs text-destructive">{t('mismatch')}</p>
               )}
             </div>
 
@@ -226,7 +229,7 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
                   passwordStrength.score < 3
                 }
               >
-                {loading ? '更新中...' : 'パスワードを更新'}
+                {loading ? t('updating') : t('updateButton')}
               </Button>
             </div>
           </form>
@@ -237,31 +240,27 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Shield className="mr-2 h-5 w-5" />
-            セキュリティ情報
+            {tInfo('title')}
           </CardTitle>
-          <CardDescription>アカウントのセキュリティ状態を確認できます</CardDescription>
+          <CardDescription>{tInfo('description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">二要素認証</p>
-              <p className="text-sm text-muted-foreground">
-                追加のセキュリティ層でアカウントを保護
-              </p>
+              <p className="font-medium">{tInfo('twoFactorLabel')}</p>
+              <p className="text-sm text-muted-foreground">{tInfo('twoFactorDescription')}</p>
             </div>
             <div className="flex items-center gap-2">
               {user.twoFactorEnabled === true ? (
-                <span className="text-sm font-medium text-green-600">有効</span>
+                <span className="text-sm font-medium text-green-600">{tInfo('enabled')}</span>
               ) : (
-                <span className="text-sm text-muted-foreground">無効</span>
+                <span className="text-sm text-muted-foreground">{tInfo('disabled')}</span>
               )}
             </div>
           </div>
 
           <div className="border-t pt-4">
-            <p className="text-sm text-muted-foreground">
-              セキュリティの詳細設定については、システム管理者にお問い合わせください。
-            </p>
+            <p className="text-sm text-muted-foreground">{tInfo('contactAdmin')}</p>
           </div>
         </CardContent>
       </Card>
