@@ -59,7 +59,7 @@ export function AccountSettings() {
     e.preventDefault();
     
     if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
-      toast.error('New passwords do not match');
+      toast.error(t('validation.passwordMismatch'));
       return;
     }
 
@@ -135,7 +135,7 @@ export function AccountSettings() {
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmation !== 'DELETE') {
-      toast.error('Please type DELETE to confirm');
+      toast.error(t('deleteAccountConfirmation.confirmationText'));
       return;
     }
 
@@ -151,11 +151,11 @@ export function AccountSettings() {
         throw new Error(error.message || 'Failed to delete account');
       }
 
-      toast.success('Account deleted successfully');
+      toast.success(t('deleteAccountConfirmation.successMessage'));
       await signOut({ callbackUrl: '/' });
     } catch (error) {
       console.error('Account deletion error:', error);
-      toast.error('Failed to delete account');
+      toast.error(t('deleteAccountConfirmation.errorMessage'));
       setIsDeletingAccount(false);
     }
   };
@@ -349,14 +349,14 @@ export function AccountSettings() {
                 <Alert>
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription>
-                    Type <strong>DELETE</strong> to confirm account deletion.
+                    {t('deleteAccountConfirmation.confirmationInstruction')}
                   </AlertDescription>
                 </Alert>
                 
                 <Input
                   value={deleteConfirmation}
                   onChange={(e) => setDeleteConfirmation(e.target.value)}
-                  placeholder="Type DELETE to confirm"
+                  placeholder={t('deleteAccountConfirmation.confirmationPlaceholder')}
                 />
               </div>
 

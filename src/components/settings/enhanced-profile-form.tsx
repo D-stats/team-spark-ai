@@ -106,13 +106,13 @@ export function EnhancedProfileForm() {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
+      toast.error(t('validation.invalidFileType'));
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('File size must be less than 5MB');
+      toast.error(t('validation.fileSizeLimit'));
       return;
     }
 
@@ -134,10 +134,10 @@ export function EnhancedProfileForm() {
       const result = await response.json();
       
       setProfileData(prev => ({ ...prev, avatarUrl: result.avatarUrl }));
-      toast.success('Profile picture updated successfully');
+      toast.success(t('avatar.uploadSuccess'));
     } catch (error) {
       console.error('Avatar upload error:', error);
-      toast.error('Failed to upload profile picture');
+      toast.error(t('avatar.uploadError'));
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -156,10 +156,10 @@ export function EnhancedProfileForm() {
       }
 
       setProfileData(prev => ({ ...prev, avatarUrl: '' }));
-      toast.success('Profile picture removed successfully');
+      toast.success(t('avatar.removeSuccess'));
     } catch (error) {
       console.error('Avatar removal error:', error);
-      toast.error('Failed to remove profile picture');
+      toast.error(t('avatar.removeError'));
     } finally {
       setIsUploadingAvatar(false);
     }

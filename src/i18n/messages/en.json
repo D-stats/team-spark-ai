@@ -56,6 +56,7 @@
   },
   "settings": {
     "title": "Settings",
+    "subtitle": "Manage your profile, account settings, and preferences",
     "tabs": {
       "profile": "Profile",
       "account": "Account",
@@ -92,7 +93,17 @@
       "phoneNumberPlaceholder": "+1 (555) 123-4567",
       "startDate": "Start Date",
       "saveSuccess": "Profile updated successfully",
-      "saveError": "Failed to update profile"
+      "saveError": "Failed to update profile",
+      "validation": {
+        "invalidFileType": "Please upload an image file",
+        "fileSizeLimit": "File size must be less than 5MB"
+      },
+      "avatar": {
+        "uploadSuccess": "Profile picture updated successfully",
+        "uploadError": "Failed to upload profile picture",
+        "removeSuccess": "Profile picture removed successfully",
+        "removeError": "Failed to remove profile picture"
+      }
     },
     "account": {
       "title": "Account Settings",
@@ -115,7 +126,17 @@
       "deleteAccount": "Delete Account",
       "deleteAccountDescription": "Permanently delete your account and all associated data",
       "deleteAccountButton": "Delete Account",
-      "deleteAccountConfirm": "Are you sure you want to delete your account? This action cannot be undone."
+      "deleteAccountConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+      "validation": {
+        "passwordMismatch": "New passwords do not match"
+      },
+      "deleteAccountConfirmation": {
+        "confirmationText": "Please type DELETE to confirm",
+        "confirmationInstruction": "Type DELETE to confirm account deletion.",
+        "confirmationPlaceholder": "Type DELETE to confirm",
+        "successMessage": "Account deleted successfully",
+        "errorMessage": "Failed to delete account"
+      }
     },
     "notifications": {
       "title": "Notification Preferences",
@@ -171,7 +192,10 @@
         "revokeSession": "Revoke",
         "revokeAllOther": "Revoke All Other Sessions",
         "revokeSuccess": "Session revoked successfully",
-        "revokeError": "Failed to revoke session"
+        "revokeError": "Failed to revoke session",
+        "revokeAllWarning": "This will log you out of all other devices. You will remain logged in on this device.",
+        "noSessions": "No active sessions",
+        "unknownDevice": "Unknown Device"
       },
       "loginHistory": {
         "title": "Login History",
@@ -181,7 +205,9 @@
         "device": "Device",
         "location": "Location",
         "ipAddress": "IP Address",
-        "noHistory": "No login history available"
+        "noHistory": "No login history available",
+        "unknownLocation": "Unknown",
+        "unknownIp": "Unknown"
       },
       "twoFactor": {
         "title": "Two-Factor Authentication",
@@ -198,7 +224,50 @@
         "enableSuccess": "Two-factor authentication enabled",
         "enableError": "Failed to enable two-factor authentication",
         "disableSuccess": "Two-factor authentication disabled",
-        "disableError": "Failed to disable two-factor authentication"
+        "disableError": "Failed to disable two-factor authentication",
+        "comingSoon": "Coming Soon",
+        "statusLabel": "Status:"
+      }
+    },
+    "slack": {
+      "title": "Slack Integration",
+      "connectionStatus": {
+        "title": "Connection Status",
+        "connected": "Connected",
+        "notConnected": "Not Connected",
+        "workspace": "Workspace"
+      },
+      "userAccount": {
+        "title": "Your Slack Account",
+        "notConnected": "Slack account not connected",
+        "connectDescription": "Connect your Slack account to receive notifications.",
+        "connectButton": "Connect Slack Account",
+        "disconnect": "Disconnect",
+        "reconnect": "Reconnect"
+      },
+      "connection": {
+        "errorGeneric": "An error occurred",
+        "connectError": "Failed to connect to Slack",
+        "disconnectError": "Failed to disconnect from Slack",
+        "connectSuccess": "Slack integration completed",
+        "disconnectSuccess": "Slack integration removed",
+        "emailInstruction": "Enter the email address you use in Slack to connect your account. If it's the same as your TeamSpark AI email, you can connect directly.",
+        "emailLabel": "Slack Email Address",
+        "emailHelperText": "If left blank, your TeamSpark AI email ({email}) will be used",
+        "processing": "Processing...",
+        "connecting": "Connecting...",
+        "disconnecting": "Disconnecting..."
+      },
+      "features": {
+        "title": "Available Features",
+        "kudosCommand": "/kudos command to send Kudos",
+        "kudosNotifications": "Slack notifications when receiving Kudos",
+        "checkinReminders": "Check-in reminders",
+        "surveyNotifications": "Survey notifications"
+      },
+      "status": {
+        "connected": "Connected",
+        "userIdLabel": "Slack User ID:"
       }
     }
   },

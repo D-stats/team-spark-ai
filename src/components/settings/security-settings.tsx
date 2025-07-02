@@ -196,7 +196,7 @@ export function SecuritySettings() {
                       {t('activeSessions.revokeAllOther')}
                     </DialogTitle>
                     <DialogDescription>
-                      This will log you out of all other devices. You will remain logged in on this device.
+                      {t('activeSessions.revokeAllWarning')}
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
@@ -230,7 +230,7 @@ export function SecuritySettings() {
               ))}
             </div>
           ) : sessions.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No active sessions</p>
+            <p className="text-center text-muted-foreground py-8">{t('activeSessions.noSessions')}</p>
           ) : (
             <div className="space-y-4">
               {sessions.map((session) => (
@@ -240,7 +240,7 @@ export function SecuritySettings() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">
-                          {session.device || 'Unknown Device'}
+                          {session.device || t('activeSessions.unknownDevice')}
                         </span>
                         {session.isCurrent && (
                           <Badge variant="secondary" className="text-xs">
@@ -308,7 +308,7 @@ export function SecuritySettings() {
                   <TableHead>{t('loginHistory.device')}</TableHead>
                   <TableHead>{t('loginHistory.location')}</TableHead>
                   <TableHead>{t('loginHistory.ipAddress')}</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{tCommon('status')}</TableHead>
                   <TableHead>{tCommon('date')}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -319,7 +319,7 @@ export function SecuritySettings() {
                       <div className="flex items-center gap-2">
                         {getDeviceIcon(entry.device)}
                         <span className="text-sm">
-                          {entry.device || 'Unknown Device'}
+                          {entry.device || t('loginHistory.unknownDevice')}
                         </span>
                       </div>
                     </TableCell>
@@ -330,11 +330,11 @@ export function SecuritySettings() {
                           <span className="text-sm">{entry.location}</span>
                         </div>
                       ) : (
-                        <span className="text-muted-foreground text-sm">Unknown</span>
+                        <span className="text-muted-foreground text-sm">{t('loginHistory.unknownLocation')}</span>
                       )}
                     </TableCell>
                     <TableCell className="text-sm font-mono">
-                      {entry.ipAddress || 'Unknown'}
+                      {entry.ipAddress || t('loginHistory.unknownIp')}
                     </TableCell>
                     <TableCell>
                       <Badge 
@@ -361,7 +361,7 @@ export function SecuritySettings() {
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
             {t('twoFactor.title')}
-            <Badge variant="outline" className="text-xs">Coming Soon</Badge>
+            <Badge variant="outline" className="text-xs">{t('twoFactor.comingSoon')}</Badge>
           </CardTitle>
           <CardDescription>{t('twoFactor.description')}</CardDescription>
         </CardHeader>
@@ -369,7 +369,7 @@ export function SecuritySettings() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">
-                Status: <span className="font-medium">{t('twoFactor.disabled')}</span>
+{t('twoFactor.statusLabel')} <span className="font-medium">{t('twoFactor.disabled')}</span>
               </p>
             </div>
             <Button disabled variant="outline">

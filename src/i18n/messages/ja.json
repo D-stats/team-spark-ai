@@ -56,6 +56,7 @@
   },
   "settings": {
     "title": "設定",
+    "subtitle": "プロフィール、アカウント設定、設定を管理",
     "tabs": {
       "profile": "プロフィール",
       "account": "アカウント",
@@ -92,7 +93,17 @@
       "phoneNumberPlaceholder": "090-1234-5678",
       "startDate": "入社日",
       "saveSuccess": "プロフィールが正常に更新されました",
-      "saveError": "プロフィールの更新に失敗しました"
+      "saveError": "プロフィールの更新に失敗しました",
+      "validation": {
+        "invalidFileType": "画像ファイルをアップロードしてください",
+        "fileSizeLimit": "ファイルサイズは5MB以下にしてください"
+      },
+      "avatar": {
+        "uploadSuccess": "プロフィール画像が正常に更新されました",
+        "uploadError": "プロフィール画像のアップロードに失敗しました",
+        "removeSuccess": "プロフィール画像が正常に削除されました",
+        "removeError": "プロフィール画像の削除に失敗しました"
+      }
     },
     "account": {
       "title": "アカウント設定",
@@ -115,7 +126,17 @@
       "deleteAccount": "アカウント削除",
       "deleteAccountDescription": "アカウントと関連データを完全に削除",
       "deleteAccountButton": "アカウントを削除",
-      "deleteAccountConfirm": "アカウントを削除してもよろしいですか？この操作は元に戻せません。"
+      "deleteAccountConfirm": "アカウントを削除してもよろしいですか？この操作は元に戻せません。",
+      "validation": {
+        "passwordMismatch": "新しいパスワードが一致しません"
+      },
+      "deleteAccountConfirmation": {
+        "confirmationText": "確認のためDELETEと入力してください",
+        "confirmationInstruction": "アカウント削除を確認するため、DELETEと入力してください。",
+        "confirmationPlaceholder": "確認のためDELETEと入力",
+        "successMessage": "アカウントが正常に削除されました",
+        "errorMessage": "アカウントの削除に失敗しました"
+      }
     },
     "notifications": {
       "title": "通知設定",
@@ -171,7 +192,10 @@
         "revokeSession": "取り消し",
         "revokeAllOther": "他のセッションをすべて取り消し",
         "revokeSuccess": "セッションが正常に取り消されました",
-        "revokeError": "セッションの取り消しに失敗しました"
+        "revokeError": "セッションの取り消しに失敗しました",
+        "revokeAllWarning": "他のすべてのデバイスからログアウトします。このデバイスではログイン状態を維持します。",
+        "noSessions": "アクティブなセッションがありません",
+        "unknownDevice": "不明なデバイス"
       },
       "loginHistory": {
         "title": "ログイン履歴",
@@ -181,7 +205,10 @@
         "device": "デバイス",
         "location": "場所",
         "ipAddress": "IPアドレス",
-        "noHistory": "ログイン履歴がありません"
+        "noHistory": "ログイン履歴がありません",
+        "unknownLocation": "不明",
+        "unknownIp": "不明",
+        "unknownDevice": "不明なデバイス"
       },
       "twoFactor": {
         "title": "二要素認証",
@@ -198,7 +225,50 @@
         "enableSuccess": "二要素認証が有効になりました",
         "enableError": "二要素認証の有効化に失敗しました",
         "disableSuccess": "二要素認証が無効になりました",
-        "disableError": "二要素認証の無効化に失敗しました"
+        "disableError": "二要素認証の無効化に失敗しました",
+        "comingSoon": "近日公開",
+        "statusLabel": "ステータス："
+      }
+    },
+    "slack": {
+      "title": "Slack連携",
+      "connectionStatus": {
+        "title": "接続状態",
+        "connected": "接続済み",
+        "notConnected": "未接続",
+        "workspace": "ワークスペース"
+      },
+      "userAccount": {
+        "title": "あなたのSlackアカウント",
+        "notConnected": "Slackアカウントが接続されていません",
+        "connectDescription": "通知を受け取るためにSlackアカウントを接続してください。",
+        "connectButton": "Slackアカウントを接続",
+        "disconnect": "切断",
+        "reconnect": "再接続"
+      },
+      "connection": {
+        "errorGeneric": "エラーが発生しました",
+        "connectError": "Slackへの接続に失敗しました",
+        "disconnectError": "Slackからの切断に失敗しました",
+        "connectSuccess": "Slack連携が完了しました",
+        "disconnectSuccess": "Slack連携が削除されました",
+        "emailInstruction": "アカウントを接続するためにSlackで使用しているメールアドレスを入力してください。TeamSpark AIのメールと同じ場合は、直接接続できます。",
+        "emailLabel": "Slackメールアドレス",
+        "emailHelperText": "空白の場合、TeamSpark AIのメール（{email}）が使用されます",
+        "processing": "処理中...",
+        "connecting": "接続中...",
+        "disconnecting": "切断中..."
+      },
+      "features": {
+        "title": "利用可能な機能",
+        "kudosCommand": "クードス送信用の /kudos コマンド",
+        "kudosNotifications": "クードス受信時のSlack通知",
+        "checkinReminders": "チェックインリマインダー",
+        "surveyNotifications": "サーベイ通知"
+      },
+      "status": {
+        "connected": "接続済み",
+        "userIdLabel": "Slack ユーザーID："
       }
     }
   },
