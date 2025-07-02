@@ -605,75 +605,6 @@
       }
     }
   },
-  "settings": {
-    "title": "Settings",
-    "subtitle": "Manage your personal preferences",
-    "profile": {
-      "title": "Profile",
-      "nameLabel": "Full Name",
-      "emailLabel": "Email",
-      "roleLabel": "Role",
-      "teamLabel": "Team",
-      "timezoneLabel": "Timezone",
-      "languageLabel": "Language",
-      "updateButton": "Update Profile",
-      "changePasswordButton": "Change Password",
-      "success": "Profile updated successfully",
-      "error": "Failed to update profile"
-    },
-    "notifications": {
-      "title": "Notifications",
-      "email": {
-        "title": "Email Notifications",
-        "kudosReceived": "When I receive kudos",
-        "checkinReminder": "Check-in reminders",
-        "teamUpdates": "Team updates",
-        "weeklyDigest": "Weekly digest"
-      },
-      "inApp": {
-        "title": "In-App Notifications",
-        "all": "All notifications",
-        "mentions": "Mentions only",
-        "none": "None"
-      }
-    },
-    "preferences": {
-      "title": "Preferences",
-      "theme": {
-        "label": "Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System"
-      },
-      "language": {
-        "label": "Language",
-        "en": "English",
-        "ja": "Japanese"
-      },
-      "dateFormat": {
-        "label": "Date Format",
-        "mdy": "MM/DD/YYYY",
-        "dmy": "DD/MM/YYYY",
-        "ymd": "YYYY/MM/DD"
-      }
-    },
-    "security": {
-      "title": "Security",
-      "twoFactor": {
-        "title": "Two-Factor Authentication",
-        "status": "Status",
-        "enabled": "Enabled",
-        "disabled": "Disabled",
-        "enable": "Enable 2FA",
-        "disable": "Disable 2FA"
-      },
-      "sessions": {
-        "title": "Active Sessions",
-        "current": "Current Session",
-        "logoutAll": "Logout All Other Sessions"
-      }
-    }
-  },
   "reports": {
     "title": "Reports",
     "engagement": {
@@ -896,33 +827,6 @@
       "actions": {
         "edit": "Edit",
         "details": "Details"
-      }
-    }
-  },
-  "settings": {
-    "personal": {
-      "title": "Personal Settings",
-      "tabs": {
-        "profile": "Profile",
-        "notifications": "Notifications",
-        "security": "Security"
-      }
-    },
-    "slack": {
-      "title": "Slack Integration",
-      "connectionStatus": {
-        "title": "Connection Status",
-        "connected": "Connected",
-        "notConnected": "Not Connected",
-        "workspace": "Workspace"
-      },
-      "userAccount": {
-        "title": "Your Slack Account",
-        "notConnected": "Slack account not connected",
-        "connectDescription": "Connect your Slack account to receive notifications.",
-        "connectButton": "Connect Slack Account",
-        "disconnect": "Disconnect",
-        "reconnect": "Reconnect"
       }
     }
   },

@@ -606,75 +606,6 @@
       }
     }
   },
-  "settings": {
-    "title": "設定",
-    "subtitle": "個人設定を管理",
-    "profile": {
-      "title": "プロフィール",
-      "nameLabel": "氏名",
-      "emailLabel": "メールアドレス",
-      "roleLabel": "役割",
-      "teamLabel": "チーム",
-      "timezoneLabel": "タイムゾーン",
-      "languageLabel": "言語",
-      "updateButton": "プロフィールを更新",
-      "changePasswordButton": "パスワードを変更",
-      "success": "プロフィールが正常に更新されました",
-      "error": "プロフィールの更新に失敗しました"
-    },
-    "notifications": {
-      "title": "通知",
-      "email": {
-        "title": "メール通知",
-        "kudosReceived": "クードスを受信したとき",
-        "checkinReminder": "チェックインリマインダー",
-        "teamUpdates": "チームの更新",
-        "weeklyDigest": "週次ダイジェスト"
-      },
-      "inApp": {
-        "title": "アプリ内通知",
-        "all": "すべての通知",
-        "mentions": "メンションのみ",
-        "none": "なし"
-      }
-    },
-    "preferences": {
-      "title": "設定",
-      "theme": {
-        "label": "テーマ",
-        "light": "ライト",
-        "dark": "ダーク",
-        "system": "システム"
-      },
-      "language": {
-        "label": "言語",
-        "en": "英語",
-        "ja": "日本語"
-      },
-      "dateFormat": {
-        "label": "日付形式",
-        "mdy": "MM/DD/YYYY",
-        "dmy": "DD/MM/YYYY",
-        "ymd": "YYYY/MM/DD"
-      }
-    },
-    "security": {
-      "title": "セキュリティ",
-      "twoFactor": {
-        "title": "二要素認証",
-        "status": "ステータス",
-        "enabled": "有効",
-        "disabled": "無効",
-        "enable": "2FAを有効化",
-        "disable": "2FAを無効化"
-      },
-      "sessions": {
-        "title": "アクティブセッション",
-        "current": "現在のセッション",
-        "logoutAll": "他のすべてのセッションからログアウト"
-      }
-    }
-  },
   "reports": {
     "title": "レポート",
     "engagement": {
@@ -897,33 +828,6 @@
       "actions": {
         "edit": "編集",
         "details": "詳細"
-      }
-    }
-  },
-  "settings": {
-    "personal": {
-      "title": "個人設定",
-      "tabs": {
-        "profile": "プロフィール",
-        "notifications": "通知",
-        "security": "セキュリティ"
-      }
-    },
-    "slack": {
-      "title": "Slack連携",
-      "connectionStatus": {
-        "title": "接続ステータス",
-        "connected": "接続済み",
-        "notConnected": "未接続",
-        "workspace": "ワークスペース"
-      },
-      "userAccount": {
-        "title": "あなたのSlackアカウント",
-        "notConnected": "Slackアカウントが接続されていません",
-        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
-        "connectButton": "Slackアカウントを接続",
-        "disconnect": "切断",
-        "reconnect": "再接続"
       }
     }
   },
