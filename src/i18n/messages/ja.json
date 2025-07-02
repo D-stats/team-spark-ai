@@ -54,6 +54,154 @@
     "personalSettings": "個人設定",
     "organizationSettings": "組織設定"
   },
+  "settings": {
+    "title": "設定",
+    "tabs": {
+      "profile": "プロフィール",
+      "account": "アカウント",
+      "notifications": "通知",
+      "security": "セキュリティ",
+      "slack": "Slack"
+    },
+    "profile": {
+      "title": "プロフィール情報",
+      "subtitle": "プロフィール情報と個人詳細を更新",
+      "name": "氏名",
+      "namePlaceholder": "氏名を入力",
+      "email": "メールアドレス",
+      "emailReadonly": "メールアドレスは変更できません",
+      "jobTitle": "役職",
+      "jobTitlePlaceholder": "例：ソフトウェアエンジニア",
+      "department": "部署",
+      "departmentPlaceholder": "例：エンジニアリング",
+      "bio": "自己紹介",
+      "bioPlaceholder": "自己紹介を入力してください...",
+      "skills": "スキル",
+      "skillsPlaceholder": "スキルを追加（Enterで追加）",
+      "timezone": "タイムゾーン",
+      "timezonePlaceholder": "タイムゾーンを選択",
+      "avatar": "プロフィール画像",
+      "uploadAvatar": "画像をアップロード",
+      "removeAvatar": "画像を削除",
+      "social": "ソーシャルリンク",
+      "linkedinUrl": "LinkedIn URL",
+      "twitterUrl": "Twitter URL",
+      "githubUrl": "GitHub URL",
+      "personalWebsite": "個人ウェブサイト",
+      "phoneNumber": "電話番号",
+      "phoneNumberPlaceholder": "090-1234-5678",
+      "startDate": "入社日",
+      "saveSuccess": "プロフィールが正常に更新されました",
+      "saveError": "プロフィールの更新に失敗しました"
+    },
+    "account": {
+      "title": "アカウント設定",
+      "subtitle": "アカウントの設定と設定を管理",
+      "language": "言語",
+      "languageDescription": "使用する言語を選択",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード",
+      "confirmNewPassword": "新しいパスワード確認",
+      "changePassword": "パスワード変更",
+      "passwordRequirements": "パスワードは8文字以上で、大文字・小文字・数字・特殊文字を含む必要があります",
+      "passwordChangeSuccess": "パスワードが正常に変更されました",
+      "passwordChangeError": "パスワードの変更に失敗しました",
+      "emailChange": "メールアドレス",
+      "emailChangeDescription": "メールアドレスを変更（認証が必要）",
+      "newEmail": "新しいメールアドレス",
+      "changeEmail": "メールアドレス変更",
+      "emailChangeSuccess": "新しいアドレスに認証メールを送信しました",
+      "emailChangeError": "メールアドレスの変更に失敗しました",
+      "deleteAccount": "アカウント削除",
+      "deleteAccountDescription": "アカウントと関連データを完全に削除",
+      "deleteAccountButton": "アカウントを削除",
+      "deleteAccountConfirm": "アカウントを削除してもよろしいですか？この操作は元に戻せません。"
+    },
+    "notifications": {
+      "title": "通知設定",
+      "subtitle": "通知方法を選択",
+      "email": "メール通知",
+      "inApp": "アプリ内通知",
+      "categories": {
+        "kudos": {
+          "title": "クードス",
+          "description": "チームメンバーからクードスを受け取ったとき"
+        },
+        "checkins": {
+          "title": "チェックインリマインダー",
+          "description": "週次チェックインのリマインダー"
+        },
+        "okr": {
+          "title": "OKR更新",
+          "description": "OKRの進捗と締切の更新"
+        },
+        "surveys": {
+          "title": "サーベイ招待",
+          "description": "サーベイ参加への招待"
+        },
+        "teamUpdates": {
+          "title": "チーム更新",
+          "description": "重要なお知らせとチームの変更"
+        },
+        "evaluations": {
+          "title": "人事評価",
+          "description": "人事評価のリマインダーと更新"
+        }
+      },
+      "frequency": {
+        "title": "通知頻度",
+        "instant": "即座に",
+        "daily": "日次ダイジェスト",
+        "weekly": "週次サマリー",
+        "never": "なし"
+      },
+      "saveSuccess": "通知設定が更新されました",
+      "saveError": "設定の更新に失敗しました"
+    },
+    "security": {
+      "title": "セキュリティ設定",
+      "subtitle": "アカウントのセキュリティとセッションを管理",
+      "activeSessions": {
+        "title": "アクティブセッション",
+        "description": "アクティブなログインセッションを管理",
+        "current": "現在のセッション",
+        "device": "デバイス",
+        "location": "場所",
+        "lastActive": "最終アクティブ",
+        "revokeSession": "取り消し",
+        "revokeAllOther": "他のセッションをすべて取り消し",
+        "revokeSuccess": "セッションが正常に取り消されました",
+        "revokeError": "セッションの取り消しに失敗しました"
+      },
+      "loginHistory": {
+        "title": "ログイン履歴",
+        "description": "最近のログインアクティビティを確認",
+        "success": "ログイン成功",
+        "failed": "ログイン失敗",
+        "device": "デバイス",
+        "location": "場所",
+        "ipAddress": "IPアドレス",
+        "noHistory": "ログイン履歴がありません"
+      },
+      "twoFactor": {
+        "title": "二要素認証",
+        "description": "アカウントにセキュリティ層を追加",
+        "enabled": "有効",
+        "disabled": "無効",
+        "enable": "2FAを有効にする",
+        "disable": "2FAを無効にする",
+        "setup": "2FAを設定",
+        "qrCode": "認証アプリでこのQRコードをスキャン",
+        "verifyCode": "認証コードを入力",
+        "backupCodes": "バックアップコード",
+        "downloadBackupCodes": "バックアップコードをダウンロード",
+        "enableSuccess": "二要素認証が有効になりました",
+        "enableError": "二要素認証の有効化に失敗しました",
+        "disableSuccess": "二要素認証が無効になりました",
+        "disableError": "二要素認証の無効化に失敗しました"
+      }
+    }
+  },
   "errors": {
     "validation": {
       "default": "入力内容に問題があります。有効な値を入力してください。",

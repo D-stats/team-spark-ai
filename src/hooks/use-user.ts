@@ -12,7 +12,20 @@ interface User {
   email: string;
   role: 'ADMIN' | 'MANAGER' | 'MEMBER';
   organizationId: string;
-  avatar?: string;
+  avatarUrl?: string;
+  jobTitle?: string;
+  department?: string;
+  bio?: string;
+  skills?: string[];
+  timezone?: string;
+  phoneNumber?: string;
+  linkedinUrl?: string;
+  twitterUrl?: string;
+  githubUrl?: string;
+  personalWebsite?: string;
+  startDate?: Date;
+  locale?: string;
+  notificationSettings?: any;
 }
 
 export function useUser(): {
@@ -20,6 +33,7 @@ export function useUser(): {
   loading: boolean;
   error: string | null;
   refetch: () => void;
+  refreshUser: () => void; // Alias for compatibility
 } {
   const { data: session, status, update } = useSession();
 
@@ -30,16 +44,32 @@ export function useUser(): {
         email: session.user.email,
         role: session.user.role as 'ADMIN' | 'MANAGER' | 'MEMBER',
         organizationId: session.user.organizationId,
-        avatar: session.user.avatarUrl,
+        avatarUrl: session.user.avatarUrl,
+        jobTitle: session.user.jobTitle,
+        department: session.user.department,
+        bio: session.user.bio,
+        skills: session.user.skills,
+        timezone: session.user.timezone,
+        phoneNumber: session.user.phoneNumber,
+        linkedinUrl: session.user.linkedinUrl,
+        twitterUrl: session.user.twitterUrl,
+        githubUrl: session.user.githubUrl,
+        personalWebsite: session.user.personalWebsite,
+        startDate: session.user.startDate ? new Date(session.user.startDate) : undefined,
+        locale: session.user.locale,
+        notificationSettings: session.user.notificationSettings,
       }
     : null;
+
+  const refetchUser = () => {
+    update();
+  };
 
   return {
     user,
     loading: status === 'loading',
     error: null,
-    refetch: () => {
-      update();
-    },
+    refetch: refetchUser,
+    refreshUser: refetchUser,
   };
 }

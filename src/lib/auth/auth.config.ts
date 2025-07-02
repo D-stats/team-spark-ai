@@ -12,6 +12,19 @@ declare module 'next-auth' {
       organizationId: string;
       role: string;
       avatarUrl?: string;
+      jobTitle?: string;
+      department?: string;
+      bio?: string;
+      skills?: string[];
+      timezone?: string;
+      phoneNumber?: string;
+      linkedinUrl?: string;
+      twitterUrl?: string;
+      githubUrl?: string;
+      personalWebsite?: string;
+      startDate?: string;
+      locale?: string;
+      notificationSettings?: any;
     };
   }
 
@@ -22,6 +35,19 @@ declare module 'next-auth' {
     organizationId: string;
     role: string;
     avatarUrl?: string;
+    jobTitle?: string;
+    department?: string;
+    bio?: string;
+    skills?: string[];
+    timezone?: string;
+    phoneNumber?: string;
+    linkedinUrl?: string;
+    twitterUrl?: string;
+    githubUrl?: string;
+    personalWebsite?: string;
+    startDate?: string;
+    locale?: string;
+    notificationSettings?: any;
   }
 }
 
@@ -31,6 +57,19 @@ declare module 'next-auth/jwt' {
     organizationId: string;
     role: string;
     avatarUrl?: string;
+    jobTitle?: string;
+    department?: string;
+    bio?: string;
+    skills?: string[];
+    timezone?: string;
+    phoneNumber?: string;
+    linkedinUrl?: string;
+    twitterUrl?: string;
+    githubUrl?: string;
+    personalWebsite?: string;
+    startDate?: string;
+    locale?: string;
+    notificationSettings?: any;
   }
 }
 
@@ -70,6 +109,19 @@ export const authOptions: NextAuthOptions = {
             organizationId: user.organizationId,
             role: user.role,
             avatarUrl: user.avatarUrl ?? undefined,
+            jobTitle: user.jobTitle ?? undefined,
+            department: user.department ?? undefined,
+            bio: user.bio ?? undefined,
+            skills: user.skills ?? undefined,
+            timezone: user.timezone ?? undefined,
+            phoneNumber: user.phoneNumber ?? undefined,
+            linkedinUrl: user.linkedinUrl ?? undefined,
+            twitterUrl: user.twitterUrl ?? undefined,
+            githubUrl: user.githubUrl ?? undefined,
+            personalWebsite: user.personalWebsite ?? undefined,
+            startDate: user.startDate?.toISOString() ?? undefined,
+            locale: user.locale ?? undefined,
+            notificationSettings: user.notificationSettings ?? undefined,
           };
         } catch (error) {
           console.error('Auth error:', error);
@@ -89,6 +141,19 @@ export const authOptions: NextAuthOptions = {
         token.organizationId = user.organizationId;
         token.role = user.role;
         token.avatarUrl = user.avatarUrl;
+        token.jobTitle = user.jobTitle;
+        token.department = user.department;
+        token.bio = user.bio;
+        token.skills = user.skills;
+        token.timezone = user.timezone;
+        token.phoneNumber = user.phoneNumber;
+        token.linkedinUrl = user.linkedinUrl;
+        token.twitterUrl = user.twitterUrl;
+        token.githubUrl = user.githubUrl;
+        token.personalWebsite = user.personalWebsite;
+        token.startDate = user.startDate;
+        token.locale = user.locale;
+        token.notificationSettings = user.notificationSettings;
       }
       return token;
     },
@@ -101,6 +166,19 @@ export const authOptions: NextAuthOptions = {
           organizationId: token.organizationId,
           role: token.role,
           avatarUrl: token.avatarUrl,
+          jobTitle: token.jobTitle,
+          department: token.department,
+          bio: token.bio,
+          skills: token.skills,
+          timezone: token.timezone,
+          phoneNumber: token.phoneNumber,
+          linkedinUrl: token.linkedinUrl,
+          twitterUrl: token.twitterUrl,
+          githubUrl: token.githubUrl,
+          personalWebsite: token.personalWebsite,
+          startDate: token.startDate,
+          locale: token.locale,
+          notificationSettings: token.notificationSettings,
         };
       }
       return session;

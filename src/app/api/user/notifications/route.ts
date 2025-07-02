@@ -1,59 +1,120 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
+import { prisma } from '@/lib/prisma';
 import { logError } from '@/lib/logger';
+
+interface NotificationSettings {
+  email: {
+    kudos: boolean;
+    checkins: boolean;
+    okr: boolean;
+    surveys: boolean;
+    teamUpdates: boolean;
+    evaluations: boolean;
+  };
+  inApp: {
+    kudos: boolean;
+    checkins: boolean;
+    okr: boolean;
+    surveys: boolean;
+    teamUpdates: boolean;
+    evaluations: boolean;
+  };
+  frequency: 'instant' | 'daily' | 'weekly' | 'never';
+}
 
 export async function PUT(request: NextRequest): Promise<NextResponse> {
   try {
-    await requireAuthWithOrganization();
+    const { dbUser } = await requireAuthWithOrganization();
 
-    const body = (await request.json()) as {
-      emailNotifications?: unknown;
-      kudosNotifications?: unknown;
-      checkinReminders?: unknown;
-      surveyNotifications?: unknown;
-      teamUpdates?: unknown;
-    };
-    const {
-      emailNotifications,
-      kudosNotifications,
-      checkinReminders,
-      surveyNotifications,
-      teamUpdates,
-    } = body;
+    const body = await request.json() as NotificationSettings;
+    const { email, inApp, frequency } = body;
 
-    // 通知設定をJSONで保存（実際のプロジェクトでは専用テーブルを作成することを推奨）
-    const notificationSettings = {
-      emailNotifications: Boolean(emailNotifications),
-      kudosNotifications: Boolean(kudosNotifications),
-      checkinReminders: Boolean(checkinReminders),
-      surveyNotifications: Boolean(surveyNotifications),
-      teamUpdates: Boolean(teamUpdates),
-    };
+    // Validate input structure
+    if (!email || !inApp || !frequency) {
+      return NextResponse.json({ error: 'Invalid notification settings format' }, { status: 400 });
+    }
 
-    // ユーザーのnotificationSettingsフィールドを更新
-    // 注意: 実際のプロジェクトではPrismaスキーマにnotificationSettingsフィールドを追加する必要があります
-    // ここでは簡単のためコメントアウトし、成功レスポンスを返します
+    // Validate frequency value
+    if (!['instant', 'daily', 'weekly', 'never'].includes(frequency)) {
+      return NextResponse.json({ error: 'Invalid frequency value' }, { status: 400 });
+    }
 
-    /*
+    // Validate email and inApp settings structure
+    const requiredCategories = ['kudos', 'checkins', 'okr', 'surveys', 'teamUpdates', 'evaluations'];
+    for (const category of requiredCategories) {
+      if (typeof email[category as keyof typeof email] !== 'boolean' || 
+          typeof inApp[category as keyof typeof inApp] !== 'boolean') {
+        return NextResponse.json({ error: `Invalid ${category} setting` }, { status: 400 });
+      }
+    }
+
+    // Update notification settings in database
     const updatedUser = await prisma.user.update({
       where: { id: dbUser.id },
       data: {
-        notificationSettings: notificationSettings,
+        notificationSettings: {
+          email,
+          inApp,
+          frequency,
+          updatedAt: new Date().toISOString(),
+        },
+        updatedAt: new Date(),
       },
       select: {
         id: true,
         notificationSettings: true,
       },
     });
-    */
 
-    // 一時的な成功レスポンス
     return NextResponse.json({
       success: true,
-      settings: notificationSettings,
+      settings: updatedUser.notificationSettings,
     });
   } catch (error) {
     logError(error as Error, 'PUT /api/user/notifications');
-    return NextResponse.json({ error: '通知設定の更新に失敗しました' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update notification settings' }, { status: 500 });
+  }
+}
+
+export async function GET(_request: NextRequest): Promise<NextResponse> {
+  try {
+    const { dbUser } = await requireAuthWithOrganization();
+
+    const user = await prisma.user.findUnique({
+      where: { id: dbUser.id },
+      select: {
+        notificationSettings: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      settings: user.notificationSettings || {
+        email: {
+          kudos: true,
+          checkins: true,
+          okr: true,
+          surveys: true,
+          teamUpdates: true,
+          evaluations: true,
+        },
+        inApp: {
+          kudos: true,
+          checkins: true,
+          okr: true,
+          surveys: true,
+          teamUpdates: true,
+          evaluations: true,
+        },
+        frequency: 'instant',
+      },
+    });
+  } catch (error) {
+    logError(error as Error, 'GET /api/user/notifications');
+    return NextResponse.json({ error: 'Failed to fetch notification settings' }, { status: 500 });
   }
 }

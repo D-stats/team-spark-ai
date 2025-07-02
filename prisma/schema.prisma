@@ -36,6 +36,20 @@ model User {
   emailVerified          DateTime?
   isActive               Boolean          @default(true)
   lastActiveAt           DateTime?
+  bio                    String?
+  skills                 String[]         @default([])
+  timezone               String?
+  locale                 String?          @default("en")
+  linkedinUrl            String?
+  twitterUrl             String?
+  githubUrl              String?
+  personalWebsite        String?
+  phoneNumber            String?
+  jobTitle               String?
+  department             String?
+  startDate              DateTime?
+  notificationSettings   Json             @default("{}")
+  securitySettings       Json             @default("{}")
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   checkIns               CheckIn[]
@@ -50,6 +64,8 @@ model User {
   surveyResponses        SurveyResponse[]
   managedTeams           Team[]           @relation("TeamManager")
   teamMemberships        TeamMember[]
+  userSessions           UserSession[]
+  loginHistory           LoginHistory[]
   organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
@@ -355,6 +371,43 @@ model Competency {
 
   @@index([organizationId])
   @@index([category])
+}
+
+model UserSession {
+  id         String    @id @default(cuid())
+  userId     String
+  sessionId  String    @unique
+  ipAddress  String?
+  userAgent  String?
+  device     String?
+  location   String?
+  isActive   Boolean   @default(true)
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([isActive])
+  @@index([expiresAt])
+}
+
+model LoginHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  ipAddress String?
+  userAgent String?
+  device    String?
+  location  String?
+  success   Boolean
+  method    String   @default("email")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([success])
+  @@index([createdAt])
 }
 
 enum Role {

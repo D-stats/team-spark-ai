@@ -54,6 +54,154 @@
     "personalSettings": "Personal Settings",
     "organizationSettings": "Organization Settings"
   },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "profile": "Profile",
+      "account": "Account",
+      "notifications": "Notifications",
+      "security": "Security",
+      "slack": "Slack"
+    },
+    "profile": {
+      "title": "Profile Information",
+      "subtitle": "Update your profile information and personal details",
+      "name": "Full Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email Address",
+      "emailReadonly": "Email cannot be changed",
+      "jobTitle": "Job Title",
+      "jobTitlePlaceholder": "e.g. Software Engineer",
+      "department": "Department",
+      "departmentPlaceholder": "e.g. Engineering",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell us about yourself...",
+      "skills": "Skills",
+      "skillsPlaceholder": "Add skills (press Enter to add)",
+      "timezone": "Timezone",
+      "timezonePlaceholder": "Select your timezone",
+      "avatar": "Profile Picture",
+      "uploadAvatar": "Upload Picture",
+      "removeAvatar": "Remove Picture",
+      "social": "Social Links",
+      "linkedinUrl": "LinkedIn URL",
+      "twitterUrl": "Twitter URL",
+      "githubUrl": "GitHub URL",
+      "personalWebsite": "Personal Website",
+      "phoneNumber": "Phone Number",
+      "phoneNumberPlaceholder": "+1 (555) 123-4567",
+      "startDate": "Start Date",
+      "saveSuccess": "Profile updated successfully",
+      "saveError": "Failed to update profile"
+    },
+    "account": {
+      "title": "Account Settings",
+      "subtitle": "Manage your account preferences and settings",
+      "language": "Language",
+      "languageDescription": "Choose your preferred language",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password",
+      "changePassword": "Change Password",
+      "passwordRequirements": "Password must be at least 8 characters with uppercase, lowercase, number, and special character",
+      "passwordChangeSuccess": "Password changed successfully",
+      "passwordChangeError": "Failed to change password",
+      "emailChange": "Email Address",
+      "emailChangeDescription": "Change your email address (requires verification)",
+      "newEmail": "New Email Address",
+      "changeEmail": "Change Email",
+      "emailChangeSuccess": "Verification email sent to your new address",
+      "emailChangeError": "Failed to change email",
+      "deleteAccount": "Delete Account",
+      "deleteAccountDescription": "Permanently delete your account and all associated data",
+      "deleteAccountButton": "Delete Account",
+      "deleteAccountConfirm": "Are you sure you want to delete your account? This action cannot be undone."
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "subtitle": "Choose how you want to be notified",
+      "email": "Email Notifications",
+      "inApp": "In-App Notifications",
+      "categories": {
+        "kudos": {
+          "title": "Kudos",
+          "description": "When you receive kudos from teammates"
+        },
+        "checkins": {
+          "title": "Check-in Reminders",
+          "description": "Reminders for weekly check-ins"
+        },
+        "okr": {
+          "title": "OKR Updates",
+          "description": "Updates on OKR progress and deadlines"
+        },
+        "surveys": {
+          "title": "Survey Invitations",
+          "description": "Invitations to participate in surveys"
+        },
+        "teamUpdates": {
+          "title": "Team Updates",
+          "description": "Important announcements and team changes"
+        },
+        "evaluations": {
+          "title": "Performance Reviews",
+          "description": "Performance evaluation reminders and updates"
+        }
+      },
+      "frequency": {
+        "title": "Notification Frequency",
+        "instant": "Instantly",
+        "daily": "Daily digest",
+        "weekly": "Weekly summary",
+        "never": "Never"
+      },
+      "saveSuccess": "Notification preferences updated",
+      "saveError": "Failed to update preferences"
+    },
+    "security": {
+      "title": "Security Settings",
+      "subtitle": "Manage your account security and sessions",
+      "activeSessions": {
+        "title": "Active Sessions",
+        "description": "Manage your active login sessions",
+        "current": "Current Session",
+        "device": "Device",
+        "location": "Location",
+        "lastActive": "Last Active",
+        "revokeSession": "Revoke",
+        "revokeAllOther": "Revoke All Other Sessions",
+        "revokeSuccess": "Session revoked successfully",
+        "revokeError": "Failed to revoke session"
+      },
+      "loginHistory": {
+        "title": "Login History",
+        "description": "Review your recent login activity",
+        "success": "Successful login",
+        "failed": "Failed login attempt",
+        "device": "Device",
+        "location": "Location",
+        "ipAddress": "IP Address",
+        "noHistory": "No login history available"
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA",
+        "setup": "Set Up 2FA",
+        "qrCode": "Scan this QR code with your authenticator app",
+        "verifyCode": "Enter verification code",
+        "backupCodes": "Backup Codes",
+        "downloadBackupCodes": "Download backup codes",
+        "enableSuccess": "Two-factor authentication enabled",
+        "enableError": "Failed to enable two-factor authentication",
+        "disableSuccess": "Two-factor authentication disabled",
+        "disableError": "Failed to disable two-factor authentication"
+      }
+    }
+  },
   "errors": {
     "validation": {
       "default": "There is an issue with your input. Please enter valid values.",
