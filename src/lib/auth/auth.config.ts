@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+// Login tracking is handled in the track-login API endpoint
 
 declare module 'next-auth' {
   interface Session {
@@ -60,6 +61,8 @@ export const authOptions: NextAuthOptions = {
           const isValidPassword = await bcrypt.compare(credentials.password, user.password);
 
           if (!isValidPassword) {
+            // Note: We can't easily track failed attempts here because we don't have access to request
+            // Failed attempts will be tracked in the login page client-side
             return null;
           }
 
@@ -107,8 +110,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: '/en/login',
+    error: '/en/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',

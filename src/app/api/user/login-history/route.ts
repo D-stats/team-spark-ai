@@ -38,6 +38,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     });
   } catch (error) {
     logError(error as Error, 'GET /api/user/login-history');
-    return NextResponse.json({ error: 'ログイン履歴の取得に失敗しました' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch login history' }, { status: 500 });
   }
 }

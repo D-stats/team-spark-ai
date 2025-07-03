@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from '@/i18n/utils';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { User, LogOut, Settings } from 'lucide-react';
-import { LanguageSwitcher } from '@/components/language-switcher';
 
 interface HeaderProps {
   user: {
@@ -32,11 +31,15 @@ interface HeaderProps {
 
 export function Header({ user, organization }: HeaderProps): JSX.Element {
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations();
+
+  // Extract current locale from pathname
+  const currentLocale = pathname.split('/')[1] || 'en';
 
   const handleSignOut = async () => {
     await signOut({
-      callbackUrl: '/login',
+      callbackUrl: `/${currentLocale}/login`,
       redirect: true,
     });
   };
@@ -48,7 +51,6 @@ export function Header({ user, organization }: HeaderProps): JSX.Element {
         <span className="text-sm text-muted-foreground">・ {organization.name}</span>
       </div>
       <div className="flex items-center space-x-4">
-        <LanguageSwitcher />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -65,7 +67,7 @@ export function Header({ user, organization }: HeaderProps): JSX.Element {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
+            <DropdownMenuItem onClick={() => router.push(`/${currentLocale}/dashboard/settings`)}>
               <Settings className="mr-2 h-4 w-4" />
               {t('navigation.personalSettings')}
             </DropdownMenuItem>

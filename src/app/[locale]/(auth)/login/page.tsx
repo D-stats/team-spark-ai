@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,27 @@ export default function LoginPage(): JSX.Element {
   const t = useTranslations('auth.login');
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Handle URL error parameters (from NextAuth redirects)
+  useEffect(() => {
+    const urlError = searchParams.get('error');
+    const sessionEnded = searchParams.get('sessionEnded');
+    
+    if (sessionEnded === 'true') {
+      setError('Your session has been ended. Please log in again.');
+    } else if (urlError) {
+      // Map NextAuth error codes to user-friendly messages
+      const errorMessages: Record<string, string> = {
+        'CredentialsSignin': t('error'),
+        'SessionRequired': 'Session expired. Please log in again.',
+        'AccessDenied': 'Access denied. Please check your credentials.',
+        'Verification': 'Verification failed. Please try again.',
+        'Default': t('error'),
+      };
+      setError((urlError && urlError in errorMessages ? errorMessages[urlError] : errorMessages['Default']) as string);
+    }
+  }, [searchParams, t]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +61,30 @@ export default function LoginPage(): JSX.Element {
 
       if (result?.error != null) {
         setError(t('error'));
+        // Track failed login attempt
+        fetch('/api/auth/track-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            success: false,
+            failReason: 'Invalid credentials',
+          }),
+        }).catch(() => {
+          // Silently fail - this is just for tracking
+        });
       } else if (result?.ok === true) {
+        // Track successful login attempt
+        fetch('/api/auth/track-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            success: true,
+          }),
+        }).catch(() => {
+          // Silently fail - this is just for tracking
+        });
         router.push(`/${locale}/dashboard`);
       }
     } catch (err: unknown) {

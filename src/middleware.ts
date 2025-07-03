@@ -97,9 +97,20 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   );
 
   if (!pathnameHasLocale) {
+    // Special handling for NextAuth error redirects
+    if (pathname === '/api/auth/error') {
+      const error = request.nextUrl.searchParams.get('error');
+      const locale = defaultLocale;
+      const loginUrl = new URL(`/${locale}/login`, request.url);
+      if (error) {
+        loginUrl.searchParams.set('error', error);
+      }
+      return NextResponse.redirect(loginUrl);
+    }
+
     // No locale in URL, redirect to URL with locale
     // We don't auto-detect from Accept-Language header to avoid automatic redirects
-    // The client-side LanguageInitializer will handle suggestions
+    // Users can change language through profile settings
     const locale = defaultLocale;
     const newUrl = new URL(`/${locale}${pathname}`, request.url);
 

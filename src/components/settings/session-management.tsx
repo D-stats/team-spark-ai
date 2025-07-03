@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Monitor, Smartphone, Tablet, Globe, LogOut, AlertTriangle } from 'lucide-react';
+import { Monitor, Smartphone, Tablet, Globe, LogOut, AlertTriangle, RefreshCw } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ja, enUS } from 'date-fns/locale';
 
@@ -35,14 +36,25 @@ export function SessionManagement(): JSX.Element {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loginHistory, setLoginHistory] = useState<LoginHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
 
   const loadSessions = async (): Promise<void> => {
     try {
-      const response = await fetch('/api/user/sessions');
-      if (response.ok) {
-        const data = (await response.json()) as Session[];
+      const [sessionsResponse, currentSessionResponse] = await Promise.all([
+        fetch('/api/user/sessions'),
+        fetch('/api/user/current-session'),
+      ]);
+      
+      if (sessionsResponse.ok) {
+        const data = (await sessionsResponse.json()) as Session[];
         setSessions(data);
+      }
+      
+      if (currentSessionResponse.ok) {
+        const currentData = (await currentSessionResponse.json()) as { currentSessionId: string | null };
+        setCurrentSessionId(currentData.currentSessionId);
       }
     } catch (error) {
       console.error('Failed to load sessions:', error);
@@ -75,6 +87,18 @@ export function SessionManagement(): JSX.Element {
     void loadData();
   }, [t]);
 
+  const handleRefresh = async (): Promise<void> => {
+    setRefreshing(true);
+    setError(null);
+    try {
+      await Promise.all([loadSessions(), loadLoginHistory()]);
+    } catch (error) {
+      setError(t('error'));
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const revokeSession = async (sessionId: string): Promise<void> => {
     try {
       const response = await fetch(`/api/user/sessions?id=${sessionId}`, {
@@ -82,7 +106,26 @@ export function SessionManagement(): JSX.Element {
       });
 
       if (response.ok) {
-        await loadSessions(); // Reload session list
+        const responseData = (await response.json()) as { 
+          message: string; 
+          shouldSignOut?: boolean 
+        };
+        
+        // If this was the current session, sign out immediately
+        if (responseData.shouldSignOut) {
+          await signOut({ 
+            callbackUrl: `/${locale}/login`,
+            redirect: true 
+          });
+          return;
+        }
+        
+        // Otherwise, just refresh the session list
+        await loadSessions();
+        await loadLoginHistory();
+        
+        // Trigger immediate session validation for all tabs
+        window.postMessage({ type: 'SESSION_TERMINATED', sessionId }, '*');
       } else {
         const errorData = (await response.json()) as { error?: string };
         setError(errorData.error ?? t('active.revokeError'));
@@ -91,6 +134,7 @@ export function SessionManagement(): JSX.Element {
       setError(t('active.revokeError'));
     }
   };
+
 
   const getDeviceIcon = (userAgent?: string | null): React.ReactNode => {
     if (userAgent === null || userAgent === undefined || userAgent === '')
@@ -148,11 +192,25 @@ export function SessionManagement(): JSX.Element {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Globe className="mr-2 h-5 w-5" />
-            {t('active.title')}
-          </CardTitle>
-          <CardDescription>{t('active.description')}</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center">
+                <Globe className="mr-2 h-5 w-5" />
+                {t('active.title')}
+              </CardTitle>
+              <CardDescription>{t('active.description')}</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="ml-4"
+            >
+              <RefreshCw className={`mr-1 h-3 w-3 ${refreshing ? 'animate-spin' : ''}`} />
+              {refreshing ? t('loading') : t('active.refreshButton')}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {sessions.length === 0 ? (
@@ -190,10 +248,19 @@ export function SessionManagement(): JSX.Element {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Badge variant="secondary">{t('active.statusActive')}</Badge>
-                    <Button variant="outline" size="sm" onClick={() => revokeSession(session.id)}>
+                    {session.id === currentSessionId ? (
+                      <Badge variant="default">{t('active.currentSession')}</Badge>
+                    ) : (
+                      <Badge variant="secondary">{t('active.statusActive')}</Badge>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => revokeSession(session.id)}
+                      className={session.id === currentSessionId ? 'text-red-600 hover:text-red-700' : ''}
+                    >
                       <LogOut className="mr-1 h-3 w-3" />
-                      {t('active.revokeButton')}
+                      {session.id === currentSessionId ? t('active.signOut') : t('active.revokeButton')}
                     </Button>
                   </div>
                 </div>

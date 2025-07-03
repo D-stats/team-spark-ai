@@ -7,7 +7,7 @@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { getErrorMessage, getErrorCode, isAppError } from '@/lib/errors';
 
 interface ErrorDisplayProps {
@@ -24,12 +24,16 @@ export function ErrorDisplay({
   className,
 }: ErrorDisplayProps): JSX.Element {
   const router = useRouter();
+  const pathname = usePathname();
   const errorMessage = getErrorMessage(error);
   const errorCode = getErrorCode(error);
   const isOperational = isAppError(error) ? error.isOperational : false;
 
+  // Extract current locale from pathname
+  const currentLocale = pathname.split('/')[1] || 'en';
+
   const handleGoHome = () => {
-    router.push('/dashboard');
+    router.push(`/${currentLocale}/dashboard`);
   };
 
   return (

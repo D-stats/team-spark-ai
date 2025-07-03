@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -44,6 +44,8 @@ interface ProfileFormProps {
 
 export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
   const t = useTranslations('settings.profile');
+  const router = useRouter();
+  const pathname = usePathname();
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio ?? '');
   const [skills, setSkills] = useState<string[]>(user.skills ?? []);
@@ -57,7 +59,9 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
+  
+  // Track the current locale for redirect detection
+  const currentLocale = pathname.split('/')[1] || 'en';
 
   const timezones = [
     'UTC',
@@ -111,7 +115,18 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
       }
 
       setSuccess(true);
-      router.refresh();
+      
+      // If locale changed from the original user locale, redirect to new locale URL
+      // This handles both cases: changing locale and correcting URL to match user's actual locale
+      if (locale !== currentLocale) {
+        const newPath = pathname.replace(`/${currentLocale}/`, `/${locale}/`);
+        console.log('Language changed:', { currentLocale, newLocale: locale, currentPath: pathname, newPath });
+        // Use window.location to ensure a full reload with the new locale
+        window.location.href = newPath;
+      } else {
+        console.log('Language not changed, refreshing:', { currentLocale, locale });
+        router.refresh();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

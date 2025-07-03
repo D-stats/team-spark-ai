@@ -519,7 +519,10 @@
         "statusActive": "アクティブ",
         "revokeButton": "終了",
         "revokeSuccess": "セッションが正常に終了されました",
-        "revokeError": "セッションの終了に失敗しました"
+        "revokeError": "セッションの終了に失敗しました",
+        "refreshButton": "更新",
+        "currentSession": "現在のセッション",
+        "signOut": "ログアウト"
       },
       "history": {
         "title": "ログイン履歴",
@@ -538,7 +541,98 @@
       "unknownBrowser": "不明なブラウザ",
       "deviceInfoConnector": "",
       "unknown": "不明"
+    },
+    "slack": {
+      "title": "Slack連携",
+      "description": "SlackアカウントとTeamSpark AIアカウントを連携します",
+      "connectionStatus": {
+        "title": "接続ステータス",
+        "connected": "接続済み",
+        "notConnected": "未接続",
+        "workspace": "ワークスペース"
+      },
+      "userAccount": {
+        "title": "あなたのSlackアカウント",
+        "notConnected": "Slackアカウントが接続されていません",
+        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
+        "connectButton": "Slackアカウントを接続",
+        "disconnect": "切断",
+        "reconnect": "再接続"
+      },
+      "errors": {
+        "connectionFailed": "Slack連携に失敗しました",
+        "disconnectionFailed": "Slack連携解除に失敗しました",
+        "generic": "エラーが発生しました"
+      },
+      "success": {
+        "connected": "Slack連携が完了しました",
+        "disconnected": "Slack連携を解除しました"
+      },
+      "workspace": {
+        "title": "連携ワークスペース"
+      },
+      "status": {
+        "title": "Slack連携状態",
+        "userIdLabel": "SlackユーザーID",
+        "connected": "連携済み"
+      },
+      "features": {
+        "title": "利用可能な機能",
+        "kudosCommand": "/kudos コマンドでKudosを送信",
+        "notifications": "Kudos受信時のSlack通知",
+        "checkinReminders": "チェックインリマインダー",
+        "surveyNotifications": "サーベイ通知"
+      },
+      "actions": {
+        "disconnect": "Slack連携を解除",
+        "connect": "Slackと連携",
+        "connecting": "連携中...",
+        "processing": "処理中..."
+      },
+      "form": {
+        "emailLabel": "Slackメールアドレス",
+        "emailDescription": "空欄の場合は、TeamSpark AIのメールアドレス ({email}) を使用します",
+        "instructions": "Slackアカウントと連携するには、Slackで使用しているメールアドレスを入力してください。TeamSpark AIのメールアドレスと同じ場合は、そのまま連携できます。"
+      }
     }
+  },
+  "slackSettings": {
+    "title": "Slack連携設定",
+    "subtitle": "SlackワークスペースとTeamSpark AIを連携します",
+    "adminOnlyMessage": "Slack連携の設定は管理者のみが行えます。",
+    "workspaceIntegration": "ワークスペース連携",
+    "connected": "連携済み",
+    "description": "SlackワークスペースとTeamSpark AIを連携することで、Slackから直接Kudosを送信したり、通知を受け取ることができます。",
+    "notConfiguredMessage": "Slack連携機能は現在設定されていません。システム管理者にお問い合わせください。",
+    "connectedWorkspaceTitle": "連携済みワークスペース",
+    "teamNameLabel": "チーム名",
+    "teamIdLabel": "チームID",
+    "connectedDateLabel": "連携日時",
+    "availableFeaturesTitle": "利用可能な機能",
+    "featureKudos": "✅ /kudosコマンドでKudosを送信",
+    "featureNotifications": "✅ Kudos受信時のSlack通知",
+    "featureReminders": "✅ チェックインリマインダー",
+    "featureSurveyNotifications": "✅ サーベイ開始通知",
+    "updateConnectionButton": "連携を更新",
+    "benefitsTitle": "連携するとできること",
+    "benefitSlackKudos": "• Slackから/kudosコマンドでKudosを送信",
+    "benefitSlackNotifications": "• Kudosを受け取った時のSlack通知",
+    "benefitCheckInReminders": "• 週次チェックインのリマインダー通知",
+    "benefitSurveyNotifications": "• サーベイ開始・締切の通知",
+    "requirementsMessage": "連携にはSlackワークスペースの管理者権限が必要です。連携後、チームメンバーはSlackアカウントとTeamSpark AIアカウントを紐付ける必要があります。",
+    "connectButton": "Slackと連携する",
+    "commandsTitle": "Slackコマンドの使い方",
+    "commandsDescription": "Slack上で利用できるコマンドの一覧です",
+    "kudosCommandSyntax": "/kudos @ユーザー名 カテゴリ メッセージ",
+    "kudosCommandExample": "例: /kudos @tanaka teamwork 素晴らしいプレゼンテーションでした！",
+    "categoriesTitle": "カテゴリ一覧:",
+    "categoryTeamwork": "• teamwork - チームワーク",
+    "categoryInnovation": "• innovation - イノベーション",
+    "categoryLeadership": "• leadership - リーダーシップ",
+    "categoryProblemSolving": "• problem_solving - 問題解決",
+    "categoryCustomerFocus": "• customer_focus - 顧客志向",
+    "categoryLearning": "• learning - 学習・成長",
+    "categoryOther": "• other - その他"
   },
   "reports": {
     "title": "レポート",
@@ -762,34 +856,6 @@
       "actions": {
         "edit": "編集",
         "details": "詳細"
-      }
-    }
-  },
-  "settings": {
-    "personal": {
-      "title": "個人設定",
-      "tabs": {
-        "profile": "プロフィール",
-        "notifications": "通知",
-        "security": "セキュリティ"
-      }
-    },
-    "slack": {
-      "title": "Slack連携",
-      "description": "SlackアカウントとTeamSpark AIアカウントを連携します",
-      "connectionStatus": {
-        "title": "接続ステータス",
-        "connected": "接続済み",
-        "notConnected": "未接続",
-        "workspace": "ワークスペース"
-      },
-      "userAccount": {
-        "title": "あなたのSlackアカウント",
-        "notConnected": "Slackアカウントが接続されていません",
-        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
-        "connectButton": "Slackアカウントを接続",
-        "disconnect": "切断",
-        "reconnect": "再接続"
       }
     }
   },

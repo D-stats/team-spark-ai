@@ -519,10 +519,7 @@
         "statusActive": "Active",
         "revokeButton": "End",
         "revokeSuccess": "Session ended successfully",
-        "revokeError": "Failed to end session",
-        "refreshButton": "Refresh",
-        "currentSession": "Current Session",
-        "signOut": "Sign Out"
+        "revokeError": "Failed to end session"
       },
       "history": {
         "title": "Login History",
@@ -765,6 +762,204 @@
       "actions": {
         "edit": "Edit",
         "details": "Details"
+      }
+    }
+  },
+    "profile": {
+      "title": "Profile Information",
+      "description": "Update your basic information",
+      "basicInfo": "Basic Information",
+      "skills": "Skills",
+      "localeSettings": "Language & Region Settings",
+      "socialLinks": "Social Links",
+      "organizationInfo": "Organization Information",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email Address",
+      "emailNotEditable": "Email address cannot be changed",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "555-123-4567",
+      "roleLabel": "Role",
+      "roleNotEditable": "Role is set by administrators",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us a bit about yourself...",
+      "bioCharCount": "{current}/{max} characters",
+      "skillsLabel": "Skills",
+      "addSkillPlaceholder": "Add a skill...",
+      "skillsCount": "{current}/{max} skills",
+      "localeLabel": "Language",
+      "timezoneLabel": "Timezone",
+      "linkedinLabel": "LinkedIn",
+      "linkedinPlaceholder": "https://linkedin.com/in/yourprofile",
+      "githubLabel": "GitHub",
+      "githubPlaceholder": "https://github.com/yourusername",
+      "twitterLabel": "Twitter",
+      "twitterPlaceholder": "https://twitter.com/yourusername",
+      "organizationLabel": "Organization",
+      "updateButton": "Update Profile",
+      "updating": "Updating...",
+      "success": "Profile updated successfully",
+      "error": "Failed to update profile"
+    },
+    "notifications": {
+      "title": "Notification Settings",
+      "description": "Configure which notifications you want to receive",
+      "email": {
+        "title": "Email Notifications",
+        "description": "Configure whether to receive notifications via email",
+        "enableLabel": "Enable email notifications",
+        "enableDescription": "Controls all email notification sending"
+      },
+      "activity": {
+        "title": "Activity Notifications",
+        "description": "Notification settings for in-app activities",
+        "kudosLabel": "Kudos notifications",
+        "kudosDescription": "Notifications when you receive kudos",
+        "checkinLabel": "Check-in reminders",
+        "checkinDescription": "Notifications when weekly check-in deadline approaches",
+        "surveyLabel": "Survey notifications",
+        "surveyDescription": "Notifications when new surveys are created"
+      },
+      "team": {
+        "title": "Team Notifications",
+        "description": "Notification settings for team-related activities",
+        "updatesLabel": "Team update notifications",
+        "updatesDescription": "Notifications for team member additions/removals and other updates"
+      },
+      "digest": {
+        "title": "Notification Frequency Settings",
+        "description": "Configure notification digest delivery frequency",
+        "frequencyLabel": "Digest delivery frequency",
+        "frequencyDescription": "Receive periodic email summaries of activities",
+        "never": "Never",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "updateButton": "Update Notification Settings",
+      "updating": "Updating...",
+      "success": "Notification settings updated successfully",
+      "error": "Failed to update notification settings"
+    },
+    "security": {
+      "password": {
+        "title": "Change Password",
+        "description": "Change your password regularly to maintain security",
+        "lastChanged": "Last password change: {date}",
+        "currentLabel": "Current Password",
+        "newLabel": "New Password",
+        "confirmLabel": "Confirm New Password",
+        "strengthWeak": "Weak",
+        "strengthFair": "Fair",
+        "strengthGood": "Good",
+        "strengthStrong": "Very Strong",
+        "requirements": "• At least 8 characters\n• Include uppercase, lowercase, and numbers\n• Special characters make it more secure",
+        "mismatch": "Passwords do not match",
+        "updateButton": "Update Password",
+        "updating": "Updating...",
+        "success": "Password updated successfully",
+        "error": "Failed to update password"
+      },
+      "info": {
+        "title": "Security Information",
+        "description": "Check your account security status",
+        "twoFactorLabel": "Two-Factor Authentication",
+        "twoFactorDescription": "Protect your account with an additional security layer",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "contactAdmin": "For detailed security settings, please contact your system administrator."
+      }
+    },
+    "sessions": {
+      "active": {
+        "title": "Active Sessions",
+        "description": "List of devices and sessions currently logged in",
+        "noSessions": "No active sessions",
+        "deviceInfo": "Unknown Device",
+        "lastUsed": "Last used: {time}",
+        "sessionStarted": "Session started: {time}",
+        "ipAddress": "IP: {ip}",
+        "statusActive": "Active",
+        "revokeButton": "End",
+        "revokeSuccess": "Session ended successfully",
+        "revokeError": "Failed to end session"
+      },
+      "history": {
+        "title": "Login History",
+        "description": "Review recent login activities",
+        "noHistory": "No login history",
+        "success": "Success",
+        "failed": "Failed",
+        "failReason": "Failure reason: {reason}",
+        "deviceUnknown": "Unknown Device",
+        "ipUnknown": "Unknown",
+        "timeAgo": "{time}"
+      },
+      "loading": "Loading...",
+      "error": "Failed to load data",
+      "unknownDevice": "Unknown Device",
+      "unknownBrowser": "Unknown Browser",
+      "deviceInfoConnector": " on ",
+      "unknown": "Unknown"
+    },
+    "personal": {
+      "title": "Personal Settings",
+      "tabs": {
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "security": "Security"
+      }
+    },
+    "slack": {
+      "title": "Slack Integration",
+      "description": "Connect your Slack account with TeamSpark AI account",
+      "connectionStatus": {
+        "title": "Connection Status",
+        "connected": "Connected",
+        "notConnected": "Not Connected",
+        "workspace": "Workspace"
+      },
+      "userAccount": {
+        "title": "Your Slack Account",
+        "notConnected": "Slack account not connected",
+        "connectDescription": "Connect your Slack account to receive notifications.",
+        "connectButton": "Connect Slack Account",
+        "disconnect": "Disconnect",
+        "reconnect": "Reconnect"
+      },
+      "errors": {
+        "connectionFailed": "Failed to connect to Slack",
+        "disconnectionFailed": "Failed to disconnect from Slack",
+        "generic": "An error occurred"
+      },
+      "success": {
+        "connected": "Slack connection completed",
+        "disconnected": "Slack connection disconnected"
+      },
+      "workspace": {
+        "title": "Connected Workspace"
+      },
+      "status": {
+        "title": "Slack Connection Status",
+        "userIdLabel": "Slack User ID",
+        "connected": "Connected"
+      },
+      "features": {
+        "title": "Available Features",
+        "kudosCommand": "Send Kudos with /kudos command",
+        "notifications": "Slack notifications when receiving Kudos",
+        "checkinReminders": "Check-in reminders",
+        "surveyNotifications": "Survey notifications"
+      },
+      "actions": {
+        "disconnect": "Disconnect Slack",
+        "connect": "Connect with Slack",
+        "connecting": "Connecting...",
+        "processing": "Processing..."
+      },
+      "form": {
+        "emailLabel": "Slack Email Address",
+        "emailDescription": "If left blank, your TeamSpark AI email address ({email}) will be used",
+        "instructions": "To connect with your Slack account, please enter the email address you use in Slack. If it's the same as your TeamSpark AI email address, you can connect directly."
       }
     }
   },
