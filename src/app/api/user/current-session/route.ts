@@ -23,8 +23,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     });
 
-    return NextResponse.json({ 
-      currentSessionId: currentSession?.id || null 
+    return NextResponse.json({
+      currentSessionId: currentSession?.id ?? null,
     });
   } catch (error) {
     logError(error as Error, 'GET /api/user/current-session');

@@ -46,14 +46,16 @@ export function SessionManagement(): JSX.Element {
         fetch('/api/user/sessions'),
         fetch('/api/user/current-session'),
       ]);
-      
+
       if (sessionsResponse.ok) {
         const data = (await sessionsResponse.json()) as Session[];
         setSessions(data);
       }
-      
+
       if (currentSessionResponse.ok) {
-        const currentData = (await currentSessionResponse.json()) as { currentSessionId: string | null };
+        const currentData = (await currentSessionResponse.json()) as {
+          currentSessionId: string | null;
+        };
         setCurrentSessionId(currentData.currentSessionId);
       }
     } catch (error) {
@@ -106,24 +108,24 @@ export function SessionManagement(): JSX.Element {
       });
 
       if (response.ok) {
-        const responseData = (await response.json()) as { 
-          message: string; 
-          shouldSignOut?: boolean 
+        const responseData = (await response.json()) as {
+          message: string;
+          shouldSignOut?: boolean;
         };
-        
+
         // If this was the current session, sign out immediately
-        if (responseData.shouldSignOut) {
-          await signOut({ 
+        if (responseData.shouldSignOut === true) {
+          await signOut({
             callbackUrl: `/${locale}/login`,
-            redirect: true 
+            redirect: true,
           });
           return;
         }
-        
+
         // Otherwise, just refresh the session list
         await loadSessions();
         await loadLoginHistory();
-        
+
         // Trigger immediate session validation for all tabs
         window.postMessage({ type: 'SESSION_TERMINATED', sessionId }, '*');
       } else {
@@ -134,7 +136,6 @@ export function SessionManagement(): JSX.Element {
       setError(t('active.revokeError'));
     }
   };
-
 
   const getDeviceIcon = (userAgent?: string | null): React.ReactNode => {
     if (userAgent === null || userAgent === undefined || userAgent === '')
@@ -253,14 +254,18 @@ export function SessionManagement(): JSX.Element {
                     ) : (
                       <Badge variant="secondary">{t('active.statusActive')}</Badge>
                     )}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => revokeSession(session.id)}
-                      className={session.id === currentSessionId ? 'text-red-600 hover:text-red-700' : ''}
+                      className={
+                        session.id === currentSessionId ? 'text-red-600 hover:text-red-700' : ''
+                      }
                     >
                       <LogOut className="mr-1 h-3 w-3" />
-                      {session.id === currentSessionId ? t('active.signOut') : t('active.revokeButton')}
+                      {session.id === currentSessionId
+                        ? t('active.signOut')
+                        : t('active.revokeButton')}
                     </Button>
                   </div>
                 </div>

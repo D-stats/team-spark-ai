@@ -139,10 +139,40 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     });
 
     if (token != null) {
-      // Extract locale from pathname for proper redirect
-      const locale = pathname.split('/')[1] ?? defaultLocale;
-      const dashboardUrl = new URL(`/${locale}/dashboard`, request.url);
+      // Try to get user's preferred locale from database
+      let userLocale: string = defaultLocale;
 
+      try {
+        if (typeof token.id === 'string') {
+          // Dynamically import prisma to avoid edge runtime issues
+          const { prisma } = await import('@/lib/prisma');
+          const user = await prisma.user.findUnique({
+            where: { id: token.id },
+            select: { locale: true },
+          });
+
+          if (
+            user?.locale !== null &&
+            user?.locale !== undefined &&
+            user?.locale !== '' &&
+            locales.includes(user.locale as 'en' | 'ja')
+          ) {
+            userLocale = user.locale;
+          }
+        }
+      } catch (error) {
+        // Fallback to current locale if database query fails
+        const currentLocale = pathname.split('/')[1];
+        userLocale =
+          currentLocale !== null &&
+          currentLocale !== undefined &&
+          currentLocale !== '' &&
+          locales.includes(currentLocale as 'en' | 'ja')
+            ? currentLocale
+            : defaultLocale;
+      }
+
+      const dashboardUrl = new URL(`/${userLocale}/dashboard`, request.url);
       return NextResponse.redirect(dashboardUrl);
     }
   }

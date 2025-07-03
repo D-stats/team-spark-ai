@@ -5,7 +5,11 @@ import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as {
+      email: unknown;
+      success: unknown;
+      failReason?: unknown;
+    };
     const { email, success, failReason } = body;
 
     if (typeof email !== 'string' || typeof success !== 'boolean') {
@@ -21,7 +25,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     if (user) {
-      await recordLoginAttempt(user.id, deviceInfo, success, failReason);
+      await recordLoginAttempt(
+        user.id,
+        deviceInfo,
+        success,
+        typeof failReason === 'string' ? failReason : undefined,
+      );
     }
 
     return NextResponse.json({ success: true });

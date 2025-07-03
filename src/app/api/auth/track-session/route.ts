@@ -7,7 +7,7 @@ import { logError } from '@/lib/logger';
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { dbUser } = await requireAuthWithOrganization();
-    const body = await request.json();
+    const body = (await request.json()) as { action: unknown };
     const { action } = body;
 
     const deviceInfo = extractDeviceInfo(request);
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // Create a new session record
         const sessionToken = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-        
+
         await createUserSession(dbUser.id, sessionToken, deviceInfo, expiresAt);
       } else {
         // Update existing session

@@ -31,19 +31,23 @@ export default function LoginPage(): JSX.Element {
   useEffect(() => {
     const urlError = searchParams.get('error');
     const sessionEnded = searchParams.get('sessionEnded');
-    
+
     if (sessionEnded === 'true') {
       setError('Your session has been ended. Please log in again.');
-    } else if (urlError) {
+    } else if (urlError !== null && urlError !== '') {
       // Map NextAuth error codes to user-friendly messages
       const errorMessages: Record<string, string> = {
-        'CredentialsSignin': t('error'),
-        'SessionRequired': 'Session expired. Please log in again.',
-        'AccessDenied': 'Access denied. Please check your credentials.',
-        'Verification': 'Verification failed. Please try again.',
-        'Default': t('error'),
+        CredentialsSignin: t('error'),
+        SessionRequired: 'Session expired. Please log in again.',
+        AccessDenied: 'Access denied. Please check your credentials.',
+        Verification: 'Verification failed. Please try again.',
+        Default: t('error'),
       };
-      setError((urlError && urlError in errorMessages ? errorMessages[urlError] : errorMessages['Default']) as string);
+      setError(
+        (urlError && urlError in errorMessages
+          ? errorMessages[urlError]
+          : errorMessages['Default']) as string,
+      );
     }
   }, [searchParams, t]);
 
@@ -85,7 +89,58 @@ export default function LoginPage(): JSX.Element {
         }).catch(() => {
           // Silently fail - this is just for tracking
         });
-        router.push(`/${locale}/dashboard`);
+
+        // Fetch user's preferred locale and redirect accordingly
+        try {
+          const response = await fetch('/api/user/profile');
+          if (response.ok) {
+            const userData = (await response.json()) as { locale?: string };
+            const userLocale = userData.locale ?? locale;
+
+            // Check if there's a callback URL and adjust locale if needed
+            const callbackUrl = searchParams.get('callbackUrl');
+            if (callbackUrl !== null && callbackUrl !== '') {
+              try {
+                const url = new URL(callbackUrl);
+                // Extract locale from callback URL and update it to user's preferred locale
+                const pathParts = url.pathname.split('/');
+                if (
+                  pathParts[1] !== null &&
+                  pathParts[1] !== undefined &&
+                  pathParts[1] !== '' &&
+                  (pathParts[1] === 'en' || pathParts[1] === 'ja')
+                ) {
+                  pathParts[1] = userLocale;
+                  url.pathname = pathParts.join('/');
+                  router.push(url.pathname + url.search);
+                } else {
+                  router.push(`/${userLocale}${url.pathname}${url.search}`);
+                }
+              } catch {
+                // If callback URL is invalid, redirect to dashboard
+                router.push(`/${userLocale}/dashboard`);
+              }
+            } else {
+              router.push(`/${userLocale}/dashboard`);
+            }
+          } else {
+            // Fallback to current locale if profile fetch fails
+            const callbackUrl = searchParams.get('callbackUrl');
+            if (callbackUrl !== null && callbackUrl !== '') {
+              router.push(callbackUrl);
+            } else {
+              router.push(`/${locale}/dashboard`);
+            }
+          }
+        } catch {
+          // Fallback to current locale if profile fetch fails
+          const callbackUrl = searchParams.get('callbackUrl');
+          if (callbackUrl !== null && callbackUrl !== '') {
+            router.push(callbackUrl);
+          } else {
+            router.push(`/${locale}/dashboard`);
+          }
+        }
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : t('error');

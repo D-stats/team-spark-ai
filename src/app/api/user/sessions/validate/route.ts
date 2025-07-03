@@ -40,7 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // create a new session for this device (this handles slight UA variations)
       const sessionToken = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
-      
+
       const newSession = await prisma.userSession.create({
         data: {
           userId: dbUser.id,

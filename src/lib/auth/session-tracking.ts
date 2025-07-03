@@ -13,18 +13,18 @@ interface DeviceInfo {
  */
 export function extractDeviceInfo(request: NextRequest): DeviceInfo {
   const userAgent = request.headers.get('user-agent');
-  const ipAddress = 
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    request.headers.get('x-real-ip') ||
-    request.headers.get('cf-connecting-ip') ||
-    request.ip ||
+  const ipAddress =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    request.headers.get('cf-connecting-ip') ??
+    request.ip ??
     'unknown';
 
   // Parse user agent to get device info
   let deviceInfo = null;
-  if (userAgent) {
+  if (userAgent !== null && userAgent !== undefined && userAgent !== '') {
     const agent = userAgent.toLowerCase();
-    
+
     // Browser detection
     let browser = 'Unknown Browser';
     if (agent.includes('chrome')) browser = 'Chrome';
@@ -39,7 +39,8 @@ export function extractDeviceInfo(request: NextRequest): DeviceInfo {
     else if (agent.includes('mac')) os = 'macOS';
     else if (agent.includes('linux')) os = 'Linux';
     else if (agent.includes('android')) os = 'Android';
-    else if (agent.includes('ios') || agent.includes('iphone') || agent.includes('ipad')) os = 'iOS';
+    else if (agent.includes('ios') || agent.includes('iphone') || agent.includes('ipad'))
+      os = 'iOS';
 
     deviceInfo = os ? `${browser} on ${os}` : browser;
   }
@@ -58,7 +59,7 @@ export async function createUserSession(
   userId: string,
   sessionToken: string,
   deviceInfo: DeviceInfo,
-  expiresAt: Date
+  expiresAt: Date,
 ): Promise<void> {
   try {
     await prisma.userSession.create({
@@ -104,7 +105,7 @@ export async function recordLoginAttempt(
   userId: string,
   deviceInfo: DeviceInfo,
   success: boolean,
-  failReason?: string
+  failReason?: string,
 ): Promise<void> {
   try {
     await prisma.loginHistory.create({

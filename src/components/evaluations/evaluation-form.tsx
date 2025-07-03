@@ -38,7 +38,7 @@ interface EvaluationFormProps {
 export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Element {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
   const store = useEvaluationStore();
   useAutoSave(); // オートセーブ機能を有効化
 

@@ -35,9 +35,9 @@ const navigationItems: NavigationItem[] = [
 export function Sidebar(): JSX.Element {
   const pathname = usePathname();
   const t = useTranslations('navigation');
-  
+
   // Extract current locale from pathname
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
 
   return (
     <div className="flex h-full w-64 flex-col border-r bg-white">
@@ -53,7 +53,7 @@ export function Sidebar(): JSX.Element {
         {navigationItems.map((item) => {
           // Add locale prefix to href
           const localizedHref = `/${currentLocale}${item.href}`;
-          
+
           // For dashboard, check exact match only
           const isActive =
             item.href === '/dashboard'

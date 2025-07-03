@@ -16,7 +16,7 @@ export default function SetupPage(): JSX.Element {
   const pathname = usePathname();
 
   // Extract current locale from pathname
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
 
   const generateSlug = (name: string) => {
     return name

@@ -59,9 +59,9 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  
+
   // Track the current locale for redirect detection
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
 
   const timezones = [
     'UTC',
@@ -115,7 +115,7 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
       }
 
       setSuccess(true);
-      
+
       // If locale changed from the original user locale, redirect to new locale URL
       // This handles both cases: changing locale and correcting URL to match user's actual locale
       if (locale !== currentLocale) {

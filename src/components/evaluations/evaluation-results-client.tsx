@@ -22,7 +22,7 @@ export function EvaluationResultsClient({
 }: EvaluationResultsClientProps): JSX.Element {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
   const [evaluation, setEvaluation] = useState<EvaluationWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

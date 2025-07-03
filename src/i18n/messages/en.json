@@ -389,11 +389,11 @@
     }
   },
   "settings": {
-    "title": "Personal Settings", 
+    "title": "Personal Settings",
     "subtitle": "Manage your profile and notification settings",
     "tabs": {
       "profile": "Profile",
-      "notifications": "Notifications", 
+      "notifications": "Notifications",
       "security": "Security",
       "sessions": "Session Management",
       "slack": "Slack Integration"

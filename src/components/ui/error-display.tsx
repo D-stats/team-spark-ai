@@ -30,7 +30,7 @@ export function ErrorDisplay({
   const isOperational = isAppError(error) ? error.isOperational : false;
 
   // Extract current locale from pathname
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
 
   const handleGoHome = () => {
     router.push(`/${currentLocale}/dashboard`);

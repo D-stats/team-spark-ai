@@ -59,23 +59,23 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     }
 
     // Check if this is the current session (same device/IP)
-    const isCurrentSession = 
+    const isCurrentSession =
       session.ipAddress === currentDeviceInfo.ipAddress &&
       session.userAgent === currentDeviceInfo.userAgent;
 
     // Invalidate the session in database
     await prisma.userSession.update({
       where: { id: sessionId },
-      data: { 
-        isActive: false
+      data: {
+        isActive: false,
       },
     });
 
     // If terminating current session, we need to tell the client to sign out
     if (isCurrentSession) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         message: 'Session ended successfully',
-        shouldSignOut: true 
+        shouldSignOut: true,
       });
     }
 

@@ -61,26 +61,27 @@ export default async function SlackSettingsPage(): Promise<JSX.Element> {
               </Badge>
             )}
           </div>
-          <CardDescription>
-            {t('description')}
-          </CardDescription>
+          <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {!slackConfigured ? (
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {t('notConfiguredMessage')}
-              </AlertDescription>
+              <AlertDescription>{t('notConfiguredMessage')}</AlertDescription>
             </Alert>
           ) : slackWorkspace ? (
             <div className="space-y-4">
               <div className="rounded-lg bg-muted p-4">
                 <h4 className="mb-2 font-medium">{t('connectedWorkspaceTitle')}</h4>
-                <p className="text-sm text-muted-foreground">{t('teamNameLabel')}: {slackWorkspace.teamName}</p>
-                <p className="text-sm text-muted-foreground">{t('teamIdLabel')}: {slackWorkspace.teamId}</p>
                 <p className="text-sm text-muted-foreground">
-                  {t('connectedDateLabel')}: {new Date(slackWorkspace.installedAt).toLocaleDateString()}
+                  {t('teamNameLabel')}: {slackWorkspace.teamName}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t('teamIdLabel')}: {slackWorkspace.teamId}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t('connectedDateLabel')}:{' '}
+                  {new Date(slackWorkspace.installedAt).toLocaleDateString()}
                 </p>
               </div>
 
@@ -117,9 +118,7 @@ export default async function SlackSettingsPage(): Promise<JSX.Element> {
 
               <Alert>
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  {t('requirementsMessage')}
-                </AlertDescription>
+                <AlertDescription>{t('requirementsMessage')}</AlertDescription>
               </Alert>
 
               {slackAuthUrl !== null && slackAuthUrl !== '' && (
@@ -145,9 +144,7 @@ export default async function SlackSettingsPage(): Promise<JSX.Element> {
             <div className="space-y-3">
               <div className="rounded-lg bg-muted p-4 font-mono text-sm">
                 <p className="mb-1 font-semibold">{t('kudosCommandSyntax')}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t('kudosCommandExample')}
-                </p>
+                <p className="text-xs text-muted-foreground">{t('kudosCommandExample')}</p>
               </div>
 
               <div className="text-sm">

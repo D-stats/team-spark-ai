@@ -4,11 +4,16 @@ import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
+interface SessionValidationReturn {
+  session: unknown;
+  status: string;
+}
+
 /**
  * Hook to validate that the user's session is still active in the database
  * If session is terminated, automatically sign out the user
  */
-export function useSessionValidation(): { session: any; status: string } {
+export function useSessionValidation(): SessionValidationReturn {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const lastCheckRef = useRef<number>(0);
@@ -16,7 +21,7 @@ export function useSessionValidation(): { session: any; status: string } {
   const sessionStartTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
+    if (status === 'authenticated' && session?.user !== null && session?.user !== undefined) {
       // Record when this session started
       if (sessionStartTimeRef.current === 0) {
         sessionStartTimeRef.current = Date.now();
@@ -26,7 +31,8 @@ export function useSessionValidation(): { session: any; status: string } {
         try {
           // Don't validate too soon after login to allow session creation time
           const timeSinceSessionStart = Date.now() - sessionStartTimeRef.current;
-          if (timeSinceSessionStart < 10000) { // Wait at least 10 seconds after login
+          if (timeSinceSessionStart < 10000) {
+            // Wait at least 10 seconds after login
             return;
           }
 
@@ -37,7 +43,7 @@ export function useSessionValidation(): { session: any; status: string } {
           if (response.status === 401) {
             // Session is no longer valid, sign out
             await signOut({
-              callbackUrl: `/${pathname.split('/')[1] || 'en'}/login?sessionEnded=true`,
+              callbackUrl: `/${pathname.split('/')[1] ?? 'en'}/login?sessionEnded=true`,
               redirect: true,
             });
           }
@@ -66,14 +72,15 @@ export function useSessionValidation(): { session: any; status: string } {
       // Validate on window focus
       const handleFocus = () => {
         const now = Date.now();
-        if (now - lastCheckRef.current > 30 * 1000) { // Only if it's been 30+ seconds
+        if (now - lastCheckRef.current > 30 * 1000) {
+          // Only if it's been 30+ seconds
           lastCheckRef.current = now;
           validateSession();
         }
       };
 
       // Listen for session termination messages
-      const handleMessage = (event: MessageEvent) => {
+      const handleMessage = (event: MessageEvent<{ type?: string; sessionId?: string }>) => {
         if (event.data?.type === 'SESSION_TERMINATED') {
           // Immediate validation when a session is terminated
           validateSession();
@@ -91,7 +98,7 @@ export function useSessionValidation(): { session: any; status: string } {
         window.removeEventListener('message', handleMessage);
       };
     }
-    
+
     return undefined;
   }, [session, status, pathname]);
 

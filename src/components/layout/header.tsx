@@ -35,7 +35,7 @@ export function Header({ user, organization }: HeaderProps): JSX.Element {
   const t = useTranslations();
 
   // Extract current locale from pathname
-  const currentLocale = pathname.split('/')[1] || 'en';
+  const currentLocale = pathname.split('/')[1] ?? 'en';
 
   const handleSignOut = async () => {
     await signOut({

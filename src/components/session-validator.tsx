@@ -10,9 +10,9 @@ import { useSessionTracking } from '@/hooks/use-session-tracking';
 export function SessionValidator(): null {
   // Validate that the session is still active in the database
   useSessionValidation();
-  
+
   // Track session activity for new sessions
   useSessionTracking();
-  
+
   return null;
 }

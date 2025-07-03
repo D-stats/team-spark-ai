@@ -157,9 +157,7 @@ export function SlackUserSettings({ user, slackWorkspace }: SlackUserSettingsPro
           <form onSubmit={handleConnectSlack} className="space-y-4">
             <Alert>
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                {t('form.instructions')}
-              </AlertDescription>
+              <AlertDescription>{t('form.instructions')}</AlertDescription>
             </Alert>
 
             <div className="space-y-2">
