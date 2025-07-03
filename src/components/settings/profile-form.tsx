@@ -120,11 +120,9 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
       // This handles both cases: changing locale and correcting URL to match user's actual locale
       if (locale !== currentLocale) {
         const newPath = pathname.replace(`/${currentLocale}/`, `/${locale}/`);
-        console.log('Language changed:', { currentLocale, newLocale: locale, currentPath: pathname, newPath });
         // Use window.location to ensure a full reload with the new locale
         window.location.href = newPath;
       } else {
-        console.log('Language not changed, refreshing:', { currentLocale, locale });
         router.refresh();
       }
     } catch (err) {
