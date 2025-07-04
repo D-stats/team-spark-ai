@@ -450,7 +450,17 @@
         "uploadFailed": "写真のアップロードに失敗しました",
         "deleteFailed": "写真の削除に失敗しました",
         "invalidFileType": "無効なファイル形式です。JPEG、PNG、WebPのみ許可されています。",
-        "fileTooLarge": "ファイルサイズが大きすぎます。最大5MBまでです。"
+        "fileTooLarge": "ファイルサイズが大きすぎます。最大5MBまでです。",
+        "crop": {
+          "title": "写真をトリミング",
+          "description": "トリミング範囲を調整して、最適なアバターを作成してください。画像は400x400ピクセルにリサイズされます。",
+          "instructions": "角をドラッグしてトリミング範囲をリサイズするか、中央をドラッグして移動させてください。トリミングは円形で適用されます。",
+          "imageAlt": "トリミングする画像",
+          "resetButton": "リセット",
+          "cancelButton": "キャンセル",
+          "applyButton": "適用",
+          "applying": "適用中..."
+        }
       }
     },
     "notifications": {

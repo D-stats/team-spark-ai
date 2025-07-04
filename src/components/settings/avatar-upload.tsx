@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { ImageCropModal } from '@/components/settings/image-crop-modal';
 import { Upload, X, Camera, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +43,9 @@ export function AvatarUpload({ user, onAvatarUpdate, className }: AvatarUploadPr
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageSrcForCrop, setImageSrcForCrop] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -62,15 +66,28 @@ export function AvatarUpload({ user, onAvatarUpdate, className }: AvatarUploadPr
       return;
     }
 
-    // Create preview
+    // Store file and create image source for cropping
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onload = (e) => {
-      setPreviewUrl(e.target?.result as string);
+      setImageSrcForCrop(e.target?.result as string);
+      setShowCropModal(true);
     };
     reader.readAsDataURL(file);
+  };
 
-    // Upload file
-    handleUpload(file);
+  const handleCropComplete = async (croppedImageBlob: Blob): Promise<void> => {
+    // Create a File object from the cropped blob
+    const croppedFile = new File([croppedImageBlob], selectedFile?.name ?? 'avatar.jpg', {
+      type: 'image/jpeg',
+    });
+
+    // Create preview URL for the cropped image
+    const previewUrl = URL.createObjectURL(croppedImageBlob);
+    setPreviewUrl(previewUrl);
+
+    // Upload the cropped file
+    await handleUpload(croppedFile);
   };
 
   const handleUpload = async (file: File): Promise<void> => {
@@ -141,6 +158,17 @@ export function AvatarUpload({ user, onAvatarUpdate, className }: AvatarUploadPr
   const clearMessages = (): void => {
     setError(null);
     setSuccess(null);
+  };
+
+  const handleCropModalClose = (): void => {
+    setShowCropModal(false);
+    setImageSrcForCrop('');
+    setSelectedFile(null);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const displayAvatarUrl = previewUrl ?? user.avatarUrl;
@@ -250,6 +278,14 @@ export function AvatarUpload({ user, onAvatarUpdate, className }: AvatarUploadPr
             onChange={handleFileSelect}
             className="hidden"
             disabled={uploading || deleting}
+          />
+
+          {/* Image Crop Modal */}
+          <ImageCropModal
+            isOpen={showCropModal}
+            onClose={handleCropModalClose}
+            imageSrc={imageSrcForCrop}
+            onCropComplete={handleCropComplete}
           />
         </div>
       </CardContent>

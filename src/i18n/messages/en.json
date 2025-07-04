@@ -450,7 +450,17 @@
         "uploadFailed": "Failed to upload photo",
         "deleteFailed": "Failed to remove photo",
         "invalidFileType": "Invalid file type. Only JPEG, PNG, and WebP are allowed.",
-        "fileTooLarge": "File too large. Maximum size is 5MB."
+        "fileTooLarge": "File too large. Maximum size is 5MB.",
+        "crop": {
+          "title": "Crop Your Photo",
+          "description": "Adjust the crop area to get the perfect avatar. The image will be resized to 400x400 pixels.",
+          "instructions": "Drag the corners to resize the crop area or drag the center to move it. The crop will be applied as a circle.",
+          "imageAlt": "Image to crop",
+          "resetButton": "Reset Crop",
+          "cancelButton": "Cancel",
+          "applyButton": "Apply Crop",
+          "applying": "Applying..."
+        }
       }
     },
     "notifications": {
