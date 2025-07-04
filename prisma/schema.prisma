@@ -36,6 +36,26 @@ model User {
   emailVerified          DateTime?
   isActive               Boolean          @default(true)
   lastActiveAt           DateTime?
+  // Extended profile fields
+  bio                    String?
+  skills                 String[]         @default([])
+  timezone               String?          @default("UTC")
+  locale                 String?          @default("en")
+  phoneNumber            String?
+  linkedinUrl            String?
+  githubUrl              String?
+  twitterUrl             String?
+  // Security and preferences
+  twoFactorEnabled       Boolean          @default(false)
+  twoFactorSecret        String?
+  lastPasswordChange     DateTime?
+  // Notification preferences
+  emailNotifications     Boolean          @default(true)
+  kudosNotifications     Boolean          @default(true)
+  checkinReminders       Boolean          @default(true)
+  surveyNotifications    Boolean          @default(true)
+  teamUpdates            Boolean          @default(false)
+  digestFrequency        DigestFrequency  @default(WEEKLY)
   createdAt              DateTime         @default(now())
   updatedAt              DateTime         @updatedAt
   checkIns               CheckIn[]
@@ -50,11 +70,47 @@ model User {
   surveyResponses        SurveyResponse[]
   managedTeams           Team[]           @relation("TeamManager")
   teamMemberships        TeamMember[]
+  userSessions           UserSession[]
+  loginHistory           LoginHistory[]
   organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
   @@index([email])
   @@index([slackUserId])
+}
+
+model UserSession {
+  id           String    @id @default(cuid())
+  userId       String
+  sessionToken String    @unique
+  deviceInfo   String?
+  ipAddress    String?
+  userAgent    String?
+  isActive     Boolean   @default(true)
+  lastUsedAt   DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([isActive])
+}
+
+model LoginHistory {
+  id         String    @id @default(cuid())
+  userId     String
+  ipAddress  String?
+  userAgent  String?
+  deviceInfo String?
+  success    Boolean   @default(true)
+  failReason String?
+  loginAt    DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([loginAt])
+  @@index([success])
 }
 
 model Team {
@@ -467,4 +523,11 @@ enum CheckInFrequency {
   MONTHLY
   QUARTERLY
   CUSTOM
+}
+
+enum DigestFrequency {
+  NEVER
+  DAILY
+  WEEKLY
+  MONTHLY
 }

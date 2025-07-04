@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+// Login tracking is handled in the track-login API endpoint
 
 declare module 'next-auth' {
   interface Session {
@@ -41,6 +42,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        twoFactorToken: { label: '2FA Token', type: 'text' },
       },
       async authorize(credentials) {
         if (typeof credentials?.email !== 'string' || typeof credentials?.password !== 'string') {
@@ -50,7 +52,18 @@ export const authOptions: NextAuthOptions = {
         try {
           const user = await prisma.user.findUnique({
             where: { email: credentials.email },
-            include: { organization: true },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              password: true,
+              organizationId: true,
+              role: true,
+              avatarUrl: true,
+              isActive: true,
+              twoFactorEnabled: true,
+              twoFactorSecret: true,
+            },
           });
 
           if (typeof user?.password !== 'string' || user.isActive !== true) {
@@ -60,7 +73,28 @@ export const authOptions: NextAuthOptions = {
           const isValidPassword = await bcrypt.compare(credentials.password, user.password);
 
           if (!isValidPassword) {
+            // Note: We can't easily track failed attempts here because we don't have access to request
+            // Failed attempts will be tracked in the login page client-side
             return null;
+          }
+
+          // Check if 2FA is enabled for this user
+          if (user.twoFactorEnabled && user.twoFactorSecret != null) {
+            // If 2FA is enabled but no token provided, reject with special error
+            if (typeof credentials.twoFactorToken !== 'string') {
+              throw new Error('2FA_REQUIRED');
+            }
+
+            // Verify 2FA token
+            const { authenticator } = await import('otplib');
+            const isValidToken = authenticator.verify({
+              token: credentials.twoFactorToken,
+              secret: user.twoFactorSecret,
+            });
+
+            if (!isValidToken) {
+              throw new Error('INVALID_2FA_TOKEN');
+            }
           }
 
           return {
@@ -107,8 +141,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: '/en/login',
+    error: '/en/login',
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',

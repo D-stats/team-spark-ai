@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './auth.config';
+import crypto from 'crypto';
 
 type AuthUser = {
   id: string;
@@ -79,4 +80,11 @@ export async function requireNoAuth(): Promise<void> {
   if (user) {
     redirect('/dashboard');
   }
+}
+
+/**
+ * Generate a secure session token
+ */
+export function generateSessionToken(): string {
+  return crypto.randomBytes(32).toString('hex');
 }

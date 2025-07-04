@@ -36,10 +36,13 @@ export function Sidebar(): JSX.Element {
   const pathname = usePathname();
   const t = useTranslations('navigation');
 
+  // Extract current locale from pathname
+  const currentLocale = pathname.split('/')[1] ?? 'en';
+
   return (
     <div className="flex h-full w-64 flex-col border-r bg-white">
       <div className="flex h-16 items-center border-b px-6">
-        <Link href="/dashboard" className="flex items-center space-x-2">
+        <Link href={`/${currentLocale}/dashboard`} className="flex items-center space-x-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <span className="text-sm font-bold">TS</span>
           </div>
@@ -48,15 +51,18 @@ export function Sidebar(): JSX.Element {
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navigationItems.map((item) => {
+          // Add locale prefix to href
+          const localizedHref = `/${currentLocale}${item.href}`;
+
           // For dashboard, check exact match only
           const isActive =
             item.href === '/dashboard'
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              ? pathname === localizedHref
+              : pathname === localizedHref || pathname.startsWith(`${localizedHref}/`);
           return (
             <Link
               key={item.key}
-              href={item.href}
+              href={localizedHref}
               className={cn(
                 'flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
                 isActive ? 'bg-primary text-primary-foreground' : 'text-gray-700 hover:bg-gray-100',

@@ -389,73 +389,302 @@
     }
   },
   "settings": {
-    "title": "設定",
-    "subtitle": "個人設定を管理",
+    "title": "個人設定",
+    "subtitle": "プロフィールや通知設定を管理します",
+    "tabs": {
+      "profile": "プロフィール",
+      "notifications": "通知設定",
+      "security": "セキュリティ",
+      "sessions": "セッション管理",
+      "slack": "Slack連携"
+    },
     "profile": {
-      "title": "プロフィール",
+      "title": "プロフィール情報",
+      "description": "あなたの基本情報を更新します",
+      "basicInfo": "基本情報",
+      "skills": "スキル",
+      "localeSettings": "言語・地域設定",
+      "socialLinks": "ソーシャルリンク",
+      "organizationInfo": "組織情報",
       "nameLabel": "氏名",
       "emailLabel": "メールアドレス",
-      "roleLabel": "役割",
-      "teamLabel": "チーム",
+      "emailNotEditable": "メールアドレスは変更できません",
+      "phoneLabel": "電話番号",
+      "phonePlaceholder": "090-1234-5678",
+      "roleLabel": "権限",
+      "roleAdmin": "管理者",
+      "roleManager": "マネージャー",
+      "roleMember": "メンバー",
+      "roleNotEditable": "権限は管理者によって設定されます",
+      "bioLabel": "自己紹介",
+      "bioPlaceholder": "あなたについて簡単に紹介してください...",
+      "bioCharCount": "{current}/{max}文字",
+      "skillsLabel": "スキル",
+      "addSkillPlaceholder": "スキルを追加...",
+      "skillsCount": "{current}/{max}個のスキル",
+      "localeLabel": "言語",
+      "languageJa": "日本語",
+      "languageEn": "English",
       "timezoneLabel": "タイムゾーン",
-      "languageLabel": "言語",
+      "linkedinLabel": "LinkedIn",
+      "linkedinPlaceholder": "https://linkedin.com/in/yourprofile",
+      "githubLabel": "GitHub",
+      "githubPlaceholder": "https://github.com/yourusername",
+      "twitterLabel": "Twitter",
+      "twitterPlaceholder": "https://twitter.com/yourusername",
+      "organizationLabel": "所属組織",
       "updateButton": "プロフィールを更新",
-      "changePasswordButton": "パスワードを変更",
+      "updating": "更新中...",
       "success": "プロフィールが正常に更新されました",
-      "error": "プロフィールの更新に失敗しました"
+      "error": "プロフィールの更新に失敗しました",
+      "avatar": {
+        "title": "プロフィール写真",
+        "description": "プロフィール写真をアップロードしてアカウントをカスタマイズします",
+        "uploadButton": "写真をアップロード",
+        "removeButton": "削除",
+        "uploading": "アップロード中...",
+        "deleting": "削除中...",
+        "requirements": "JPG、PNG、WebP形式。最大5MB。推奨サイズ400x400px。",
+        "uploadSuccess": "プロフィール写真が正常にアップロードされました",
+        "deleteSuccess": "プロフィール写真が正常に削除されました",
+        "uploadFailed": "写真のアップロードに失敗しました",
+        "deleteFailed": "写真の削除に失敗しました",
+        "invalidFileType": "無効なファイル形式です。JPEG、PNG、WebPのみ許可されています。",
+        "fileTooLarge": "ファイルサイズが大きすぎます。最大5MBまでです。",
+        "crop": {
+          "title": "写真をトリミング",
+          "description": "トリミング範囲を調整して、最適なアバターを作成してください。画像は400x400ピクセルにリサイズされます。",
+          "instructions": "角をドラッグしてトリミング範囲をリサイズするか、中央をドラッグして移動させてください。トリミングは円形で適用されます。",
+          "imageAlt": "トリミングする画像",
+          "resetButton": "リセット",
+          "cancelButton": "キャンセル",
+          "applyButton": "適用",
+          "applying": "適用中..."
+        }
+      }
     },
     "notifications": {
-      "title": "通知",
+      "title": "通知設定",
+      "description": "受信したい通知の種類を設定します",
       "email": {
         "title": "メール通知",
-        "kudosReceived": "クードスを受信したとき",
-        "checkinReminder": "チェックインリマインダー",
-        "teamUpdates": "チームの更新",
-        "weeklyDigest": "週次ダイジェスト"
+        "description": "メールで通知を受信するかどうかを設定します",
+        "enableLabel": "メール通知を有効にする",
+        "enableDescription": "すべてのメール通知の送信を制御します"
       },
-      "inApp": {
-        "title": "アプリ内通知",
-        "all": "すべての通知",
-        "mentions": "メンションのみ",
-        "none": "なし"
-      }
-    },
-    "preferences": {
-      "title": "設定",
-      "theme": {
-        "label": "テーマ",
-        "light": "ライト",
-        "dark": "ダーク",
-        "system": "システム"
+      "activity": {
+        "title": "活動通知",
+        "description": "アプリ内の活動に関する通知設定",
+        "kudosLabel": "Kudos通知",
+        "kudosDescription": "Kudosを受け取った時の通知",
+        "checkinLabel": "チェックインリマインダー",
+        "checkinDescription": "週次チェックインの締切が近い時の通知",
+        "surveyLabel": "サーベイ通知",
+        "surveyDescription": "新しいサーベイが作成された時の通知"
       },
-      "language": {
-        "label": "言語",
-        "en": "英語",
-        "ja": "日本語"
+      "team": {
+        "title": "チーム通知",
+        "description": "チームに関する通知設定",
+        "updatesLabel": "チーム更新通知",
+        "updatesDescription": "チームメンバーの追加・削除などの更新通知"
       },
-      "dateFormat": {
-        "label": "日付形式",
-        "mdy": "MM/DD/YYYY",
-        "dmy": "DD/MM/YYYY",
-        "ymd": "YYYY/MM/DD"
-      }
+      "digest": {
+        "title": "通知頻度設定",
+        "description": "通知ダイジェストの配信頻度を設定します",
+        "frequencyLabel": "ダイジェスト配信頻度",
+        "frequencyDescription": "活動の要約をメールで定期的に受け取ります",
+        "never": "配信しない",
+        "daily": "毎日",
+        "weekly": "毎週",
+        "monthly": "毎月"
+      },
+      "updateButton": "通知設定を更新",
+      "updating": "更新中...",
+      "success": "通知設定が正常に更新されました",
+      "error": "通知設定の更新に失敗しました"
     },
     "security": {
-      "title": "セキュリティ",
-      "twoFactor": {
-        "title": "二要素認証",
-        "status": "ステータス",
+      "password": {
+        "title": "パスワード変更",
+        "description": "セキュリティを保つため定期的にパスワードを変更してください",
+        "lastChanged": "前回のパスワード変更: {date}",
+        "currentLabel": "現在のパスワード",
+        "newLabel": "新しいパスワード",
+        "confirmLabel": "新しいパスワード（確認）",
+        "strengthWeak": "弱い",
+        "strengthFair": "普通",
+        "strengthGood": "強い",
+        "strengthStrong": "非常に強い",
+        "requirements": "• 8文字以上\n• 大文字・小文字・数字を含む\n• 特殊文字を含むとより安全",
+        "mismatch": "パスワードが一致しません",
+        "updateButton": "パスワードを更新",
+        "updating": "更新中...",
+        "success": "パスワードが正常に更新されました",
+        "error": "パスワードの更新に失敗しました"
+      },
+      "info": {
+        "title": "セキュリティ情報",
+        "description": "アカウントのセキュリティ状態を確認できます",
+        "twoFactorLabel": "二要素認証",
+        "twoFactorDescription": "追加のセキュリティ層でアカウントを保護",
         "enabled": "有効",
         "disabled": "無効",
-        "enable": "2FAを有効化",
-        "disable": "2FAを無効化"
+        "contactAdmin": "セキュリティの詳細設定については、システム管理者にお問い合わせください。"
       },
-      "sessions": {
+      "twoFactor": {
+        "title": "二要素認証",
+        "description": "パスワードに加えて認証コードを要求することで、アカウントに追加のセキュリティ層を追加します",
+        "status": "二要素認証の状態",
+        "statusDescription": "現在の二要素認証の状態",
+        "enabled": "有効",
+        "disabled": "無効",
+        "enableButton": "2FAを有効にする",
+        "disableButton": "2FAを無効にする",
+        "setting": "設定中...",
+        "setupTitle": "二要素認証の設定",
+        "setupDescription": "認証アプリでQRコードをスキャンしてください",
+        "verifyDescription": "設定を完了するため、認証アプリから6桁のコードを入力してください",
+        "scanInstructions": "認証アプリでこのQRコードをスキャンしてください",
+        "manualEntry": "またはこのキーを手動で入力してください:",
+        "verificationCode": "認証コード",
+        "enterCode": "認証アプリから6桁のコードを入力してください",
+        "next": "次へ",
+        "back": "戻る",
+        "enable": "2FAを有効にする",
+        "enabling": "有効化中...",
+        "disableTitle": "二要素認証を無効にする",
+        "disableDescription": "本当に二要素認証を無効にしますか？これによりアカウントのセキュリティが低下します。",
+        "disabling": "無効化中...",
+        "cancel": "キャンセル",
+        "confirm": "確認"
+      }
+    },
+    "sessions": {
+      "active": {
         "title": "アクティブセッション",
-        "current": "現在のセッション",
-        "logoutAll": "他のすべてのセッションからログアウト"
+        "description": "現在ログインしているデバイスとセッションの一覧です",
+        "noSessions": "アクティブなセッションがありません",
+        "deviceInfo": "不明なデバイス",
+        "lastUsed": "最終利用: {time}",
+        "sessionStarted": "セッション開始: {time}",
+        "ipAddress": "IP: {ip}",
+        "statusActive": "アクティブ",
+        "revokeButton": "終了",
+        "revokeSuccess": "セッションが正常に終了されました",
+        "revokeError": "セッションの終了に失敗しました",
+        "refreshButton": "更新",
+        "currentSession": "現在のセッション",
+        "signOut": "ログアウト"
+      },
+      "history": {
+        "title": "ログイン履歴",
+        "description": "最近のログイン活動を確認できます",
+        "noHistory": "ログイン履歴がありません",
+        "success": "成功",
+        "failed": "失敗",
+        "failReason": "失敗理由: {reason}",
+        "deviceUnknown": "不明なデバイス",
+        "ipUnknown": "不明",
+        "timeAgo": "{time}"
+      },
+      "loading": "読み込み中...",
+      "error": "データの読み込みに失敗しました",
+      "unknownDevice": "不明なデバイス",
+      "unknownBrowser": "不明なブラウザ",
+      "deviceInfoConnector": "",
+      "unknown": "不明"
+    },
+    "slack": {
+      "title": "Slack連携",
+      "description": "SlackアカウントとTeamSpark AIアカウントを連携します",
+      "connectionStatus": {
+        "title": "接続ステータス",
+        "connected": "接続済み",
+        "notConnected": "未接続",
+        "workspace": "ワークスペース"
+      },
+      "userAccount": {
+        "title": "あなたのSlackアカウント",
+        "notConnected": "Slackアカウントが接続されていません",
+        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
+        "connectButton": "Slackアカウントを接続",
+        "disconnect": "切断",
+        "reconnect": "再接続"
+      },
+      "errors": {
+        "connectionFailed": "Slack連携に失敗しました",
+        "disconnectionFailed": "Slack連携解除に失敗しました",
+        "generic": "エラーが発生しました"
+      },
+      "success": {
+        "connected": "Slack連携が完了しました",
+        "disconnected": "Slack連携を解除しました"
+      },
+      "workspace": {
+        "title": "連携ワークスペース"
+      },
+      "status": {
+        "title": "Slack連携状態",
+        "userIdLabel": "SlackユーザーID",
+        "connected": "連携済み"
+      },
+      "features": {
+        "title": "利用可能な機能",
+        "kudosCommand": "/kudos コマンドでKudosを送信",
+        "notifications": "Kudos受信時のSlack通知",
+        "checkinReminders": "チェックインリマインダー",
+        "surveyNotifications": "サーベイ通知"
+      },
+      "actions": {
+        "disconnect": "Slack連携を解除",
+        "connect": "Slackと連携",
+        "connecting": "連携中...",
+        "processing": "処理中..."
+      },
+      "form": {
+        "emailLabel": "Slackメールアドレス",
+        "emailDescription": "空欄の場合は、TeamSpark AIのメールアドレス ({email}) を使用します",
+        "instructions": "Slackアカウントと連携するには、Slackで使用しているメールアドレスを入力してください。TeamSpark AIのメールアドレスと同じ場合は、そのまま連携できます。"
       }
     }
+  },
+  "slackSettings": {
+    "title": "Slack連携設定",
+    "subtitle": "SlackワークスペースとTeamSpark AIを連携します",
+    "adminOnlyMessage": "Slack連携の設定は管理者のみが行えます。",
+    "workspaceIntegration": "ワークスペース連携",
+    "connected": "連携済み",
+    "description": "SlackワークスペースとTeamSpark AIを連携することで、Slackから直接Kudosを送信したり、通知を受け取ることができます。",
+    "notConfiguredMessage": "Slack連携機能は現在設定されていません。システム管理者にお問い合わせください。",
+    "connectedWorkspaceTitle": "連携済みワークスペース",
+    "teamNameLabel": "チーム名",
+    "teamIdLabel": "チームID",
+    "connectedDateLabel": "連携日時",
+    "availableFeaturesTitle": "利用可能な機能",
+    "featureKudos": "✅ /kudosコマンドでKudosを送信",
+    "featureNotifications": "✅ Kudos受信時のSlack通知",
+    "featureReminders": "✅ チェックインリマインダー",
+    "featureSurveyNotifications": "✅ サーベイ開始通知",
+    "updateConnectionButton": "連携を更新",
+    "benefitsTitle": "連携するとできること",
+    "benefitSlackKudos": "• Slackから/kudosコマンドでKudosを送信",
+    "benefitSlackNotifications": "• Kudosを受け取った時のSlack通知",
+    "benefitCheckInReminders": "• 週次チェックインのリマインダー通知",
+    "benefitSurveyNotifications": "• サーベイ開始・締切の通知",
+    "requirementsMessage": "連携にはSlackワークスペースの管理者権限が必要です。連携後、チームメンバーはSlackアカウントとTeamSpark AIアカウントを紐付ける必要があります。",
+    "connectButton": "Slackと連携する",
+    "commandsTitle": "Slackコマンドの使い方",
+    "commandsDescription": "Slack上で利用できるコマンドの一覧です",
+    "kudosCommandSyntax": "/kudos @ユーザー名 カテゴリ メッセージ",
+    "kudosCommandExample": "例: /kudos @tanaka teamwork 素晴らしいプレゼンテーションでした！",
+    "categoriesTitle": "カテゴリ一覧:",
+    "categoryTeamwork": "• teamwork - チームワーク",
+    "categoryInnovation": "• innovation - イノベーション",
+    "categoryLeadership": "• leadership - リーダーシップ",
+    "categoryProblemSolving": "• problem_solving - 問題解決",
+    "categoryCustomerFocus": "• customer_focus - 顧客志向",
+    "categoryLearning": "• learning - 学習・成長",
+    "categoryOther": "• other - その他"
   },
   "reports": {
     "title": "レポート",
@@ -679,33 +908,6 @@
       "actions": {
         "edit": "編集",
         "details": "詳細"
-      }
-    }
-  },
-  "settings": {
-    "personal": {
-      "title": "個人設定",
-      "tabs": {
-        "profile": "プロフィール",
-        "notifications": "通知",
-        "security": "セキュリティ"
-      }
-    },
-    "slack": {
-      "title": "Slack連携",
-      "connectionStatus": {
-        "title": "接続ステータス",
-        "connected": "接続済み",
-        "notConnected": "未接続",
-        "workspace": "ワークスペース"
-      },
-      "userAccount": {
-        "title": "あなたのSlackアカウント",
-        "notConnected": "Slackアカウントが接続されていません",
-        "connectDescription": "Slackアカウントを接続して通知を受け取りましょう。",
-        "connectButton": "Slackアカウントを接続",
-        "disconnect": "切断",
-        "reconnect": "再接続"
       }
     }
   },

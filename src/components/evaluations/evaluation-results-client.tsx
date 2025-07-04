@@ -5,7 +5,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { EvaluationResults } from '@/components/evaluations/evaluation-results';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,8 @@ export function EvaluationResultsClient({
   evaluationId,
 }: EvaluationResultsClientProps): JSX.Element {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = pathname.split('/')[1] ?? 'en';
   const [evaluation, setEvaluation] = useState<EvaluationWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -149,7 +151,7 @@ export function EvaluationResultsClient({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/evaluations')}
+            onClick={() => router.push(`/${currentLocale}/evaluations`)}
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -172,7 +174,7 @@ export function EvaluationResultsClient({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => router.push('/evaluations')}
+          onClick={() => router.push(`/${currentLocale}/evaluations`)}
           className="flex items-center space-x-2"
         >
           <ArrowLeft className="h-4 w-4" />

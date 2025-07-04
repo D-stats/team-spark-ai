@@ -34,11 +34,11 @@ export function getBestLocale(acceptLanguage: string | null): Locale {
 export default getRequestConfig(async ({ locale }) => {
   // If locale is undefined, use default
   let typedLocale = locale as string;
-  
+
   if (!typedLocale) {
     typedLocale = defaultLocale;
   }
-  
+
   // Validate locale is supported
   if (!locales.includes(typedLocale as Locale)) {
     notFound();

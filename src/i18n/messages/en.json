@@ -389,72 +389,210 @@
     }
   },
   "settings": {
-    "title": "Settings",
-    "subtitle": "Manage your personal preferences",
+    "title": "Personal Settings",
+    "subtitle": "Manage your profile and notification settings",
+    "tabs": {
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "security": "Security",
+      "sessions": "Session Management",
+      "slack": "Slack Integration"
+    },
     "profile": {
-      "title": "Profile",
+      "title": "Profile Information",
+      "description": "Update your basic information",
+      "basicInfo": "Basic Information",
+      "skills": "Skills",
+      "localeSettings": "Language & Region Settings",
+      "socialLinks": "Social Links",
+      "organizationInfo": "Organization Information",
       "nameLabel": "Full Name",
-      "emailLabel": "Email",
+      "emailLabel": "Email Address",
+      "emailNotEditable": "Email address cannot be changed",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "555-123-4567",
       "roleLabel": "Role",
-      "teamLabel": "Team",
+      "roleAdmin": "Administrator",
+      "roleManager": "Manager",
+      "roleMember": "Member",
+      "roleNotEditable": "Role is set by administrators",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us a bit about yourself...",
+      "bioCharCount": "{current}/{max} characters",
+      "skillsLabel": "Skills",
+      "addSkillPlaceholder": "Add a skill...",
+      "skillsCount": "{current}/{max} skills",
+      "localeLabel": "Language",
+      "languageJa": "Japanese",
+      "languageEn": "English",
       "timezoneLabel": "Timezone",
-      "languageLabel": "Language",
+      "linkedinLabel": "LinkedIn",
+      "linkedinPlaceholder": "https://linkedin.com/in/yourprofile",
+      "githubLabel": "GitHub",
+      "githubPlaceholder": "https://github.com/yourusername",
+      "twitterLabel": "Twitter",
+      "twitterPlaceholder": "https://twitter.com/yourusername",
+      "organizationLabel": "Organization",
       "updateButton": "Update Profile",
-      "changePasswordButton": "Change Password",
+      "updating": "Updating...",
       "success": "Profile updated successfully",
-      "error": "Failed to update profile"
+      "error": "Failed to update profile",
+      "avatar": {
+        "title": "Profile Photo",
+        "description": "Upload a profile photo to personalize your account",
+        "uploadButton": "Upload Photo",
+        "removeButton": "Remove",
+        "uploading": "Uploading...",
+        "deleting": "Removing...",
+        "requirements": "JPG, PNG or WebP. Max 5MB. Recommended 400x400px.",
+        "uploadSuccess": "Profile photo uploaded successfully",
+        "deleteSuccess": "Profile photo removed successfully",
+        "uploadFailed": "Failed to upload photo",
+        "deleteFailed": "Failed to remove photo",
+        "invalidFileType": "Invalid file type. Only JPEG, PNG, and WebP are allowed.",
+        "fileTooLarge": "File too large. Maximum size is 5MB.",
+        "crop": {
+          "title": "Crop Your Photo",
+          "description": "Adjust the crop area to get the perfect avatar. The image will be resized to 400x400 pixels.",
+          "instructions": "Drag the corners to resize the crop area or drag the center to move it. The crop will be applied as a circle.",
+          "imageAlt": "Image to crop",
+          "resetButton": "Reset Crop",
+          "cancelButton": "Cancel",
+          "applyButton": "Apply Crop",
+          "applying": "Applying..."
+        }
+      }
     },
     "notifications": {
-      "title": "Notifications",
+      "title": "Notification Settings",
+      "description": "Configure which notifications you want to receive",
       "email": {
         "title": "Email Notifications",
-        "kudosReceived": "When I receive kudos",
-        "checkinReminder": "Check-in reminders",
-        "teamUpdates": "Team updates",
-        "weeklyDigest": "Weekly digest"
+        "description": "Configure whether to receive notifications via email",
+        "enableLabel": "Enable email notifications",
+        "enableDescription": "Controls all email notification sending"
       },
-      "inApp": {
-        "title": "In-App Notifications",
-        "all": "All notifications",
-        "mentions": "Mentions only",
-        "none": "None"
-      }
-    },
-    "preferences": {
-      "title": "Preferences",
-      "theme": {
-        "label": "Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System"
+      "activity": {
+        "title": "Activity Notifications",
+        "description": "Notification settings for in-app activities",
+        "kudosLabel": "Kudos notifications",
+        "kudosDescription": "Notifications when you receive kudos",
+        "checkinLabel": "Check-in reminders",
+        "checkinDescription": "Notifications when weekly check-in deadline approaches",
+        "surveyLabel": "Survey notifications",
+        "surveyDescription": "Notifications when new surveys are created"
       },
-      "language": {
-        "label": "Language",
-        "en": "English",
-        "ja": "Japanese"
+      "team": {
+        "title": "Team Notifications",
+        "description": "Notification settings for team-related activities",
+        "updatesLabel": "Team update notifications",
+        "updatesDescription": "Notifications for team member additions/removals and other updates"
       },
-      "dateFormat": {
-        "label": "Date Format",
-        "mdy": "MM/DD/YYYY",
-        "dmy": "DD/MM/YYYY",
-        "ymd": "YYYY/MM/DD"
-      }
+      "digest": {
+        "title": "Notification Frequency Settings",
+        "description": "Configure notification digest delivery frequency",
+        "frequencyLabel": "Digest delivery frequency",
+        "frequencyDescription": "Receive periodic email summaries of activities",
+        "never": "Never",
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "updateButton": "Update Notification Settings",
+      "updating": "Updating...",
+      "success": "Notification settings updated successfully",
+      "error": "Failed to update notification settings"
     },
     "security": {
-      "title": "Security",
-      "twoFactor": {
-        "title": "Two-Factor Authentication",
-        "status": "Status",
+      "password": {
+        "title": "Change Password",
+        "description": "Change your password regularly to maintain security",
+        "lastChanged": "Last password change: {date}",
+        "currentLabel": "Current Password",
+        "newLabel": "New Password",
+        "confirmLabel": "Confirm New Password",
+        "strengthWeak": "Weak",
+        "strengthFair": "Fair",
+        "strengthGood": "Good",
+        "strengthStrong": "Very Strong",
+        "requirements": "• At least 8 characters\n• Include uppercase, lowercase, and numbers\n• Special characters make it more secure",
+        "mismatch": "Passwords do not match",
+        "updateButton": "Update Password",
+        "updating": "Updating...",
+        "success": "Password updated successfully",
+        "error": "Failed to update password"
+      },
+      "info": {
+        "title": "Security Information",
+        "description": "Check your account security status",
+        "twoFactorLabel": "Two-Factor Authentication",
+        "twoFactorDescription": "Protect your account with an additional security layer",
         "enabled": "Enabled",
         "disabled": "Disabled",
-        "enable": "Enable 2FA",
-        "disable": "Disable 2FA"
+        "contactAdmin": "For detailed security settings, please contact your system administrator."
       },
-      "sessions": {
-        "title": "Active Sessions",
-        "current": "Current Session",
-        "logoutAll": "Logout All Other Sessions"
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account by requiring a verification code in addition to your password",
+        "status": "Two-Factor Authentication Status",
+        "statusDescription": "Current status of your two-factor authentication",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enableButton": "Enable 2FA",
+        "disableButton": "Disable 2FA",
+        "setting": "Setting up...",
+        "setupTitle": "Set Up Two-Factor Authentication",
+        "setupDescription": "Scan the QR code with your authenticator app",
+        "verifyDescription": "Enter the 6-digit code from your authenticator app to complete setup",
+        "scanInstructions": "Scan this QR code with your authenticator app",
+        "manualEntry": "Or enter this key manually:",
+        "verificationCode": "Verification Code",
+        "enterCode": "Enter the 6-digit code from your authenticator app",
+        "next": "Next",
+        "back": "Back",
+        "enable": "Enable 2FA",
+        "enabling": "Enabling...",
+        "disableTitle": "Disable Two-Factor Authentication",
+        "disableDescription": "Are you sure you want to disable two-factor authentication? This will make your account less secure.",
+        "disabling": "Disabling...",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
       }
+    },
+    "sessions": {
+      "active": {
+        "title": "Active Sessions",
+        "description": "List of devices and sessions currently logged in",
+        "noSessions": "No active sessions",
+        "deviceInfo": "Unknown Device",
+        "lastUsed": "Last used: {time}",
+        "sessionStarted": "Session started: {time}",
+        "ipAddress": "IP: {ip}",
+        "statusActive": "Active",
+        "revokeButton": "End",
+        "revokeSuccess": "Session ended successfully",
+        "revokeError": "Failed to end session",
+        "refreshButton": "Refresh",
+        "currentSession": "Current Session",
+        "signOut": "Sign Out"
+      },
+      "history": {
+        "title": "Login History",
+        "description": "Review recent login activities",
+        "noHistory": "No login history",
+        "success": "Success",
+        "failed": "Failed",
+        "failReason": "Failure reason: {reason}",
+        "deviceUnknown": "Unknown Device",
+        "ipUnknown": "Unknown",
+        "timeAgo": "{time}"
+      },
+      "loading": "Loading...",
+      "error": "Failed to load data",
+      "unknownDevice": "Unknown Device",
+      "unknownBrowser": "Unknown Browser",
+      "deviceInfoConnector": " on ",
+      "unknown": "Unknown"
     }
   },
   "reports": {
@@ -682,32 +820,43 @@
       }
     }
   },
-  "settings": {
-    "personal": {
-      "title": "Personal Settings",
-      "tabs": {
-        "profile": "Profile",
-        "notifications": "Notifications",
-        "security": "Security"
-      }
-    },
-    "slack": {
-      "title": "Slack Integration",
-      "connectionStatus": {
-        "title": "Connection Status",
-        "connected": "Connected",
-        "notConnected": "Not Connected",
-        "workspace": "Workspace"
-      },
-      "userAccount": {
-        "title": "Your Slack Account",
-        "notConnected": "Slack account not connected",
-        "connectDescription": "Connect your Slack account to receive notifications.",
-        "connectButton": "Connect Slack Account",
-        "disconnect": "Disconnect",
-        "reconnect": "Reconnect"
-      }
-    }
+  "slackSettings": {
+    "title": "Slack Integration Settings",
+    "subtitle": "Integrate Slack workspace with TeamSpark AI",
+    "adminOnlyMessage": "Slack integration settings can only be configured by administrators.",
+    "workspaceIntegration": "Workspace Integration",
+    "connected": "Connected",
+    "description": "By integrating Slack workspace with TeamSpark AI, you can send Kudos directly from Slack and receive notifications.",
+    "notConfiguredMessage": "Slack integration feature is not currently configured. Please contact your system administrator.",
+    "connectedWorkspaceTitle": "Connected Workspace",
+    "teamNameLabel": "Team Name",
+    "teamIdLabel": "Team ID",
+    "connectedDateLabel": "Connected Date",
+    "availableFeaturesTitle": "Available Features",
+    "featureKudos": "✅ Send Kudos with /kudos command",
+    "featureNotifications": "✅ Slack notifications for received Kudos",
+    "featureReminders": "✅ Check-in reminders",
+    "featureSurveyNotifications": "✅ Survey start notifications",
+    "updateConnectionButton": "Update Integration",
+    "benefitsTitle": "What you can do after integration",
+    "benefitSlackKudos": "• Send Kudos from Slack using /kudos command",
+    "benefitSlackNotifications": "• Receive Slack notifications when you get Kudos",
+    "benefitCheckInReminders": "• Weekly check-in reminder notifications",
+    "benefitSurveyNotifications": "• Survey start and deadline notifications",
+    "requirementsMessage": "Integration requires Slack workspace administrator permissions. After integration, team members need to link their Slack accounts with TeamSpark AI accounts.",
+    "connectButton": "Connect with Slack",
+    "commandsTitle": "How to Use Slack Commands",
+    "commandsDescription": "List of commands available in Slack",
+    "kudosCommandSyntax": "/kudos @username category message",
+    "kudosCommandExample": "Example: /kudos @tanaka teamwork Great presentation!",
+    "categoriesTitle": "Category List:",
+    "categoryTeamwork": "• teamwork - Teamwork",
+    "categoryInnovation": "• innovation - Innovation",
+    "categoryLeadership": "• leadership - Leadership",
+    "categoryProblemSolving": "• problem_solving - Problem Solving",
+    "categoryCustomerFocus": "• customer_focus - Customer Focus",
+    "categoryLearning": "• learning - Learning & Growth",
+    "categoryOther": "• other - Other"
   },
   "auth": {
     "login": {

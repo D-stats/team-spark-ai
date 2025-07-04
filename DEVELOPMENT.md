@@ -22,22 +22,26 @@ Access the app at http://localhost:3000/en (no login needed in dev mode)
 ## Core Development Rules
 
 ### 1. Before You Code
+
 - Run `npm run dev:safe` to ensure environment is ready
 - Pull latest changes: `git pull origin main`
 - Create feature branch: `git checkout -b feature/your-feature`
 
 ### 2. While Coding
+
 - **Mock Auth**: Development uses `dev@example.com` automatically (no login needed)
 - **Database**: Each developer runs their own PostgreSQL in Docker
 - **i18n**: All user-facing strings must use translation keys (no hardcoded text)
 - **TypeScript**: Strict mode enabled - fix all type errors
 
 ### 3. Before You Commit
+
 ```bash
 npm run validate  # Must pass: type-check, lint, tests
 ```
 
 ### 4. Git Workflow
+
 ```bash
 # Safe push with automatic checks
 npm run safe-push
@@ -50,19 +54,19 @@ git push origin feature/your-feature
 
 ## Key Commands
 
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| `npm run dev:safe` | Start with pre-flight checks | Daily development |
-| `npm run validate` | Run all quality checks | Before every commit |
-| `npm run safe-push` | Push with automatic validation | When pushing changes |
-| `npm run test:stories` | Run user story tests | After feature implementation |
+| Command                | Purpose                        | When to Use                  |
+| ---------------------- | ------------------------------ | ---------------------------- |
+| `npm run dev:safe`     | Start with pre-flight checks   | Daily development            |
+| `npm run validate`     | Run all quality checks         | Before every commit          |
+| `npm run safe-push`    | Push with automatic validation | When pushing changes         |
+| `npm run test:stories` | Run user story tests           | After feature implementation |
 
 ## Project Structure
 
 ```
 src/
 ├── app/[locale]/        # Next.js pages (i18n routing)
-├── components/          # Reusable React components  
+├── components/          # Reusable React components
 ├── lib/                 # Core utilities
 │   ├── auth/           # Mock authentication (dev only)
 │   └── user-stories/   # Feature requirements
@@ -72,12 +76,14 @@ src/
 ## Common Tasks
 
 ### Adding a New Feature
+
 1. Check user stories in `/src/lib/user-stories/stories/`
 2. Implement feature following existing patterns
 3. Add translation keys to `src/i18n/messages/{en,ja}.json`
 4. Update story status when complete
 
 ### Database Changes
+
 ```bash
 # After modifying prisma/schema.prisma
 npx prisma migrate dev --name describe_your_change
@@ -85,17 +91,18 @@ npx prisma generate
 ```
 
 ### Port Conflicts
+
 - Next.js: 3000 (use `PORT=3001 npm run dev` if needed)
 - PostgreSQL: 5433 (configured in docker-compose.yml)
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| 404 errors | Access via language prefix: `/en` or `/ja` |
-| Database errors | Run `docker compose up -d postgres` |
-| Type errors | Run `npm run type-check` for details |
-| Port in use | Check `npm run check:ports` |
+| Issue           | Solution                                   |
+| --------------- | ------------------------------------------ |
+| 404 errors      | Access via language prefix: `/en` or `/ja` |
+| Database errors | Run `docker compose up -d postgres`        |
+| Type errors     | Run `npm run type-check` for details       |
+| Port in use     | Check `npm run check:ports`                |
 
 ## Authentication Status
 

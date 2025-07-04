@@ -5,7 +5,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -37,6 +37,8 @@ interface EvaluationFormProps {
 
 export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Element {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = pathname.split('/')[1] ?? 'en';
   const store = useEvaluationStore();
   useAutoSave(); // オートセーブ機能を有効化
 
@@ -103,7 +105,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
 
     const result = await submitEvaluation();
     if (result.success) {
-      router.push('/evaluations');
+      router.push(`/${currentLocale}/evaluations`);
     }
   };
 
@@ -160,7 +162,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push('/evaluations')}
+            onClick={() => router.push(`/${currentLocale}/evaluations`)}
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="h-4 w-4" />
