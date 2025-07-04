@@ -20,6 +20,8 @@ import { useTranslations, useLocale } from 'next-intl';
 export default function LoginPage(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [twoFactorToken, setTwoFactorToken] = useState('');
+  const [requires2FA, setRequires2FA] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations('auth.login');
@@ -41,6 +43,8 @@ export default function LoginPage(): JSX.Element {
         SessionRequired: 'Session expired. Please log in again.',
         AccessDenied: 'Access denied. Please check your credentials.',
         Verification: 'Verification failed. Please try again.',
+        '2FA_REQUIRED': 'Two-factor authentication required. Please enter your 6-digit code.',
+        INVALID_2FA_TOKEN: 'Invalid two-factor authentication code. Please try again.',
         Default: t('error'),
       };
       setError(
@@ -51,20 +55,62 @@ export default function LoginPage(): JSX.Element {
     }
   }, [searchParams, t]);
 
+  // Check if user requires 2FA
+  const checkTwoFactorRequired = async (userEmail: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/user/2fa/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail }),
+      });
+
+      if (response.ok) {
+        const data = (await response.json()) as { twoFactorEnabled: boolean };
+        return data.twoFactorEnabled;
+      }
+    } catch {
+      // If check fails, proceed without 2FA requirement
+    }
+    return false;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
+      // First, check if this user requires 2FA
+      if (!requires2FA) {
+        const needsTwoFactor = await checkTwoFactorRequired(email);
+        if (needsTwoFactor) {
+          setRequires2FA(true);
+          setLoading(false);
+          setError('Two-factor authentication required. Please enter your 6-digit code.');
+          return;
+        }
+      }
+
       const result = await signIn('credentials', {
         email,
         password,
+        twoFactorToken: requires2FA ? twoFactorToken : undefined,
         redirect: false,
       });
 
       if (result?.error != null) {
-        setError(t('error'));
+        // Handle specific 2FA errors
+        if (result.error === 'CredentialsSignin') {
+          // This could be a 2FA error, check the actual error from our auth config
+          if (!requires2FA) {
+            setError(t('error'));
+          } else {
+            setError('Invalid two-factor authentication code. Please try again.');
+            setTwoFactorToken(''); // Clear the 2FA token field
+          }
+        } else {
+          setError(t('error'));
+        }
         // Track failed login attempt
         fetch('/api/auth/track-login', {
           method: 'POST',
@@ -185,6 +231,25 @@ export default function LoginPage(): JSX.Element {
                 disabled={loading}
               />
             </div>
+            {requires2FA && (
+              <div className="space-y-2">
+                <Label htmlFor="twoFactorToken">Two-Factor Authentication Code</Label>
+                <Input
+                  id="twoFactorToken"
+                  type="text"
+                  placeholder="123456"
+                  value={twoFactorToken}
+                  onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  required
+                  disabled={loading}
+                  maxLength={6}
+                  className="text-center text-lg tracking-widest"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Enter the 6-digit code from your authenticator app
+                </p>
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>

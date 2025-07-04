@@ -6,21 +6,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Lock, Shield } from 'lucide-react';
+import { Eye, EyeOff, Lock } from 'lucide-react';
+import { TwoFactorSettings } from './two-factor-settings';
 
 interface User {
   id: string;
+  email: string;
   lastPasswordChange?: Date | null;
   twoFactorEnabled?: boolean;
 }
 
 interface PasswordSettingsProps {
   user: User;
+  onUserUpdate?: () => void;
 }
 
-export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
+export function PasswordSettings({ user, onUserUpdate }: PasswordSettingsProps): JSX.Element {
   const t = useTranslations('settings.security.password');
-  const tInfo = useTranslations('settings.security.info');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -236,34 +238,7 @@ export function PasswordSettings({ user }: PasswordSettingsProps): JSX.Element {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Shield className="mr-2 h-5 w-5" />
-            {tInfo('title')}
-          </CardTitle>
-          <CardDescription>{tInfo('description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">{tInfo('twoFactorLabel')}</p>
-              <p className="text-sm text-muted-foreground">{tInfo('twoFactorDescription')}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              {user.twoFactorEnabled === true ? (
-                <span className="text-sm font-medium text-green-600">{tInfo('enabled')}</span>
-              ) : (
-                <span className="text-sm text-muted-foreground">{tInfo('disabled')}</span>
-              )}
-            </div>
-          </div>
-
-          <div className="border-t pt-4">
-            <p className="text-sm text-muted-foreground">{tInfo('contactAdmin')}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <TwoFactorSettings user={user} onUpdate={onUserUpdate} />
     </div>
   );
 }

@@ -505,6 +505,33 @@
         "enabled": "Enabled",
         "disabled": "Disabled",
         "contactAdmin": "For detailed security settings, please contact your system administrator."
+      },
+      "twoFactor": {
+        "title": "Two-Factor Authentication",
+        "description": "Add an extra layer of security to your account by requiring a verification code in addition to your password",
+        "status": "Two-Factor Authentication Status",
+        "statusDescription": "Current status of your two-factor authentication",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "enableButton": "Enable 2FA",
+        "disableButton": "Disable 2FA",
+        "setting": "Setting up...",
+        "setupTitle": "Set Up Two-Factor Authentication",
+        "setupDescription": "Scan the QR code with your authenticator app",
+        "verifyDescription": "Enter the 6-digit code from your authenticator app to complete setup",
+        "scanInstructions": "Scan this QR code with your authenticator app",
+        "manualEntry": "Or enter this key manually:",
+        "verificationCode": "Verification Code",
+        "enterCode": "Enter the 6-digit code from your authenticator app",
+        "next": "Next",
+        "back": "Back",
+        "enable": "Enable 2FA",
+        "enabling": "Enabling...",
+        "disableTitle": "Disable Two-Factor Authentication",
+        "disableDescription": "Are you sure you want to disable two-factor authentication? This will make your account less secure.",
+        "disabling": "Disabling...",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
       }
     },
     "sessions": {

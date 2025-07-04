@@ -505,6 +505,33 @@
         "enabled": "有効",
         "disabled": "無効",
         "contactAdmin": "セキュリティの詳細設定については、システム管理者にお問い合わせください。"
+      },
+      "twoFactor": {
+        "title": "二要素認証",
+        "description": "パスワードに加えて認証コードを要求することで、アカウントに追加のセキュリティ層を追加します",
+        "status": "二要素認証の状態",
+        "statusDescription": "現在の二要素認証の状態",
+        "enabled": "有効",
+        "disabled": "無効",
+        "enableButton": "2FAを有効にする",
+        "disableButton": "2FAを無効にする",
+        "setting": "設定中...",
+        "setupTitle": "二要素認証の設定",
+        "setupDescription": "認証アプリでQRコードをスキャンしてください",
+        "verifyDescription": "設定を完了するため、認証アプリから6桁のコードを入力してください",
+        "scanInstructions": "認証アプリでこのQRコードをスキャンしてください",
+        "manualEntry": "またはこのキーを手動で入力してください:",
+        "verificationCode": "認証コード",
+        "enterCode": "認証アプリから6桁のコードを入力してください",
+        "next": "次へ",
+        "back": "戻る",
+        "enable": "2FAを有効にする",
+        "enabling": "有効化中...",
+        "disableTitle": "二要素認証を無効にする",
+        "disableDescription": "本当に二要素認証を無効にしますか？これによりアカウントのセキュリティが低下します。",
+        "disabling": "無効化中...",
+        "cancel": "キャンセル",
+        "confirm": "確認"
       }
     },
     "sessions": {
