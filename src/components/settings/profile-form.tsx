@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { AvatarUpload } from '@/components/settings/avatar-upload';
 import { X, Plus } from 'lucide-react';
 
 interface User {
@@ -59,6 +60,7 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User>(user);
 
   // Track the current locale for redirect detection
   const currentLocale = pathname.split('/')[1] ?? 'en';
@@ -82,6 +84,10 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
 
   const removeSkill = (skillToRemove: string): void => {
     setSkills(skills.filter((skill) => skill !== skillToRemove));
+  };
+
+  const handleAvatarUpdate = (avatarUrl: string | null): void => {
+    setCurrentUser({ ...currentUser, avatarUrl });
   };
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
@@ -141,6 +147,9 @@ export function ProfileForm({ user }: ProfileFormProps): JSX.Element {
       {success ? (
         <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">{t('success')}</div>
       ) : null}
+
+      {/* Avatar Section */}
+      <AvatarUpload user={currentUser} onAvatarUpdate={handleAvatarUpdate} className="mb-6" />
 
       {/* Basic Information */}
       <div className="space-y-4">

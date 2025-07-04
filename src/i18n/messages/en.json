@@ -436,7 +436,22 @@
       "updateButton": "Update Profile",
       "updating": "Updating...",
       "success": "Profile updated successfully",
-      "error": "Failed to update profile"
+      "error": "Failed to update profile",
+      "avatar": {
+        "title": "Profile Photo",
+        "description": "Upload a profile photo to personalize your account",
+        "uploadButton": "Upload Photo",
+        "removeButton": "Remove",
+        "uploading": "Uploading...",
+        "deleting": "Removing...",
+        "requirements": "JPG, PNG or WebP. Max 5MB. Recommended 400x400px.",
+        "uploadSuccess": "Profile photo uploaded successfully",
+        "deleteSuccess": "Profile photo removed successfully",
+        "uploadFailed": "Failed to upload photo",
+        "deleteFailed": "Failed to remove photo",
+        "invalidFileType": "Invalid file type. Only JPEG, PNG, and WebP are allowed.",
+        "fileTooLarge": "File too large. Maximum size is 5MB."
+      }
     },
     "notifications": {
       "title": "Notification Settings",

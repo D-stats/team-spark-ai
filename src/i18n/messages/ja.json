@@ -436,7 +436,22 @@
       "updateButton": "プロフィールを更新",
       "updating": "更新中...",
       "success": "プロフィールが正常に更新されました",
-      "error": "プロフィールの更新に失敗しました"
+      "error": "プロフィールの更新に失敗しました",
+      "avatar": {
+        "title": "プロフィール写真",
+        "description": "プロフィール写真をアップロードしてアカウントをカスタマイズします",
+        "uploadButton": "写真をアップロード",
+        "removeButton": "削除",
+        "uploading": "アップロード中...",
+        "deleting": "削除中...",
+        "requirements": "JPG、PNG、WebP形式。最大5MB。推奨サイズ400x400px。",
+        "uploadSuccess": "プロフィール写真が正常にアップロードされました",
+        "deleteSuccess": "プロフィール写真が正常に削除されました",
+        "uploadFailed": "写真のアップロードに失敗しました",
+        "deleteFailed": "写真の削除に失敗しました",
+        "invalidFileType": "無効なファイル形式です。JPEG、PNG、WebPのみ許可されています。",
+        "fileTooLarge": "ファイルサイズが大きすぎます。最大5MBまでです。"
+      }
     },
     "notifications": {
       "title": "通知設定",
