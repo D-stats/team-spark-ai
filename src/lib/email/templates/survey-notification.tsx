@@ -61,7 +61,7 @@ export const SurveyNotificationEmail = ({
 
 SurveyNotificationEmail.PreviewProps = {
   surveyTitle: '2024年第1四半期満足度調査',
-  surveyUrl: 'https://example.com/surveys/1',
+  surveyUrl: 'https://teamspark.localhost:3000/surveys/1',
   deadline: new Date('2024-03-31'),
 } as SurveyNotificationEmailProps;
 

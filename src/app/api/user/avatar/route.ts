@@ -3,6 +3,12 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth/auth.config';
 import { prisma } from '@/lib/prisma';
 import { uploadFile, deleteFile } from '@/lib/storage/cloud-storage';
+import {
+  extractAvatarFilename,
+  validateFileType,
+  validateFileSize,
+} from '@/lib/utils/file-security';
+import { uploadRateLimit, applyRateLimit } from '@/lib/auth/rate-limit';
 import sharp from 'sharp';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -17,6 +23,12 @@ interface ApiResponse<T = unknown> {
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {
+    // Apply rate limiting for avatar uploads
+    const rateLimitResponse = await applyRateLimit(request, uploadRateLimit);
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<ApiResponse>;
+    }
+
     const session = await getServerSession(authOptions);
 
     if (session?.user?.id == null) {
@@ -31,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     }
 
     // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    if (!validateFileType(file, ALLOWED_TYPES)) {
       return NextResponse.json(
         { success: false, error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' },
         { status: 400 },
@@ -39,7 +51,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     }
 
     // Validate file size
-    if (file.size > MAX_FILE_SIZE) {
+    if (!validateFileSize(file, MAX_FILE_SIZE)) {
       return NextResponse.json(
         { success: false, error: 'File too large. Maximum size is 5MB.' },
         { status: 400 },
@@ -67,11 +79,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     // Delete old avatar if exists
     if (currentUser?.avatarUrl != null && currentUser.avatarUrl !== '') {
       try {
-        // Extract filename from URL
-        const urlParts = currentUser.avatarUrl.split('/');
-        const filename = urlParts[urlParts.length - 1];
-        if (filename != null && filename !== '' && filename.includes('avatars/')) {
-          await deleteFile(`avatars/${filename.split('avatars/')[1]}`);
+        const filename = extractAvatarFilename(currentUser.avatarUrl);
+        if (filename != null && filename !== '') {
+          await deleteFile(`avatars/${filename}`);
         }
       } catch (error) {
         console.warn('Failed to delete old avatar:', error);
@@ -147,10 +157,9 @@ export async function DELETE(): Promise<NextResponse<ApiResponse>> {
 
     // Delete avatar from cloud storage
     try {
-      const urlParts = currentUser.avatarUrl.split('/');
-      const filename = urlParts[urlParts.length - 1];
-      if (filename != null && filename !== '' && filename.includes('avatars/')) {
-        await deleteFile(`avatars/${filename.split('avatars/')[1]}`);
+      const filename = extractAvatarFilename(currentUser.avatarUrl);
+      if (filename != null && filename !== '') {
+        await deleteFile(`avatars/${filename}`);
       }
     } catch (error) {
       console.warn('Failed to delete avatar from storage:', error);

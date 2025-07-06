@@ -40,7 +40,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
   const pathname = usePathname();
   const currentLocale = pathname.split('/')[1] ?? 'en';
   const store = useEvaluationStore();
-  useAutoSave(); // オートセーブ機能を有効化
+  useAutoSave(); // Enable auto-save functionality
 
   const {
     currentEvaluation,
@@ -109,7 +109,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
     }
   };
 
-  // ステップナビゲーション
+  // Step navigation
   const handleNext = () => {
     if (validateCurrentStep()) {
       nextStep();
@@ -120,13 +120,13 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
     previousStep();
   };
 
-  // ローディング状態
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="text-gray-600">評価データを読み込んでいます...</p>
+          <p className="text-gray-600">Loading evaluation data...</p>
         </div>
       </div>
     );
@@ -136,7 +136,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>評価データが見つかりません。</AlertDescription>
+        <AlertDescription>Evaluation data not found.</AlertDescription>
       </Alert>
     );
   }
@@ -149,14 +149,14 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
     return (
       <Alert>
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>無効なステップです。</AlertDescription>
+        <AlertDescription>Invalid step.</AlertDescription>
       </Alert>
     );
   }
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      {/* ヘッダー */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button
@@ -166,18 +166,18 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
             className="flex items-center space-x-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>戻る</span>
+            <span>Back</span>
           </Button>
 
           <div>
             <h1 className="text-2xl font-bold">
               {currentEvaluation.type === 'SELF'
-                ? '自己評価'
+                ? 'Self Review'
                 : currentEvaluation.type === 'MANAGER'
-                  ? '上司評価'
+                  ? 'Manager Review'
                   : currentEvaluation.type === 'PEER'
-                    ? '同僚評価'
-                    : '評価'}
+                    ? 'Peer Review'
+                    : 'Review'}
             </h1>
             <p className="text-gray-600">
               {currentEvaluation.evaluatee.name} - {currentEvaluation.cycle.name}
@@ -186,22 +186,22 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
         </div>
 
         <div className="flex items-center space-x-3">
-          {/* オンライン状態 */}
+          {/* Online status */}
           <div className="flex items-center space-x-1 text-sm">
             {isOnline ? (
               <>
                 <Wifi className="h-4 w-4 text-green-600" />
-                <span className="text-green-600">オンライン</span>
+                <span className="text-green-600">Online</span>
               </>
             ) : (
               <>
                 <WifiOff className="h-4 w-4 text-orange-600" />
-                <span className="text-orange-600">オフライン</span>
+                <span className="text-orange-600">Offline</span>
               </>
             )}
           </div>
 
-          {/* 保存状態 */}
+          {/* Save status */}
           {lastSavedAt && (
             <div className="flex items-center space-x-1 text-sm text-gray-600">
               <CheckCircle2 className="h-4 w-4" />
@@ -210,12 +210,12 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
                   hour: '2-digit',
                   minute: '2-digit',
                 })}{' '}
-                保存済み
+                saved
               </span>
             </div>
           )}
 
-          {/* 評価ステータス */}
+          {/* Evaluation status */}
           <Badge
             variant={
               currentEvaluation.status === 'DRAFT'
@@ -228,29 +228,29 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
             }
           >
             {currentEvaluation.status === 'DRAFT'
-              ? '下書き'
+              ? 'Draft'
               : currentEvaluation.status === 'SUBMITTED'
-                ? '提出済み'
+                ? 'Submitted'
                 : currentEvaluation.status === 'REVIEWED'
-                  ? '承認済み'
+                  ? 'Reviewed'
                   : currentEvaluation.status === 'SHARED'
-                    ? '共有済み'
+                    ? 'Shared'
                     : currentEvaluation.status}
           </Badge>
         </div>
       </div>
 
-      {/* プログレスバー */}
+      {/* Progress bar */}
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">進捗状況</span>
+              <span className="text-sm font-medium">Progress</span>
               <span className="text-sm text-gray-600">{Math.round(progress)}%</span>
             </div>
             <Progress value={progress} className="h-2" />
 
-            {/* ステップ表示 */}
+            {/* Step indicators */}
             <div className="flex justify-between text-xs">
               {steps.map((step, index) => (
                 <div
@@ -282,7 +282,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
         </CardContent>
       </Card>
 
-      {/* エラー表示 */}
+      {/* Error display */}
       {submitError !== null && submitError !== undefined && submitError !== '' && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
@@ -290,20 +290,20 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
         </Alert>
       )}
 
-      {/* フォームコンテンツ */}
+      {/* Form content */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>{currentStepData.name}</span>
             {currentStepData.isRequired && (
               <Badge variant="outline" className="text-red-600">
-                必須
+                Required
               </Badge>
             )}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* ステップコンテンツ */}
+          {/* Step content */}
           {currentStepData.id === 'overview' && (
             <EvaluationOverviewStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
@@ -320,7 +320,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
             <EvaluationReviewStep evaluation={currentEvaluation} isReadOnly={isReadOnly} />
           )}
 
-          {/* ナビゲーションボタン */}
+          {/* Navigation buttons */}
           <div className="flex items-center justify-between border-t pt-6">
             <div className="flex space-x-3">
               <Button
@@ -330,7 +330,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
                 className="flex items-center space-x-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span>前へ</span>
+                <span>Previous</span>
               </Button>
 
               {currentStep < steps.length - 1 && (
@@ -339,31 +339,31 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
                   disabled={!validateCurrentStep()}
                   className="flex items-center space-x-2"
                 >
-                  <span>次へ</span>
+                  <span>Next</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               )}
             </div>
 
             <div className="flex space-x-3">
-              {/* 自動保存インジケーター */}
+              {/* Auto-save indicator */}
               {autoSaveEnabled && isDirty && !isSaving && (
                 <div className="flex items-center space-x-1 text-sm text-amber-600">
                   <Clock className="h-4 w-4" />
-                  <span>自動保存待機中...</span>
+                  <span>Auto-save pending...</span>
                 </div>
               )}
 
               {isSaving && (
                 <div className="flex items-center space-x-1 text-sm text-blue-600">
                   <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                  <span>保存中...</span>
+                  <span>Saving...</span>
                 </div>
               )}
 
               {!isReadOnly && (
                 <>
-                  {/* 手動保存 */}
+                  {/* Manual save */}
                   <Button
                     variant="outline"
                     onClick={handleSave}
@@ -371,10 +371,10 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
                     className="flex items-center space-x-2"
                   >
                     <Save className="h-4 w-4" />
-                    <span>保存</span>
+                    <span>Save</span>
                   </Button>
 
-                  {/* 送信 */}
+                  {/* Submit */}
                   {currentStep === steps.length - 1 && (
                     <Button
                       onClick={handleSubmit}
@@ -386,7 +386,7 @@ export function EvaluationForm({ evaluationId }: EvaluationFormProps): JSX.Eleme
                       ) : (
                         <Send className="h-4 w-4" />
                       )}
-                      <span>{isSubmitting ? '送信中...' : '評価を送信'}</span>
+                      <span>{isSubmitting ? 'Submitting...' : 'Submit Review'}</span>
                     </Button>
                   )}
                 </>

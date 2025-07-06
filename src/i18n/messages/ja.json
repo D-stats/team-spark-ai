@@ -808,6 +808,51 @@
       "viewDetails": "詳細を見る",
       "showMore": "さらに表示"
     },
+    "form": {
+      "types": {
+        "self": "自己評価",
+        "manager": "上司評価",
+        "peer": "同僚評価",
+        "default": "評価"
+      },
+      "status": {
+        "draft": "下書き",
+        "submitted": "提出済み",
+        "reviewed": "承認済み",
+        "shared": "共有済み",
+        "online": "オンライン",
+        "offline": "オフライン",
+        "saved": "保存済み"
+      },
+      "progress": {
+        "title": "進捗状況"
+      },
+      "navigation": {
+        "previous": "前へ",
+        "next": "次へ"
+      },
+      "autoSave": {
+        "pending": "自動保存待機中...",
+        "saving": "保存中..."
+      },
+      "actions": {
+        "back": "戻る",
+        "save": "保存",
+        "submit": "評価を送信",
+        "submitting": "送信中..."
+      },
+      "loading": {
+        "data": "評価データを読み込んでいます..."
+      },
+      "errors": {
+        "notFound": "評価データが見つかりません。",
+        "invalidStep": "無効なステップです。",
+        "unknownStep": "不明なステップ"
+      },
+      "labels": {
+        "required": "必須"
+      }
+    },
     "competencies": {
       "title": "コンピテンシー管理",
       "subtitle": "評価に使用するコンピテンシーを管理します",

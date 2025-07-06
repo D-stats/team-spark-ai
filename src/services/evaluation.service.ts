@@ -113,7 +113,7 @@ export async function generateEvaluations(
     throw new Error('Evaluation cycle not found');
   }
 
-  // Get all active users in the organization
+  // Get all active users in the organization with their team memberships
   const users = await prisma.user.findMany({
     where: {
       organizationId,
@@ -136,6 +136,40 @@ export async function generateEvaluations(
     },
   });
 
+  // Pre-fetch all teams with managers for this organization to avoid N+1 queries
+  const teamsWithManagers = await prisma.team.findMany({
+    where: {
+      organizationId,
+      managerId: { not: null },
+    },
+    include: {
+      members: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  // Create a lookup map for faster team-user relationships
+  const userTeamManagerMap = new Map<string, string[]>();
+  for (const team of teamsWithManagers) {
+    if (team.managerId != null && team.managerId !== '') {
+      for (const member of team.members) {
+        if (!userTeamManagerMap.has(member.userId)) {
+          userTeamManagerMap.set(member.userId, []);
+        }
+        // Only add manager if it's not the user themselves
+        if (team.managerId !== member.userId) {
+          const userManagers = userTeamManagerMap.get(member.userId);
+          if (userManagers != null) {
+            userManagers.push(team.managerId);
+          }
+        }
+      }
+    }
+  }
+
   const evaluations = [];
 
   for (const user of users) {
@@ -147,30 +181,15 @@ export async function generateEvaluations(
       type: EvaluationType.SELF,
     });
 
-    // Manager evaluation (from team manager)
-    const managedTeams = await prisma.team.findMany({
-      where: {
-        members: {
-          some: { userId: user.id },
-        },
-        managerId: { not: null },
-      },
-    });
-
-    for (const team of managedTeams) {
-      if (
-        team.managerId !== null &&
-        team.managerId !== undefined &&
-        team.managerId.length > 0 &&
-        team.managerId !== user.id
-      ) {
-        evaluations.push({
-          cycleId,
-          evaluateeId: user.id,
-          evaluatorId: team.managerId,
-          type: EvaluationType.MANAGER,
-        });
-      }
+    // Manager evaluation (using pre-fetched data)
+    const managerIds = userTeamManagerMap.get(user.id) || [];
+    for (const managerId of managerIds) {
+      evaluations.push({
+        cycleId,
+        evaluateeId: user.id,
+        evaluatorId: managerId,
+        type: EvaluationType.MANAGER,
+      });
     }
 
     // Peer evaluation (up to 3 members from the same team)

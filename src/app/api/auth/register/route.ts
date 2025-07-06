@@ -12,9 +12,9 @@ interface RegisterRequest {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   // Apply rate limiting
-  const rateLimitResult = registerRateLimit(request);
+  const rateLimitResult = await registerRateLimit(request);
   if (!rateLimitResult.success) {
-    return createRateLimitResponse(rateLimitResult.remaining);
+    return createRateLimitResponse(rateLimitResult.remaining, rateLimitResult.resetTime);
   }
 
   try {

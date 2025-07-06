@@ -214,7 +214,7 @@ export const useEvaluationStore = create<EvaluationStore>()(
               state.currentEvaluation = evaluation;
               state.isLoading = false;
 
-              // フォームデータを評価データで初期化
+              // Initialize form data with evaluation data
               state.formData = {
                 overallRating: evaluation.overallRating ?? undefined,
                 overallComments: evaluation.overallComments ?? '',
