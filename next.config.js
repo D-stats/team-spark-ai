@@ -13,17 +13,27 @@ const nextConfig = {
     domains: ['localhost', 'avatars.slack-edge.com'],
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    // Only ignore ESLint during development builds, enforce in production
+    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
   },
   async headers() {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ];
+
     return [
       {
         source: '/api/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value:
+              process.env.NODE_ENV === 'production'
+                ? allowedOrigins[0] || 'http://localhost:3000'
+                : '*',
+          },
           { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
           {
             key: 'Access-Control-Allow-Headers',

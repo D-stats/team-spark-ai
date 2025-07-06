@@ -46,17 +46,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       where.evaluateeId = evaluateeId;
     }
 
-    // 評価者フィルター
+    // Evaluator filter
     if (evaluatorId !== null) {
       where.evaluatorId = evaluatorId;
     }
 
-    // タイプフィルター
+    // Type filter
     if (type !== null) {
       where.type = type as EvaluationType;
     }
 
-    // ステータスフィルター
+    // Status filter
     if (status !== null) {
       where.status = status as EvaluationStatus;
     }

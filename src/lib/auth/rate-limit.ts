@@ -1,34 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// Simple in-memory rate limiting for development
-// In production, use Redis or a proper rate limiting service
-const requests = new Map<string, { count: number; lastReset: number }>();
+import { RedisRateLimiter } from '@/lib/redis';
+import { log } from '@/lib/logger';
 
 interface RateLimitConfig {
   maxRequests: number;
   windowMs: number;
 }
 
+interface RateLimitResult {
+  success: boolean;
+  remaining: number;
+  resetTime?: number;
+}
+
+// Redis-based rate limiter instances
+const rateLimiters = new Map<string, RedisRateLimiter>();
+
+function getRateLimiter(config: RateLimitConfig): RedisRateLimiter {
+  const key = `${config.maxRequests}-${config.windowMs}`;
+  if (!rateLimiters.has(key)) {
+    rateLimiters.set(key, new RedisRateLimiter(config.windowMs, config.maxRequests));
+  }
+  const limiter = rateLimiters.get(key);
+  if (limiter == null) {
+    throw new Error(`Rate limiter not found for key: ${key}`);
+  }
+  return limiter;
+}
+
 export function rateLimit(config: RateLimitConfig) {
-  return (req: NextRequest): { success: boolean; remaining: number } => {
+  return async (req: NextRequest): Promise<RateLimitResult> => {
+    const limiter = getRateLimiter(config);
     const ip = req.ip ?? req.headers.get('x-forwarded-for') ?? 'unknown';
-    const key = `${ip}:${req.nextUrl.pathname}`;
-    const now = Date.now();
+    const userAgent = req.headers.get('user-agent') ?? 'unknown';
 
-    const record = requests.get(key);
+    // Create a more specific key that includes path and user agent hash
+    const userAgentHash = Buffer.from(userAgent).toString('base64').slice(0, 8);
+    const key = `${ip}:${req.nextUrl.pathname}:${userAgentHash}`;
 
-    if (!record || now - record.lastReset > config.windowMs) {
-      // Reset window
-      requests.set(key, { count: 1, lastReset: now });
-      return { success: true, remaining: config.maxRequests - 1 };
+    try {
+      const result = await limiter.checkLimit(key);
+
+      log.debug('Rate limit check', {
+        key: `${ip}:${req.nextUrl.pathname}`,
+        allowed: result.allowed,
+        count: result.count,
+        max: config.maxRequests,
+      });
+
+      return {
+        success: result.allowed,
+        remaining: Math.max(0, config.maxRequests - result.count),
+        resetTime: result.resetTime,
+      };
+    } catch (error) {
+      log.error('Rate limit error', {
+        key: `${ip}:${req.nextUrl.pathname}`,
+        error: (error as Error).message,
+      });
+
+      // Allow on Redis error to prevent blocking users
+      return {
+        success: true,
+        remaining: config.maxRequests - 1,
+      };
     }
-
-    if (record.count >= config.maxRequests) {
-      return { success: false, remaining: 0 };
-    }
-
-    record.count++;
-    return { success: true, remaining: config.maxRequests - record.count };
   };
 }
 
@@ -43,19 +79,62 @@ export const registerRateLimit = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
 });
 
+export const apiRateLimit = rateLimit({
+  maxRequests: 100, // 100 requests per window
+  windowMs: 15 * 60 * 1000, // 15 minutes
+});
+
+export const uploadRateLimit = rateLimit({
+  maxRequests: 10, // 10 uploads per window
+  windowMs: 60 * 1000, // 1 minute
+});
+
 // Helper to create rate limit response
-export function createRateLimitResponse(remaining: number): NextResponse {
+export function createRateLimitResponse(
+  remaining: number,
+  resetTime?: number,
+  retryAfterSeconds?: number,
+): NextResponse {
+  const defaultRetryAfter = 900; // 15 minutes
+  const retryAfter = retryAfterSeconds ?? defaultRetryAfter;
+
+  const headers: Record<string, string> = {
+    'X-RateLimit-Remaining': remaining.toString(),
+    'Retry-After': retryAfter.toString(),
+  };
+
+  if (resetTime != null && resetTime > 0) {
+    headers['X-RateLimit-Reset'] = Math.ceil(resetTime / 1000).toString();
+  }
+
   return NextResponse.json(
     {
       error: 'Too many requests',
-      retryAfter: '15 minutes',
+      retryAfter: `${Math.ceil(retryAfter / 60)} minutes`,
+      resetTime: resetTime != null && resetTime > 0 ? new Date(resetTime).toISOString() : undefined,
     },
     {
       status: 429,
-      headers: {
-        'X-RateLimit-Remaining': remaining.toString(),
-        'Retry-After': '900', // 15 minutes in seconds
-      },
+      headers,
     },
   );
+}
+
+// Middleware helper for applying rate limits
+export async function applyRateLimit(
+  req: NextRequest,
+  limiter: (req: NextRequest) => Promise<RateLimitResult>,
+): Promise<NextResponse | null> {
+  const result = await limiter(req);
+
+  if (!result.success) {
+    const retryAfterSeconds =
+      result.resetTime != null && result.resetTime > 0
+        ? Math.ceil((result.resetTime - Date.now()) / 1000)
+        : 900;
+
+    return createRateLimitResponse(result.remaining, result.resetTime, retryAfterSeconds);
+  }
+
+  return null; // No rate limit exceeded
 }

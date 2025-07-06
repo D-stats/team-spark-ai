@@ -53,7 +53,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: 'Invalid category' }, { status: 400 });
     }
 
-    // Kudosを作成
+    // Create kudos record
     const kudos = (await prisma.kudos.create({
       data: {
         senderId: dbUser.id,
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       receiver: Pick<User, 'name' | 'email' | 'avatarUrl'>;
     };
 
-    // Slack通知を送信（非同期で実行）
+    // Send Slack notification (async execution)
     void sendKudosNotification({
       receiverId: kudos.receiverId,
       senderName: kudos.sender.name,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       logError(error as Error, 'POST /api/kudos - Slack notification failed');
     });
 
-    // メール通知を送信（非同期で実行）
+    // Send email notification (async execution)
     void sendKudosEmail({
       receiverEmail: kudos.receiver.email,
       receiverName: kudos.receiver.name,
