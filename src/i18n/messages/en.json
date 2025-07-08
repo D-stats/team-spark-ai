@@ -1238,6 +1238,14 @@
           "sessionTimeout": "Session Timeout (days)"
         }
       },
+      "stats": {
+        "totalUsers": "Total Users",
+        "activeUsers": "Active Users",
+        "totalTeams": "Total Teams",
+        "recentLogins": "Recent Logins",
+        "activeRate": "active",
+        "last30Days": "Last 30 days"
+      },
       "teamStats": {
         "title": "Team Statistics",
         "members": "{count} members"

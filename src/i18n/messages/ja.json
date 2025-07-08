@@ -1289,6 +1289,14 @@
           "sessionTimeout": "セッションタイムアウト（日）"
         }
       },
+      "stats": {
+        "totalUsers": "総ユーザー数",
+        "activeUsers": "アクティブユーザー",
+        "totalTeams": "総チーム数",
+        "recentLogins": "最近のログイン",
+        "activeRate": "アクティブ",
+        "last30Days": "過去30日"
+      },
       "teamStats": {
         "title": "チーム統計",
         "members": "{count}人のメンバー"
