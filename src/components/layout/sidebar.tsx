@@ -78,11 +78,40 @@ export function Sidebar({ user }: SidebarProps): JSX.Element {
         // Add locale prefix to href
         const localizedHref = `/${currentLocale}${item.href}`;
 
-        // For dashboard, check exact match only
-        const isActive =
-          item.href === '/dashboard'
-            ? pathname === localizedHref
-            : pathname === localizedHref || pathname.startsWith(`${localizedHref}/`);
+        // Precise active state logic to prevent multiple highlights
+        const isActive = (() => {
+          // Exact match - always active
+          if (pathname === localizedHref) {
+            return true;
+          }
+          
+          // For main dashboard, only active on exact match (not sub-routes)
+          if (item.href === '/dashboard') {
+            return pathname === localizedHref;
+          }
+          
+          // For admin routes, implement priority-based matching
+          if (item.href.startsWith('/dashboard/admin')) {
+            // If on an admin sub-route, don't highlight the main admin dashboard
+            if (item.href === '/dashboard/admin' && pathname.startsWith(`${localizedHref}/`)) {
+              return false; // Don't highlight parent when child is active
+            }
+            
+            // For admin sub-routes, only exact match
+            return pathname === localizedHref;
+          }
+          
+          // For other routes, check if pathname starts with route + /
+          // but ensure we don't match deeper nested routes
+          if (pathname.startsWith(`${localizedHref}/`)) {
+            const pathAfterRoute = pathname.slice(localizedHref.length + 1);
+            // Only match direct children, not grandchildren
+            return !pathAfterRoute.includes('/');
+          }
+          
+          return false;
+        })();
+
         return (
           <Link
             key={item.key}
