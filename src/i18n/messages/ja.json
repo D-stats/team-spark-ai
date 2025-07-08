@@ -58,6 +58,8 @@
     "validation": {
       "default": "入力内容に問題があります。有効な値を入力してください。",
       "required": "この項目は必須です",
+      "organizationRequired": "組織名は必須です",
+      "organizationExists": "この名前の組織は既に存在します",
       "email": "有効なメールアドレスを入力してください",
       "minLength": "{min}文字以上で入力してください",
       "maxLength": "{max}文字以下で入力してください",
@@ -118,6 +120,7 @@
       "title": "ログイン",
       "subtitle": "おかえりなさい",
       "emailLabel": "メールアドレス",
+      "emailPlaceholder": "your.email@company.com",
       "passwordLabel": "パスワード",
       "rememberMe": "ログイン状態を保持",
       "submitButton": "ログイン",
@@ -132,6 +135,7 @@
       "subtitle": "アカウントを作成",
       "nameLabel": "氏名",
       "emailLabel": "メールアドレス",
+      "emailPlaceholder": "your.email@company.com",
       "passwordLabel": "パスワード",
       "confirmPasswordLabel": "パスワード確認",
       "organizationLabel": "組織名",
@@ -973,6 +977,9 @@
       "subtitle": "新しいアカウントを作成して、チームのエンゲージメント向上を始めましょう",
       "nameLabel": "お名前",
       "namePlaceholder": "山田 太郎",
+      "organizationLabel": "組織名",
+      "organizationPlaceholder": "株式会社ACME",
+      "organizationHelp": "必須 - あなたがこの組織の管理者になります",
       "emailLabel": "メールアドレス",
       "passwordLabel": "パスワード",
       "passwordHelp": "8文字以上で大文字・小文字・数字・特殊文字を含むパスワードを入力してください",
@@ -992,6 +999,41 @@
     }
   },
   "organization": {
+    "title": "組織",
+    "description": "組織設定を管理",
+    "accessDenied": "この機能にアクセスする権限がありません。管理者またはマネージャーのみが組織設定を表示できます。",
+    "organizationNotFound": "組織が見つかりません",
+    "info": {
+      "title": "組織情報",
+      "name": "組織名",
+      "id": "組織ID",
+      "createdAt": "作成日",
+      "plan": "プラン"
+    },
+    "stats": {
+      "members": "メンバー",
+      "teams": "チーム",
+      "surveys": "サーベイ"
+    },
+    "planTypes": {
+      "standard": "スタンダード"
+    },
+    "slack": {
+      "title": "Slack連携",
+      "description": "Slackワークスペースと連携してチームコミュニケーションを向上させます",
+      "connected": "連携済み",
+      "connectedWorkspace": "連携済みワークスペース",
+      "unknownWorkspace": "不明なワークスペース",
+      "manageSettings": "設定を管理",
+      "benefits": "Slackワークスペースと連携することで、以下の機能が利用できます：",
+      "features": {
+        "kudosCommand": "/kudosコマンドでKudosを送信",
+        "notifications": "Kudos受信時のSlack通知",
+        "checkinReminders": "チェックインリマインダー",
+        "surveyNotifications": "サーベイ通知"
+      },
+      "connect": "Slackと連携"
+    },
     "manage": {
       "title": "組織管理",
       "tabs": {

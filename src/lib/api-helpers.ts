@@ -6,6 +6,8 @@ import {
 } from './rate-limit';
 import { createErrorResponse } from './openapi/validator';
 import { logError } from './logger';
+import { withAdminAuth } from './auth/admin-middleware';
+import { AuthUser } from './auth/rbac';
 
 export function withRateLimit(
   handler: (request: NextRequest) => Promise<NextResponse>,
@@ -98,4 +100,48 @@ export function withMiddleware(
   ...middleware: Middleware[]
 ): RequestHandler {
   return middleware.reverse().reduce((acc, fn) => fn(acc), handler);
+}
+
+// Export admin auth middleware for easy access
+export { withAdminAuth };
+
+// Enhanced auth helper that provides user object
+export function withAuthUser(
+  handler: (request: NextRequest, user: AuthUser) => Promise<NextResponse>,
+): (request: NextRequest) => Promise<NextResponse> {
+  return async (request: NextRequest) => {
+    // TODO: Implement proper authentication check and return user object
+    // This is a placeholder implementation
+    const authHeader = request.headers.get('authorization');
+
+    if (
+      authHeader === null ||
+      authHeader === undefined ||
+      authHeader.length === 0 ||
+      !authHeader.startsWith('Bearer ')
+    ) {
+      return createErrorResponse('Unauthorized', 401);
+    }
+
+    // TODO: Verify JWT token and extract user information
+    // For now, return a placeholder user
+    const user: AuthUser = {
+      id: 'placeholder-user-id',
+      email: 'placeholder@example.com',
+      name: 'Placeholder User',
+      organizationId: 'placeholder-org-id',
+      role: 'MEMBER' as any,
+      isActive: true,
+    };
+
+    return handler(request, user);
+  };
+}
+
+// Convenience function for admin API routes
+export function withAdminMiddleware(
+  handler: (request: NextRequest, user: AuthUser, context?: any) => Promise<NextResponse>,
+  options?: Parameters<typeof withAdminAuth>[1],
+) {
+  return withRateLimit(withErrorHandler(withAdminAuth(handler, options)));
 }

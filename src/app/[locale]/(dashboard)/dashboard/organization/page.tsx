@@ -5,25 +5,27 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Users, Calendar, Slack, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 export default async function OrganizationPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
+  const t = await getTranslations('organization');
 
-  // 管理者のみアクセス可能
+  // Access control - only admins and managers
   if (dbUser.role !== 'ADMIN' && dbUser.role !== 'MANAGER') {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">組織設定</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            組織設定の閲覧・変更は管理者またはマネージャーのみ可能です。
+            {t('accessDenied')}
           </p>
         </div>
       </div>
     );
   }
 
-  // 組織情報を取得
+  // Get organization information
   const organization = await prisma.organization.findUnique({
     where: { id: dbUser.organizationId },
     include: {
@@ -39,24 +41,24 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
   });
 
   if (!organization) {
-    throw new Error('組織情報が見つかりません');
+    throw new Error(t('organizationNotFound'));
   }
 
   const stats = [
     {
-      label: 'メンバー数',
+      label: t('stats.members'),
       value: organization._count.users,
       icon: Users,
       color: 'text-blue-600',
     },
     {
-      label: 'チーム数',
+      label: t('stats.teams'),
       value: organization._count.teams,
       icon: Users,
       color: 'text-green-600',
     },
     {
-      label: 'サーベイ数',
+      label: t('stats.surveys'),
       value: organization._count.surveys,
       icon: Calendar,
       color: 'text-purple-600',
@@ -68,8 +70,8 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">組織設定</h1>
-        <p className="mt-2 text-muted-foreground">組織の基本情報と設定を管理します</p>
+        <h1 className="text-3xl font-bold">{t('title')}</h1>
+        <p className="mt-2 text-muted-foreground">{t('description')}</p>
       </div>
 
       <div className="grid gap-6">
@@ -77,28 +79,28 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Building2 className="h-5 w-5" />
-              <CardTitle>組織情報</CardTitle>
+              <CardTitle>{t('info.title')}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">組織名</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('info.name')}</p>
                 <p className="text-lg font-medium">{organization.name}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">組織ID</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('info.id')}</p>
                 <p className="font-mono text-lg text-muted-foreground">{organization.slug}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">作成日</p>
+                <p className="text-sm font-medium text-muted-foreground">{t('info.createdAt')}</p>
                 <p className="text-lg">
-                  {new Date(organization.createdAt).toLocaleDateString('ja-JP')}
+                  {new Date(organization.createdAt).toLocaleDateString()}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">プラン</p>
-                <Badge variant="default">スタンダード</Badge>
+                <p className="text-sm font-medium text-muted-foreground">{t('info.plan')}</p>
+                <Badge variant="default">{t('planTypes.standard')}</Badge>
               </div>
             </div>
 
@@ -126,29 +128,29 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Slack className="h-5 w-5" />
-                  <CardTitle>Slack連携</CardTitle>
+                  <CardTitle>{t('slack.title')}</CardTitle>
                 </div>
                 {hasSlackIntegration && (
                   <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    連携済み
+                    {t('slack.connected')}
                   </Badge>
                 )}
               </div>
-              <CardDescription>SlackワークスペースとTeamSpark AIを連携します</CardDescription>
+              <CardDescription>{t('slack.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {hasSlackIntegration ? (
                   <>
                     <div className="rounded-lg bg-muted p-4">
-                      <p className="mb-1 text-sm font-medium">連携済みワークスペース</p>
+                      <p className="mb-1 text-sm font-medium">{t('slack.connectedWorkspace')}</p>
                       <p className="text-sm text-muted-foreground">
-                        {organization.slackWorkspaces[0]?.teamName ?? 'Unknown Workspace'}
+                        {organization.slackWorkspaces[0]?.teamName ?? t('slack.unknownWorkspace')}
                       </p>
                     </div>
                     <Button variant="outline" asChild>
                       <Link href="/dashboard/settings/slack">
-                        Slack設定を管理
+                        {t('slack.manageSettings')}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
@@ -156,17 +158,17 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
                 ) : (
                   <>
                     <p className="text-sm text-muted-foreground">
-                      Slackと連携することで、以下の機能が利用できます：
+                      {t('slack.benefits')}
                     </p>
                     <ul className="space-y-1 text-sm text-muted-foreground">
-                      <li>• /kudos コマンドでKudosを送信</li>
-                      <li>• Kudos受信時のSlack通知</li>
-                      <li>• チェックインリマインダー</li>
-                      <li>• サーベイ通知</li>
+                      <li>• {t('slack.features.kudosCommand')}</li>
+                      <li>• {t('slack.features.notifications')}</li>
+                      <li>• {t('slack.features.checkinReminders')}</li>
+                      <li>• {t('slack.features.surveyNotifications')}</li>
                     </ul>
                     <Button asChild>
                       <Link href="/dashboard/settings/slack">
-                        Slackと連携する
+                        {t('slack.connect')}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>

@@ -83,6 +83,25 @@ export async function requireNoAuth(): Promise<void> {
 }
 
 /**
+ * API-safe version of requireAuthWithOrganization that returns null instead of redirecting
+ * Use this in API routes where redirect() is not supported
+ */
+export async function requireAuthWithOrganizationAPI(): Promise<{
+  user: AuthUser;
+  dbUser: UserWithOrganization;
+} | null> {
+  const result = await getUserWithOrganization();
+  if (!result?.user || !result.dbUser?.organization) {
+    return null;
+  }
+
+  return {
+    user: result.user,
+    dbUser: result.dbUser,
+  };
+}
+
+/**
  * Generate a secure session token
  */
 export function generateSessionToken(): string {

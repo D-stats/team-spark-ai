@@ -12,6 +12,15 @@ model Organization {
   name             String
   slug             String            @unique
   settings         Json              @default("{}")
+  // Admin-focused fields
+  billingEmail     String?
+  billingAddress   Json?
+  planType         OrganizationPlan  @default(FREE)
+  planExpiredAt    DateTime?
+  maxUsers         Int?
+  enabledFeatures  String[]          @default([])
+  branding         Json?
+  complianceSettings Json?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   checkInTemplates CheckInTemplate[]
@@ -22,6 +31,10 @@ model Organization {
   surveys          Survey[]
   teams            Team[]
   users            User[]
+  // New admin relations
+  auditLogs        AuditLog[]
+  userInvitations  UserInvitation[]
+  bulkOperations   BulkOperation[]
 }
 
 model User {
@@ -72,6 +85,20 @@ model User {
   teamMemberships        TeamMember[]
   userSessions           UserSession[]
   loginHistory           LoginHistory[]
+  // Admin management fields
+  invitedById            String?
+  invitedAt              DateTime?
+  deactivatedAt          DateTime?
+  deactivatedById        String?
+  deactivationReason     String?
+  lastRoleChange         DateTime?
+  lastRoleChangedBy      String?
+  // New admin relations
+  auditLogs              AuditLog[]
+  sentInvitations        UserInvitation[] @relation("UserInvitations")
+  bulkOperations         BulkOperation[]  @relation("BulkOperations")
+  invitedBy              User?            @relation("UserInviter", fields: [invitedById], references: [id])
+  invitedUsers           User[]           @relation("UserInviter")
   organization           Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
@@ -119,14 +146,24 @@ model Team {
   name           String
   description    String?
   managerId      String?
+  // Enhanced team management
+  parentTeamId   String?
+  teamType       TeamType     @default(REGULAR)
+  settings       Json         @default("{}")
+  isActive       Boolean      @default(true)
+  maxMembers     Int?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   objectives     Objective[]
   manager        User?        @relation("TeamManager", fields: [managerId], references: [id])
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   members        TeamMember[]
+  // Team hierarchy relations
+  parentTeam     Team?        @relation("TeamHierarchy", fields: [parentTeamId], references: [id])
+  childTeams     Team[]       @relation("TeamHierarchy")
 
   @@index([organizationId])
+  @@index([parentTeamId])
 }
 
 model TeamMember {
@@ -530,4 +567,136 @@ enum DigestFrequency {
   DAILY
   WEEKLY
   MONTHLY
+}
+
+// Admin-focused models for TSA-46
+
+model AuditLog {
+  id             String          @id @default(cuid())
+  organizationId String
+  userId         String?
+  action         AuditAction
+  entityType     String
+  entityId       String
+  oldValues      Json?
+  newValues      Json?
+  ipAddress      String?
+  userAgent      String?
+  success        Boolean         @default(true)
+  errorMessage   String?
+  createdAt      DateTime        @default(now())
+  
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user          User?           @relation(fields: [userId], references: [id])
+  
+  @@index([organizationId])
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+}
+
+model UserInvitation {
+  id             String               @id @default(cuid())
+  organizationId String
+  email          String
+  role           Role                 @default(MEMBER)
+  invitedById    String
+  token          String               @unique
+  status         InvitationStatus     @default(PENDING)
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime             @default(now())
+  
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy      User                 @relation("UserInvitations", fields: [invitedById], references: [id])
+  
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@index([email])
+  @@index([token])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model BulkOperation {
+  id               String              @id @default(cuid())
+  organizationId   String
+  initiatedById    String
+  type             BulkOperationType
+  status           BulkOperationStatus @default(PENDING)
+  totalRecords     Int
+  processedRecords Int                 @default(0)
+  successCount     Int                 @default(0)
+  errorCount       Int                 @default(0)
+  errors           Json?
+  fileName         String?
+  results          Json?
+  startedAt        DateTime            @default(now())
+  completedAt      DateTime?
+  
+  organization     Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  initiatedBy      User                @relation("BulkOperations", fields: [initiatedById], references: [id])
+  
+  @@index([organizationId])
+  @@index([initiatedById])
+  @@index([type])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// New enums for admin functionality
+
+enum OrganizationPlan {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum TeamType {
+  REGULAR
+  DEPARTMENT
+  PROJECT
+  CROSS_FUNCTIONAL
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  ROLE_CHANGE
+  TEAM_JOIN
+  TEAM_LEAVE
+  BULK_IMPORT
+  EXPORT
+  EMAIL_SENT
+  ORGANIZATION_SETTINGS_CHANGE
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+enum BulkOperationType {
+  USER_IMPORT
+  USER_EXPORT
+  TEAM_IMPORT
+  TEAM_EXPORT
+  USER_ROLE_UPDATE
+  USER_DEACTIVATION
+  TEAM_MEMBER_UPDATE
+}
+
+enum BulkOperationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

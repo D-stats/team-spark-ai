@@ -58,6 +58,8 @@
     "validation": {
       "default": "There is an issue with your input. Please enter valid values.",
       "required": "This field is required",
+      "organizationRequired": "Organization name is required",
+      "organizationExists": "An organization with this name already exists",
       "email": "Please enter a valid email address",
       "minLength": "Must be at least {min} characters",
       "maxLength": "Must be no more than {max} characters",
@@ -329,8 +331,45 @@
     }
   },
   "organization": {
-    "title": "Organization",
+    "title": "Organization Settings",
     "subtitle": "Manage your organization settings",
+    "description": "Manage organization basic information and settings",
+    "accessDenied": "Only administrators and managers can view and modify organization settings.",
+    "organizationNotFound": "Organization information not found",
+    "info": {
+      "title": "Organization Information",
+      "name": "Organization Name",
+      "id": "Organization ID",
+      "createdAt": "Created Date",
+      "plan": "Plan"
+    },
+    "stats": {
+      "members": "Members",
+      "teams": "Teams",
+      "surveys": "Surveys"
+    },
+    "planTypes": {
+      "standard": "Standard",
+      "free": "Free",
+      "professional": "Professional",
+      "enterprise": "Enterprise"
+    },
+    "slack": {
+      "title": "Slack Integration",
+      "description": "Connect Slack workspace with TeamSpark AI",
+      "connected": "Connected",
+      "connectedWorkspace": "Connected Workspace",
+      "unknownWorkspace": "Unknown Workspace",
+      "manageSettings": "Manage Slack Settings",
+      "benefits": "By connecting with Slack, you can use the following features:",
+      "connect": "Connect with Slack",
+      "features": {
+        "kudosCommand": "/kudos command to send Kudos",
+        "notifications": "Slack notifications when receiving Kudos",
+        "checkinReminders": "Check-in reminders",
+        "surveyNotifications": "Survey notifications"
+      }
+    },
     "profile": {
       "title": "Organization Profile",
       "nameLabel": "Organization Name",
@@ -922,6 +961,9 @@
       "subtitle": "Create a new account to start improving team engagement",
       "nameLabel": "Full Name",
       "namePlaceholder": "John Doe",
+      "organizationLabel": "Organization Name",
+      "organizationPlaceholder": "ACME Corporation",
+      "organizationHelp": "Required - You will be the administrator of this organization",
       "emailLabel": "Email Address",
       "passwordLabel": "Password",
       "passwordHelp": "Password must be at least 8 characters with uppercase, lowercase, number, and special character",
@@ -1009,6 +1051,43 @@
       "title": "Contact Us",
       "description": "If you have any questions about our privacy policy, please contact us",
       "email": "Email"
+    }
+  },
+  "organization": {
+    "title": "Organization",
+    "description": "Manage organization settings",
+    "accessDenied": "You don't have permission to access this feature. Only administrators and managers can view organization settings.",
+    "organizationNotFound": "Organization not found",
+    "info": {
+      "title": "Organization Information",
+      "name": "Organization Name",
+      "id": "Organization ID",
+      "createdAt": "Created At",
+      "plan": "Plan"
+    },
+    "stats": {
+      "members": "Members",
+      "teams": "Teams",
+      "surveys": "Surveys"
+    },
+    "planTypes": {
+      "standard": "Standard"
+    },
+    "slack": {
+      "title": "Slack Integration",
+      "description": "Connect your Slack workspace to enhance team communication",
+      "connected": "Connected",
+      "connectedWorkspace": "Connected Workspace",
+      "unknownWorkspace": "Unknown Workspace",
+      "manageSettings": "Manage Settings",
+      "benefits": "By connecting your Slack workspace, you can access the following features:",
+      "features": {
+        "kudosCommand": "Send Kudos with /kudos command",
+        "notifications": "Slack notifications when you receive Kudos",
+        "checkinReminders": "Check-in reminders",
+        "surveyNotifications": "Survey notifications"
+      },
+      "connect": "Connect with Slack"
     }
   }
 }

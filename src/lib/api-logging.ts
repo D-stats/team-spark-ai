@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { log, logApiRequest, logError, logSecurityEvent } from './logger';
-import { createSpan, addSpanAttributes } from './monitoring';
+
+// Temporary fallback functions to avoid OpenTelemetry imports during build
+function createSpan<T>(_name: string, fn: () => Promise<T>): Promise<T> {
+  // Simple fallback - just execute the function without tracing
+  return fn();
+}
+
+function addSpanAttributes(_attributes: Record<string, string | number | boolean>): void {
+  // No-op fallback when monitoring is disabled
+}
 
 export function withLogging(
   handler: (request: NextRequest) => Promise<NextResponse>,

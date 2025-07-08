@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   return (
     <div className="flex h-screen bg-gray-50">
       <SessionValidator />
-      <Sidebar />
+      <Sidebar user={dbUser} />
       <div className="flex flex-1 flex-col">
         <Header
           user={user}

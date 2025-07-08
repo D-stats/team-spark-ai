@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Users } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import Link from 'next/link';
 
 export default async function TeamsPage(): Promise<JSX.Element> {
   const { dbUser } = await requireAuthWithOrganization();
@@ -122,16 +123,18 @@ export default async function TeamsPage(): Promise<JSX.Element> {
                         )}
                       </div>
                     </div>
-                    {isManager && (
-                      <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" className="flex-1" asChild>
+                        <Link href={`/dashboard/teams/${team.id}`}>
+                          {t('actions.details')}
+                        </Link>
+                      </Button>
+                      {isManager && (
                         <Button variant="outline" size="sm" className="flex-1">
                           {t('actions.edit')}
                         </Button>
-                        <Button variant="outline" size="sm" className="flex-1">
-                          {t('actions.details')}
-                        </Button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

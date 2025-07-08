@@ -7,7 +7,7 @@ interface RegisterRequest {
   email: string;
   password: string;
   name: string;
-  organizationId?: string;
+  organizationName: string;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -19,11 +19,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const body = (await request.json()) as RegisterRequest;
-    const { email, password, name, organizationId } = body;
+    const { email, password, name, organizationName } = body;
 
     // Validate required fields
-    if (typeof email !== 'string' || typeof password !== 'string' || typeof name !== 'string') {
+    if (
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof name !== 'string' ||
+      typeof organizationName !== 'string'
+    ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Organization name is now mandatory
+    if (!organizationName || organizationName.trim().length === 0) {
+      return NextResponse.json({ error: 'Organization name is required' }, { status: 400 });
     }
 
     // Validate password strength
@@ -47,24 +57,46 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create or find default organization
-    const defaultOrg = await prisma.organization.upsert({
-      where: { slug: 'default-org' },
-      update: {},
-      create: {
-        name: 'Default Organization',
-        slug: 'default-org',
+    // Create new organization - organization name is mandatory
+    const slug = organizationName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .substring(0, 50);
+
+    // Check if organization slug already exists
+    const existingOrg = await prisma.organization.findUnique({
+      where: { slug },
+    });
+
+    if (existingOrg) {
+      return NextResponse.json(
+        { error: 'An organization with this name already exists' },
+        { status: 409 },
+      );
+    }
+
+    const newOrg = await prisma.organization.create({
+      data: {
+        name: organizationName,
+        slug,
         settings: {},
+        planType: 'FREE',
+        maxUsers: 25, // Free plan limit
       },
     });
 
-    // Create user
+    // User becomes admin of their new organization
+    const targetOrganizationId = newOrg.id;
+    const userRole = 'ADMIN';
+
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name,
-        organizationId: organizationId ?? defaultOrg.id,
+        organizationId: targetOrganizationId,
+        role: userRole,
       },
       select: {
         id: true,
@@ -84,7 +116,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 201 },
     );
   } catch (error) {
-    console.error('Registration error:', error);
+    // Log error details for debugging but avoid console in production
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

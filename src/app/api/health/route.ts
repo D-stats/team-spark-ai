@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withLogging } from '@/lib/api-logging';
-import { PerformanceMonitor } from '@/lib/monitoring';
 import { log } from '@/lib/logger';
 
+// Simple performance monitor fallback when monitoring is disabled
+class SimplePerformanceMonitor {
+  private startTime: number;
+  constructor(_operation: string) {
+    this.startTime = performance.now();
+  }
+  end(_metadata?: Record<string, string | number | boolean>): number {
+    return performance.now() - this.startTime;
+  }
+}
+
 async function healthCheck(_request: NextRequest) {
-  const monitor = new PerformanceMonitor('health_check');
+  // Use simple monitor to avoid OpenTelemetry imports during build
+  const monitor = new SimplePerformanceMonitor('health_check');
 
   const health = {
     status: 'ok',
@@ -23,7 +34,7 @@ async function healthCheck(_request: NextRequest) {
 
   // Database connection check
   try {
-    const dbMonitor = new PerformanceMonitor('db_health_check');
+    const dbMonitor = new SimplePerformanceMonitor('db_health_check');
     await prisma.$queryRaw`SELECT 1`;
     health.checks.database = true;
     health.metrics.dbResponseTime = dbMonitor.end();
