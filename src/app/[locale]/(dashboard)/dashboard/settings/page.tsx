@@ -42,7 +42,6 @@ export default async function SettingsPage(): Promise<JSX.Element> {
       organization: {
         select: {
           name: true,
-          slug: true,
         },
       },
     },

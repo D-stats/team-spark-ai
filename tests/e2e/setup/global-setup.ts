@@ -16,7 +16,6 @@ export async function setupTestData() {
     const organization = await prisma.organization.create({
       data: {
         name: 'Test Company',
-        slug: 'test-company',
       },
     });
 

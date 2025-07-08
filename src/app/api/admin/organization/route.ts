@@ -5,8 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
 const updateOrganizationSchema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1).regex(/^[a-z0-9-]+$/, 'Slug must contain only lowercase letters, numbers, and hyphens')
+  name: z.string().min(1)
 });
 
 export async function PUT(request: NextRequest) {
@@ -22,33 +21,17 @@ export async function PUT(request: NextRequest) {
 
     const formData = await request.formData();
     const data = {
-      name: formData.get('name') as string,
-      slug: formData.get('slug') as string
+      name: formData.get('name') as string
     };
 
     const validatedData = updateOrganizationSchema.parse(data);
 
-    // Check if slug is already taken by another organization
-    const existingOrg = await prisma.organization.findFirst({
-      where: {
-        slug: validatedData.slug,
-        id: { not: session.user.organizationId }
-      }
-    });
-
-    if (existingOrg) {
-      return NextResponse.json(
-        { error: 'Slug is already taken' },
-        { status: 400 }
-      );
-    }
 
     // Update the organization
     const updatedOrganization = await prisma.organization.update({
       where: { id: session.user.organizationId },
       data: {
-        name: validatedData.name,
-        slug: validatedData.slug
+        name: validatedData.name
       }
     });
 

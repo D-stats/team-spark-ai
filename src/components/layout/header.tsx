@@ -25,7 +25,6 @@ interface HeaderProps {
   };
   organization: {
     name: string;
-    slug: string;
   };
 }
 

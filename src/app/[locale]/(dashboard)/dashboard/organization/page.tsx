@@ -88,7 +88,7 @@ export default async function OrganizationPage(): Promise<JSX.Element> {
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">組織ID</p>
-                <p className="font-mono text-lg text-muted-foreground">{organization.slug}</p>
+                <p className="font-mono text-lg text-muted-foreground">{organization.id}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">作成日</p>

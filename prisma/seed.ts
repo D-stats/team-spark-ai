@@ -6,12 +6,9 @@ async function main() {
   console.log('🌱 Seeding database...');
 
   // Create organization
-  const organization = await prisma.organization.upsert({
-    where: { slug: 'acme-corp' },
-    update: {},
-    create: {
+  const organization = await prisma.organization.create({
+    data: {
       name: 'Acme Corporation',
-      slug: 'acme-corp',
       settings: {
         features: {
           kudos: true,

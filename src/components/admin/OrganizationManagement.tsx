@@ -15,7 +15,6 @@ import { useToast } from '@/components/ui/use-toast';
 interface Organization {
   id: string;
   name: string;
-  slug: string;
   settings: any;
   createdAt: Date;
   _count: {
@@ -135,16 +134,6 @@ export default function OrganizationManagement({ organization, stats }: Organiza
                     required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="slug">{t('form.slug')}</Label>
-                  <Input
-                    type="text"
-                    id="slug"
-                    name="slug"
-                    defaultValue={organization.slug}
-                    required
-                  />
-                </div>
               </div>
               <div className="flex space-x-2">
                 <Button type="submit">{t('form.save')}</Button>
@@ -158,10 +147,6 @@ export default function OrganizationManagement({ organization, stats }: Organiza
               <div>
                 <h3 className="font-medium mb-2">{t('info.name')}</h3>
                 <p className="text-gray-600">{organization.name}</p>
-              </div>
-              <div>
-                <h3 className="font-medium mb-2">{t('info.slug')}</h3>
-                <p className="text-gray-600">{organization.slug}</p>
               </div>
               <div>
                 <h3 className="font-medium mb-2">{t('info.created')}</h3>

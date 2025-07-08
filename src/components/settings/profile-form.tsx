@@ -35,7 +35,6 @@ interface User {
   twitterUrl?: string | null;
   organization: {
     name: string;
-    slug: string;
   };
 }
 

@@ -18,7 +18,6 @@ type UserWithOrganization = User & {
   organization: {
     id: string;
     name: string;
-    slug: string;
   } | null;
 };
 

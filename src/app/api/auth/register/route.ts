@@ -60,28 +60,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Generate organization slug from name
-    const orgSlug = organizationName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .substring(0, 50);
-
-    // Ensure slug is unique
-    let uniqueSlug = orgSlug;
-    let counter = 1;
-    while (await prisma.organization.findUnique({ where: { slug: uniqueSlug } })) {
-      uniqueSlug = `${orgSlug}-${counter}`;
-      counter++;
-    }
-
     // Use transaction to ensure atomicity
     const result = await prisma.$transaction(async (tx) => {
       // Create organization
       const organization = await tx.organization.create({
         data: {
           name: organizationName.trim(),
-          slug: uniqueSlug,
           settings: JSON.stringify({
             features: {
               kudos: true,
@@ -129,7 +113,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         organization: {
           id: result.organization.id,
           name: result.organization.name,
-          slug: result.organization.slug,
         },
         isAdmin: true,
       },
