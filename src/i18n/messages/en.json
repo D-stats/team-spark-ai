@@ -52,7 +52,13 @@
     "organization": "Organization",
     "settings": "Settings",
     "personalSettings": "Personal Settings",
-    "organizationSettings": "Organization Settings"
+    "organizationSettings": "Organization Settings",
+    "admin": "Administration",
+    "adminDashboard": "Admin Dashboard",
+    "userManagement": "User Management",
+    "teamManagement": "Team Management",
+    "organizationManagement": "Organization Management",
+    "auditTrail": "Audit Trail"
   },
   "errors": {
     "validation": {
@@ -1009,6 +1015,262 @@
       "title": "Contact Us",
       "description": "If you have any questions about our privacy policy, please contact us",
       "email": "Email"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "description": "Manage your organization, users, and teams",
+    "stats": {
+      "totalUsers": "Total Users",
+      "totalUsersDesc": "All users in your organization",
+      "activeUsers": "Active Users",
+      "activeUsersDesc": "Last 30 days",
+      "totalTeams": "Total Teams",
+      "totalTeamsDesc": "All teams in your organization",
+      "recentLogins": "Recent Logins",
+      "recentLoginsDesc": "Recent login activity",
+      "activeRate": "active"
+    },
+    "quickActions": {
+      "manageUsers": "Manage Users",
+      "manageUsersDesc": "Invite, activate, and manage user accounts",
+      "manageTeams": "Manage Teams",
+      "manageTeamsDesc": "Create and organize teams",
+      "organizationSettings": "Organization Settings",
+      "organizationSettingsDesc": "Configure organization-wide settings",
+      "auditTrail": "Audit Trail",
+      "auditTrailDesc": "View security logs and user activity",
+      "openAction": "Open"
+    },
+    "recentActivities": {
+      "title": "Recent Activities",
+      "empty": "No recent activities",
+      "success": "Success",
+      "failed": "Failed"
+    },
+    "users": {
+      "title": "User Management",
+      "description": "Manage user accounts, roles, and permissions",
+      "search": {
+        "placeholder": "Search users by name or email..."
+      },
+      "filters": {
+        "allRoles": "All Roles",
+        "admin": "Admin",
+        "manager": "Manager",
+        "member": "Member",
+        "allStatus": "All Status",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "export": "Export",
+        "bulkImport": "Bulk Import",
+        "inviteUser": "Invite User",
+        "edit": "Edit"
+      },
+      "table": {
+        "title": "Users",
+        "teams": "Teams",
+        "managing": "Managing",
+        "joined": "Joined"
+      },
+      "status": {
+        "inactive": "Inactive"
+      },
+      "roles": {
+        "admin": "Admin",
+        "manager": "Manager",
+        "member": "Member"
+      },
+      "invite": {
+        "title": "Invite New User",
+        "email": "Email Address",
+        "name": "Full Name",
+        "role": "Role",
+        "teams": "Assign to Team",
+        "selectTeam": "Select team (optional)",
+        "send": "Send Invitation",
+        "success": "User invited successfully",
+        "successDesc": "Invitation email sent",
+        "error": "Failed to invite user",
+        "errorDesc": "Please try again"
+      },
+      "bulk": {
+        "title": "Bulk Import Users",
+        "csvFile": "CSV File",
+        "upload": "Upload",
+        "selected": "{count} users selected",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "delete": "Delete",
+        "success": "Bulk action completed",
+        "successDesc": "Operation completed successfully",
+        "error": "Bulk action failed",
+        "errorDesc": "Please try again"
+      },
+      "export": {
+        "success": "Users exported",
+        "successDesc": "CSV file downloaded",
+        "error": "Export failed",
+        "errorDesc": "Please try again"
+      }
+    },
+    "teams": {
+      "title": "Team Management",
+      "description": "Create and manage teams within your organization",
+      "search": {
+        "placeholder": "Search teams..."
+      },
+      "actions": {
+        "createTeam": "Create Team",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "form": {
+        "name": "Team Name",
+        "description": "Description",
+        "manager": "Team Manager",
+        "selectManager": "Select manager",
+        "noManager": "No manager",
+        "members": "Team Members",
+        "selectMembers": "Select members",
+        "create": "Create Team",
+        "update": "Update Team",
+        "save": "Save Changes"
+      },
+      "team": {
+        "noManager": "No manager assigned",
+        "members": "{count} members",
+        "moreMembers": "+{count} more",
+        "created": "Created"
+      },
+      "create": {
+        "title": "Create New Team",
+        "success": "Team created successfully",
+        "successDesc": "Team has been added to your organization",
+        "error": "Failed to create team",
+        "errorDesc": "Please try again"
+      },
+      "edit": {
+        "title": "Edit Team"
+      },
+      "update": {
+        "success": "Team updated successfully",
+        "successDesc": "Changes have been saved",
+        "error": "Failed to update team",
+        "errorDesc": "Please try again"
+      },
+      "delete": {
+        "confirm": "Are you sure you want to delete this team?",
+        "success": "Team deleted successfully",
+        "successDesc": "Team has been removed",
+        "error": "Failed to delete team",
+        "errorDesc": "Please try again"
+      },
+      "empty": {
+        "message": "No teams found",
+        "createFirst": "Create your first team"
+      }
+    },
+    "organization": {
+      "title": "Organization Management",
+      "description": "Configure organization settings and view statistics",
+      "overview": {
+        "title": "Organization Overview"
+      },
+      "actions": {
+        "edit": "Edit",
+        "save": "Save"
+      },
+      "form": {
+        "name": "Organization Name",
+        "slug": "Organization Slug",
+        "save": "Save Changes"
+      },
+      "info": {
+        "name": "Name",
+        "slug": "Slug",
+        "created": "Created",
+        "id": "Organization ID"
+      },
+      "update": {
+        "success": "Organization updated",
+        "successDesc": "Changes have been saved",
+        "error": "Failed to update organization",
+        "errorDesc": "Please try again"
+      },
+      "settings": {
+        "title": "Organization Settings",
+        "save": "Save Settings",
+        "success": "Settings saved",
+        "successDesc": "Organization settings updated",
+        "error": "Failed to save settings",
+        "errorDesc": "Please try again",
+        "tabs": {
+          "general": "General",
+          "features": "Features",
+          "branding": "Branding",
+          "security": "Security"
+        },
+        "general": {
+          "timezone": "Timezone",
+          "locale": "Default Language"
+        },
+        "features": {
+          "kudos": "Enable Kudos",
+          "surveys": "Enable Surveys",
+          "checkins": "Enable Check-ins"
+        },
+        "branding": {
+          "primaryColor": "Primary Color",
+          "logoUrl": "Logo URL"
+        },
+        "security": {
+          "require2fa": "Require Two-Factor Authentication",
+          "sessionTimeout": "Session Timeout (days)"
+        }
+      },
+      "teamStats": {
+        "title": "Team Statistics",
+        "members": "{count} members"
+      }
+    },
+    "audit": {
+      "title": "Audit Trail",
+      "description": "Monitor user activity and security events",
+      "tabs": {
+        "auditLogs": "Audit Logs",
+        "activeSessions": "Active Sessions"
+      },
+      "logs": {
+        "title": "Security Audit Logs",
+        "searchPlaceholder": "Search by user, email, or IP address...",
+        "empty": "No audit logs found",
+        "success": "Login Success",
+        "failed": "Login Failed"
+      },
+      "sessions": {
+        "title": "Active User Sessions",
+        "active": "{count} active sessions",
+        "empty": "No active sessions",
+        "lastUsed": "Last used",
+        "expires": "Expires",
+        "revoke": "Revoke Session",
+        "unknownDevice": "Unknown Device"
+      },
+      "filters": {
+        "allEvents": "All Events",
+        "successOnly": "Success Only",
+        "failedOnly": "Failed Only",
+        "allTime": "All Time",
+        "today": "Today",
+        "thisWeek": "This Week",
+        "thisMonth": "This Month"
+      },
+      "actions": {
+        "export": "Export Logs"
+      }
     }
   }
 }
