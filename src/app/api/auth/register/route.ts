@@ -7,7 +7,7 @@ interface RegisterRequest {
   email: string;
   password: string;
   name: string;
-  organizationId?: string;
+  organizationName: string;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -19,11 +19,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const body = (await request.json()) as RegisterRequest;
-    const { email, password, name, organizationId } = body;
+    const { email, password, name, organizationName } = body;
 
     // Validate required fields
-    if (typeof email !== 'string' || typeof password !== 'string' || typeof name !== 'string') {
+    if (
+      typeof email !== 'string' ||
+      typeof password !== 'string' ||
+      typeof name !== 'string' ||
+      typeof organizationName !== 'string'
+    ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Validate organization name
+    if (organizationName.trim().length < 2) {
+      return NextResponse.json(
+        { error: 'Organization name must be at least 2 characters' },
+        { status: 400 },
+      );
     }
 
     // Validate password strength
@@ -47,39 +60,78 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create or find default organization
-    const defaultOrg = await prisma.organization.upsert({
-      where: { slug: 'default-org' },
-      update: {},
-      create: {
-        name: 'Default Organization',
-        slug: 'default-org',
-        settings: {},
-      },
-    });
+    // Generate organization slug from name
+    const orgSlug = organizationName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 50);
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-        organizationId: organizationId ?? defaultOrg.id,
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        organizationId: true,
-        role: true,
-        createdAt: true,
-      },
+    // Ensure slug is unique
+    let uniqueSlug = orgSlug;
+    let counter = 1;
+    while (await prisma.organization.findUnique({ where: { slug: uniqueSlug } })) {
+      uniqueSlug = `${orgSlug}-${counter}`;
+      counter++;
+    }
+
+    // Use transaction to ensure atomicity
+    const result = await prisma.$transaction(async (tx) => {
+      // Create organization
+      const organization = await tx.organization.create({
+        data: {
+          name: organizationName.trim(),
+          slug: uniqueSlug,
+          settings: JSON.stringify({
+            features: {
+              kudos: true,
+              surveys: true,
+              checkins: true,
+            },
+            branding: {
+              primaryColor: '#000000',
+            },
+            security: {
+              require2fa: false,
+              sessionTimeout: 30,
+            },
+          }),
+        },
+      });
+
+      // Since this user is creating a new organization, they become the admin
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name,
+          organizationId: organization.id,
+          role: 'ADMIN', // First user of organization is always admin
+          isActive: true,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          organizationId: true,
+          role: true,
+          createdAt: true,
+        },
+      });
+
+      return { user, organization };
     });
 
     return NextResponse.json(
       {
-        message: 'User created successfully',
-        user,
+        message: 'Account created successfully',
+        user: result.user,
+        organization: {
+          id: result.organization.id,
+          name: result.organization.name,
+          slug: result.organization.slug,
+        },
+        isAdmin: true,
       },
       { status: 201 },
     );

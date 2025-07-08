@@ -21,6 +21,7 @@ export default function SignUpPage(): JSX.Element {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
@@ -76,6 +77,7 @@ export default function SignUpPage(): JSX.Element {
           email,
           password,
           name,
+          organizationName,
         }),
       });
 
@@ -119,6 +121,19 @@ export default function SignUpPage(): JSX.Element {
                 required
                 disabled={loading}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="organizationName">{t('organizationLabel')}</Label>
+              <Input
+                id="organizationName"
+                type="text"
+                placeholder={t('organizationPlaceholder')}
+                value={organizationName}
+                onChange={(e) => setOrganizationName(e.target.value)}
+                required
+                disabled={loading}
+              />
+              <p className="text-xs text-muted-foreground">{t('organizationHelp')}</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">{t('emailLabel')}</Label>
@@ -182,7 +197,10 @@ export default function SignUpPage(): JSX.Element {
                 passwordErrors.length > 0 ||
                 passwordMismatch ||
                 !password ||
-                !confirmPassword
+                !confirmPassword ||
+                !name ||
+                !email ||
+                !organizationName
               }
             >
               {loading ? t('submitting') : t('submitButton')}
