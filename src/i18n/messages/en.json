@@ -1194,12 +1194,10 @@
       },
       "form": {
         "name": "Organization Name",
-        "slug": "Organization Slug",
         "save": "Save Changes"
       },
       "info": {
         "name": "Name",
-        "slug": "Slug",
         "created": "Created",
         "id": "Organization ID"
       },
