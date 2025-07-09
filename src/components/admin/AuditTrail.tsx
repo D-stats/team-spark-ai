@@ -108,8 +108,24 @@ export default function AuditTrail({ auditLogs, activeSessions }: AuditTrailProp
 
   const getDeviceInfo = (deviceInfo: any) => {
     if (!deviceInfo) return t('session.unknownDevice');
-    const parsed = typeof deviceInfo === 'string' ? JSON.parse(deviceInfo) : deviceInfo;
-    return `${parsed.browser || 'Unknown'} on ${parsed.os || 'Unknown'}`;
+    
+    // If it's already a string that looks like formatted device info, return it
+    if (typeof deviceInfo === 'string') {
+      try {
+        const parsed = JSON.parse(deviceInfo);
+        return `${parsed.browser || 'Unknown'} on ${parsed.os || 'Unknown'}`;
+      } catch {
+        // If JSON parsing fails, it's likely already a formatted string
+        return deviceInfo;
+      }
+    }
+    
+    // If it's an object, format it
+    if (typeof deviceInfo === 'object') {
+      return `${deviceInfo.browser || 'Unknown'} on ${deviceInfo.os || 'Unknown'}`;
+    }
+    
+    return t('session.unknownDevice');
   };
 
   return (
