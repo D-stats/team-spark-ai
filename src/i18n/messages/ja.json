@@ -1269,7 +1269,8 @@
           "general": "一般",
           "features": "機能",
           "branding": "ブランディング",
-          "security": "セキュリティ"
+          "security": "セキュリティ",
+          "billing": "請求"
         },
         "general": {
           "timezone": "タイムゾーン",
@@ -1300,6 +1301,67 @@
       "teamStats": {
         "title": "チーム統計",
         "members": "{count}人のメンバー"
+      },
+      "billing": {
+        "title": "請求管理",
+        "description": "サブスクリプションと請求情報を管理します",
+        "tabs": {
+          "subscription": "サブスクリプション",
+          "invoices": "請求書"
+        },
+        "subscription": {
+          "currentPlan": "現在のプラン",
+          "status": "ステータス",
+          "billing": "請求",
+          "currentPeriod": "現在の期間",
+          "nextPayment": "次回支払い",
+          "noActive": "アクティブなサブスクリプションがありません",
+          "selectPlan": "プランを選択",
+          "billingInterval": "請求間隔",
+          "create": "サブスクリプションを作成",
+          "cancel": "サブスクリプションをキャンセル",
+          "reactivate": "サブスクリプションを再開",
+          "created": "サブスクリプションが作成されました",
+          "createdDesc": "サブスクリプションが正常に作成されました",
+          "success": "サブスクリプションが更新されました",
+          "cancelSuccess": "サブスクリプションが正常にキャンセルされました",
+          "reactivateSuccess": "サブスクリプションが正常に再開されました",
+          "error": "エラー",
+          "errorDesc": "サブスクリプションの更新に失敗しました"
+        },
+        "invoices": {
+          "title": "請求書",
+          "number": "請求書番号",
+          "date": "日付",
+          "amount": "金額",
+          "status": "ステータス",
+          "dueDate": "支払期限",
+          "noInvoices": "請求書が見つかりません"
+        },
+        "status": {
+          "active": "アクティブ",
+          "canceled": "キャンセル済み",
+          "past_due": "支払期限超過",
+          "trialing": "試用中",
+          "paid": "支払済み",
+          "open": "未支払い",
+          "void": "無効",
+          "draft": "下書き",
+          "uncollectible": "回収不能"
+        },
+        "interval": {
+          "monthly": "月次",
+          "yearly": "年次"
+        },
+        "plans": {
+          "basic": "ベーシックプラン",
+          "pro": "プロプラン",
+          "enterprise": "エンタープライズプラン"
+        },
+        "error": {
+          "fetchTitle": "請求データの読み込みエラー",
+          "fetchDesc": "請求情報を読み込めません"
+        }
       }
     },
     "audit": {

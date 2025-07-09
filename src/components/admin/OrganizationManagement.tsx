@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Building, Users, BarChart3, Settings, TrendingUp } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import BillingInfo from './BillingInfo';
 
 interface Organization {
   id: string;
@@ -218,11 +219,12 @@ export default function OrganizationManagement({ organization, stats }: Organiza
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="general">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="general">{t('settings.tabs.general')}</TabsTrigger>
               <TabsTrigger value="features">{t('settings.tabs.features')}</TabsTrigger>
               <TabsTrigger value="branding">{t('settings.tabs.branding')}</TabsTrigger>
               <TabsTrigger value="security">{t('settings.tabs.security')}</TabsTrigger>
+              <TabsTrigger value="billing">{t('settings.tabs.billing')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general" className="space-y-4">
@@ -367,6 +369,10 @@ export default function OrganizationManagement({ organization, stats }: Organiza
               <Button onClick={() => handleUpdateSettings(settings)}>
                 {t('settings.save')}
               </Button>
+            </TabsContent>
+
+            <TabsContent value="billing" className="space-y-4">
+              <BillingInfo />
             </TabsContent>
           </Tabs>
         </CardContent>

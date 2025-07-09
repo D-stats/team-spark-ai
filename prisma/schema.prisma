@@ -21,6 +21,8 @@ model Organization {
   surveys          Survey[]
   teams            Team[]
   users            User[]
+  subscriptions    Subscription[]
+  invoices         Invoice[]
 }
 
 model User {
@@ -529,4 +531,96 @@ enum DigestFrequency {
   DAILY
   WEEKLY
   MONTHLY
+}
+
+model Subscription {
+  id              String            @id @default(cuid())
+  organizationId  String
+  planId          String
+  status          SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean         @default(false)
+  canceledAt      DateTime?
+  trialStart      DateTime?
+  trialEnd        DateTime?
+  quantity        Int              @default(1)
+  unitPrice       Decimal          @db.Decimal(10, 2)
+  currency        String           @default("USD")
+  billingInterval BillingInterval  @default(MONTHLY)
+  paymentMethod   String?
+  lastPaymentDate DateTime?
+  nextPaymentDate DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices        Invoice[]
+  
+  @@index([organizationId])
+  @@index([status])
+  @@index([nextPaymentDate])
+}
+
+model Invoice {
+  id              String         @id @default(cuid())
+  organizationId  String
+  subscriptionId  String?
+  invoiceNumber   String         @unique
+  status          InvoiceStatus  @default(DRAFT)
+  subtotal        Decimal        @db.Decimal(10, 2)
+  tax             Decimal        @db.Decimal(10, 2) @default(0)
+  total           Decimal        @db.Decimal(10, 2)
+  currency        String         @default("USD")
+  issuedAt        DateTime       @default(now())
+  dueAt           DateTime
+  paidAt          DateTime?
+  periodStart     DateTime?
+  periodEnd       DateTime?
+  description     String?
+  paymentMethod   String?
+  pdfUrl          String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription    Subscription?  @relation(fields: [subscriptionId], references: [id])
+  lineItems       InvoiceLineItem[]
+  
+  @@index([organizationId])
+  @@index([subscriptionId])
+  @@index([status])
+  @@index([dueAt])
+}
+
+model InvoiceLineItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Int      @default(1)
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  amount      Decimal  @db.Decimal(10, 2)
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  @@index([invoiceId])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+  UNPAID
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  VOID
+  UNCOLLECTIBLE
 }

@@ -1218,7 +1218,8 @@
           "general": "General",
           "features": "Features",
           "branding": "Branding",
-          "security": "Security"
+          "security": "Security",
+          "billing": "Billing"
         },
         "general": {
           "timezone": "Timezone",
@@ -1249,6 +1250,67 @@
       "teamStats": {
         "title": "Team Statistics",
         "members": "{count} members"
+      },
+      "billing": {
+        "title": "Billing Management",
+        "description": "Manage subscription and billing information",
+        "tabs": {
+          "subscription": "Subscription",
+          "invoices": "Invoices"
+        },
+        "subscription": {
+          "currentPlan": "Current Plan",
+          "status": "Status",
+          "billing": "Billing",
+          "currentPeriod": "Current Period",
+          "nextPayment": "Next Payment",
+          "noActive": "No active subscription",
+          "selectPlan": "Select Plan",
+          "billingInterval": "Billing Interval",
+          "create": "Create Subscription",
+          "cancel": "Cancel Subscription",
+          "reactivate": "Reactivate Subscription",
+          "created": "Subscription Created",
+          "createdDesc": "Your subscription has been created successfully",
+          "success": "Subscription Updated",
+          "cancelSuccess": "Subscription cancelled successfully",
+          "reactivateSuccess": "Subscription reactivated successfully",
+          "error": "Error",
+          "errorDesc": "Failed to update subscription"
+        },
+        "invoices": {
+          "title": "Invoices",
+          "number": "Invoice Number",
+          "date": "Date",
+          "amount": "Amount",
+          "status": "Status",
+          "dueDate": "Due Date",
+          "noInvoices": "No invoices found"
+        },
+        "status": {
+          "active": "Active",
+          "canceled": "Canceled",
+          "past_due": "Past Due",
+          "trialing": "Trial",
+          "paid": "Paid",
+          "open": "Open",
+          "void": "Void",
+          "draft": "Draft",
+          "uncollectible": "Uncollectible"
+        },
+        "interval": {
+          "monthly": "Monthly",
+          "yearly": "Yearly"
+        },
+        "plans": {
+          "basic": "Basic Plan",
+          "pro": "Pro Plan",
+          "enterprise": "Enterprise Plan"
+        },
+        "error": {
+          "fetchTitle": "Error Loading Billing Data",
+          "fetchDesc": "Unable to load billing information"
+        }
       }
     },
     "audit": {
