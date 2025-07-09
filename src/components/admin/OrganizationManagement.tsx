@@ -218,20 +218,12 @@ export default function OrganizationManagement({ organization, stats }: Organiza
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="general">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="general">{t('settings.tabs.general')}</TabsTrigger>
+          <Tabs defaultValue="features">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="features">{t('settings.tabs.features')}</TabsTrigger>
               <TabsTrigger value="branding">{t('settings.tabs.branding')}</TabsTrigger>
-              <TabsTrigger value="security">{t('settings.tabs.security')}</TabsTrigger>
               <TabsTrigger value="billing">{t('settings.tabs.billing')}</TabsTrigger>
             </TabsList>
-
-            <TabsContent value="general" className="space-y-4">
-              <div className="text-center py-8 text-gray-500">
-                <p>{t('settings.general.noSettings')}</p>
-              </div>
-            </TabsContent>
 
             <TabsContent value="features" className="space-y-4">
               <div className="space-y-4">
@@ -308,41 +300,6 @@ export default function OrganizationManagement({ organization, stats }: Organiza
                         branding: { ...settings.branding, logoUrl: e.target.value }
                       })
                     }
-                  />
-                </div>
-              </div>
-              <Button onClick={() => handleUpdateSettings(settings)}>
-                {t('settings.save')}
-              </Button>
-            </TabsContent>
-
-            <TabsContent value="security" className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="require2fa">{t('settings.security.require2fa')}</Label>
-                  <Switch
-                    id="require2fa"
-                    checked={settings.security?.require2fa ?? false}
-                    onCheckedChange={(checked) =>
-                      setSettings({
-                        ...settings,
-                        security: { ...settings.security, require2fa: checked }
-                      })
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="sessionTimeout">{t('settings.security.sessionTimeout')}</Label>
-                  <Input
-                    type="number"
-                    value={settings.security?.sessionTimeout || 30}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        security: { ...settings.security, sessionTimeout: parseInt(e.target.value) }
-                      })
-                    }
-                    className="w-20"
                   />
                 </div>
               </div>
