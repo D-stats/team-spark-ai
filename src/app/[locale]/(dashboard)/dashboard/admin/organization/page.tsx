@@ -36,7 +36,7 @@ export default async function OrganizationPage() {
   }
 
   // Get usage statistics
-  const [activeUsers, recentLogins, teamStats] = await Promise.all([
+  const [activeUsers, recentLogins] = await Promise.all([
     prisma.user.count({
       where: { 
         organizationId: session.user.organizationId,
@@ -53,16 +53,6 @@ export default async function OrganizationPage() {
           gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days
         }
       }
-    }),
-    prisma.team.findMany({
-      where: { organizationId: session.user.organizationId },
-      select: {
-        id: true,
-        name: true,
-        _count: {
-          select: { members: true }
-        }
-      }
     })
   ]);
 
@@ -70,8 +60,7 @@ export default async function OrganizationPage() {
     totalUsers: organization._count.users,
     totalTeams: organization._count.teams,
     activeUsers,
-    recentLogins,
-    teamStats
+    recentLogins
   };
 
   return (

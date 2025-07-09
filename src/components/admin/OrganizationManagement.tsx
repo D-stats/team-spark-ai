@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -31,13 +30,6 @@ interface Stats {
   totalTeams: number;
   activeUsers: number;
   recentLogins: number;
-  teamStats: Array<{
-    id: string;
-    name: string;
-    _count: {
-      members: number;
-    };
-  }>;
 }
 
 interface OrganizationManagementProps {
@@ -314,28 +306,6 @@ export default function OrganizationManagement({ organization, stats }: Organiza
               <BillingInfo />
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
-
-      {/* Team Statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <BarChart3 className="h-5 w-5" />
-            <span>{t('teamStats.title')}</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {stats.teamStats.map(team => (
-              <div key={team.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
-                <span className="font-medium">{team.name}</span>
-                <Badge variant="secondary">
-                  {t('teamStats.members', { count: team._count.members })}
-                </Badge>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>
