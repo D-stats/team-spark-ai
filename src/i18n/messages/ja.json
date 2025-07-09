@@ -1361,6 +1361,30 @@
           "fetchTitle": "請求データの読み込みエラー",
           "fetchDesc": "請求情報を読み込めません"
         }
+      },
+      "logo": {
+        "title": "組織ロゴ",
+        "description": "組織のロゴをアップロードしてブランドをカスタマイズします",
+        "preview": "ロゴプレビュー",
+        "noLogo": "ロゴなし",
+        "dragAndDrop": "ロゴをここにドラッグ＆ドロップするか、クリックして参照してください",
+        "fileTypes": "JPEG、PNG、WebPに対応",
+        "maxSize": "最大サイズ：5MB",
+        "chooseLogo": "ロゴを選択",
+        "removeLogo": "ロゴを削除",
+        "uploading": "アップロード中...",
+        "deleting": "削除中...",
+        "uploadSuccess": "ロゴが正常にアップロードされました",
+        "deleteSuccess": "ロゴが正常に削除されました",
+        "uploadFailed": "ロゴのアップロードに失敗しました",
+        "deleteFailed": "ロゴの削除に失敗しました",
+        "invalidFileType": "無効なファイル形式です。JPEG、PNG、またはWebPを使用してください。",
+        "fileTooLarge": "ファイルが大きすぎます。最大サイズは5MBです。",
+        "requirements": {
+          "types": "対応形式：JPEG、PNG、WebP",
+          "size": "最大ファイルサイズ：5MB",
+          "dimensions": "推奨：最高品質を得るために800x400ピクセルまで"
+        }
       }
     },
     "audit": {

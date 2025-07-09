@@ -1310,6 +1310,30 @@
           "fetchTitle": "Error Loading Billing Data",
           "fetchDesc": "Unable to load billing information"
         }
+      },
+      "logo": {
+        "title": "Organization Logo",
+        "description": "Upload your organization's logo to customize your brand appearance",
+        "preview": "Logo Preview",
+        "noLogo": "No Logo",
+        "dragAndDrop": "Drag and drop your logo here, or click to browse",
+        "fileTypes": "Supports JPEG, PNG, WebP",
+        "maxSize": "Maximum size: 5MB",
+        "chooseLogo": "Choose Logo",
+        "removeLogo": "Remove Logo",
+        "uploading": "Uploading...",
+        "deleting": "Removing...",
+        "uploadSuccess": "Logo uploaded successfully",
+        "deleteSuccess": "Logo removed successfully",
+        "uploadFailed": "Failed to upload logo",
+        "deleteFailed": "Failed to remove logo",
+        "invalidFileType": "Invalid file type. Please use JPEG, PNG, or WebP.",
+        "fileTooLarge": "File too large. Maximum size is 5MB.",
+        "requirements": {
+          "types": "Supported formats: JPEG, PNG, WebP",
+          "size": "Maximum file size: 5MB",
+          "dimensions": "Recommended: Up to 800x400 pixels for best quality"
+        }
       }
     },
     "audit": {

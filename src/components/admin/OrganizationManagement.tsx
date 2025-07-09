@@ -12,10 +12,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Building, Users, BarChart3, Settings, TrendingUp } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import BillingInfo from './BillingInfo';
+import { OrganizationLogoUpload } from './OrganizationLogoUpload';
 
 interface Organization {
   id: string;
   name: string;
+  logoUrl?: string | null;
   settings: any;
   createdAt: Date;
   _count: {
@@ -48,6 +50,7 @@ export default function OrganizationManagement({ organization, stats }: Organiza
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [settings, setSettings] = useState(organization.settings || {});
+  const [currentOrganization, setCurrentOrganization] = useState(organization);
 
   const handleUpdateOrganization = async (formData: FormData) => {
     try {
@@ -101,6 +104,10 @@ export default function OrganizationManagement({ organization, stats }: Organiza
         variant: 'destructive'
       });
     }
+  };
+
+  const handleLogoUpdate = (logoUrl: string | null) => {
+    setCurrentOrganization(prev => ({ ...prev, logoUrl }));
   };
 
   return (
@@ -273,39 +280,34 @@ export default function OrganizationManagement({ organization, stats }: Organiza
             </TabsContent>
 
             <TabsContent value="branding" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="primaryColor">{t('settings.branding.primaryColor')}</Label>
-                  <Input
-                    type="color"
-                    id="primaryColor"
-                    value={settings.branding?.primaryColor || '#000000'}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        branding: { ...settings.branding, primaryColor: e.target.value }
-                      })
-                    }
-                  />
+              <div className="space-y-6">
+                {/* Organization Logo Upload */}
+                <OrganizationLogoUpload
+                  organization={currentOrganization}
+                  onLogoUpdate={handleLogoUpdate}
+                />
+
+                {/* Other Branding Settings */}
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="primaryColor">{t('settings.branding.primaryColor')}</Label>
+                    <Input
+                      type="color"
+                      id="primaryColor"
+                      value={settings.branding?.primaryColor || '#000000'}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          branding: { ...settings.branding, primaryColor: e.target.value }
+                        })
+                      }
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="logoUrl">{t('settings.branding.logoUrl')}</Label>
-                  <Input
-                    type="url"
-                    id="logoUrl"
-                    value={settings.branding?.logoUrl || ''}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        branding: { ...settings.branding, logoUrl: e.target.value }
-                      })
-                    }
-                  />
-                </div>
+                <Button onClick={() => handleUpdateSettings(settings)}>
+                  {t('settings.save')}
+                </Button>
               </div>
-              <Button onClick={() => handleUpdateSettings(settings)}>
-                {t('settings.save')}
-              </Button>
             </TabsContent>
 
             <TabsContent value="billing" className="space-y-4">
