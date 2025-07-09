@@ -92,6 +92,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           organizationId: organization.id,
           role: 'ADMIN', // First user of organization is always admin
           isActive: true,
+          lastActiveAt: new Date(), // Set initial activity timestamp
         },
         select: {
           id: true,

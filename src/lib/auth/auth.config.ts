@@ -97,6 +97,12 @@ export const authOptions: NextAuthOptions = {
             }
           }
 
+          // Update lastActiveAt on successful login
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { lastActiveAt: new Date() },
+          });
+
           return {
             id: user.id,
             email: user.email,

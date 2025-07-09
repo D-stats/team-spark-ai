@@ -37,6 +37,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           data: { lastUsedAt: new Date() },
         });
       }
+
+      // Update user's lastActiveAt field
+      await prisma.user.update({
+        where: { id: dbUser.id },
+        data: { lastActiveAt: new Date() },
+      });
     } else if (action === 'update') {
       // Update last used time for all active sessions from this device
       await prisma.userSession.updateMany({
@@ -50,6 +56,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         data: {
           lastUsedAt: new Date(),
         },
+      });
+
+      // Update user's lastActiveAt field
+      await prisma.user.update({
+        where: { id: dbUser.id },
+        data: { lastActiveAt: new Date() },
       });
     }
 
