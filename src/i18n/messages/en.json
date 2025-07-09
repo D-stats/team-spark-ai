@@ -1222,8 +1222,7 @@
           "billing": "Billing"
         },
         "general": {
-          "timezone": "Timezone",
-          "locale": "Default Language"
+          "noSettings": "No general settings available at this time"
         },
         "features": {
           "kudos": "Enable Kudos",

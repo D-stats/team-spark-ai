@@ -228,29 +228,9 @@ export default function OrganizationManagement({ organization, stats }: Organiza
             </TabsList>
 
             <TabsContent value="general" className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="timezone">{t('settings.general.timezone')}</Label>
-                  <Input
-                    type="text"
-                    id="timezone"
-                    value={settings.timezone || 'UTC'}
-                    onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="locale">{t('settings.general.locale')}</Label>
-                  <Input
-                    type="text"
-                    id="locale"
-                    value={settings.locale || 'en'}
-                    onChange={(e) => setSettings({ ...settings, locale: e.target.value })}
-                  />
-                </div>
+              <div className="text-center py-8 text-gray-500">
+                <p>{t('settings.general.noSettings')}</p>
               </div>
-              <Button onClick={() => handleUpdateSettings(settings)}>
-                {t('settings.save')}
-              </Button>
             </TabsContent>
 
             <TabsContent value="features" className="space-y-4">

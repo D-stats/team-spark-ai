@@ -1273,8 +1273,7 @@
           "billing": "請求"
         },
         "general": {
-          "timezone": "タイムゾーン",
-          "locale": "デフォルト言語"
+          "noSettings": "現在利用可能な一般設定はありません"
         },
         "features": {
           "kudos": "クードスを有効化",
