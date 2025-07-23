@@ -2,58 +2,56 @@
 # Multi-stage build for optimized production image
 
 # Stage 1: Dependencies
-FROM node:18-alpine AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Copy package files
+# Copy package files and Prisma schema
 COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 
-# Install dependencies with frozen lockfile
-RUN npm ci
+# Install dependencies (skip scripts to avoid husky install)
+RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 
 # Stage 2: Builder
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Copy dependencies from previous stage
+# Copy dependencies and source code
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set production environment
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Install dev dependencies for build (skip scripts to avoid husky install)
+RUN npm ci --ignore-scripts
 
-# Generate Prisma client
-RUN npx prisma generate
+# Set build environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build application
-RUN npm run build
+# Generate Prisma client and build
+RUN npx prisma generate && npm run build
 
 # Stage 3: Runner
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Add non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Set production environment
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+# Set runtime environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy necessary files
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Copy only necessary files
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 
-# Set correct permissions
+# Set permissions
 RUN chown -R nextjs:nodejs /app
-
-# Switch to non-root user
 USER nextjs
 
 # Expose port
@@ -64,4 +62,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

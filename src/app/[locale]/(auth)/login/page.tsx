@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+
+// Force dynamic rendering for this page since it uses useSearchParams()
+export const dynamic = 'force-dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -17,7 +20,7 @@ import {
 } from '@/components/ui/card';
 import { useTranslations, useLocale } from 'next-intl';
 
-export default function LoginPage(): JSX.Element {
+function LoginForm(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [twoFactorToken, setTwoFactorToken] = useState('');
@@ -265,5 +268,25 @@ export default function LoginPage(): JSX.Element {
         </form>
       </Card>
     </div>
+  );
+}
+
+function LoginLoading(): JSX.Element {
+  return (
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <Card className="w-full max-w-md">
+        <CardContent className="flex items-center justify-center p-6">
+          <div className="text-center">Loading...</div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+export default function LoginPage(): JSX.Element {
+  return (
+    <Suspense fallback={<LoginLoading />}>
+      <LoginForm />
+    </Suspense>
   );
 }

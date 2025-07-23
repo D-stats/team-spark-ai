@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withLogging } from '@/lib/api-logging';
-import { getAllQueueMetrics, addJob, emailQueue, notificationQueue } from '@/lib/jobs/queue';
 import { requireAuthWithOrganization } from '@/lib/auth/utils';
 import type { Job } from 'bullmq';
 
@@ -27,6 +26,7 @@ async function getJobs(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
+    const { getAllQueueMetrics } = await import('@/lib/jobs/queue');
     const metrics = await getAllQueueMetrics();
 
     return NextResponse.json({
@@ -55,12 +55,13 @@ async function createJob(request: NextRequest) {
     let job: Job | undefined;
 
     switch (type) {
-      case 'send-email':
+      case 'send-email': {
         // Only admins can send emails
         if (dbUser.role !== 'ADMIN') {
           return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
+        const { addJob, emailQueue } = await import('@/lib/jobs/queue');
         job = (await addJob(
           emailQueue,
           'admin-email',
@@ -76,9 +77,11 @@ async function createJob(request: NextRequest) {
           { delay },
         )) as Job;
         break;
+      }
 
-      case 'send-kudos-notification':
-        job = (await addJob(
+      case 'send-kudos-notification': {
+        const { addJob: addNotificationJob, notificationQueue } = await import('@/lib/jobs/queue');
+        job = (await addNotificationJob(
           notificationQueue,
           'kudos-notification',
           {
@@ -90,6 +93,7 @@ async function createJob(request: NextRequest) {
           { delay },
         )) as Job;
         break;
+      }
     }
 
     return NextResponse.json(

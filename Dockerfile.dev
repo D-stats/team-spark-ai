@@ -1,27 +1,30 @@
-# 開発環境用Dockerfile
-FROM node:18-alpine
+# Development Dockerfile for TeamSpark AI
+FROM node:20-alpine
 
-# 必要なツールをインストール
-RUN apk add --no-cache libc6-compat
+# Install system dependencies
+RUN apk add --no-cache libc6-compat openssl
 
-# 作業ディレクトリ設定
+# Set working directory
 WORKDIR /app
 
-# 依存関係ファイルをコピー
-COPY package*.json ./
+# Copy package files and Prisma schema
+COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 
-# 依存関係インストール
-RUN npm ci
+# Install dependencies (including dev dependencies, skip scripts to avoid husky install)
+RUN npm ci --ignore-scripts && npm cache clean --force
 
-# Prisma Clientを生成
+# Generate Prisma client
 RUN npx prisma generate
 
-# アプリケーションコードをコピー
+# Copy source code
 COPY . .
 
-# 開発サーバーのポート
+# Set development environment
+ENV NODE_ENV=development
+
+# Expose development server port
 EXPOSE 3000
 
-# 開発サーバー起動
+# Start development server
 CMD ["npm", "run", "dev"]
