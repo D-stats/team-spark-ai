@@ -665,7 +665,22 @@ import { serverFormatDate, serverFormatNumber } from '@/lib/i18n-server';
 
 ## 🔧 MCP Atlassian Integration
 
-TeamSpark AI uses the [D-Stats organization MCP setup](../CLAUDE.md#mcp-model-context-protocol-integration). Project-specific configuration:
+TeamSpark AI uses the official Atlassian MCP server via SSE. Configuration is set up in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
+  }
+}
+```
+
+For detailed setup instructions, see [Setup Guide](./docs/guides/setup.md#5-mcp-atlassian-setup-optional).
+
+### Project-specific configuration:
 
 ### JIRA Project Details
 
@@ -692,7 +707,7 @@ fix(TSA-456): Resolve Slack integration timeout
 - **Slack Integration**: Include Slack channel mentions in task descriptions
 - **i18n Tasks**: Tag with "i18n" label for internationalization work
 
-Refer to [D-Stats MCP Integration](../CLAUDE.md#mcp-model-context-protocol-integration) for detailed JIRA setup and commands.
+For additional JIRA workflow patterns, refer to [D-Stats MCP Integration](../CLAUDE.md#mcp-model-context-protocol-integration).
 
 ## 🚫 ESLint Compliance
 
