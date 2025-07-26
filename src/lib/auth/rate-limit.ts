@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { RedisRateLimiter } from '@/lib/redis';
 import { log } from '@/lib/logger';
+import type { RedisRateLimiter } from '@/lib/redis';
 
 interface RateLimitConfig {
   maxRequests: number;
@@ -16,9 +16,11 @@ interface RateLimitResult {
 // Redis-based rate limiter instances
 const rateLimiters = new Map<string, RedisRateLimiter>();
 
-function getRateLimiter(config: RateLimitConfig): RedisRateLimiter {
+async function getRateLimiter(config: RateLimitConfig): Promise<RedisRateLimiter> {
   const key = `${config.maxRequests}-${config.windowMs}`;
   if (!rateLimiters.has(key)) {
+    // Only create Redis rate limiter when actually needed
+    const { RedisRateLimiter } = await import('@/lib/redis');
     rateLimiters.set(key, new RedisRateLimiter(config.windowMs, config.maxRequests));
   }
   const limiter = rateLimiters.get(key);
@@ -30,7 +32,7 @@ function getRateLimiter(config: RateLimitConfig): RedisRateLimiter {
 
 export function rateLimit(config: RateLimitConfig) {
   return async (req: NextRequest): Promise<RateLimitResult> => {
-    const limiter = getRateLimiter(config);
+    const limiter = await getRateLimiter(config);
     const ip = req.ip ?? req.headers.get('x-forwarded-for') ?? 'unknown';
     const userAgent = req.headers.get('user-agent') ?? 'unknown';
 
