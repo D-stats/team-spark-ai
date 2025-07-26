@@ -69,9 +69,6 @@ Create `.env` file from examples:
 ```bash
 # Copy main environment variables
 cp .env.example .env
-
-# If using MCP Atlassian integration, append those variables
-cat .env.sample >> .env
 ```
 
 ### 3.3 Configure Environment Variables
@@ -150,28 +147,34 @@ npm run prisma:studio
 
 ## 5. MCP Atlassian Setup (Optional)
 
-If you're using JIRA integration:
+If you're using JIRA integration with Claude Code:
 
-### 5.1 Install MCP Atlassian
+### 5.1 Configure MCP Server
 
-```bash
-# Install using uv (Python package manager)
-uv tool install mcp-atlassian
+The project is configured to use the official Atlassian MCP server via SSE. The configuration is already set up in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
+  }
+}
 ```
 
-### 5.2 Configure JIRA Credentials
+### 5.2 Authentication
 
-Add to your `.env` file:
+When using Claude Code, you'll be prompted to authenticate with Atlassian when first accessing JIRA features. No additional local installation or API tokens are required.
 
-```bash
-JIRA_URL=https://your-company.atlassian.net
-JIRA_USERNAME=your-email@example.com
-JIRA_API_TOKEN=your-jira-api-token
-```
+### 5.3 Project Configuration
 
-### 5.3 Restart Claude Code
+This project is configured for:
 
-After configuration, restart Claude Code to load the MCP server.
+- **Project Key**: TSA
+- **Issue Types**: Task, Bug, Story
+- **Epic Pattern**: Use "Epic: [Name]" prefix for parent tasks
 
 ## 6. Create Slack App (Optional)
 

@@ -9,8 +9,8 @@ TeamSpark AI uses multiple environment files for different purposes:
 ```
 .env                  # Main environment file (git ignored)
 .env.example          # Example for TeamSpark AI variables
-.env.sample           # Example for MCP Atlassian variables
 .envrc                # direnv configuration
+.mcp.json             # MCP server configuration
 ```
 
 ## 🔧 direnv Setup
@@ -101,9 +101,6 @@ This automatically loads all variables from `.env` when you enter the project di
 ```bash
 # Copy from example files
 cp .env.example .env
-
-# If using MCP Atlassian integration
-cat .env.sample >> .env
 ```
 
 ### 2. Core Application Variables
@@ -158,15 +155,20 @@ SMTP_SECURE=false
 
 #### MCP Atlassian Integration (Optional)
 
-```bash
-# JIRA Configuration
-JIRA_URL=https://your-company.atlassian.net
-JIRA_USERNAME=your-email@example.com
-JIRA_API_TOKEN=your-jira-api-token
+MCP (Model Context Protocol) Atlassian integration is configured via `.mcp.json` for Claude Code users. The configuration uses the official Atlassian SSE endpoint:
 
-# Optional: Filter specific projects
-JIRA_PROJECTS_FILTER=TSA,PROJ2
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
+  }
+}
 ```
+
+**Note**: No additional environment variables or API tokens are required. Authentication is handled directly through Claude Code when accessing JIRA features.
 
 ### 3. Environment-Specific Configurations
 
@@ -242,7 +244,7 @@ SESSION_SECRET=yet-another-secure-random-string
 - [ ] Set application URL
 - [ ] (Optional) Add Slack credentials
 - [ ] (Optional) Configure email service
-- [ ] (Optional) Add JIRA credentials for MCP
+- [ ] (Optional) Verify MCP Atlassian configuration in `.mcp.json`
 - [ ] Run `direnv allow .` in project directory
 - [ ] Verify with `npm run pre-flight`
 
