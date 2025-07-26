@@ -1,6 +1,8 @@
 name: Deploy to Dev Environment
 
 on:
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       branch:
@@ -24,6 +26,7 @@ jobs:
   # Build and deploy for both PR testing and manual triggers
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.label.name, 'deploy to dev')
 
     permissions:
       contents: read
@@ -35,7 +38,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{ github.event.inputs.branch || github.head_ref }}
 
       - name: Set deployment variables
         run: |
@@ -104,4 +107,26 @@ jobs:
           sleep 30
           curl -f $SERVICE_URL/api/health || exit 1
           echo "Health check passed!"
-          echo "Dev environment deployment successful from branch '${{ github.event.inputs.branch }}': $SERVICE_URL"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Dev environment deployment successful from branch '${{ github.event.inputs.branch }}': $SERVICE_URL"
+          else
+            echo "Dev environment deployment successful from PR branch '${{ github.head_ref }}': $SERVICE_URL"
+          fi
+
+      - name: Remove deploy label
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labelName = 'deploy to dev';
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                name: labelName
+              });
+              console.log(`Successfully removed '${labelName}' label from PR #${context.payload.pull_request.number}`);
+            } catch (error) {
+              console.log(`Label '${labelName}' was not found or already removed: ${error.message}`);
+            }
